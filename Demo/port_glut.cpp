@@ -165,7 +165,7 @@ void TBSystem::RescheduleTimer(double fire_time)
 	if (fire_time == TB_NOT_SOON)
 		return;
 
-	static double set_fire_time = 0;
+	static double set_fire_time = -1;
 	if (fire_time != set_fire_time)
 	{
 		set_fire_time = fire_time;
