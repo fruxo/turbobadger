@@ -20,9 +20,9 @@ class TBBitmap;
 	F.ex 110 -> 128, 256->256, 257->512 etc. */
 int TBGetNearestPowerOfTwo(int val);
 
-/** TBBitmapFragmentMap is used to create pack multiple bitmaps into a single TBBitmap.
-	It does so by copying data into a software buffer when CreateNewFragment is called
-	(if the requested fragment fits in the map). */
+/** TBBitmapFragmentMap is used to pack multiple bitmaps into a single TBBitmap.
+	When initialized (in a size suitable for a TBBitmap) is also creates a software buffer
+	that will make up the TBBitmap when all fragments have been added. */
 class TBBitmapFragmentMap
 {
 public:

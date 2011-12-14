@@ -23,6 +23,8 @@ public:
 
 	/** Read a tree of nodes from file into this node. Returns true on success. */
 	bool ReadFile(const char *filename);
+
+	/** Read a tree of nodes from a null terminated string buffer. */
 	void ReadData(const char *data);
 
 	// FIX: Add write support!
@@ -38,7 +40,7 @@ public:
 	bool CloneChildren(TBNode *source);
 
 	/** Get a node from the given request or nullptr if no such node was found.
-		It can find nodes in children as well. Names are separated by a dot.
+		It can find nodes in children as well. Names are separated by a ">".
 		Ex: GetNode("dishes>pizza>special>batman") */
 	TBNode *GetNode(const char *request);
 
@@ -48,8 +50,16 @@ public:
 	/** Returns the value of this node. */
 	TBValue &GetValue() { return m_value; }
 
+	/** Get a value from the given request as an integer.
+		If the value is not specified, it returns the default value (def). */
 	int GetValueInt(const char *request, int def);
+
+	/** Get a value from the given request as an float.
+		If the value is not specified, it returns the default value (def). */
 	float GetValueFloat(const char *request, float def);
+
+	/** Get a value from the given request as an string.
+		If the value is not specified, it returns the default value (def). */
 	const char *GetValueString(const char *request, const char *def);
 
 	inline TBNode *GetFirstChild() const { return m_children.GetFirst(); }

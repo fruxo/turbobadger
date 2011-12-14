@@ -32,7 +32,7 @@ enum EVENT_TYPE {
 		(see Widget::SetClickByKey).
 
 		If panning of scrollable widgets start while the pointer is down, CLICK
-		won't be invoked when releasing the pointer. */
+		won't be invoked when releasing the pointer (since that should stop panning). */
 	EVENT_TYPE_CLICK,
 	EVENT_TYPE_POINTER_DOWN,
 	EVENT_TYPE_POINTER_UP,
@@ -170,7 +170,10 @@ enum WIDGET_HIT_STATUS {
 	virtual const char *GetClassName() { return classname; } \
 	virtual bool IsOfType(const char *name) { return strcmp(name, classname) == 0 ? true : baseclass::IsOfType(name); }
 
+/** Macro definition for casting a widget to the given type. Will return nullptr if the widget is of the wrong type. */
 #define TBSafeCast(classname, widget) (static_cast<classname *>((widget && widget->IsOfType(#classname)) ? widget : nullptr))
+
+/** Call GetWidgetByID and cast. Will return nullptr if the widget is of the wrong type, or if it was not found.  */
 #define TBSafeGetByID(classname, id) (static_cast<classname *>(GetWidgetByID(id, #classname)))
 
 /** The base Widget class.
@@ -317,7 +320,7 @@ public:
 	/** Return true if this widget is the same or a parent of other_widget. */
 	bool IsParentOf(Widget *other_widget) const;
 
-	/** Return true ff this widget is the same as other_widget or if other_widget
+	/** Return true if this widget is the same as other_widget or if other_widget
 		events are going through this widget (See GetEventDestination()) */
 	bool IsEventDestinationFor(Widget *other_widget) const;
 

@@ -63,7 +63,7 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 	// those pixels would be read from neighbour images, so we must add border space
 	// around each image to avoid artifacts. We must also fill in that border with
 	// the "clamp" of the image itself so we don't get any filtering artifacts at all.
-	// Allways add border when we're not using the entire map for one fragment.
+	// Allways add border except when we're using the entire map for one fragment.
 	int border = 0;
 	int needed_w = frag_w;
 	int needed_h = frag_h;
@@ -92,7 +92,7 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 		ROW *row = rows[i];
 		if (!best_row || row->height < best_row->height)
 		{
-			// This is the best row, if we fit
+			// This is the best row so far, if we fit
 			if (needed_h <= row->height && needed_w <= m_bitmap_w - row->used_width)
 				best_row = row;
 		}

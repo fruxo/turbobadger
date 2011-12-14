@@ -11,12 +11,6 @@
 
 namespace tinkerbell {
 
-/*
-FIX:
--Only load a bitmap once (if different elements refer to the same bitmap)
--Automatic creation of bitmap atlases.
-*/
-
 TBStr FilenameToPath(const char *filename)
 {
 	const char *filename_start = filename;

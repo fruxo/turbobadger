@@ -8,7 +8,7 @@
 
 namespace tinkerbell {
 
-/** TBTempBuffer manages buffer that will be deleted on destruction.
+/** TBTempBuffer manages a buffer that will be deleted on destruction.
 
 	The buffer size can grow by calling Reserve or Append, but it
 	will never shrink during the lifetime of the object.
