@@ -1,0 +1,23 @@
+TBLayout
+	TBLayout
+		spacing -1
+		TBButton
+			text <
+		TBButton
+			text >
+	TBLayout
+		spacing -1
+		TBButton
+			text 1
+		TBButton
+			text 2
+		TBButton
+			text 3
+	TBLayout
+		spacing -1
+		TBButton
+			text A
+		TBButton
+			text B
+		TBButton
+			text C

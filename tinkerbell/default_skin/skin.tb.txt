@@ -1,0 +1,217 @@
+# This is the default skin of Tinkerbell UI Toolkit
+# The license of the skin is Public Domain.
+#
+# For more information about Tinkerbell UI Toolkit and its license,
+# see tinkerbell.h.
+description
+	name Default skin
+elements
+	TBButton
+		bitmap button.png
+		cut 17
+		expand 7
+		padding 8 6
+		overrides
+			element TBButton.pressed
+				state pressed
+		overlay
+			element generic_focus_r8
+				state focused
+	TBButton.pressed
+		bitmap button_pressed.png
+		cut 17
+		expand 7
+
+	TBButton.flat
+		padding 8 6
+		children
+			element TBButton.flat.hovered
+				state hovered
+			element TBButton.flat.pressed
+				state pressed
+		overlay
+			element generic_focus_r8
+				state focused
+	TBButton.flat.hovered
+		bitmap button_flat_outline.png
+		cut 15
+		expand 6
+	TBButton.flat.pressed
+		bitmap button_flat_pressed.png
+		cut 8
+
+	TBTabContainer.tablayout_x
+		padding 10 0
+	TBTabContainer.tablayout_y
+		padding 0 10
+	TBTabContainer.container
+		clone TBContainer
+	TBTabContainer.tab
+		bitmap tab_button_inactive.png
+		cut 12
+		expand 6
+		padding 6 6 6 3
+		min-width 50
+		overrides
+			element TBTabContainer.tab.pressed
+				state pressed
+		children
+			element tab_focus
+				state focused
+	tab_focus
+		bitmap focus_tabbutton.png
+		cut 12
+		expand 6
+	TBTabContainer.tab.pressed
+		bitmap tab_button_active.png
+		cut 13
+		expand 6
+
+	TBEditField.selection
+		cut 2
+		bitmap selection.png
+	TBEditField
+		bitmap editfield.png
+		cut 12
+		expand 4
+		padding 4
+
+	TBWindow
+		bitmap window.png
+		cut 20
+		expand 10
+		padding 10
+		overrides
+			element TBWindow.selected
+				state selected
+	TBWindow.selected
+		bitmap window_active.png
+		cut 30
+		expand 15
+	TBWindow.close
+		bitmap window_close.png
+		type Image
+		children
+			element TBWindow.close.pressed
+				state pressed
+	TBWindow.close.pressed
+		bitmap window_close_pressed.png
+		type Image
+	TBWindow.mover
+		bitmap mover.png
+		cut 10
+		expand 0
+		padding 4
+
+	TBContainer
+		bitmap container.png
+		cut 12
+		expand 6
+		padding 10
+	TBCheckBox
+		bitmap checkbox.png
+		cut 15
+		expand 7
+		children
+			element TBCheckBox.selected
+				state selected
+			element TBCheckBox.pressed
+				state pressed
+	TBCheckBox.selected
+		bitmap checkbox_mark.png
+		type Image
+		expand 7
+	TBCheckBox.pressed
+		bitmap checkbox_pressed.png
+		type Image
+	TBRadioButton
+		bitmap radio.png
+		cut 15
+		expand 7
+		children
+			element TBRadioButton.selected
+				state selected
+			element TBRadioButton.pressed
+				state pressed
+	TBRadioButton.selected
+		bitmap radio_mark.png
+		type Image
+		expand 7
+	TBRadioButton.pressed
+		bitmap radio_pressed.png
+		type Image
+		expand 7
+	TBLayout.fadeout_x
+		bitmap fadeout_x.png
+	TBLayout.fadeout_y
+		bitmap fadeout_y.png
+	TBSelectList
+		clone TBEditField
+		padding 2
+	TBSelectDropdown
+		clone TBButton
+	TBSelectDropdown.arrow
+		clone arrow.down
+	TBSelectDropdown.window
+		clone TBMenuWindow
+	TBMenuWindow
+		clone TBWindow
+		padding 2
+	TBSelectItem
+		padding 5 2
+		children
+			element TBSelectItem.hovered
+				state hovered
+			element TBSelectItem.selected
+				state selected
+	TBSelectItem.selected
+		cut 7
+		bitmap item_selected.png
+	TBSelectItem.hovered
+		cut 7
+		bitmap item_hover.png
+	TBSelectItem.separatorX
+		bitmap item_separator_x.png
+		type Stretch Image
+	TBScrollBarBgX
+		bitmap scroll_bg_x.png
+		cut 11
+		expand 5
+	TBScrollBarFgX
+		bitmap scroll_fg_x.png
+		cut 11
+		expand 5
+	TBScrollBarBgY
+		bitmap scroll_bg_y.png
+		cut 11
+		expand 5
+	TBScrollBarFgY
+		bitmap scroll_fg_y.png
+		cut 11
+		expand 5
+	TBResizer
+		bitmap resizer.png
+	TBInlineSelect
+		max-width 110
+	TBDimmer
+		bitmap dimmer.png
+		type Stretch Image
+
+	TBProgressSpinner
+		min-width 28
+		min-height 28
+	TBProgressSpinner.fg
+		bitmap progress_spinner_strip.png
+
+	arrow.left: type: Image, bitmap: arrow_left.png, min-width: 5, min-height: 10
+	arrow.right: type: Image, bitmap: arrow_right.png, min-width: 5, min-height: 10
+	arrow.up: type: Image, bitmap: arrow_up.png, min-width: 10, min-height: 5
+	arrow.down: type: Image, bitmap: arrow_down.png, min-width: 10, min-height: 5
+	generic_focus
+		bitmap focus_r4.png
+		cut 14
+		expand 5
+	generic_focus_r8
+		bitmap focus_r8.png
+		cut 14
+		expand 4

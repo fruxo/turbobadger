@@ -1,0 +1,29 @@
+.DS_Store
+Thumbs.db
+
+*~
+*.swp
+*.#*
+*.ilk
+*.ncb
+*.opt
+*.opensdf
+*.sdf
+*.user
+*.suo
+*.log
+*.exp
+*.pdb
+
+
+*.lnk
+
+
+
+# Can also ignore all directories and files in a directory.
+# tmp/**/* 
+Debug
+Release
+ipch
+
+documentation

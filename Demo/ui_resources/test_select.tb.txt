@@ -1,0 +1,11 @@
+TBLayout
+	axis y
+	distribution available
+	gravity all
+	TBEditField
+		id filter
+		gravity left right
+		placeholder @search
+	TBSelectList
+		id list
+		gravity all

@@ -1,0 +1,14 @@
+cut Cut
+copy Copy
+paste Paste
+delete Delete
+selectall Select all
+undo Undo
+redo Redo
+TBMessageWindow.ok Ok
+TBMessageWindow.cancel Cancel
+TBMessageWindow.yes Yes
+TBMessageWindow.no No
+new New
+close Close
+search Search

@@ -1,0 +1,14 @@
+cut Klipp ut
+copy Kopiera
+paste Klistra in
+delete Ta bort
+selectall Markera all
+undo Ångra
+redo Gör om
+TBMessageWindow.ok Ok
+TBMessageWindow.cancel Avbryt
+TBMessageWindow.yes Ja
+TBMessageWindow.no Nej
+new Ny
+close Stäng
+search Sök

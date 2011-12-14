@@ -1,0 +1,19 @@
+TBLayout
+	distribution available
+	distribution_position top left
+	size available
+	axis y
+
+	TBSelectDropdown
+		text New
+	TBLayout
+		distribution available
+		TBButton
+			text Button 1
+		TBButton
+			text Button 2
+	TBEditField
+		placeholder @search
+		id widget_list_search
+	TBSelectList
+		id widget_list

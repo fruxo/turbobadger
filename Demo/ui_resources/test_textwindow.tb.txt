@@ -1,0 +1,14 @@
+TBLayout: axis: y, distribution: available
+	TBLayout: distribution: gravity
+		TBButton: id: undo
+			TBSkinImage: skin: arrow.left
+		TBButton: id: redo
+			TBSkinImage: skin: arrow.right
+		TBButton: text: Clear, id: clear
+		TBLayout
+			gravity left right
+			distribution_position right bottom
+			TBClickLabel: text: Wrap
+				TBCheckBox: value: 1, id: wrap
+	TBEditField: multiline: 1, gravity: all, id: editfield, autofocus: 1
+		text Tinkerbell UI Toolkit\n\nThings to test:\n • resizing\n • right clicking\n • searching\n • keyboard navigation\n • scrolling\n • mouse wheel & dragging.\n • This is a list item that should wrap in a smart way.\n

@@ -1,0 +1,84 @@
+TBLayout
+	axis y
+	TBLayout
+		TBSelectDropdown
+			text Select position
+			id select position
+		TBButton
+			text Toggle axis
+			id toggle axis
+	TBLayout
+		id 10
+		axis y
+		TBTextField
+			text size: preferred
+		TBContainer
+			TBLayout
+				id 1
+				size preferred
+				TBButton
+					text Default
+				TBCheckBox
+					value 1
+				TBButton
+					axis y
+					text Foo Bar
+					TBSkinImage
+						skin Icon16
+				TBButton
+					gravity all
+					text Gravity all
+				TBButton
+					gravity top
+					text Gravity top
+				TBButton
+					gravity bottom
+					text Gravity bottom
+		TBTextField
+			text size: available
+		TBContainer
+			TBLayout
+				id 2
+				size available
+				TBButton
+					text Default
+				TBCheckBox
+					value 1
+				TBButton
+					axis y
+					text Foo Bar
+					TBSkinImage
+						skin Icon16
+				TBButton
+					gravity all
+					text Gravity all
+				TBButton
+					gravity top
+					text Gravity top
+				TBButton
+					gravity bottom
+					text Gravity bottom
+		TBTextField
+			text size: gravity
+		TBContainer
+			TBLayout
+				id 3
+				size gravity
+				TBButton
+					text Default
+				TBCheckBox
+					value 1
+				TBButton
+					axis y
+					text Foo Bar
+					TBSkinImage
+						skin Icon16
+				TBButton
+					gravity all
+					text Gravity all
+				TBButton
+					gravity top
+					text Gravity top
+				TBButton
+					gravity bottom
+					text Gravity bottom

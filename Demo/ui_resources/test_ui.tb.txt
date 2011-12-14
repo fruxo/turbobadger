@@ -1,0 +1,88 @@
+TBLayout
+	distribution available
+	axis y
+	TBLayout
+		TBButton
+			text @new
+			id new
+		TBButton
+			text @close
+			Close this window!
+			id TBWindow.close
+	TBLayout
+		TBButton
+			text Give me a popup menu!
+			id showpopupmenu1
+		TBButton
+			text Reload skin bitmaps
+			id reload skin bitmaps
+	TBLayout
+		TBButton
+			text Click for image!
+			id add img
+			TBSkinImage
+				skin Icon16
+		TBButton
+			axis y
+			text Click for image!
+			id add img
+			TBSkinImage
+				skin Icon16
+	TBSelectDropdown
+		text Dropdown
+		id name dropdown
+	TBLayout
+		TBButton
+			text Misc tests!
+			id misc tests
+		TBButton
+			text New buttons!
+			id new buttons
+	TBLayout
+		overflow scroll
+		TBRadioButton
+		TBCheckBox
+			value 1
+		TBSkinImage
+			skin Icon16
+		TBSkinImage
+			skin Icon48
+		TBButton
+			image back
+		TBButton
+			image forward
+		TBButton
+			text Msg!
+			id msg
+		TBButton
+			text Delayed Msg!
+			id delayedmsg
+	TBLayout
+		TBRadioButton
+			group_id group A
+			value 1
+		TBRadioButton
+			group_id group A
+		TBRadioButton
+			group_id group B
+		TBRadioButton
+			group_id group B
+		TBEditField
+			text Hi!
+		TBEditField
+			text Spaghetti and Marshmallows!
+		TBEditField
+			password 1
+			text fgdfgdfgsg
+	TBScrollContainer
+		TBLayout
+			axis y
+			TBButton
+				text New buttons!
+				id new buttons
+			TBButton
+				text New buttons!
+				id new buttons
+			TBButton
+				text New buttons!
+				id new buttons

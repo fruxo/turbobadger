@@ -1,0 +1,30 @@
+TBTabContainer
+	id tabcontainer
+	tabs
+		TBButton: text: "Tab with long text"
+		TBButton: text: "Skin"
+		TBButton: text: "Spinner"
+			TBSkinImage: skin: Icon16
+	TBLayout: axis: y
+		TBInlineSelect
+		TBLayout
+			TBRadioButton: group_id: set_align, id: set_align, data: 0
+			TBRadioButton: group_id: set_align, id: set_align, data: 1, value: 1
+			TBRadioButton: group_id: set_align, id: set_align, data: 2
+			TBRadioButton: group_id: set_align, id: set_align, data: 3
+		TBButton
+			text Toggle tab axis
+			id toggle_tab_axis
+	TBLayout
+		TBLayout: axis: y, position: right bottom
+			TBButton: text: Normal button
+			TBButton: text: Overridden skin, skin: SpecialButton
+			TBButton: text: Disabled button, state: disabled
+		TBEditField
+			text TBEditField
+			multiline 1
+	TBLayout
+		axis y
+		TBButton: id: start_spinner, text: Start spinner
+		TBButton: id: stop_spinner, text: Stop spinner
+		TBProgressSpinner: id: spinner

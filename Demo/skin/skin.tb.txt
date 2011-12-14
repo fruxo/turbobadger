@@ -1,0 +1,32 @@
+description
+	name Demo skin override (contains some additions for the demo)
+elements
+	Icon16
+		bitmap icon16.png
+		min-width 16
+		min-height 16
+	Icon48
+		bitmap icon48.png
+			cut 4
+		min-width 20
+		min-height 20
+	Icon128
+		bitmap icon128.png
+	background
+		bitmap bg_tile.png
+		type Tile
+	SpecialButton
+		bitmap special_button.png
+		cut 17
+		expand 7
+		padding 8 6
+		overrides
+			element SpecialButton.pressed
+				state pressed
+		overlay
+			element generic_focus_r8
+				state focused
+	SpecialButton.pressed
+		bitmap special_button_pressed.png
+		cut 17
+		expand 7
