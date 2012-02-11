@@ -70,18 +70,22 @@ private:
 class TBGenericStringItem
 {
 public:
-	TBGenericStringItem(const TBGenericStringItem& other) : str(other.str), id(other.id), sub_source(other.sub_source) {}
-	TBGenericStringItem(const char *str) : str(str), sub_source(nullptr) {}
-	TBGenericStringItem(const char *str, TBID id) : str(str), id(id), sub_source(nullptr) {}
-	TBGenericStringItem(const char *str, TBSelectItemSource *sub_source) : str(str), sub_source(sub_source) {}
-	const TBGenericStringItem& operator = (const TBGenericStringItem &other) { str.Set(other.str); id = other.id; sub_source = other.sub_source; return *this; }
+	TBGenericStringItem(const TBGenericStringItem& other) : str(other.str), id(other.id), sub_source(other.sub_source), user_ptr(other.user_ptr) {}
+	TBGenericStringItem(const char *str) : str(str), sub_source(nullptr), user_ptr(nullptr) {}
+	TBGenericStringItem(const char *str, TBID id) : str(str), id(id), sub_source(nullptr), user_ptr(nullptr) {}
+	TBGenericStringItem(const char *str, TBSelectItemSource *sub_source) : str(str), sub_source(sub_source), user_ptr(nullptr) {}
+	const TBGenericStringItem& operator = (const TBGenericStringItem &other) { str.Set(other.str); id = other.id; sub_source = other.sub_source; user_ptr = other.user_ptr; return *this; }
 
 	void SetSkinImage(TBID image) { skin_image = image; }
+	
+	void* GetUserPtr(){return user_ptr;}
+	void SetUserPtr(void* p){user_ptr = p;}
 public:
 	TBStr str;
 	TBID id;
 	TBID skin_image;
 	TBSelectItemSource *sub_source;
+	void* user_ptr;
 };
 
 class TBGenericStringItemSource : public TBSelectItemSource
