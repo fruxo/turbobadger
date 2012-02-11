@@ -180,7 +180,7 @@ TBBitmapFragment *TBBitmapFragmentManager::CreateNewBitmapFragment(const char *f
 			return frag;
 	}
 	// Load the file
-	TdImage *img = TdImage::CreateFromFile(filename);
+	TBImageLoader *img = TBImageLoader::CreateFromFile(filename);
 	if (!img)
 	{
 		TBDebugOut("CreateNewBitmapFragment: Failed to load bitmap!");
@@ -193,25 +193,25 @@ TBBitmapFragment *TBBitmapFragmentManager::CreateNewBitmapFragment(const char *f
 	{
 		for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
 		{
-			if (frag = m_fragment_maps[i]->CreateNewFragment(img->width, img->height, (uint32*)img->data))
+			if (frag = m_fragment_maps[i]->CreateNewFragment(img->Width(), img->Height(), img->Data()))
 				break;
 		}
 	}
 	// If we couldn't create the fragment in any map, create a new map where we know it will fit.
 	if (!frag)
 	{
-		int po2w = TBGetNearestPowerOfTwo(MAX(img->width, default_frag_map_w));
-		int po2h = TBGetNearestPowerOfTwo(MAX(img->height, default_frag_map_h));
+		int po2w = TBGetNearestPowerOfTwo(MAX(img->Width(), default_frag_map_w));
+		int po2h = TBGetNearestPowerOfTwo(MAX(img->Height(), default_frag_map_h));
 		if (dedicated_map)
 		{
-			po2w = TBGetNearestPowerOfTwo(img->width);
-			po2h = TBGetNearestPowerOfTwo(img->height);
+			po2w = TBGetNearestPowerOfTwo(img->Width());
+			po2h = TBGetNearestPowerOfTwo(img->Height());
 		}
 		TBBitmapFragmentMap *fm = new TBBitmapFragmentMap();
 		if (fm && fm->Init(po2w, po2h))
 		{
 			m_fragment_maps.Add(fm);
-			frag = fm->CreateNewFragment(img->width, img->height, (uint32*)img->data);
+			frag = fm->CreateNewFragment(img->Width(), img->Height(), img->Data());
 		}
 		else
 			delete fm;
