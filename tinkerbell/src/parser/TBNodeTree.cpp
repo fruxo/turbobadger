@@ -5,9 +5,9 @@
 
 #include "parser/TBNodeTree.h"
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include "tb_system.h"
 
 namespace tinkerbell {
 
@@ -105,20 +105,20 @@ class FileParser : public ParserStream
 public:
 	bool Read(const char *filename, ParserTarget *target)
 	{
-		f = fopen(filename, "rb");
+		f = TBFile::Open(filename, TBFile::MODE_READ);
 		if (!f)
 			return false;
 		Parser p;
 		Parser::STATUS status = p.Read(this, target);
-		fclose(f);
+		delete f;
 		return status == Parser::STATUS_OK ? true : false;
 	}
 	virtual int GetMoreData(char *buf, int buf_len)
 	{
-		return fread(buf, 1, buf_len, f);
+		return f->Read(buf, 1, buf_len);
 	}
 private:
-	FILE *f;
+	TBFile *f;
 };
 
 class DataParser : public ParserStream

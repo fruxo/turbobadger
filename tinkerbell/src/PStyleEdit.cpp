@@ -7,7 +7,6 @@
 #include "tb_widgets_common.h"
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
-#include <stdio.h>
 #include <assert.h>
 
 namespace tinkerbell {
@@ -323,24 +322,22 @@ int32 ComputeStringWidth(PStyle *style, bool password_on, const char *str, int l
 
 bool PStyleEditImport::Load(const char *filename, PStyleEdit *styledit)
 {
-	FILE *f = fopen(filename, "rb");
+	TBFile* f = TBFile::Open(filename, TBFile::MODE_READ);
 	if (f == NULL)
 		return false;
-	fseek(f, 0, SEEK_END);
-	uint32 num_bytes = ftell(f);
-	fseek(f, 0, SEEK_SET);
+	uint32 num_bytes = f->Size();
 
 	char *str = new char[num_bytes + 1];
 	if (str == NULL)
 	{
-		fclose(f);
+		delete f;
 		return false;
 	}
 
-	num_bytes = fread(str, 1, num_bytes, f);
+	num_bytes = f->Read(str, 1, num_bytes);
 	str[num_bytes] = 0;
 
-	fclose(f);
+	delete f;
 
 	Parse(str, num_bytes, styledit);
 

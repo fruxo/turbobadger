@@ -45,6 +45,18 @@ public:
 	static bool GetText(TBStr &text);
 };
 
+/** TBFile is a porting interface for file access. */
+class TBFile
+{
+public:
+	enum TBFileMode {MODE_READ};
+	static TBFile* Open(const char* filename, TBFileMode mode);
+	
+	virtual ~TBFile(){}
+	virtual long Size() = 0;
+	virtual size_t Read(void* but, size_t elemSize, size_t count) = 0;
+};
+	
 }; // namespace tinkerbell
 
 #endif // TB_SYSTEM_H
