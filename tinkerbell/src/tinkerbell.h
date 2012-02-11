@@ -30,6 +30,10 @@ freely, subject to the following restrictions:
 
 #include <string.h>
 
+#ifndef nullptr
+#define nullptr NULL
+#endif
+
 namespace tinkerbell {
 
 typedef char int8;

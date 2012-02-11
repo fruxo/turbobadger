@@ -6,6 +6,7 @@
 #ifndef TB_LINKLIST_H
 #define TB_LINKLIST_H
 
+#include "tinkerbell.h"
 #include <assert.h>
 
 namespace tinkerbell {

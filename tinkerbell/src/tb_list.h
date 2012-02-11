@@ -6,6 +6,7 @@
 #ifndef TB_LIST_H
 #define TB_LIST_H
 
+#include "tinkerbell.h"
 namespace tinkerbell {
 
 /** TBList is a list (array) of pointers to any kind of objects.
