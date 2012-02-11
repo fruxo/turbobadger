@@ -30,7 +30,7 @@ TBWindow::~TBWindow()
 {
 	if (m_resizer.m_parent)			RemoveChild(&m_resizer);
 	if (m_mover.m_parent)			RemoveChild(&m_mover);
-	m_mover.RemoveChild(&m_close_button);
+	if (m_close_button.m_parent)	m_mover.RemoveChild(&m_close_button);
 	m_mover.RemoveChild(&m_textfield);
 }
 
@@ -156,6 +156,14 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 	{
 		if (m_resizer.m_parent)			RemoveChild(&m_resizer);
 	}
+	if (settings & WINDOW_SETTINGS_CLOSE_BUTTON)
+	{
+		if (!m_close_button.m_parent)		AddChild(&m_close_button);
+	}
+	else if (!(settings & WINDOW_SETTINGS_CLOSE_BUTTON))
+	{
+		if (m_close_button.m_parent)			RemoveChild(&m_close_button);
+	}
 
 	// FIX: invalidate layout / resize window!
 	Invalidate();
@@ -237,7 +245,8 @@ void TBWindow::OnResized(int old_w, int old_h)
 	TBRect mover_rect = m_mover.GetPaddingRect();
 	int button_size = mover_rect.h;
 	m_close_button.SetRect(TBRect(mover_rect.x + mover_rect.w - button_size, mover_rect.y, button_size, button_size));
-	mover_rect.w -= button_size;
+	if (m_settings & WINDOW_SETTINGS_CLOSE_BUTTON)
+		mover_rect.w -= button_size;
 	m_textfield.SetRect(mover_rect);
 }
 
