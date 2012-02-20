@@ -45,10 +45,10 @@ Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 					return STATUS_NO_MEMORY;
 
 				// Strip away trailing '\r' if the line has it
-				char *buf = line.GetData();
-				int buf_len = line.GetAppendPos();
-				if (buf_len > 0 && buf[buf_len - 1] == '\r')
-					buf[buf_len - 1] = 0;
+				char *linebuf = line.GetData();
+				int linebuf_len = line.GetAppendPos();
+				if (linebuf_len > 0 && linebuf[linebuf_len - 1] == '\r')
+					linebuf[linebuf_len - 1] = 0;
 
 				// Terminate the line string
 				if (!line.Append("", 1))

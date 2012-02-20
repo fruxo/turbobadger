@@ -25,19 +25,23 @@ Widget *TestItemSource::CreateItemWidget(int index)
 		layout->SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
 		layout->SetPaintOverflowFadeout(false);
 
-		TBSkinImage *image = new TBSkinImage;
-		image->SetSkinBg("Icon48");
-		image->SetIgnoreInput(true);
-		layout->AddChild(image);
+		if (TBSkinImage *image = new TBSkinImage)
+		{
+			image->SetSkinBg("Icon48");
+			image->SetIgnoreInput(true);
+			layout->AddChild(image);
+		}
 
-		TBTextField *textfield = new TBTextField;
-		textfield->SetText(GetItemString(index));
-		textfield->SetTextAlign(TB_TEXT_ALIGN_LEFT);
-		textfield->SetIgnoreInput(true);
-		layout->AddChild(textfield);
+		if (TBTextField *textfield = new TBTextField)
+		{
+			textfield->SetText(GetItemString(index));
+			textfield->SetTextAlign(TB_TEXT_ALIGN_LEFT);
+			textfield->SetIgnoreInput(true);
+			layout->AddChild(textfield);
+		}
 
-		TBCheckBox *checkbox = new TBCheckBox;
-		layout->AddChild(checkbox);
+		if (TBCheckBox *checkbox = new TBCheckBox)
+			layout->AddChild(checkbox);
 		return layout;
 	}
 	return nullptr;
@@ -220,8 +224,6 @@ public:
 	virtual bool OnEvent(const WidgetEvent &ev);
 	virtual void OnMessageReceived(TBMessage *msg);
 };
-
-MyWindow *win;
 
 MyWindow::MyWindow()
 {

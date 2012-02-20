@@ -140,8 +140,8 @@ void TBBitmapFragmentMap::CopyData(TBBitmapFragment *frag, uint32 *frag_data, in
 	{
 		TBRect rect = frag->m_rect.Expand(border, border);
 		// Copy vertical edges
-		uint32 *dst = m_bitmap_data + rect.x + (rect.y + 1) * m_bitmap_w;
-		uint32 *src = frag_data;
+		dst = m_bitmap_data + rect.x + (rect.y + 1) * m_bitmap_w;
+		src = frag_data;
 		for (int i = 0; i < frag->m_rect.h; i++)
 		{
 			dst[0] = src[0];

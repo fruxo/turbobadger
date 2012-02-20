@@ -297,7 +297,7 @@ bool PStyleEditImport::Load(const char *filename, PStyleEdit *styledit)
 
 	Parse(str, num_bytes, styledit);
 
-	delete str;
+	delete [] str;
 	return true;
 }
 

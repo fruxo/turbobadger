@@ -153,8 +153,8 @@ bool TBEditField::OnEvent(const WidgetEvent &ev)
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBID("delete")), TBID("delete")));
 			source->AddItem(new TBGenericStringItem("-"));
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBID("selectall")), TBID("selectall")));
-			TBMenuWindow *menu = new TBMenuWindow(ev.target, TBID("popupmenu"));
-			menu->Show(source, -1, &pos_in_root);
+			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBID("popupmenu")))
+				menu->Show(source, -1, &pos_in_root);
 		}
 		return true;
 	}

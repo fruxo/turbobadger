@@ -415,6 +415,8 @@ void TBSkinElementStateList::Load(TBNode *n)
 	while (element_node)
 	{
 		TBSkinElementState *state = new TBSkinElementState;
+		if (!state)
+			return;
 
 		state->state = 0;
 		state->element_id.Set(element_node->GetValue().GetString());
