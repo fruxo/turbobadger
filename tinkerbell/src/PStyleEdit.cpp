@@ -322,7 +322,7 @@ int32 ComputeStringWidth(PStyle *style, bool password_on, const char *str, int l
 
 bool PStyleEditImport::Load(const char *filename, PStyleEdit *styledit)
 {
-	TBFile* f = TBFile::Open(filename, TBFile::MODE_READ);
+	TBFile *f = TBFile::Open(filename, TBFile::MODE_READ);
 	if (f == NULL)
 		return false;
 	uint32 num_bytes = f->Size();

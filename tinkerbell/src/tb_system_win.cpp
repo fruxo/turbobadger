@@ -88,11 +88,12 @@ bool TBClipboard::GetText(TBStr &text)
 }
 
 // == TBFile =====================================
-class TBWinFile
+
+class TBWinFile : public TBFile
 {
 public:
-	TBWinFile(FILE* f) : file(f) {}
-	virtual ~TBWinFile() {fclose(file);}
+	TBWinFile(FILE *f) : file(f) {}
+	virtual ~TBWinFile() { fclose(file); }
 
 	virtual long Size()
 	{
@@ -102,17 +103,17 @@ public:
 		fseek(file, oldpos, SEEK_SET);
 		return num_bytes;
 	}
-	virtual size_t Read(void* buf, size_t elemSize, size_t count)
+	virtual size_t Read(void *buf, size_t elemSize, size_t count)
 	{
 		return fread(buf, elemSize, count, file);
 	}
 private:
-	FILE* file;
+	FILE *file;
 };
 
-TBFile* TBFile::Open(const char* filename, TBFileMode mode)
+TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 {
-	FILE* f = nullptr;
+	FILE *f = nullptr;
 	switch (mode)
 	{
 	case MODE_READ:
@@ -123,7 +124,7 @@ TBFile* TBFile::Open(const char* filename, TBFileMode mode)
 	}
 	if (!f)
 		return nullptr;
-	TBWinFile* tbf = new TBWinFile(f);
+	TBWinFile *tbf = new TBWinFile(f);
 	if (!tbf)
 		fclose(f);
 	return tbf;

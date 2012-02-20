@@ -63,11 +63,12 @@ bool TBClipboard::GetText(TBStr &text)
 }
 
 // == TBFile =====================================
-class TBLinuxFile
+
+class TBLinuxFile : public TBFile
 {
 public:
-	TBLinuxFile(FILE* f) : file(f) {}
-	virtual ~TBLinuxFile() {fclose(file);}
+	TBLinuxFile(FILE *f) : file(f) {}
+	virtual ~TBLinuxFile() { fclose(file); }
 
 	virtual long Size()
 	{
@@ -77,17 +78,17 @@ public:
 		fseek(file, oldpos, SEEK_SET);
 		return num_bytes;
 	}
-	virtual size_t Read(void* buf, size_t elemSize, size_t count)
+	virtual size_t Read(void *buf, size_t elemSize, size_t count)
 	{
 		return fread(buf, elemSize, count, file);
 	}
 private:
-	FILE* file;
+	FILE *file;
 };
 
-TBFile* TBFile::Open(const char* filename, TBFileMode mode)
+TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 {
-	FILE* f = nullptr;
+	FILE *f = nullptr;
 	switch (mode)
 	{
 	case MODE_READ:
