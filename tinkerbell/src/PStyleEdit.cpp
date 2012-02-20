@@ -32,7 +32,6 @@ centrering/left/höger ska finnas i PBlock(/paragraph). Default det som är på hel
 //    Ska det vara rich text edit, måste den även ha stopp kod.
 /// Core styleedit ska ej ha Blind dependencys. En Blind del kan ha bitmap, widgetwrapper osv.
 /// Add link support!
-/// smart whitespace-wrap
 /// line numbering
 /// justify_left_right (text-align: justify)
 /// gotolinenr
@@ -115,49 +114,6 @@ SetText(PFormattedText("groda \x1B,00")) ////< Escape för infoga symbol font? De
 #define TMPDEBUG(expr) 
 #define nTMPDEBUG(expr) expr
 #endif
-
-#define ADD_THING(thing, first_thing, last_thing) \
-			if (!first_thing) \
-				first_thing = thing; \
-			if (last_thing) \
-			{ \
-				last_thing->next = thing; \
-				thing->prev = last_thing; \
-			} \
-			last_thing = thing;
-
-#define INSERT_THING_AFTER(thing, after_this, first_thing, last_thing) \
-			if (after_this == NULL) \
-			{ \
-				if (first_thing) \
-					first_thing->prev = thing; \
-				thing->next = first_thing; \
-				first_thing = thing; \
-				if (last_thing == NULL) \
-					last_thing = thing; \
-			} \
-			else \
-			{ \
-				thing->prev = after_this; \
-				thing->next = after_this->next; \
-				if (after_this->next) \
-				{ \
-					after_this->next->prev = thing; \
-				} \
-				after_this->next = thing; \
-				if (thing->next == NULL) \
-					last_thing = thing; \
-			}
-
-#define REMOVE_THING(thing, first_thing, last_thing) \
-			if (thing->prev) \
-				thing->prev->next = thing->next; \
-			if (thing->next) \
-				thing->next->prev = thing->prev; \
-			if (thing == first_thing) \
-				first_thing = thing->next; \
-			if (thing == last_thing) \
-				last_thing = thing->prev;
 
 const int TAB_SPACE = 4;
 #ifdef _DEBUG
@@ -413,7 +369,7 @@ void PSelection::Invalidate()
 		block->Invalidate();
 		if (block == stop_block)
 			break;
-		block = block->next;
+		block = block->GetNext();
 	}
 }
 
@@ -474,9 +430,9 @@ void PSelection::SelectToCaret(PBlock *old_caret_block, int32 old_caret_ofs)
 
 void PSelection::SelectAll()
 {
-	start_block = styledit->first_block;
+	start_block = styledit->blocks.GetFirst();
 	start_ofs = 0;
-	stop_block = styledit->last_block;
+	stop_block = styledit->blocks.GetLast();
 	stop_ofs = stop_block->str_len;
 	Invalidate();
 }
@@ -537,15 +493,14 @@ void PSelection::RemoveContent()
 		start_block->RemoveContent(start_ofs, start_block->str_len - start_ofs);
 
 		// Remove text in all block in between start and stop
-		PBlock *block = start_block->next;
+		PBlock *block = start_block->GetNext();
 		while(block != stop_block)
 		{
 			if (!styledit->undoredo.applying)
 				commit_string.Append(block->str);
-			PBlock *next = block->next;
-			REMOVE_THING(block, styledit->first_block, styledit->last_block);
-			delete block;
 
+			PBlock *next = block->GetNext();
+			styledit->blocks.Delete(block);
 			block = next;
 		}
 
@@ -577,11 +532,11 @@ bool PSelection::GetText(TBStr &text)
 	{
 		TBTempBuffer buf;
 		buf.Append(start_block->str.CStr() + start_ofs, start_block->str_len - start_ofs);
-		PBlock *block = start_block->next;
+		PBlock *block = start_block->GetNext();
 		while(block != stop_block)
 		{
 			buf.Append(block->str, block->str_len);
-			block = block->next;
+			block = block->GetNext();
 		}
 		buf.Append(stop_block->str, stop_ofs);
 		text.Set((char*)buf.GetData(), buf.GetAppendPos());
@@ -722,14 +677,14 @@ bool PCaret::Move(bool forward, bool word)
 	{
 		// Avoid skipping the first/last character when wrapping to a new box.
 		ofs += forward ? 1 : -1;
-		if (ofs > block->str_len && block->next)
+		if (ofs > block->str_len && block->GetNext())
 		{
-			block = block->next;
+			block = block->GetNext();
 			ofs = 0;
 		}
 		if (ofs < 0 && block->prev)
 		{
-			block = block->prev;
+			block = block->GetPrev();
 			ofs = block->str_len;
 		}
 	}
@@ -757,23 +712,23 @@ bool PCaret::Place(const TBPoint &point)
 void PCaret::Place(P_CARET_POS place)
 {
 	if (place == P_CARET_POS_BEGINNING)
-		Place(styledit->first_block, 0);
+		Place(styledit->blocks.GetFirst(), 0);
 	else if (place == P_CARET_POS_END)
-		Place(styledit->last_block, styledit->last_block->str_len);
+		Place(styledit->blocks.GetLast(), styledit->blocks.GetLast()->str_len);
 }
 
 bool PCaret::Place(PBlock *block, int ofs, bool allow_snap, bool snap_forward)
 {
 	if (block)
 	{
-		while (block->next && ofs > block->str_len)
+		while (block->GetNext() && ofs > block->str_len)
 		{
 			ofs -= block->str_len;
-			block = block->next;
+			block = block->GetNext();
 		}
 		while (block->prev && ofs < 0)
 		{
-			block = block->prev;
+			block = block->GetPrev();
 			ofs += block->str_len;
 		}
 		if (ofs < 0)
@@ -787,9 +742,9 @@ bool PCaret::Place(PBlock *block, int ofs, bool allow_snap, bool snap_forward)
 			PElement *element = block->FindElement(ofs);
 			if (ofs > element->ofs && element->IsBreak())
 			{
-				if (snap_forward && block->next)
+				if (snap_forward && block->GetNext())
 				{
-					block = block->next;
+					block = block->GetNext();
 					ofs = 0;
 				}
 				else
@@ -853,7 +808,7 @@ int32 PCaret::GetGlobalOfs()
 
 void PCaret::SetGlobalOfs(int32 gofs)
 {
-	PBlock *b = styledit->first_block;
+	PBlock *b = styledit->blocks.GetFirst();
 	while (b)
 	{
 		int b_len = b->str_len;
@@ -863,7 +818,7 @@ void PCaret::SetGlobalOfs(int32 gofs)
 			return;
 		}
 		gofs -= b_len;
-		b = b->next;
+		b = b->GetNext();
 	}
 	assert(!"out of range! not a valid global offset!");
 }
@@ -872,10 +827,6 @@ void PCaret::SetGlobalOfs(int32 gofs)
 
 PBlock::PBlock(PStyleEdit *styledit)
 	: styledit(styledit)
-	, prev(NULL)
-	, next(NULL)
-	, first_element(NULL)
-	, last_element(NULL)
 	, special_elements()
 	, ypos(0)
 	, height(0)
@@ -893,22 +844,14 @@ PBlock::~PBlock()
 
 void PBlock::Clear()
 {
-	while(first_element)
+	while (elements.GetFirst())
 	{
-		PElement *element = first_element;
-		first_element = first_element->next;
-		if (!element->IsEmbedded()) // Stored in the special_elements list.
+		PElement *element = elements.GetFirst();
+		elements.Remove(element);
+
+		if (!element->IsEmbedded()) // Owned by the special_elements list.
 			delete element;
-		else
-		{
-			// Might be one of the elements removed, so we must clear pointers.
-			// They will be updated again in Layout.
-			element->prev = NULL;
-			element->next = NULL;
-		}
 	}
-	first_element = NULL;
-	last_element = NULL;
 }
 
 void PBlock::Set(const char *newstr, int32 len)
@@ -962,7 +905,7 @@ int32 PBlock::InsertText(int32 ofs, const char *text, int32 len, bool allow_embe
 	if (allow_line_recurse && styledit->packed.multiline_on)
 	{
 		// Instead of recursively calling InsertText, we will loop through them all here
-		PBlock *next_block = next;
+		PBlock *next_block = GetNext();
 		const char *next_line_ptr = &text[first_line_len];
 		int remaining = len - first_line_len;
 		while (remaining > 0)
@@ -970,13 +913,13 @@ int32 PBlock::InsertText(int32 ofs, const char *text, int32 len, bool allow_embe
 			if (!next_block)
 			{
 				next_block = new PBlock(styledit);
-				ADD_THING(next_block, styledit->first_block, styledit->last_block);
+				styledit->blocks.AddLast(next_block);
 			}
 			int consumed = next_block->InsertText(0, next_line_ptr, remaining, allow_embeds, false);
 			next_line_ptr += consumed;
 			inserted_len += consumed;
 			remaining -= consumed;
-			next_block = next_block->next;
+			next_block = next_block->GetNext();
 		}
 	}
 	return inserted_len;
@@ -1039,16 +982,13 @@ void PBlock::RemoveContent(int32 ofs, int32 len)
 					if (element->IsStyleSwitcher())
 					{
 						if (last_style)
-						{
-							REMOVE_THING(last_style, first_element, last_element);
-							delete last_style;
-						}
+							elements.Delete(last_style);
 						last_style = element;
 						special_elements.Remove(index--);
 					}
 					else
 					{
-						REMOVE_THING(element, first_element, last_element);
+						elements.Remove(element);
 						special_elements.Delete(index--);
 					}
 				}
@@ -1059,8 +999,7 @@ void PBlock::RemoveContent(int32 ofs, int32 len)
 		{
 			if (ofs + len >= str_len)
 			{
-				REMOVE_THING(last_style, first_element, last_element);
-				delete last_style;
+				elements.Delete(last_style);
 			}
 			else
 			{
@@ -1089,7 +1028,7 @@ void PBlock::Split()
 		if (is_linebreak(str.CStr()[i]))
 		{
 			PBlock *block = new PBlock(styledit);
-			INSERT_THING_AFTER(block, this, styledit->first_block, styledit->last_block);
+			styledit->blocks.AddAfter(block, this);
 
 			i++;
 			if (str.CStr()[i] == 10)
@@ -1101,8 +1040,8 @@ void PBlock::Split()
 			for(j = before; j < count; j++)
 			{
 				PElement *element = special_elements.Remove(before);
-				element->prev = NULL;
-				element->next = NULL;
+				if (element->linklist)
+					elements.Remove(element);
 				block->special_elements.Add(element);
 			}
 
@@ -1123,16 +1062,15 @@ void PBlock::Merge()
 	//    Ta bort text ur stop_block layouta ej. updatera sel_stop
 	//    Ta bort text ur start_block layouta ej. nollställ selection.
 	//    Kör Merge. Layouta.
-	if (next && !last_element->IsBreak())
+	PBlock *next_block = GetNext();
+	if (next_block && !elements.GetLast()->IsBreak())
 	{
-		str.Append(next->str);
+		str.Append(GetNext()->str);
 		str_len = str.Length();
-		//Fix: add all embeddeds & DONT remove them from the following block when deleted!!!
+		//FIX: add all embeddeds & DONT remove them from the following block when deleted!!!
 
-		next->SetSize(0, 0, true); // Propagate height of the following, before we delete it.
-		PBlock *tmp = next;
-		REMOVE_THING(tmp, styledit->first_block, styledit->last_block);
-		delete tmp;
+		next_block->SetSize(0, 0, true); // Propagate height of the following, before we delete it.
+		styledit->blocks.Delete(next_block);
 
 		Layout(true);
 	}
@@ -1188,7 +1126,7 @@ void PBlock::AdjustElementPosition(PElement *start_element, int32 line_height, i
 		start_element->line_height = line_height;
 		start_element->ypos += line_baseline - start_element->GetBaseline();
 		start_element->xpos += xofs;
-		start_element = start_element->next;
+		start_element = start_element->GetNext();
 	}
 }
 
@@ -1279,7 +1217,7 @@ void PBlock::Layout(bool propagate_height)
 				element->xpos = xpos;
 				element->ypos = line_ypos;
 
-				ADD_THING(element, first_element, last_element);
+				elements.AddLast(element);
 			}
 
 			xpos = line_w;
@@ -1292,7 +1230,7 @@ void PBlock::Layout(bool propagate_height)
 				element->xpos = xpos;
 				element->ypos = line_ypos;
 
-				ADD_THING(element, first_element, last_element);
+				elements.AddLast(element);
 				if (is_tab)
 				{
 					line_ofs += 1;
@@ -1301,9 +1239,9 @@ void PBlock::Layout(bool propagate_height)
 			}
 			if (overflow || !more)
 			{
-				AdjustElementPosition(line_start_element ? line_start_element->next : first_element,
+				AdjustElementPosition(line_start_element ? line_start_element->GetNext() : elements.GetFirst(),
 										line_height, line_baseline, overflow ? line_w : line_w + word_w);
-				line_start_element = last_element;
+				line_start_element = elements.GetLast();
 				line_baseline = 0;
 			}
 
@@ -1343,7 +1281,7 @@ void PBlock::Layout(bool propagate_height)
 				line_height = MAX(element_height, line_height);
 				line_baseline = MAX(element_baseline, line_baseline);
 
-				ADD_THING(special_element, first_element, last_element);
+				elements.AddLast(special_element);
 				special_element->block = this;
 				special_element->ofs = line_ofs;
 				special_element->xpos = xpos;
@@ -1367,7 +1305,7 @@ void PBlock::Layout(bool propagate_height)
 	}
 	if (line_height == 0)
 		line_height = style->GetHeight();
-	ypos = prev ? prev->ypos + prev->height : 0;
+	ypos = GetPrev() ? GetPrev()->ypos + GetPrev()->height : 0;
 	SetSize(line_w_max, line_ypos, propagate_height);
 
 	Invalidate();
@@ -1380,18 +1318,18 @@ void PBlock::SetSize(int32 new_w, int32 new_h, bool propagate_height)
 	height = new_h;
 	if (dh != 0 && propagate_height)
 	{
-		PBlock *block = next;
+		PBlock *block = GetNext();
 		while(block)
 		{
-			block->ypos = block->prev->ypos + block->prev->height;
+			block->ypos = block->GetPrev()->ypos + block->GetPrev()->height;
 			block->Invalidate();
-			block = block->next;
+			block = block->GetNext();
 		}
 	}
 
 	int dbottom = styledit->GetContentHeight() - styledit->content_height;
 	if (dbottom < 0)
-		styledit->listener->Invalidate(TBRect(0, styledit->last_block->ypos, styledit->layout_width, styledit->last_block->height + -dbottom));
+		styledit->listener->Invalidate(TBRect(0, styledit->blocks.GetLast()->ypos, styledit->layout_width, styledit->blocks.GetLast()->height + -dbottom));
 
 	if (dbottom != 0 && styledit->listener)
 		styledit->listener->UpdateScrollbars();
@@ -1405,33 +1343,33 @@ void PBlock::SetSize(int32 new_w, int32 new_h, bool propagate_height)
 
 PElement *PBlock::FindElement(int32 ofs, bool prefer_first)
 {
-	PElement *element = first_element;
+	PElement *element = elements.GetFirst();
 	while(element)
 	{
 		if (prefer_first && ofs <= element->ofs + element->len)
 			return element;
 		if (!prefer_first && ofs < element->ofs + element->len)
 			return element;
-		element = element->next;
+		element = element->GetNext();
 	}
-	return last_element;
+	return elements.GetLast();
 }
 
 PElement *PBlock::FindElement(int32 x, int32 y)
 {
-	PElement *element = first_element;
+	PElement *element = elements.GetFirst();
 	while(element)
 	{
 		if (y < element->line_ypos + element->line_height)
 		{
 			if (x < element->xpos + element->GetWidth())
 				return element;
-			if (element->next && element->next->line_ypos > element->line_ypos)
+			if (element->GetNext() && element->GetNext()->line_ypos > element->line_ypos)
 				return element;
 		}
-		element = element->next;
+		element = element->GetNext();
 	}
-	return last_element;
+	return elements.GetLast();
 }
 
 void PBlock::Invalidate()
@@ -1444,7 +1382,7 @@ void PBlock::Paint(int32 translate_x, int32 translate_y)
 {
 	styledit->listener->DrawBackground(TBRect(translate_x + styledit->scroll_x, translate_y + ypos, styledit->layout_width, height), this);
 	TMPDEBUG(styledit->listener->DrawRect(TBRect(translate_x, translate_y + ypos, styledit->layout_width, height), 255, 200, 0, 128));
-	PElement *element = first_element;
+	PElement *element = elements.GetFirst();
 //int count = 0;
 	while(element)
 	{
@@ -1454,7 +1392,7 @@ void PBlock::Paint(int32 translate_x, int32 translate_y)
 		//if (!styledit->packed.wrapping && translate_x > 
 		//break;
 //count++;
-		element = element->next;
+		element = element->GetNext();
 	}
 //	TBStr tmp;
 //	tmp << special_elements.GetNumItems() << " " << count << " " << str_len;
@@ -1578,7 +1516,7 @@ int32 PElement::GetCharOfs(int32 x)
 PStyle *PElement::GetStyle()
 {
 	int32 styleid = 0;
-	PElement *element = prev;
+	PElement *element = GetPrev();
 	while(element)
 	{
 		if (element->IsStyleSwitcher())
@@ -1586,7 +1524,7 @@ PStyle *PElement::GetStyle()
 			styleid = ((PStyleSwitcherElement*)element->content)->styleid;
 			break;
 		}
-		element = element->prev;
+		element = element->GetPrev();
 	}
 	return block->styledit->GetStyle(styleid);
 }
@@ -1686,8 +1624,6 @@ PStyleEdit::PStyleEdit()
 	, packed_init(0)
 	, on_enter_message(0)
 	, on_change_message(0)
-	, first_block(NULL)
-	, last_block(NULL)
 {
 	packed.enabled = true;
 	packed.multiline_on = false;
@@ -1721,25 +1657,17 @@ void PStyleEdit::Clear(bool init_new)
 	undoredo.Clear(true, true);
 	selection.SelectNothing();
 
-	while(first_block)
-	{
-		PBlock *block = first_block;
-		first_block = first_block->next;
+	for (PBlock *block = blocks.GetFirst(); block; block = block->GetNext())
 		block->Invalidate();
-		delete block;
-	}
-
-	first_block = NULL;
-	last_block = NULL;
+	blocks.DeleteAll();
 
 	if (init_new)
 	{
-		first_block = new PBlock(this);
-		last_block = first_block;
-		first_block->Set("", 0);
+		blocks.AddLast(new PBlock(this));
+		blocks.GetFirst()->Set("", 0);
 	}
 
-	caret.Place(first_block, 0);
+	caret.Place(blocks.GetFirst(), 0);
 	caret.UpdateWantedX();
 }
 
@@ -1801,19 +1729,19 @@ void PStyleEdit::SetLayoutSize(int32 width, int32 height)
 
 void PStyleEdit::Reformat()
 {
-	PBlock *block = first_block;
+	PBlock *block = blocks.GetFirst();
 	while(block)
 	{
 		block->Layout(false);
-		block = block->next;
+		block = block->GetNext();
 	}
 
 	// Magic to propagate heights.
-	int h = first_block->height;
-	first_block->SetSize(0, 0, false);
-	first_block->SetSize(0, h, true);
+	int h = blocks.GetFirst()->height;
+	blocks.GetFirst()->SetSize(0, 0, false);
+	blocks.GetFirst()->SetSize(0, h, true);
 
-	int end_y = last_block->ypos + last_block->height - scroll_y;
+	int end_y = blocks.GetLast()->ypos + blocks.GetLast()->height - scroll_y;
 	int tmp = MAX(0, layout_height - end_y);  // FIX THERE IS A BUG!
 	listener->Invalidate(TBRect(0, end_y, layout_width, tmp));
 }
@@ -1825,12 +1753,12 @@ int32 PStyleEdit::GetContentWidth()
 
 int32 PStyleEdit::GetContentHeight()
 {
-	return last_block->ypos + last_block->height;
+	return blocks.GetLast()->ypos + blocks.GetLast()->height;
 }
 
 void PStyleEdit::Paint(const TBRect &rect)
 {
-	PBlock *block = first_block;
+	PBlock *block = blocks.GetFirst();
 
 	while(block)
 	{
@@ -1839,11 +1767,11 @@ void PStyleEdit::Paint(const TBRect &rect)
 		if (block->ypos + block->height - scroll_y >= 0)
 			block->Paint(-scroll_x, -scroll_y);
 
-		block = block->next;
+		block = block->GetNext();
 	}
 	if (!block)
 	{
-		int end_y = last_block->ypos + last_block->height - scroll_y;
+		int end_y = blocks.GetLast()->ypos + blocks.GetLast()->height - scroll_y;
 		listener->DrawBackground(TBRect(0, end_y, layout_width, layout_height - end_y), NULL);
 	}
 
@@ -1858,7 +1786,7 @@ void PStyleEdit::InsertText(const char *text, int32 len, bool after_last, bool c
 	selection.RemoveContent();
 
 	if (after_last)
-		caret.Place(last_block, last_block->str_len, false);
+		caret.Place(blocks.GetLast(), blocks.GetLast()->str_len, false);
 
 	int32 len_inserted = caret.block->InsertText(caret.ofs, text, len, false);
 	if (clear_undo_redo)
@@ -1887,7 +1815,7 @@ void PStyleEdit::InsertStyle(PStyle *style, bool after_last)
 	}
 
 	if (after_last)
-		caret.Place(last_block, last_block->str_len, false);
+		caret.Place(blocks.GetLast(), blocks.GetLast()->str_len, false);
 
 	// Se till att säkra selection och caret pekare/offsetter när block ändras eller tas bort!
 	// Gör så caret endast modifierar start och stop selection till samma istället!
@@ -1921,7 +1849,7 @@ void PStyleEdit::InsertEmbedded(PElementContent *content, bool after_last)
 	selection.RemoveContent();
 
 	if (after_last)
-		caret.Place(last_block, last_block->str_len, false);
+		caret.Place(blocks.GetLast(), blocks.GetLast()->str_len, false);
 
 	PElement *element = new PElement(content);
 	caret.block->InsertEmbedded(caret.ofs, element);
@@ -1930,24 +1858,24 @@ void PStyleEdit::InsertEmbedded(PElementContent *content, bool after_last)
 
 PBlock *PStyleEdit::FindBlock(int32 y)
 {
-	PBlock *block = first_block;
+	PBlock *block = blocks.GetFirst();
 	while(block)
 	{
 		if (y < block->ypos + block->height)
 			return block;
-		block = block->next;
+		block = block->GetNext();
 	}
-	return last_block;
+	return blocks.GetLast();
 }
 
 uint32 PStyleEdit::GetGlobalOfs(PBlock *block, int32 ofs)
 {
 	int32 gofs = 0;
-	PBlock *b = first_block;
+	PBlock *b = blocks.GetFirst();
 	while (b && b != block)
 	{
 		gofs += b->str_len;
-		b = b->next;
+		b = b->GetNext();
 	}
 	gofs += ofs;
 	return gofs;
@@ -1998,7 +1926,7 @@ bool PStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 	else if (function == TB_KEY_HOME && modifierkeys & TB_CTRL)
 		caret.Place(TBPoint(0, 0));
 	else if (function == TB_KEY_END && modifierkeys & TB_CTRL)
-		caret.Place(TBPoint(32000, last_block->ypos + last_block->height));
+		caret.Place(TBPoint(32000, blocks.GetLast()->ypos + blocks.GetLast()->height));
 	else if (function == TB_KEY_HOME)
 		caret.Place(TBPoint(0, caret.y));
 	else if (function == TB_KEY_END)
@@ -2050,12 +1978,12 @@ bool PStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 		InsertText("\t", 1);
 	else if (!packed.read_only && (function == TB_KEY_ENTER && packed.multiline_on) && !(modifierkeys & TB_CTRL))
 	{
-		if (caret.ofs == caret.block->str_len && !caret.block->last_element->IsBreak())
+		if (caret.ofs == caret.block->str_len && !caret.block->elements.GetLast()->IsBreak())
 			InsertText("\r\n", 2);
 		InsertText("\r\n", 2);
 		caret.AvoidLineBreak();
-		if (caret.block->next)
-			caret.Place(caret.block->next, 0);
+		if (caret.block->GetNext())
+			caret.Place(caret.block->GetNext(), 0);
 	}
 	else if (!packed.read_only && (ascii && !(modifierkeys & TB_CTRL)) && function != TB_KEY_ENTER)
 		InsertText(&ascii, 1);
@@ -2226,14 +2154,14 @@ bool PStyleEdit::SetText(const char *text, PStyleEditImport* importer, bool plac
 	//fix: nu kan len läggas till i settext!
 	Clear(true);
 	int len = strlen(text);
-	first_block->InsertText(0, text, len, false);
+	blocks.GetFirst()->InsertText(0, text, len, false);
 
-	caret.Place(first_block, 0);
+	caret.Place(blocks.GetFirst(), 0);
 	caret.UpdateWantedX();
 	ScrollIfNeeded(true, false);
 
 	if (place_caret_at_end)
-		caret.Place(last_block, last_block->str_len);
+		caret.Place(blocks.GetLast(), blocks.GetLast()->str_len);
 	return true;
 }
 
@@ -2254,7 +2182,7 @@ bool PStyleEdit::GetText(TBStr &text)
 
 bool PStyleEdit::IsEmpty()
 {
-	return first_block == last_block && first_block->str.IsEmpty();
+	return blocks.GetFirst() == blocks.GetLast() && blocks.GetFirst()->str.IsEmpty();
 }
 
 void PStyleEdit::SetAlign(TB_TEXT_ALIGN align)

@@ -169,7 +169,7 @@ public:
 
 /** A block of text (a line, that might be wrapped) */
 
-class PBlock
+class PBlock : public TBLinkOf<PBlock>
 {
 public:
 	PBlock(PStyleEdit *styledit);
@@ -196,8 +196,7 @@ public:
 	void Paint(int32 translate_x, int32 translate_y);
 public:
 	PStyleEdit *styledit;
-	PBlock *prev, *next;
-	PElement *first_element, *last_element;
+	TBLinkListOf<PElement> elements;
 	TBListOf<PElement> special_elements;
 
 	int32 ypos;
@@ -266,7 +265,7 @@ public:
 
 /** The textfragment baseclass for PStyleEdit. */
 
-class PElement
+class PElement : public TBLinkOf<PElement>
 {
 public:
 	PElement(PElementContent *content = NULL)
@@ -277,8 +276,6 @@ public:
 				, line_ypos(0)
 				, line_height(0)
 				, block(NULL)
-				, prev(NULL)
-				, next(NULL)
 				, content(content) {}
 	~PElement() { delete content; }
 
@@ -319,7 +316,6 @@ public:
 	uint16 line_ypos;
 	uint16 line_height;
 	PBlock *block;
-	PElement *prev, *next;
 	PElementContent *content;
 };
 
@@ -442,8 +438,7 @@ public:
 	int32 content_width;
 	int32 content_height;
 
-	PBlock *first_block;
-	PBlock *last_block;
+	TBLinkListOf<PBlock> blocks;
 	TBListOf<PStyle> styles;
 
 	PCaret caret;

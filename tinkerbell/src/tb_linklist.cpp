@@ -70,6 +70,12 @@ void TBLinkList::Remove(TBLink *link)
 	link->next = 0;
 }
 
+void TBLinkList::Delete(TBLink *link)
+{
+	Remove(link);
+	delete link;
+}
+
 void TBLinkList::RemoveAll()
 {
 	TBLink *link = first;

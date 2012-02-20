@@ -43,6 +43,7 @@ public:
 	TBLinkList() : first(nullptr), last(nullptr) {}
 
 	void Remove(TBLink *link);
+	void Delete(TBLink *link);
 	void RemoveAll();
 	void DeleteAll();
 
@@ -66,6 +67,9 @@ class TBLinkListOf
 public:
 	/** Remove link from this linklist. */
 	void Remove(T *link)			{ m_linklist.Remove(link); }
+
+	/** Remove link from this linklist and delete it. */
+	void Delete(T *link)			{ m_linklist.Delete(link); }
 
 	/** Remove all links without deleding them. */
 	void RemoveAll()				{ m_linklist.RemoveAll(); }
