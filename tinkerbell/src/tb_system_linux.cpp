@@ -99,7 +99,7 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 	}
 	if (!f)
 		return nullptr;
-	TBLinuxFile* tbf = new TBLinuxFile(f);
+	TBLinuxFile *tbf = new TBLinuxFile(f);
 	if (!tbf)
 		fclose(f);
 	return tbf;
