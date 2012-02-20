@@ -47,8 +47,7 @@ TdImage *TdImage::CreateFromFile(const char *filename)
 	return 0;
 }
 
-using namespace tinkerbell;
-TBImageLoader* TBImageLoader::CreatefromFile(const char* filename)
+tinkerbell::TBImageLoader *tinkerbell::TBImageLoader::CreateFromFile(const char *filename)
 {
 	return TdImage::CreateFromFile(filename);
 }

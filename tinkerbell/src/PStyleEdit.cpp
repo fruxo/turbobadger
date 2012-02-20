@@ -330,7 +330,7 @@ bool PStyleEditImport::Load(const char *filename, PStyleEdit *styledit)
 	uint32 num_bytes = ftell(f);
 	fseek(f, 0, SEEK_SET);
 
-	int8 *str = new int8[num_bytes + 1];
+	char *str = new char[num_bytes + 1];
 	if (str == NULL)
 	{
 		fclose(f);
@@ -1964,7 +1964,7 @@ int8 toupr(int8 ascii)
 	return ascii;
 }
 
-bool PStyleEdit::KeyDown(int8 ascii, uint16 function, uint32 modifierkeys)
+bool PStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 {
 	if (select_state)
 		return false;

@@ -24,10 +24,10 @@ bool has_pending_update = false;
 
 TdFont *LoadFont(const char *filename)
 {
-	TdImage *img = TdImage::CreateFromFile(filename);
+	TBImageLoader *img = TBImageLoader::CreateFromFile(filename);
 	if (!img)
 		return NULL;
-	TdFont *font = TdFont::Create(img->width, img->height, (unsigned int *) img->data);
+	TdFont *font = TdFont::Create(img->Width(), img->Height(), (unsigned int *) img->Data());
 	delete img;
 	return font;
 }

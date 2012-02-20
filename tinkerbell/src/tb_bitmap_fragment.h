@@ -27,14 +27,14 @@ class TBImageLoader
 public:
 	/** Static method used to create an image loader. The system must implement this
 	 * function and create an implementation of the TBImageLoader interface. */
-	static TBImageLoader* CreateFromFile(const char* filename);
-	virtual ~TBImageLoader(){}
+	static TBImageLoader *CreateFromFile(const char *filename);
+	virtual ~TBImageLoader() {}
 	/** Return the width of the loaded bitmap. */
 	virtual int Width() = 0;
 	/** Return the height of the loaded bitmap. */
 	virtual int Height() = 0;
 	/** Return the data of the loaded bitmap. */
-	virtual uint32* Data() = 0;
+	virtual uint32 *Data() = 0;
 };
 
 /** TBBitmapFragmentMap is used to pack multiple bitmaps into a single TBBitmap.

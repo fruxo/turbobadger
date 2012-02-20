@@ -376,7 +376,7 @@ public:
 	void SetListener(PStyleEditListener *listener);
 
 	void Paint(const TBRect &rect);
-	bool KeyDown(int8 ascii, uint16 function, uint32 modifierkeys);
+	bool KeyDown(char ascii, uint16 function, uint32 modifierkeys);
 	void MouseDown(const TBPoint &point, int button, int clicks, uint32 modifierkeys);
 	void MouseUp(const TBPoint &point, int button, uint32 modifierkeys);
 	void MouseMove(const TBPoint &point);

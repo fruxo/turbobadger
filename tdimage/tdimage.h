@@ -12,9 +12,9 @@ public:
 	TdImage() : width(0), height(0), bits_per_pixel(0), data(0) {}
 	~TdImage() { MakeEmpty(); }
 
-	virtual int Width(){return width;}
-	virtual int Height(){return height;}
-	virtual uint32_t* Data(){return (uint32_t*)data;}
+	virtual int Width() { return width; }
+	virtual int Height() { return height; }
+	virtual uint32 *Data() { return (uint32*)data; }
 
 	void MakeEmpty() { delete [] data; data = 0; width = height = bits_per_pixel = 0; }
 
