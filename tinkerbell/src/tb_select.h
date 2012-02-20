@@ -77,15 +77,15 @@ public:
 	const TBGenericStringItem& operator = (const TBGenericStringItem &other) { str.Set(other.str); id = other.id; sub_source = other.sub_source; user_ptr = other.user_ptr; return *this; }
 
 	void SetSkinImage(TBID image) { skin_image = image; }
-	
-	void* GetUserPtr(){return user_ptr;}
-	void SetUserPtr(void* p){user_ptr = p;}
+
+	void *GetUserPtr() { return user_ptr; }
+	void SetUserPtr(void *p) { user_ptr = p; }
 public:
 	TBStr str;
 	TBID id;
 	TBID skin_image;
 	TBSelectItemSource *sub_source;
-	void* user_ptr;
+	void *user_ptr;
 };
 
 class TBGenericStringItemSource : public TBSelectItemSource
