@@ -65,6 +65,10 @@ typedef unsigned int uint32;
 /** Enable for debug builds if you want some handy debugging. */
 //#define TB_GFX_DEBUGGING
 
+/** Enable if the focus state should automatically be set on edit fields even
+	when using the pointer. It is normally set only while moving focus by keyboard. */
+//#define TB_ALWAYS_SHOW_EDIT_FOCUS
+
 #ifdef TB_GFX_DEBUGGING
 #define TB_IF_GFX_DEBUG(debug) debug
 #else

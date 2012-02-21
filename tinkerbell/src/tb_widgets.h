@@ -167,8 +167,8 @@ enum WIDGET_HIT_STATUS {
 
 /** Implement the methods for safe typecasting without requireing RTTI */
 #define WIDGET_SUBCLASS(classname, baseclass) \
-	virtual const char *GetClassName() { return classname; } \
-	virtual bool IsOfType(const char *name) { return strcmp(name, classname) == 0 ? true : baseclass::IsOfType(name); }
+	virtual const char *GetClassName() const { return classname; } \
+	virtual bool IsOfType(const char *name) const { return strcmp(name, classname) == 0 ? true : baseclass::IsOfType(name); }
 
 /** Macro definition for casting a widget to the given type. Will return nullptr if the widget is of the wrong type. */
 #define TBSafeCast(classname, widget) (static_cast<classname *>((widget && widget->IsOfType(#classname)) ? widget : nullptr))
@@ -227,8 +227,17 @@ public:
 
 	/** Return the current combined state for this widget. It will also add some
 		automatic states, such as hovered (if the widget is currently hovered), or pressed etc.
-		Automatic states: WIDGET_STATE_PRESSED, WIDGET_STATE_HOVERED, WIDGET_STATE_FOCUSED. */
+
+		Automatic states: WIDGET_STATE_PRESSED, WIDGET_STATE_HOVERED, WIDGET_STATE_FOCUSED.
+
+		Remarks for WIDGET_STATE_FOCUSED: May also be controlled by calling SetAutoFocusState and
+		the define TB_ALWAYS_SHOW_EDIT_FOCUS. */
 	uint32 GetAutoState() const;
+
+	/** Set if the state WIDGET_STATE_FOCUSED should be set automatically for the focused widget.
+		This value is set to true when moving focus by keyboard, and set to off when clicking
+		with the pointer. */
+	static void SetAutoFocusState(bool on);
 
 	/** Set opacity for this widget and its children from 0.0 - 1.0.
 		If opacity is 0 (invisible), the widget won't recieve any input. */
@@ -438,12 +447,12 @@ public:
 	/** Get the classname of this Widget.
 		Note: When you subclass a widget, use the WIDGET_SUBCLASS macro
 		instead of overriding this function, and IsOfType manually. */
-	virtual const char *GetClassName() { return ""; }
+	virtual const char *GetClassName() const { return ""; }
 
 	/** Return true if this widget can safely be casted to the given class name.
 		Note: When you subclass a widget, use the WIDGET_SUBCLASS macro
 		instead of overriding this function, and GetClassName manually. */
-	virtual bool IsOfType(const char *name) { return false; }
+	virtual bool IsOfType(const char *name) const { return false; }
 
 	/** Get the rectangle inside any padding, relative to this widget. This is the
 		rectangle in which the content should be rendered. */
@@ -553,6 +562,7 @@ public:
 	static int pointer_move_widget_y;	///< Pointer y position on last pointer event, relative to the captured widget (if any) or hovered widget.
 	static bool is_panning;				///< true if currently panning scrollable widgets. Pointer up should not generate a click event.
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
+	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 private:
 	void SetHoveredWidget(Widget *widget);
 	void SetCapturedWidget(Widget *widget);

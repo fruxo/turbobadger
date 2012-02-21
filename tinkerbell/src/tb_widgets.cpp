@@ -23,6 +23,7 @@ int Widget::pointer_move_widget_x = 0;
 int Widget::pointer_move_widget_y = 0;
 bool Widget::is_panning = false;
 bool Widget::update_widget_states = true;
+bool Widget::show_focus_state = false;
 
 Widget::Widget()
 	: m_parent(nullptr)
@@ -115,9 +116,23 @@ uint32 Widget::GetAutoState() const
 		state |= WIDGET_STATE_PRESSED;
 	if (this == hovered_widget)
 		state |= WIDGET_STATE_HOVERED;
-	if (this == focused_widget)
+	if (this == focused_widget && show_focus_state)
 		state |= WIDGET_STATE_FOCUSED;
+#ifdef TB_ALWAYS_SHOW_EDIT_FOCUS
+	else if (this == focused_widget && IsOfType("TBEditField"))
+		state |= WIDGET_STATE_FOCUSED;
+#endif
 	return state;
+}
+
+//static
+void Widget::SetAutoFocusState(bool on)
+{
+	if (show_focus_state == on)
+		return;
+	show_focus_state = on;
+	if (focused_widget)
+		focused_widget->Invalidate();
 }
 
 void Widget::SetOpacity(float opacity)
@@ -439,8 +454,9 @@ void Widget::OnPaintChildren()
 		TBSkinElement *skin_element = focused_widget->GetSkinBgElement();
 		if (!skin_element || !skin_element->HasState(SKIN_STATE_FOCUSED))
 		{
-			uint32 state = GetAutoState();
-			g_tb_skin->PaintSkin(focused_widget->m_rect, TBID("generic_focus"), state);
+			uint32 state = focused_widget->GetAutoState();
+			if (state & SKIN_STATE_FOCUSED)
+				g_tb_skin->PaintSkin(focused_widget->m_rect, TBID("generic_focus"), state);
 		}
 	}
 
@@ -671,6 +687,10 @@ void Widget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modi
 		SetHoveredWidget(captured_widget);
 		//captured_button = button;
 
+		// Hide focus when we use the pointer, if it's not on the focused widget.
+		if (focused_widget != captured_widget)
+			SetAutoFocusState(false);
+
 		// Get the closest parent window and bring it to the top
 		TBWindow *window = captured_widget ? captured_widget->GetParentWindow() : nullptr;
 		if (window)
@@ -831,7 +851,12 @@ void Widget::InvokeKey(int key, int special_key, MODIFIER_KEYS modifierkeys, boo
 
 	// Move focus between widgets
 	if (down && !handled && special_key == TB_KEY_TAB)
+	{
 		MoveFocus(!(modifierkeys & TB_SHIFT));
+
+		// Show the focus when we move it by keyboard
+		SetAutoFocusState(true);
+	}
 }
 
 void Widget::ReleaseCapture()
