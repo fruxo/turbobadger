@@ -60,12 +60,11 @@ public:
 	/** Draw the bitmap tiled into dst_rect. */
 	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap) = 0;
 
-#ifdef _DEBUG
-	/** Draw a 1px thick rectangle outline.
-		This will only be called if graphical debugging is activated. Unless you need that,
-		you can leave the implementation empty. */
-	virtual void DrawRectDebug(const TBRect &dst_rect, uint8 r, uint8 g, uint8 b, uint8 a) = 0;
-#endif // _DEBUG
+	/** Draw a 1px thick rectangle outline. */
+	virtual void DrawRect(const TBRect &dst_rect, const TBColor &color) = 0;
+
+	/** Draw a filled rectangle. */
+	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color) = 0;
 
 	/** Draw string at position x, y (marks the upper left corner of the text). */
 	virtual void DrawString(int x, int y, const char *str, int len = ALL_TO_TERMINATION) = 0;

@@ -257,6 +257,11 @@ void TBEditField::OnChange()
 	InvokeEvent(ev);
 }
 
+bool TBEditField::OnEnter()
+{
+	return false;
+}
+
 void TBEditField::Invalidate(const TBRect &rect)
 {
 	Widget::Invalidate();
@@ -275,11 +280,14 @@ void TBEditField::DrawBackground(const TBRect &rect, PBlock *block)
 {
 }
 
-void TBEditField::DrawRect(const TBRect &rect, int r, int g, int b, int a)
+void TBEditField::DrawRect(const TBRect &rect, const TBColor &color)
 {
-#ifdef _DEBUG
-	g_renderer->DrawRectDebug(rect, r, g, b, a);
-#endif
+	g_renderer->DrawRect(rect, color);
+}
+
+void TBEditField::DrawRectFill(const TBRect &rect, const TBColor &color)
+{
+	g_renderer->DrawRectFill(rect, color);
 }
 
 void TBEditField::DrawTextSelectionBg(const TBRect &rect)
@@ -289,6 +297,7 @@ void TBEditField::DrawTextSelectionBg(const TBRect &rect)
 
 void TBEditField::DrawContentSelectionFg(const TBRect &rect)
 {
+	g_tb_skin->PaintSkin(rect, TBID("TBEditField.selection"), GetAutoState());
 }
 
 void TBEditField::DrawCaret(const TBRect &rect)

@@ -215,6 +215,48 @@ private:
 #endif
 };
 
+/** TBColor contains a 32bit color. */
+
+class TBColor
+{
+public:
+	TBColor() : b(0), g(0), r(0), a(255) {}
+	TBColor(int r, int g, int b, int a = 255) : b(b), g(g), r(r), a(a) {}
+	uint8 b, g, r, a;
+};
+
+/** TBFontDescription describes a font. */
+
+class TBFontDescription
+{
+public:
+	void SetIndex(uint32 index)											{ m_packed.index = MIN(index, 0x8000); }
+	uint32 GetIndex() const												{ return m_packed.index; }
+
+	void SetSize(uint32 size)											{ m_packed.size = MIN(size, 0x8000); }
+	uint32 GetSize() const												{ return m_packed.size; }
+
+	void SetBold(bool bold)												{ m_packed.bold = bold; }
+	bool GetBold() const												{ return m_packed.bold; }
+
+	void SetItalic(bool italic)											{ m_packed.italic = italic; }
+	bool GetItalic() const												{ return m_packed.italic; }
+
+	TBFontDescription() : m_packed_init(0) {}
+	TBFontDescription(const TBFontDescription &src)						{ m_packed_init = src.m_packed_init; }
+	const TBFontDescription& operator = (const TBFontDescription &src)	{ m_packed_init = src.m_packed_init; return *this; }
+private:
+	union {
+		struct {
+			uint32 index : 15;
+			uint32 size : 15;
+			uint32 italic : 1;
+			uint32 bold : 1;
+		} m_packed;
+		uint32 m_packed_init;
+	};
+};
+
 class TBRenderer;
 class TBSkin;
 class TBWidgetsReader;
@@ -231,6 +273,6 @@ bool init_tinkerbell(TBRenderer *renderer, const char *lng_file);
 /** Shutdown tinkerbell. Call this after deleting the last widget, to free all tinkerbell data. */
 void shutdown_tinkerbell();
 
-};
+}; // namespace tinkerbell
 
 #endif // TINKERBELL_H

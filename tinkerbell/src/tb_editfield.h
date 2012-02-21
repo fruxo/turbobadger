@@ -53,7 +53,7 @@ public:
 	TB_TEXT_ALIGN GetTextAlign() { return m_style_edit.align; }
 
 	virtual bool SetText(const char *text) { return m_style_edit.SetText(text); }
-	virtual bool SetText(const char *text, bool move_caret_to_end) { return m_style_edit.SetText(text, nullptr, move_caret_to_end); }
+	virtual bool SetText(const char *text, bool move_caret_to_end) { return m_style_edit.SetText(text, move_caret_to_end); }
 	virtual bool GetText(TBStr &text) { return m_style_edit.GetText(text); }
 
 	/** Set the placeholder text. It will be visible only when the textfield is empty. */
@@ -77,11 +77,13 @@ private:
 
 	// == PStyleEditListener =======================
 	virtual void OnChange();
+	virtual bool OnEnter();
 	virtual void Invalidate(const TBRect &rect);
 	virtual void SetStyle(PStyle *style);
 	virtual void DrawString(int32 x, int32 y, const char *str, int32 len);
 	virtual void DrawBackground(const TBRect &rect, PBlock *block);
-	virtual void DrawRect(const TBRect &rect, int r, int g, int b, int a);
+	virtual void DrawRect(const TBRect &rect, const TBColor &color);
+	virtual void DrawRectFill(const TBRect &rect, const TBColor &color);
 	virtual void DrawTextSelectionBg(const TBRect &rect);
 	virtual void DrawContentSelectionFg(const TBRect &rect);
 	virtual void DrawCaret(const TBRect &rect);
@@ -91,6 +93,6 @@ private:
 	virtual void CaretBlinkStop();
 };
 
-};
+}; // namespace tinkerbell
 
 #endif // TB_EDITFIELD_H

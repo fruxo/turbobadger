@@ -18,17 +18,6 @@ class PStyle;
 class PBlock;
 class PElement;
 
-/** Importer for PStyleEdit. Baseimplementation handles the content at plain text. */
-
-class PStyleEditImport
-{
-public:
-	virtual ~PStyleEditImport() {}
-	virtual bool Load(const char *filename, PStyleEdit *styledit);
-	virtual void Parse(const char *buf, int32 buf_len, PStyleEdit *styledit);
-	//virtual bool IsCompatible(const char *filename);
-};
-
 /** Listener for PStyleEdit. Implement in the enviorment the PStyleEdit should render its content. */
 
 class PStyleEditListener
@@ -38,13 +27,13 @@ public:
 
 	// onbeginpanit onendpaint?
 	virtual void OnChange() {};
-	//virtual void DrawEmbeddedObject(PElement *element) = 0;
+	virtual bool OnEnter() { return false; };
 	virtual void Invalidate(const TBRect &rect) = 0;
 	virtual void SetStyle(PStyle *style) = 0;
 	virtual void DrawString(int32 x, int32 y, const char *str, int32 len) = 0;
 	virtual void DrawBackground(const TBRect &rect, PBlock *block) = 0;
-	virtual void DrawRect(const TBRect &rect, int r, int g, int b, int a) = 0;
-	//virtual void DrawBitmap(int32 x, int32 y, PBitmap *bitmap, P_METHOD method = P_METHOD_COPY) = 0;
+	virtual void DrawRect(const TBRect &rect, const TBColor &color) = 0;
+	virtual void DrawRectFill(const TBRect &rect, const TBColor &color) = 0;
 	virtual void DrawTextSelectionBg(const TBRect &rect) = 0;
 	virtual void DrawContentSelectionFg(const TBRect &rect) = 0;
 	virtual void DrawCaret(const TBRect &rect) = 0;
@@ -64,6 +53,23 @@ public:
 	virtual bool IsNeverBreakAfter();
 };*/
 
+class TBTextOfs
+{
+public:
+	TBTextOfs() : block(nullptr), ofs(0) {}
+	TBTextOfs(PBlock *block, int32 ofs) : block(block), ofs(ofs) {}
+
+	void Set(PBlock *new_block, int32 new_ofs) { block = new_block; ofs = new_ofs; }
+	void Set(const TBTextOfs &pos) { block = pos.block; ofs = pos.ofs; }
+
+	int32 GetGlobalOfs(PStyleEdit *se);
+	bool SetGlobalOfs(PStyleEdit *se, int32 gofs);
+
+public:
+	PBlock *block;
+	int32 ofs;
+};
+
 /** Handles the selected text in a PStyleEdit. */
 
 class PSelection
@@ -73,7 +79,7 @@ public:
 	void InvalidateChanged(PBlock *start_block1, int32 start_ofs1, PBlock *stop_block1, int32 stop_ofs1,
 							PBlock *start_block2, int32 start_ofs2, PBlock *stop_block2, int32 stop_ofs2);
 	void Invalidate();
-	void Select(PBlock *start_block, int32 start_ofs, PBlock *stop_block, int32 stop_ofs);
+	void Select(const TBTextOfs &new_start, const TBTextOfs &new_stop);
 	void Select(const TBPoint &from, const TBPoint &to);
 	void SelectToCaret(PBlock *old_caret_block, int32 old_caret_ofs);
 	void SelectAll();
@@ -86,10 +92,7 @@ public:
 	bool GetText(TBStr &text);
 public:
 	PStyleEdit *styledit;
-	PBlock *start_block;
-	PBlock *stop_block;
-	int32 start_ofs;
-	int32 stop_ofs;
+	TBTextOfs start, stop;
 };
 
 enum P_CARET_POS {
@@ -114,7 +117,7 @@ public:
 	void ResetBlink();
 	void UpdateWantedX();
 
-	int32 GetGlobalOfs();
+	int32 GetGlobalOfs() { return pos.GetGlobalOfs(styledit); }
 	void SetGlobalOfs(int32 gofs);
 
 	PElement *GetElement();
@@ -124,12 +127,16 @@ public:
 	int32 x, y; ///< Relative to the styledit
 	int width;
 	int height;
-	int32 ofs;
 	bool on;
 	int32 wanted_x;
 	bool prefer_first;
-	PBlock *block;
 	PStyleEdit *styledit;
+	TBTextOfs pos;
+};
+
+enum TB_TEXT_DECORATION {
+	TB_TEXT_DECORATION_NONE,
+	TB_TEXT_DECORATION_UNDERLINE
 };
 
 /** The style attributes holder for elements in PStyleEdit. */
@@ -144,15 +151,17 @@ public:
 	void IncRef();
 	void DecRef();
 
+	void SetDecoration(TB_TEXT_DECORATION decoration) { this->decoration = decoration; }
+
 	void Update();
 	int32 GetStringWidth(const char *str, int len = -1);
 	int32 GetTabWidth();
 	int32 GetHeight();
 	int32 GetBaseline();
 public:
-//	PFontDescriptor font_descriptor;
-	uint32 color;
-//	PFont font;
+	TBFontDescription font;
+	TBColor color;
+	TB_TEXT_DECORATION decoration;
 private:
 	uint32 ref_count;
 };
@@ -179,9 +188,7 @@ public:
 	void Set(const char *newstr, int32 len);
 	void SetAlign(TB_TEXT_ALIGN align);
 
-	int32 InsertText(int32 ofs, const char *text, int32 len, bool allow_embeds, bool allow_line_recurse = true);
-	void InsertStyle(int32 ofs, int32 styleid);
-	void InsertEmbedded(int32 ofs, PElement *element);
+	int32 InsertText(int32 ofs, const char *text, int32 len, bool allow_line_recurse);
 	void RemoveContent(int32 ofs, int32 len);
 
 	void Split();
@@ -197,7 +204,6 @@ public:
 public:
 	PStyleEdit *styledit;
 	TBLinkListOf<PElement> elements;
-	TBListOf<PElement> special_elements;
 
 	int32 ypos;
 	int16 height;
@@ -221,7 +227,6 @@ public:
 	int32 gofs;
 	TBStr text;
 	bool insert;
-	//PElement **element; ///< If there's embedded elements. Text elements doesn't use this.
 };
 
 /** Keeps track of all PUndoEvents used for undo and redo functionality. */
@@ -253,8 +258,6 @@ public:
 	virtual ~PElementContent() {}
 	virtual void Paint(PElement *element, int32 translate_x, int32 translate_y) {}
 	virtual void Click(PElement *element, int button, uint32 modifierkeys) {}
-	////FIX: Remove IsStyleSwitcher
-	virtual bool IsStyleSwitcher()	{ return false; }
 	virtual int32 GetWidth(PElement *element) { return 0; }
 	virtual int32 GetHeight(PElement *element) { return 0; }
 	virtual int32 GetBaseline(PElement *element) { return GetHeight(element); }
@@ -286,7 +289,6 @@ public:
 
 	bool IsText()					{ return !IsEmbedded(); }
 	bool IsEmbedded()				{ return content ? true : false; }
-	bool IsStyleSwitcher()			{ return content ? content->IsStyleSwitcher() : false; }
 	bool IsBreak();
 	bool IsSpace();
 	bool IsTab();
@@ -319,38 +321,12 @@ public:
 	PElementContent *content;
 };
 
-class PStyleSwitcherElement : public PElementContent
-{
-public:
-	PStyleSwitcherElement() : styleid(0) {}
-	virtual ~PStyleSwitcherElement() {}
-	virtual bool IsStyleSwitcher()	{ return true; }
-public:
-	int32 styleid;
-};
-
-/** A image element for PStyleEdit. */
-
-/*class PImageElement : public PElementContent
-{
-public:
-	PImageElement(PBitmap *bitmap, bool needfree);
-	virtual ~PImageElement();
-
-	virtual void Paint(PElement *element, int32 translate_x, int32 translate_y);
-	virtual int32 GetWidth(PElement *element);
-	virtual int32 GetHeight(PElement *element);
-private:
-	PBitmap *bitmap;
-	bool needfree;
-};*/
-
 /** A horizontal line for PStyleEdit. */
 
 class PHorizontalLineElement : public PElementContent
 {
 public:
-	PHorizontalLineElement(int32 width_in_percent, int32 height, uint32 color);
+	PHorizontalLineElement(int32 width_in_percent, int32 height, const TBColor &color);
 	virtual ~PHorizontalLineElement();
 
 	virtual void Paint(PElement *element, int32 translate_x, int32 translate_y);
@@ -358,7 +334,26 @@ public:
 	virtual int32 GetHeight(PElement *element);
 private:
 	int32 width_in_percent, height;
-	uint32 color;
+	TBColor color;
+};
+
+/** */
+//FIX: Needs OnMove etc when a block is moved
+// connect to child translation scroll
+class TBEditField;
+class PWidgetElement : public PElementContent
+{
+public:
+	PWidgetElement(TBEditField *parent, Widget *widget);
+	virtual ~PWidgetElement();
+
+	virtual void Paint(PElement *element, int32 translate_x, int32 translate_y);
+	virtual int32 GetWidth(PElement *element);
+	virtual int32 GetHeight(PElement *element);
+	virtual int32 GetBaseline(PElement *element);
+private:
+	TBEditField *m_parent;
+	Widget *m_widget;
 };
 
 /** Edit and formats PElement's. It handles the text in a PStyleEditView. */
@@ -384,8 +379,8 @@ public:
 //	void SetFont(const PFont &font);
 
 	void Clear(bool init_new = true);
-	bool Load(const char *filename, PStyleEditImport* importer = NULL);
-	bool SetText(const char *text, PStyleEditImport* importer = NULL, bool place_caret_at_end = false);
+	bool Load(const char *filename);
+	bool SetText(const char *text, bool place_caret_at_end = false);
 	bool GetText(TBStr &text);
 	bool IsEmpty();
 
@@ -411,11 +406,8 @@ public:
 	// void SetStyle();  If there is selection this applies style to the whole selection, otherwise just for further inserting.
 
 	void InsertText(const char *text, int32 len = -1, bool after_last = false, bool clear_undo_redo = false);
-	void InsertStyle(PStyle *style, bool after_last = false);
-	void InsertEmbedded(PElementContent *content, bool after_last = false);
 
 	PBlock *FindBlock(int32 y);
-	uint32 GetGlobalOfs(PBlock *block, int32 ofs);
 
 	void ScrollIfNeeded(bool x = true, bool y = true);
 	void SetScrollPos(int32 x, int32 y);
@@ -428,9 +420,6 @@ public:
 
 	int32 GetOverflowX() { return MAX(content_width - layout_width, 0); }
 	int32 GetOverflowY() { return MAX(content_height - layout_height, 0); }
-
-//	void SetOnEnterMessage(uint32 message, PMessageHandler *receiver);
-//	void SetOnChangeMessage(uint32 message, PMessageHandler *receiver);
 public:
 	PStyleEditListener *listener;
 	int32 layout_width;
@@ -463,9 +452,6 @@ public:
 	} packed;
 	uint32 packed_init;
 	};
-
-	uint32 on_enter_message;
-	uint32 on_change_message;
 };
 
 }; // namespace tinkerbell

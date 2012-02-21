@@ -57,7 +57,8 @@ public:
 	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmapFragment *bitmap_fragment);
 	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmap *bitmap);
 	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap);
-	virtual void DrawRectDebug(const TBRect &dst_rect, uint8 r, uint8 g, uint8 b, uint8 a);
+	virtual void DrawRect(const TBRect &dst_rect, const TBColor &color);
+	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color);
 	virtual void DrawString(int x, int y, const char *str, int len);
 	virtual int GetStringWidth(const char *str, int len);
 	virtual int GetFontHeight();
@@ -65,6 +66,7 @@ public:
 	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data);
 public:
 	void DrawTexture(const TBRect &dst_rect, float u, float v, float uu, float vv, GLuint texture);
+	void DrawTexture(const TBRect &dst_rect, float u, float v, float uu, float vv, GLuint texture, uint32 color);
 	uint8 m_opacity;
 	TBRect m_screen_rect;
 	TBRect m_clip_rect;
@@ -73,6 +75,6 @@ public:
 	GLuint m_current_texture;
 };
 
-};
+}; // namespace tinkerbell
 
 #endif // TB_RENDERER_GL_H

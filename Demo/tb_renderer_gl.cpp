@@ -203,6 +203,11 @@ TBRect TBRendererGL::GetClipRect()
 
 void TBRendererGL::DrawTexture(const TBRect &dst_rect, float u, float v, float uu, float vv, GLuint texture)
 {
+	DrawTexture(dst_rect, u, v, uu, vv, texture, VER_COL_OPACITY(m_opacity));
+}
+
+void TBRendererGL::DrawTexture(const TBRect &dst_rect, float u, float v, float uu, float vv, GLuint texture, uint32 color)
+{
 	if (texture != m_current_texture)
 	{
 		batch.Flush();
@@ -211,8 +216,6 @@ void TBRendererGL::DrawTexture(const TBRect &dst_rect, float u, float v, float u
 	}
 	int dst_x = dst_rect.x + m_translation_x;
 	int dst_y = dst_rect.y + m_translation_y;
-
-	uint32 color = VER_COL_OPACITY(m_opacity);
 
 	batch.AddVertex(dst_x, dst_y + dst_rect.h, u, vv, color);
 	batch.AddVertex(dst_x + dst_rect.w, dst_y + dst_rect.h, uu, vv, color);
@@ -247,25 +250,34 @@ void TBRendererGL::DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap)
 	DrawTexture(dst_rect, 0, 0, uu, vv, b->m_texture);
 }
 
-void TBRendererGL::DrawRectDebug(const TBRect &dst_rect, uint8 r, uint8 g, uint8 b, uint8 a)
+void TBRendererGL::DrawRect(const TBRect &dst_rect, const TBColor &color)
 {
-#ifdef _DEBUG
-	// This is slow, but only used for debugging anyway.
+	if (dst_rect.IsEmpty())
+		return;
+
+	// FIX: Optimize this!
 	batch.Flush();
 	glDisable(GL_TEXTURE_2D);
 
 	TBRect rect = dst_rect.Offset(m_translation_x, m_translation_y);
-	uint32 color = VER_COL(r, g, b, a);
-	batch.AddVertex(rect.x + 0.5f, rect.y + 0.5f, 0, 0, color);
-	batch.AddVertex(rect.x + rect.w - 1 + 0.5f, rect.y + 0.5f, 0, 0, color);
-	batch.AddVertex(rect.x + rect.w - 1 + 0.5f, rect.y + rect.h - 1 + 0.5f, 0, 0, color);
-	batch.AddVertex(rect.x + 0.5f, rect.y + rect.h - 1 + 0.5f, 0, 0, color);
-	batch.AddVertex(rect.x + 0.5f, rect.y + 0.5f, 0, 0, color);
+	uint32 col32 = VER_COL(color.r, color.g, color.b, color.a);
+	batch.AddVertex(rect.x + 0.5f, rect.y + 0.5f, 0, 0, col32);
+	batch.AddVertex(rect.x + rect.w - 1 + 0.5f, rect.y + 0.5f, 0, 0, col32);
+	batch.AddVertex(rect.x + rect.w - 1 + 0.5f, rect.y + rect.h - 1 + 0.5f, 0, 0, col32);
+	batch.AddVertex(rect.x + 0.5f, rect.y + rect.h - 1 + 0.5f, 0, 0, col32);
+	batch.AddVertex(rect.x + 0.5f, rect.y + 0.5f, 0, 0, col32);
 
 	glDrawArrays(GL_LINE_STRIP, 0, batch.vertex_count);
 	batch.vertex_count = 0;
 	glEnable(GL_TEXTURE_2D);
-#endif // _DEBUG
+}
+
+void TBRendererGL::DrawRectFill(const TBRect &dst_rect, const TBColor &color)
+{
+	if (dst_rect.IsEmpty())
+		return;
+
+	DrawTexture(dst_rect, 0, 0, 0, 0, 0, VER_COL(color.r, color.g, color.b, color.a));
 }
 
 void TBRendererGL::DrawString(int x, int y, const char *str, int len)
