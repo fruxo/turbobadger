@@ -61,7 +61,7 @@ public:
 	virtual bool GetPlaceholderText(TBStr &text) { return m_placeholder.GetText(text); }
 
 	virtual bool OnEvent(const WidgetEvent &ev);
-	virtual void OnPaint();
+	virtual void OnPaint(const PaintProps &paint_props);
 	virtual void OnFocusChanged(bool focused);
 	virtual void OnResized(int old_w, int old_h);
 
@@ -80,7 +80,7 @@ private:
 	virtual bool OnEnter();
 	virtual void Invalidate(const TBRect &rect);
 	virtual void SetStyle(PStyle *style);
-	virtual void DrawString(int32 x, int32 y, const char *str, int32 len);
+	virtual void DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len);
 	virtual void DrawBackground(const TBRect &rect, PBlock *block);
 	virtual void DrawRect(const TBRect &rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color);

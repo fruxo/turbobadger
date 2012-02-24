@@ -67,7 +67,7 @@ public:
 	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color) = 0;
 
 	/** Draw string at position x, y (marks the upper left corner of the text). */
-	virtual void DrawString(int x, int y, const char *str, int len = ALL_TO_TERMINATION) = 0;
+	virtual void DrawString(int x, int y, const TBColor &color, const char *str, int len = ALL_TO_TERMINATION) = 0;
 
 	/** Measure the width of the given string. Should measure len characters or to the null
 		termination (whatever comes first). */

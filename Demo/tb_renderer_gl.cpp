@@ -280,7 +280,7 @@ void TBRendererGL::DrawRectFill(const TBRect &dst_rect, const TBColor &color)
 	DrawTexture(dst_rect, 0, 0, 0, 0, 0, VER_COL(color.r, color.g, color.b, color.a));
 }
 
-void TBRendererGL::DrawString(int x, int y, const char *str, int len)
+void TBRendererGL::DrawString(int x, int y, const TBColor &color, const char *str, int len)
 {
 	if (!g_uifont)
 		return;

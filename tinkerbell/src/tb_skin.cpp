@@ -8,6 +8,7 @@
 #include "parser/TBNodeTree.h"
 #include <string.h>
 #include <assert.h>
+#include <stdio.h>
 
 namespace tinkerbell {
 
@@ -20,6 +21,21 @@ TBStr FilenameToPath(const char *filename)
 	if (filename_start == filename) // Filename contained no path
 		return "./";
 	return TBStr(filename_start, filename - filename_start);
+}
+
+TBColor StringToColor(const char *str)
+{
+	int r, g, b, a;
+	int len = strlen(str);
+	if (len == 9 && sscanf(str, "#%2x%2x%2x%2x", &r, &g, &b, &a) == 4)	// rrggbbaa
+		return TBColor(r, g, b, a);
+	if (len == 7 && sscanf(str, "#%2x%2x%2x", &r, &g, &b) == 3)			// rrggbb
+		return TBColor(r, g, b);
+	if (len == 5 && sscanf(str, "#%1x%1x%1x%1x", &r, &g, &b, &a) == 4)	// rgba
+		return TBColor(r + (r << 4), g + (g << 4), b + (b << 4), a + (a << 4));
+	if (len == 4 && sscanf(str, "#%1x%1x%1x", &r, &g, &b) == 3)			// rgb
+		return TBColor(r + (r << 4), g + (g << 4), b + (b << 4));
+	return TBColor();
 }
 
 // == TBSkin ================================================================
@@ -50,6 +66,9 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 		return false;
 
 	TBStr skin_path = FilenameToPath(skin_file);
+
+	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
+		m_default_text_color = StringToColor(color);
 
 	// Iterate through all elements nodes and add skin elements
 	TBNode *elements = node.GetNode("elements");
@@ -109,6 +128,11 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			e->max_height = n->GetValueInt("max-height", SKIN_VALUE_NOT_SPECIFIED);
 			e->spacing = n->GetValueInt("spacing", SKIN_DEFAULT_SPACING);
 			e->opacity = n->GetValueFloat("opacity", 1.f);
+
+			if (const char *color = n->GetValueString("text-color", nullptr))
+				e->text_color = StringToColor(color);
+			else
+				e->text_color = m_default_text_color;
 
 			const char *type = n->GetValueString("type", "StretchBox");
 			if (strcmp(type, "Image") == 0)
@@ -191,7 +215,7 @@ TBSkin::~TBSkin()
 	delete m_override_skin;
 }
 
-TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id)
+TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id) const
 {
 	if (!skin_id)
 		return nullptr;
@@ -206,23 +230,26 @@ TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id)
 	return m_elements.Get(skin_id);
 }
 
-bool TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state)
 {
 	return PaintSkin(dst_rect, GetSkinElement(skin_id), state);
 }
 
-bool TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state)
 {
 	if (!element || element->is_painting)
-		return false;
+		return nullptr;
 
 	// Avoid potential endless recursion in evil skins
 	element->is_painting = true;
 
+	// Return the override if we have one.
+	TBSkinElement *return_element = element;
+
 	// If there's any override for this state, paint it. Otherwise paint the standard skin element.
 	TBSkinElementState *override_state = element->m_override_elements.GetStateElement(state);
 	if (override_state)
-		PaintSkin(dst_rect, override_state->element_id, state);
+		return_element = PaintSkin(dst_rect, override_state->element_id, state);
 	else
 		PaintElement(dst_rect, element);
 
@@ -239,13 +266,13 @@ bool TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 st
 	}
 
 	element->is_painting = false;
-	return true;
+	return return_element;
 }
 
-bool TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state)
+void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state)
 {
 	if (!element || element->is_painting)
-		return false;
+		return;
 
 	// Avoid potential endless recursion in evil skins
 	element->is_painting = true;
@@ -263,7 +290,6 @@ bool TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, ui
 	}
 
 	element->is_painting = false;
-	return true;
 }
 
 void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element)

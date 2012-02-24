@@ -396,7 +396,7 @@ bool TBLayout::OnEvent(const WidgetEvent &ev)
 	return false;
 }
 
-void TBLayout::OnPaintChildren()
+void TBLayout::OnPaintChildren(const PaintProps &paint_props)
 {
 	TBRect padding_rect = GetPaddingRect();
 	if (padding_rect.IsEmpty())
@@ -424,7 +424,7 @@ void TBLayout::OnPaintChildren()
 	}
 
 	// Paint children
-	Widget::OnPaintChildren();
+	Widget::OnPaintChildren(paint_props);
 
 	// Paint fadeout image over the overflowed edges
 	// to the indicate to used that it's overflowed.

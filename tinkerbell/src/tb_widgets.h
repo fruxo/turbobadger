@@ -354,14 +354,26 @@ public:
 		something has called InvalidateStates().*/
 	virtual void OnProcessStates() {}
 
+	/** PaintProps contains properties needed for painting a widget.
+		Properties may be inherited from the parent widget if not specified
+		in the skin. */
+	class PaintProps
+	{
+	public:
+		PaintProps();
+
+		/** Text color as specified in the skin element, or inherited from parent. */
+		TBColor text_color;
+	};
+
 	/** Callback for painting this widget.
 		The skin is already painted and the opacity set to reflect this widgets.
 		This is only called for widgets with a opacity > 0 */
-	virtual void OnPaint() {}
+	virtual void OnPaint(const PaintProps &paint_props) {}
 
 	/** Callback for painting child widgets.
 		The default implementation is painting all children. */
-	virtual void OnPaintChildren();
+	virtual void OnPaintChildren(const PaintProps &paint_props);
 
 	/** Callback for when this widget or any of its children have
 		called Invalidate() */
@@ -497,7 +509,7 @@ public:
 	void InvokeProcessStates(bool force_update = false);
 
 	/** Invoke paint on this widget and all its children */
-	void InvokePaint();
+	void InvokePaint(const PaintProps &parent_paint_props);
 
 	/** Invoke a event on this widget.
 

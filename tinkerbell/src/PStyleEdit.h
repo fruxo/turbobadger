@@ -30,7 +30,7 @@ public:
 	virtual bool OnEnter() { return false; };
 	virtual void Invalidate(const TBRect &rect) = 0;
 	virtual void SetStyle(PStyle *style) = 0;
-	virtual void DrawString(int32 x, int32 y, const char *str, int32 len) = 0;
+	virtual void DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len) = 0;
 	virtual void DrawBackground(const TBRect &rect, PBlock *block) = 0;
 	virtual void DrawRect(const TBRect &rect, const TBColor &color) = 0;
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color) = 0;
@@ -176,6 +176,12 @@ public:
 	void operator = (const PStyleA& style) { ref->DecRef(); ref = style.ref; ref->IncRef(); }
 };*/
 
+class PPaintInfo
+{
+public:
+	TBColor text_color;
+};
+
 /** A block of text (a line, that might be wrapped) */
 
 class PBlock : public TBLinkOf<PBlock>
@@ -200,7 +206,7 @@ public:
 	PElement *FindElement(int32 x, int32 y);
 
 	void Invalidate();
-	void Paint(int32 translate_x, int32 translate_y);
+	void Paint(int32 translate_x, int32 translate_y, const PPaintInfo &paint_props);
 public:
 	PStyleEdit *styledit;
 	TBLinkListOf<PElement> elements;
@@ -284,7 +290,7 @@ public:
 
 	void Init(PBlock *block, uint16 ofs, uint16 len);
 
-	void Paint(int32 translate_x, int32 translate_y);
+	void Paint(int32 translate_x, int32 translate_y, const PPaintInfo &paint_props);
 	void Click(int button, uint32 modifierkeys);
 
 	bool IsText()					{ return !IsEmbedded(); }
@@ -366,7 +372,7 @@ public:
 
 	void SetListener(PStyleEditListener *listener);
 
-	void Paint(const TBRect &rect);
+	void Paint(const TBRect &rect, const TBColor &text_color);
 	bool KeyDown(char ascii, uint16 function, uint32 modifierkeys);
 	void MouseDown(const TBPoint &point, int button, int clicks, uint32 modifierkeys);
 	void MouseUp(const TBPoint &point, int button, uint32 modifierkeys);

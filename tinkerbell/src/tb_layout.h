@@ -124,7 +124,7 @@ public:
 	virtual PreferredSize GetPreferredContentSize();
 
 	virtual bool OnEvent(const WidgetEvent &ev);
-	virtual void OnPaintChildren();
+	virtual void OnPaintChildren(const PaintProps &paint_props);
 	virtual void OnProcess() { ValidateLayout(); }
 	virtual void OnResized(int old_w, int old_h);
 	virtual void GetChildTranslation(int &x, int &y) const;

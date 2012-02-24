@@ -62,10 +62,10 @@ TBScrollBarVisibility TBScrollBarVisibility::Solve(SCROLL_MODE mode, int content
 
 // == TBScrollContainerRoot ===================================
 
-void TBScrollContainerRoot::OnPaintChildren()
+void TBScrollContainerRoot::OnPaintChildren(const PaintProps &paint_props)
 {
 	TBRect old_clip_rect = g_renderer->SetClipRect(TBRect(0, 0, m_rect.w, m_rect.h), true);
-	Widget::OnPaintChildren();
+	Widget::OnPaintChildren(paint_props);
 	g_renderer->SetClipRect(old_clip_rect, false);
 }
 

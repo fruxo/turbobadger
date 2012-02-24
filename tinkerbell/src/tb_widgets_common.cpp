@@ -25,7 +25,7 @@ int TBWidgetString::GetHeight()
 	return g_renderer->GetFontHeight();
 }
 
-void TBWidgetString::Paint(const TBRect &rect)
+void TBWidgetString::Paint(const TBRect &rect, const TBColor &color)
 {
 	int string_w = GetWidth();
 
@@ -37,7 +37,7 @@ void TBWidgetString::Paint(const TBRect &rect)
 	int y = rect.y + (rect.h - GetHeight()) / 2;
 
 	if (string_w <= rect.w)
-		g_renderer->DrawString(x, y, m_text);
+		g_renderer->DrawString(x, y, color, m_text);
 	else
 	{
 		// There's not enough room for the endie string
@@ -55,8 +55,8 @@ void TBWidgetString::Paint(const TBRect &rect)
 			startlen++;
 		}
 		startlen = MAX(0, startlen - 1);
-		g_renderer->DrawString(x, y, m_text, startlen);
-		g_renderer->DrawString(x + startw, y, end);
+		g_renderer->DrawString(x, y, color, m_text, startlen);
+		g_renderer->DrawString(x + startw, y, color, end);
 	}
 }
 
@@ -96,12 +96,12 @@ PreferredSize TBTextField::GetPreferredContentSize()
 	return ps;
 }
 
-void TBTextField::OnPaint()
+void TBTextField::OnPaint(const PaintProps &paint_props)
 {
 	TBRect clip_rect = GetPaddingRect();
 	TBRect old_clip_rect = g_renderer->SetClipRect(clip_rect, true);
 
-	m_text.Paint(clip_rect);
+	m_text.Paint(clip_rect, paint_props.text_color);
 
 	g_renderer->SetClipRect(old_clip_rect, false);
 }
@@ -252,7 +252,7 @@ void TBProgressSpinner::SetValue(int value)
 	}
 }
 
-void TBProgressSpinner::OnPaint()
+void TBProgressSpinner::OnPaint(const PaintProps &paint_props)
 {
 	if (IsRunning())
 	{

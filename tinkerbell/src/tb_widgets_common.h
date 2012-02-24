@@ -26,7 +26,7 @@ public:
 // FIX: Use PStyleEdit if wanted, to support rich text
 	TBWidgetString();
 
-	void Paint(const TBRect &rect);
+	void Paint(const TBRect &rect, const TBColor &color);
 
 	int GetWidth();
 	int GetHeight();
@@ -68,7 +68,7 @@ public:
 	bool GetSqueezable() { return m_squeezable; }
 
 	virtual PreferredSize GetPreferredContentSize();
-	virtual void OnPaint();
+	virtual void OnPaint(const PaintProps &paint_props);
 protected:
 	TBWidgetString m_text;
 	bool m_squeezable;
@@ -201,7 +201,7 @@ public:
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
 
-	virtual void OnPaint();
+	virtual void OnPaint(const PaintProps &paint_props);
 
 	// == TBMessageHandler ==============================================================
 	virtual void OnMessageReceived(TBMessage *msg);

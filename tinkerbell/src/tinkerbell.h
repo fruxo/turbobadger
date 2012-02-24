@@ -222,7 +222,12 @@ class TBColor
 public:
 	TBColor() : b(0), g(0), r(0), a(255) {}
 	TBColor(int r, int g, int b, int a = 255) : b(b), g(g), r(r), a(a) {}
+
 	uint8 b, g, r, a;
+
+	operator uint32 () const		{ return *((uint32*)&b); }
+	bool operator == (const TBColor &c) const { return *this == (uint32)c; }
+	bool operator != (const TBColor &c) const { return !(*this == c); }
 };
 
 /** TBFontDescription describes a font. */

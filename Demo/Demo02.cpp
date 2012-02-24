@@ -165,7 +165,7 @@ void UIEditorApplication::RenderFrame(int window_w, int window_h)
 {
 	// Render
 	g_renderer->BeginPaint(window_w, window_h);
-	m_root->InvokePaint();
+	m_root->InvokePaint(Widget::PaintProps());
 	g_renderer->EndPaint();
 }
 

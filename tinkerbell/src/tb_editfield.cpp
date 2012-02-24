@@ -161,7 +161,7 @@ bool TBEditField::OnEvent(const WidgetEvent &ev)
 	return false;
 }
 
-void TBEditField::OnPaint()
+void TBEditField::OnPaint(const PaintProps &paint_props)
 {
 	TBRect visible_rect = GetVisibleRect();
 
@@ -175,14 +175,14 @@ void TBEditField::OnPaint()
 
 	// Draw text content, caret etc.
 	visible_rect.x = visible_rect.y = 0;
-	m_style_edit.Paint(visible_rect);
+	m_style_edit.Paint(visible_rect, paint_props.text_color);
 
 	// If empty, draw placeholder text with some opacity.
 	if (m_style_edit.IsEmpty())
 	{
 		float old_opacity = g_renderer->GetOpacity();
 		g_renderer->SetOpacity(old_opacity * 0.2f);
-		m_placeholder.Paint(visible_rect);
+		m_placeholder.Paint(visible_rect, paint_props.text_color);
 		g_renderer->SetOpacity(old_opacity);
 	}
 
@@ -271,9 +271,9 @@ void TBEditField::SetStyle(PStyle *style)
 {
 }
 
-void TBEditField::DrawString(int32 x, int32 y, const char *str, int32 len)
+void TBEditField::DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len)
 {
-	g_renderer->DrawString(x, y, str, len);
+	g_renderer->DrawString(x, y, color, str, len);
 }
 
 void TBEditField::DrawBackground(const TBRect &rect, PBlock *block)

@@ -59,7 +59,7 @@ public:
 	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap);
 	virtual void DrawRect(const TBRect &dst_rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color);
-	virtual void DrawString(int x, int y, const char *str, int len);
+	virtual void DrawString(int x, int y, const TBColor &color, const char *str, int len);
 	virtual int GetStringWidth(const char *str, int len);
 	virtual int GetFontHeight();
 

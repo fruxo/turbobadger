@@ -5,6 +5,8 @@
 # see tinkerbell.h.
 description
 	name Default skin
+defaults
+	text-color #fefefe
 elements
 	TBButton
 		bitmap button.png

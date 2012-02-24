@@ -46,7 +46,6 @@ class TBSkinElementState : public TBLinkOf<TBSkinElementState>
 {
 public:
 	//float opacity;
-	//uint32 text_color;
 	TBID element_id;
 	uint32 state;
 };
@@ -96,7 +95,7 @@ public:
 	int16 max_height;	///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
 	int8 spacing;		///< Spacing used on layout. SKIN_DEFAULT_SPACING by default.
 	float opacity;		///< Opacity that should be used for the whole widget (0.f-1.f).
-	//uint32 text_color;
+	TBColor text_color;
 	// FIX: offset for content! (pressed button may move content)
 
 	/** List of override elements (See TBSkin::PaintSkin) */
@@ -139,7 +138,10 @@ public:
 		It will return a skin element from the override_skin (if set and there
 		is a match).
 		Returns nullptr if there's no match. */
-	TBSkinElement *GetSkinElement(const TBID &skin_id);
+	TBSkinElement *GetSkinElement(const TBID &skin_id) const;
+
+	/** Get the default text color for all skin elements */
+	TBColor GetDefaultTextColor() const { return m_default_text_color; }
 
 	/** Paint the skin at dst_rect.
 
@@ -161,16 +163,16 @@ public:
 		-Overlay elements are painted separately, from PaintSkinOverlay (when all sibling
 		 widgets has been painted).
 
-		Return false if no skin element was found matching the skin_id. */
-	bool PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state);
+		Return the skin element used (after following override elements or override skins),
+		or nullptr if no skin element was found matching the skin_id. */
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state);
 
 	/** Paint the skin at dst_rect. Just like the PaintSkin above, but takes a specific
 		skin element instead of looking it up from the id. */
-	bool PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state);
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state);
 
 	/** Paint the overlay elements for the given skin element and state. */
-	bool PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state);
-
+	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state);
 #ifdef _DEBUG
 	/** Render the skin bitmaps on screen, to analyze fragment positioning. */
 	void Debug();
@@ -180,6 +182,7 @@ private:
 	TBSkin *m_parent_skin;								///< Parent skin (set to the default skin for for the override skins)
 	TBSkin *m_override_skin;							///< Override skin (or nullptr)
 	TBBitmapFragmentManager m_frag_manager;				///< Fragment manager (not used for override skins)
+	TBColor m_default_text_color;						///< Default text color for all skin elements
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementImage(const TBRect &dst_rect, TBSkinElement *element);

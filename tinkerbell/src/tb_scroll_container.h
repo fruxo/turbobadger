@@ -25,7 +25,7 @@ private: // May only be used by TBScrollContainer.
 	friend class TBScrollContainer;
 	TBScrollContainerRoot() {}
 public:
-	virtual void OnPaintChildren();
+	virtual void OnPaintChildren(const PaintProps &paint_props);
 	virtual void GetChildTranslation(int &x, int &y) const;
 };
 

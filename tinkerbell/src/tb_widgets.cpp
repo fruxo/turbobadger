@@ -25,6 +25,13 @@ bool Widget::is_panning = false;
 bool Widget::update_widget_states = true;
 bool Widget::show_focus_state = false;
 
+Widget::PaintProps::PaintProps()
+{
+	// Set the default properties, used for the root widgets
+	// calling InvokePaint. The base values for all inheritance.
+	text_color = g_tb_skin->GetDefaultTextColor();
+}
+
 Widget::Widget()
 	: m_parent(nullptr)
 	, m_state(WIDGET_STATE_NONE)
@@ -421,7 +428,7 @@ TBWindow *Widget::GetParentWindow()
 	return static_cast<TBWindow *>(tmp);
 }
 
-void Widget::OnPaintChildren()
+void Widget::OnPaintChildren(const PaintProps &paint_props)
 {
 	if (!m_children.GetFirst())
 		return;
@@ -437,7 +444,7 @@ void Widget::OnPaintChildren()
 	for (Widget *child = GetFirstChild(); child; child = child->GetNext())
 	{
 		if (clip_rect.Intersects(child->m_rect))
-			child->InvokePaint();
+			child->InvokePaint(paint_props);
 	}
 
 	// Invoke paint of overlay elements on all children that are in the current visible rect.
@@ -605,7 +612,7 @@ void Widget::InvokeProcessStates(bool force_update)
 		child->InvokeProcessStates(true);
 }
 
-void Widget::InvokePaint()
+void Widget::InvokePaint(const PaintProps &parent_paint_props)
 {
 	// Don't paint invisible widgets
 	if (m_opacity == 0)
@@ -632,15 +639,21 @@ void Widget::InvokePaint()
 
 	// Paint background skin
 	TBRect local_rect(0, 0, m_rect.w, m_rect.h);
-	g_tb_skin->PaintSkin(local_rect, skin_element, state);
+	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, state);
+	assert(!!used_element == !!skin_element);
 
 	TB_IF_GFX_DEBUG(g_renderer->DrawRectDebug(local_rect, 255, 255, 255, 50));
 
+	// Inherit properties from parent if not specified in the used skin for this widget.
+	PaintProps paint_props = parent_paint_props;
+	if (used_element && used_element->text_color != TBColor())
+		paint_props.text_color = used_element->text_color;
+
 	// Paint content
-	OnPaint();
+	OnPaint(paint_props);
 
 	// Paint children
-	OnPaintChildren();
+	OnPaintChildren(paint_props);
 
 	g_renderer->Translate(-trns_x, -trns_y);
 	g_renderer->SetOpacity(old_opacity);

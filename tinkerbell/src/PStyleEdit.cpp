@@ -1218,14 +1218,14 @@ void PBlock::Invalidate()
 		styledit->listener->Invalidate(TBRect(0, - styledit->scroll_y + ypos, styledit->layout_width, height));
 }
 
-void PBlock::Paint(int32 translate_x, int32 translate_y)
+void PBlock::Paint(int32 translate_x, int32 translate_y, const PPaintInfo &paint_props)
 {
 	styledit->listener->DrawBackground(TBRect(translate_x + styledit->scroll_x, translate_y + ypos, styledit->layout_width, height), this);
 	TMPDEBUG(styledit->listener->DrawRect(TBRect(translate_x, translate_y + ypos, styledit->layout_width, height), TBColor(255, 200, 0, 128)));
 	PElement *element = elements.GetFirst();
 	while(element)
 	{
-		element->Paint(translate_x, translate_y + ypos);
+		element->Paint(translate_x, translate_y + ypos, paint_props);
 		//FIX: break if we reach the edge of visibility
 		//if (translate_y >
 		//if (!styledit->packed.wrapping && translate_x > 
@@ -1241,7 +1241,7 @@ void PElement::Init(PBlock *block, uint16 ofs, uint16 len)
 	this->block = block; this->ofs = ofs; this->len = len;
 }
 
-void PElement::Paint(int32 translate_x, int32 translate_y)
+void PElement::Paint(int32 translate_x, int32 translate_y, const PPaintInfo &paint_props)
 {
 	PStyleEditListener *listener = block->styledit->listener;
 	PStyle *style = GetStyle();
@@ -1274,24 +1274,27 @@ void PElement::Paint(int32 translate_x, int32 translate_y)
 	}
 
 	listener->SetStyle(style);
+
+	TBColor color = paint_props.text_color;
+
 	if (block->styledit->packed.password_on)
 	{
 		int cw = style->GetStringWidth(special_char_password, 1);
 		for(int i = 0; i < len; i++)
-			listener->DrawString(x + i * cw, y, special_char_password, 1);
+			listener->DrawString(x + i * cw, y, color, special_char_password, 1);
 	}
 	else if (IsTab())
 	{
 		if (block->styledit->packed.show_whitespace)
-			listener->DrawString(x, y, special_char_tab, 1);
+			listener->DrawString(x, y, color, special_char_tab, 1);
 	}
 	else if (IsBreak())
 	{
 		if (block->styledit->packed.show_whitespace)
-			listener->DrawString(x, y, special_char_newln, len);
+			listener->DrawString(x, y, color, special_char_newln, len);
 	}
 	else
-		listener->DrawString(x, y, Str(), len);
+		listener->DrawString(x, y, color, Str(), len);
 
 	if (style->decoration == TB_TEXT_DECORATION_UNDERLINE)
 	{
@@ -1604,16 +1607,19 @@ int32 PStyleEdit::GetContentHeight()
 	return blocks.GetLast()->ypos + blocks.GetLast()->height;
 }
 
-void PStyleEdit::Paint(const TBRect &rect)
+void PStyleEdit::Paint(const TBRect &rect, const TBColor &text_color)
 {
 	PBlock *block = blocks.GetFirst();
+
+	PPaintInfo paint_props;
+	paint_props.text_color = text_color;
 
 	while(block)
 	{
 		if (block->ypos - scroll_y > rect.y + rect.h)
 			break;
 		if (block->ypos + block->height - scroll_y >= 0)
-			block->Paint(-scroll_x, -scroll_y);
+			block->Paint(-scroll_x, -scroll_y, paint_props);
 
 		block = block->GetNext();
 	}
