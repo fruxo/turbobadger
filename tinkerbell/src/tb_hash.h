@@ -6,7 +6,7 @@
 #ifndef TB_HASH_H
 #define TB_HASH_H
 
-#include "tinkerbell.h"
+#include "tb_types.h"
 
 namespace tinkerbell {
 
@@ -15,7 +15,7 @@ namespace tinkerbell {
 // Disabled for debug builds, so TBID string debugging is available.
 
 #ifndef _DEBUG
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
+#if __cplusplus >= 201103L
 #define TB_SUPPORT_CONSTEXPR
 #endif
 #endif

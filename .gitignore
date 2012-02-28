@@ -14,7 +14,7 @@ Thumbs.db
 *.log
 *.exp
 *.pdb
-
+*.o
 
 *.lnk
 

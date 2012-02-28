@@ -7,10 +7,10 @@ LIBS =
 INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/freeglut" -I"."
 #release
 CFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
-CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
+CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 --std=c++0x $(INCPATH)
 #debug
 #CFLAGS = -g $(INCPATH)
-#CXXFLAGS = -g $(INCPATH)
+#CXXFLAGS = -g --std=c++0x $(INCPATH)
 
 ifeq ($(UNAME),Darwin)
  CFLAGS += -DMACOSX -Dnullptr=0

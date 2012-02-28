@@ -11,6 +11,28 @@ TBGenericStringItemSource position_toggle_source;
 TBGenericStringItemSource name_source;
 TBGenericStringItemSource popup_menu_source;
 
+#ifdef TB_SUPPORT_CONSTEXPR
+
+void const_expr_test()
+{
+	// Some code here just to see if the compiler really did
+	// implement constexpr (and not just ignored it)
+	// Should obviosly only compile if it really works. If not,
+	// disable TB_SUPPORT_CONSTEXPR in tb_hash.h for your compiler.
+	TBID id("foo");
+	switch(id)
+	{
+		case TBIDC("foo"):
+			break;
+		case TBIDC("baar"):
+			break;
+		default:
+			break;
+	};
+}
+
+#endif // TB_SUPPORT_CONSTEXPR
+
 class TestItemSource : public TBGenericStringItemSource
 {
 public:
