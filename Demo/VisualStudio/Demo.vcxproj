@@ -162,6 +162,7 @@
     <ClInclude Include="..\tb_renderer_gl.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\integration.txt" />
     <None Include="..\..\readme.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
