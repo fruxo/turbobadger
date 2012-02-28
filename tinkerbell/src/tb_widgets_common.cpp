@@ -40,9 +40,10 @@ void TBWidgetString::Paint(const TBRect &rect, const TBColor &color)
 		g_renderer->DrawString(x, y, color, m_text);
 	else
 	{
-		// There's not enough room for the endie string
-		// so it cut of and end with ellipsis (...)
-		char end[2] = { (char)133, 0 };
+		// There's not enough room for the entire string
+		// so cut it off and end with ellipsis (...)
+		// FIX: When unicode support is in place, use U+2026!
+		const char *end = "...";
 		int endw = g_renderer->GetStringWidth(end);
 		int startw = 0;
 		int startlen = 0;
