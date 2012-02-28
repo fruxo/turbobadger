@@ -138,6 +138,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_linklist.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -242,6 +245,9 @@
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_linklist.h">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_hash.h">
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
   </ItemGroup>

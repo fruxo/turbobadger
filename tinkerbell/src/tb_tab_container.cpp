@@ -97,7 +97,7 @@ void TBTabContainer::SetAlignment(TB_ALIGN align)
 bool TBTabContainer::OnEvent(const WidgetEvent &ev)
 {
 	if ((ev.type == EVENT_TYPE_CLICK || ev.type == EVENT_TYPE_POINTER_DOWN) &&
-		ev.target->GetID() == TBID("tab"))
+		ev.target->GetID() == TBIDC("tab"))
 	{
 		int clicked_index = m_tab_layout.GetIndexFromChild(ev.target);
 		SetCurrentPage(clicked_index);

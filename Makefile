@@ -38,6 +38,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_message_window.cpp \
       tinkerbell/src/tinkerbell.cpp \
       tinkerbell/src/tb_tempbuffer.cpp \
+      tinkerbell/src/tb_hash.cpp \
       tinkerbell/src/tb_hashtable.cpp \
       tinkerbell/src/tb_linklist.cpp \
       tinkerbell/src/tb_list.cpp \

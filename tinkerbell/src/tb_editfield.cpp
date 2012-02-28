@@ -102,7 +102,7 @@ bool TBEditField::OnEvent(const WidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_POINTER_DOWN && ev.target == this)
 	{
 		// Post a message to start selection scroll
-		PostMessageDelayed(TBID("selscroll"), nullptr, SELECTION_SCROLL_DELAY);
+		PostMessageDelayed(TBIDC("selscroll"), nullptr, SELECTION_SCROLL_DELAY);
 		TBRect padding_rect = GetPaddingRect();
 		m_style_edit.MouseDown(TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y), 1, ev.count, 0);
 		return true;
@@ -127,17 +127,17 @@ bool TBEditField::OnEvent(const WidgetEvent &ev)
 	{
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("popupmenu"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("popupmenu"))
 	{
-		if (ev.ref_id == TBID("cut") && !m_style_edit.packed.read_only)
+		if (ev.ref_id == TBIDC("cut") && !m_style_edit.packed.read_only)
 			m_style_edit.Cut();
-		else if (ev.ref_id == TBID("copy"))
+		else if (ev.ref_id == TBIDC("copy"))
 			m_style_edit.Copy();
-		else if (ev.ref_id == TBID("paste") && !m_style_edit.packed.read_only)
+		else if (ev.ref_id == TBIDC("paste") && !m_style_edit.packed.read_only)
 			m_style_edit.Paste();
-		else if (ev.ref_id == TBID("delete") && !m_style_edit.packed.read_only)
+		else if (ev.ref_id == TBIDC("delete") && !m_style_edit.packed.read_only)
 			m_style_edit.Delete();
-		else if (ev.ref_id == TBID("selectall"))
+		else if (ev.ref_id == TBIDC("selectall"))
 			m_style_edit.selection.SelectAll();
 	}
 	else if (ev.type == EVENT_TYPE_CONTEXT_MENU && ev.target == this)
@@ -147,13 +147,13 @@ bool TBEditField::OnEvent(const WidgetEvent &ev)
 
 		if (TBGenericStringItemSource *source = new TBGenericStringItemSource)
 		{
-			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBID("cut")), TBID("cut")));
-			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBID("copy")), TBID("copy")));
-			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBID("paste")), TBID("paste")));
-			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBID("delete")), TBID("delete")));
+			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("cut")), TBIDC("cut")));
+			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("copy")), TBIDC("copy")));
+			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("paste")), TBIDC("paste")));
+			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("delete")), TBIDC("delete")));
 			source->AddItem(new TBGenericStringItem("-"));
-			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBID("selectall")), TBID("selectall")));
-			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBID("popupmenu")))
+			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("selectall")), TBIDC("selectall")));
+			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu")))
 				menu->Show(source, -1, &pos_in_root);
 		}
 		return true;
@@ -224,15 +224,15 @@ PreferredSize TBEditField::GetPreferredContentSize()
 
 void TBEditField::OnMessageReceived(TBMessage *msg)
 {
-	if (msg->message == TBID("blink"))
+	if (msg->message == TBIDC("blink"))
 	{
 		m_style_edit.caret.on = !m_style_edit.caret.on;
 		m_style_edit.caret.Invalidate();
 	
 		// Post another blink message so we blink again.
-		PostMessageDelayed(TBID("blink"), nullptr, CARET_BLINK_TIME);
+		PostMessageDelayed(TBIDC("blink"), nullptr, CARET_BLINK_TIME);
 	}
-	else if (msg->message == TBID("selscroll") && captured_widget == this)
+	else if (msg->message == TBIDC("selscroll") && captured_widget == this)
 	{
 		// Get scroll speed from where mouse is relative to the padding rect.
 		TBRect padding_rect = GetVisibleRect().Shrink(2, 2);
@@ -247,7 +247,7 @@ void TBEditField::OnMessageReceived(TBMessage *msg)
 
 		// Post another setscroll message so we continue scrolling if we still should.
 		if (m_style_edit.select_state)
-			PostMessageDelayed(TBID("selscroll"), nullptr, SELECTION_SCROLL_DELAY);
+			PostMessageDelayed(TBIDC("selscroll"), nullptr, SELECTION_SCROLL_DELAY);
 	}
 }
 
@@ -292,12 +292,12 @@ void TBEditField::DrawRectFill(const TBRect &rect, const TBColor &color)
 
 void TBEditField::DrawTextSelectionBg(const TBRect &rect)
 {
-	g_tb_skin->PaintSkin(rect, TBID("TBEditField.selection"), GetAutoState());
+	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState());
 }
 
 void TBEditField::DrawContentSelectionFg(const TBRect &rect)
 {
-	g_tb_skin->PaintSkin(rect, TBID("TBEditField.selection"), GetAutoState());
+	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState());
 }
 
 void TBEditField::DrawCaret(const TBRect &rect)
@@ -324,14 +324,14 @@ void TBEditField::UpdateScrollbars()
 void TBEditField::CaretBlinkStart()
 {
 	// Post the delayed blink message if we don't already have one
-	if (!GetMessageByID(TBID("blink")))
-		PostMessageDelayed(TBID("blink"), nullptr, CARET_BLINK_TIME);
+	if (!GetMessageByID(TBIDC("blink")))
+		PostMessageDelayed(TBIDC("blink"), nullptr, CARET_BLINK_TIME);
 }
 
 void TBEditField::CaretBlinkStop()
 {
 	// Remove the blink message if we have one
-	if (TBMessage *msg = GetMessageByID(TBID("blink")))
+	if (TBMessage *msg = GetMessageByID(TBIDC("blink")))
 		DeleteMessage(msg);
 }
 

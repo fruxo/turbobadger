@@ -73,7 +73,7 @@ public:
 	}
 	virtual bool OnEvent(const WidgetEvent &ev)
 	{
-		if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBID("filter"))
+		if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("filter"))
 		{
 			TBStr filter;
 			ev.target->GetText(filter);
@@ -111,17 +111,17 @@ public:
 				return false;
 
 			edit->SetWrapping(wrap->GetValue() ? true : false);
-			if (ev.target->GetID() == TBID("clear"))
+			if (ev.target->GetID() == TBIDC("clear"))
 			{
 				edit->SetText("");
 				return true;
 			}
-			else if (ev.target->GetID() == TBID("undo"))
+			else if (ev.target->GetID() == TBIDC("undo"))
 			{
 				edit->GetStyleEdit()->Undo();
 				return true;
 			}
-			else if (ev.target->GetID() == TBID("redo"))
+			else if (ev.target->GetID() == TBIDC("redo"))
 			{
 				edit->GetStyleEdit()->Redo();
 				return true;
@@ -153,7 +153,7 @@ MyToolbarWindow::MyToolbarWindow(int x, int y, const char *filename, WINDOW_SETT
 
 bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBID("select position"))
+	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("select position"))
 	{
 		LAYOUT_POSITION pos = LAYOUT_POSITION_CENTER;
 		if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "select position"))
@@ -163,7 +163,7 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 				layout->SetLayoutPosition(pos);
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("toggle axis"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("toggle axis"))
 	{
 		static AXIS axis = AXIS_Y;
 		for (int i = 0; i < 3; i++)
@@ -175,13 +175,13 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("set_align"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("set_align"))
 	{
 		if (TBTabContainer *tc = TBSafeGetByID(TBTabContainer, "tabcontainer"))
 			tc->SetAlignment(static_cast<TB_ALIGN>(ev.target->m_data));
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("toggle_axis"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("toggle_axis"))
 	{
 		static AXIS axis = AXIS_Y;
 		axis = axis == AXIS_X ? AXIS_Y : AXIS_X;
@@ -189,7 +189,7 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 			tc->SetAxis(axis);
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("toggle_tab_axis"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("toggle_tab_axis"))
 	{
 		static AXIS axis = AXIS_X;
 		axis = axis == AXIS_X ? AXIS_Y : AXIS_X;
@@ -203,14 +203,14 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 		}
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("start_spinner"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("start_spinner"))
 	{
-		if (TBProgressSpinner *spinner = TBSafeGetByID(TBProgressSpinner, TBID("spinner")))
+		if (TBProgressSpinner *spinner = TBSafeGetByID(TBProgressSpinner, TBIDC("spinner")))
 			spinner->SetValue(1);
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("stop_spinner"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("stop_spinner"))
 	{
-		if (TBProgressSpinner *spinner = TBSafeGetByID(TBProgressSpinner, TBID("spinner")))
+		if (TBProgressSpinner *spinner = TBSafeGetByID(TBProgressSpinner, TBIDC("spinner")))
 			spinner->SetValue(0);
 	}
 	return TBWindow::OnEvent(ev);
@@ -249,11 +249,11 @@ bool MyWindow::Load(const char *filename)
 
 void MyWindow::OnMessageReceived(TBMessage *msg)
 {
-	if (msg->message == TBID("delayedmsg"))
+	if (msg->message == TBIDC("delayedmsg"))
 	{
 		TBStr text;
 		text.SetFormatted("This message window was created when a delayed message fired!\n\nIt was received %d ms after its intended fire time.", (int)(TBSystem::GetTimeMS() - msg->GetFireTime()));
-		TBMessageWindow *msg_win = new TBMessageWindow(this, TBID(""));
+		TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC(""));
 		msg_win->Show("Message window", text);
 	}
 }
@@ -262,23 +262,23 @@ bool MyWindow::OnEvent(const WidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CLICK)
 	{
-		if (ev.target->GetID() == TBID("new"))
+		if (ev.target->GetID() == TBIDC("new"))
 		{
 			m_parent->AddChild(new MyWindow());
 			return true;
 		}
-		if (ev.target->GetID() == TBID("msg"))
+		if (ev.target->GetID() == TBIDC("msg"))
 		{
-			TBMessageWindow *msg_win = new TBMessageWindow(this, TBID("test_dialog"));
+			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("test_dialog"));
 			msg_win->Show("Message window", "Message!");
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("delayedmsg"))
+		else if (ev.target->GetID() == TBIDC("delayedmsg"))
 		{
-			PostMessageDelayed(TBID("delayedmsg"), nullptr, 2000);
+			PostMessageDelayed(TBIDC("delayedmsg"), nullptr, 2000);
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("add img"))
+		else if (ev.target->GetID() == TBIDC("add img"))
 		{
 			TBButton *button = TBSafeCast(TBButton, ev.target);
 			TBSkinImage *skin_image = new TBSkinImage;
@@ -286,7 +286,7 @@ bool MyWindow::OnEvent(const WidgetEvent &ev)
 			button->GetContentRoot()->AddChild(skin_image, WIDGET_Z_BOTTOM);
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("new buttons"))
+		else if (ev.target->GetID() == TBIDC("new buttons"))
 		{
 			char str[100];
 			for(int i = 0; i < 100; i++)
@@ -299,46 +299,46 @@ bool MyWindow::OnEvent(const WidgetEvent &ev)
 			}
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("remove button"))
+		else if (ev.target->GetID() == TBIDC("remove button"))
 		{
 			ev.target->m_parent->RemoveChild(ev.target);
 			delete ev.target;
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("TBWindow.close"))
+		else if (ev.target->GetID() == TBIDC("TBWindow.close"))
 		{
-			TBMessageWindow *msg_win = new TBMessageWindow(this, TBID("confirm_close_dialog"));
-			TBMessageWindowSettings settings(TB_MSG_YES_NO, TBID("Icon48"));
+			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("confirm_close_dialog"));
+			TBMessageWindowSettings settings(TB_MSG_YES_NO, TBIDC("Icon48"));
 			settings.dimmer = true;
 			msg_win->Show("Are you sure?", "Really close the window?", &settings);
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("confirm_close_dialog"))
+		else if (ev.target->GetID() == TBIDC("confirm_close_dialog"))
 		{
-			if (ev.ref_id == TBID("TBMessageWindow.yes"))
+			if (ev.ref_id == TBIDC("TBMessageWindow.yes"))
 				Close();
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("reload skin bitmaps"))
+		else if (ev.target->GetID() == TBIDC("reload skin bitmaps"))
 		{
 			g_tb_skin->ReloadBitmaps();
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("showpopupmenu1"))
+		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))
 		{
-			TBMenuWindow *menu = new TBMenuWindow(ev.target, TBID("popupmenu1"));
+			TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu1"));
 			menu->Show(&popup_menu_source);
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("popupmenu1"))
+		else if (ev.target->GetID() == TBIDC("popupmenu1"))
 		{
 			TBStr str;
 			str.SetFormatted("Menu event received!\nref_id: %d", (int)ev.ref_id);
-			TBMessageWindow *msg_win = new TBMessageWindow(this, TBID("popup_dialog"));
+			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("popup_dialog"));
 			msg_win->Show("Info", str);
 			return true;
 		}
-		else if (ev.target->GetID() == TBID("misc tests"))
+		else if (ev.target->GetID() == TBIDC("misc tests"))
 		{
 			m_parent->AddChild(new MyToolbarWindow(100, 100, "Demo/ui_resources/test_toolbar01.tb.txt"));
 			m_parent->AddChild(new MyToolbarWindow(100, 170, "Demo/ui_resources/test_toolbar02.tb.txt"));
@@ -385,26 +385,26 @@ bool DemoApplication::Init()
 	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_GRAVITY"));
 	int i = 0;
 	while (boy_names[i])
-		advanced_source.AddItem(new TBGenericStringItem(boy_names[i++], TBID("boy_item")));
+		advanced_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
 	i = 0;
 	while (girl_names[i])
-		name_source.AddItem(new TBGenericStringItem(girl_names[i++], TBID("girl_item")));
+		name_source.AddItem(new TBGenericStringItem(girl_names[i++], TBIDC("girl_item")));
 	i = 0;
 	while (boy_names[i])
-		name_source.AddItem(new TBGenericStringItem(boy_names[i++], TBID("boy_item")));
+		name_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
 
 // FIX: separator, shortcuts, disabled, icon, submenus!
 // FIX: Also positioning of multiple menus.. Upper-right combos from point.
 // behöver detta i stringitem implementationen för att enkelt kunna göra menyer, även om det är ett extra onödigt steg
 // SKAPAR TEXTFIELD om det bara är text. finns ikon skapar den layout med flera saker i. Är det check, skapas layout med check osv.
 
-	popup_menu_source.AddItem(new TBGenericStringItem("Option 1", TBID("opt 1")));
-	popup_menu_source.AddItem(new TBGenericStringItem("Option 2", TBID("opt 2")));
+	popup_menu_source.AddItem(new TBGenericStringItem("Option 1", TBIDC("opt 1")));
+	popup_menu_source.AddItem(new TBGenericStringItem("Option 2", TBIDC("opt 2")));
 	popup_menu_source.AddItem(new TBGenericStringItem("-"));
 	popup_menu_source.AddItem(new TBGenericStringItem("Same submenu", &popup_menu_source));
 	popup_menu_source.AddItem(new TBGenericStringItem("Long submenu", &name_source));
 	// Give the first item a skin image
-	popup_menu_source.GetItem(0)->SetSkinImage(TBID("Icon16"));
+	popup_menu_source.GetItem(0)->SetSkinImage(TBIDC("Icon16"));
 
 	MyWindow *win = new MyWindow();
 	m_root->AddChild(win);

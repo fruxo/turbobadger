@@ -92,6 +92,7 @@
     <ClCompile Include="..\..\tdimage\tdimage.cpp" />
     <ClCompile Include="..\..\tdimage\tdimage_png.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_tempbuffer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_linklist.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_list.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="..\..\tdimage\lodepng.h" />
     <ClInclude Include="..\..\tdimage\tdimage.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_bitmap_fragment.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_hash.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_tempbuffer.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_linklist.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_list.h" />

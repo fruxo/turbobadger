@@ -463,7 +463,7 @@ void Widget::OnPaintChildren(const PaintProps &paint_props)
 		{
 			uint32 state = focused_widget->GetAutoState();
 			if (state & SKIN_STATE_FOCUSED)
-				g_tb_skin->PaintSkin(focused_widget->m_rect, TBID("generic_focus"), state);
+				g_tb_skin->PaintSkin(focused_widget->m_rect, TBIDC("generic_focus"), state);
 		}
 	}
 

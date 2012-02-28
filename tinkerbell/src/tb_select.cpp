@@ -73,7 +73,7 @@ bool TBSimpleLayoutItemWidget::OnEvent(const WidgetEvent &ev)
 	if (m_source && ev.type == EVENT_TYPE_CLICK && ev.target == this && !m_window_pointer.Get())
 	{
 		// Open a new menu window for the submenu with this widget as target
-		if (TBMenuWindow *menu = new TBMenuWindow(this, TBID("submenu")))
+		if (TBMenuWindow *menu = new TBMenuWindow(this, TBIDC("submenu")))
 		{
 			m_window_pointer.Set(menu);
 			menu->Show(m_source, -1, nullptr, TB_ALIGN_RIGHT);
@@ -445,7 +445,7 @@ void TBSelectDropdown::OpenWindow()
 	if (!m_source || !m_source->GetNumItems() || m_window_pointer.Get())
 		return;
 
-	if (TBMenuWindow *window = new TBMenuWindow(this, TBID("TBSelectDropdown.window")))
+	if (TBMenuWindow *window = new TBMenuWindow(this, TBIDC("TBSelectDropdown.window")))
 	{
 		m_window_pointer.Set(window);
 		window->SetSkinBg("TBSelectDropdown.window");
@@ -460,7 +460,7 @@ bool TBSelectDropdown::OnEvent(const WidgetEvent &ev)
 		OpenWindow();
 		return true;
 	}
-	else if (ev.target->GetID() == TBID("TBSelectDropdown.window") && ev.type == EVENT_TYPE_CLICK)
+	else if (ev.target->GetID() == TBIDC("TBSelectDropdown.window") && ev.type == EVENT_TYPE_CLICK)
 	{
 		if (TBMenuWindow *menu_window = TBSafeCast(TBMenuWindow, ev.target->GetParentWindow()))
 			SetValue(menu_window->GetList()->GetValue());
@@ -679,12 +679,12 @@ bool TBInlineSelect::OnEvent(const WidgetEvent &ev)
 			return true;
 		}
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("dec"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("dec"))
 	{
 		SetValue(GetValue() - 1);
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBID("inc"))
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("inc"))
 	{
 		SetValue(GetValue() + 1);
 		return true;

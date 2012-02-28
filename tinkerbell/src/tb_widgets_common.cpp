@@ -152,7 +152,7 @@ void TBButton::OnSkinChanged()
 
 void TBButton::OnMessageReceived(TBMessage *msg)
 {
-	if (msg->message == TBID("auto_click"))
+	if (msg->message == TBIDC("auto_click"))
 	{
 		assert(captured_widget == this);
 		if (!is_panning && GetHitStatus(pointer_move_widget_x, pointer_move_widget_y))

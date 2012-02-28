@@ -81,6 +81,8 @@ typedef unsigned int uint32;
 #define TB_IF_DEBUG(debug) 
 #endif
 
+#include "tb_hash.h"
+
 namespace tinkerbell {
 
 /** Simple point class. */
@@ -179,9 +181,6 @@ public:
 	char *CStr() const									{ return s; }
 	const TBStr& operator = (const TBStr &str)			{ Set(str); return *this; }
 };
-
-/** Get hash value from string */
-uint32 TBGetHash(const char *str);
 
 /** TBID is a wrapper for a uint32 to be used as ID.
 	The uint32 can be set directly to any uint32, or it can be

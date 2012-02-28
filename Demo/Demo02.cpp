@@ -58,7 +58,7 @@ bool BuildWindow::Load(const char *resource_file)
 	// Show error message
 	TBStr text;
 	text.SetFormatted("Could not load file %s", resource_file);
-	if (TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBID("")))
+	if (TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBIDC("")))
 		msg_win->Show("Error loading resource", text);
 	return false;
 }
@@ -115,7 +115,7 @@ void PropertyWindow::AddWidgetListItemsRecursive(Widget *widget, int depth)
 
 bool PropertyWindow::OnEvent(const WidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBID("widget_list_search"))
+	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("widget_list_search"))
 	{
 		TBStr filter;
 		ev.target->GetText(filter);
@@ -127,7 +127,7 @@ bool PropertyWindow::OnEvent(const WidgetEvent &ev)
 
 void PropertyWindow::OnMessageReceived(TBMessage *msg)
 {
-	if (msg->message == TBID("update_widget_list"))
+	if (msg->message == TBIDC("update_widget_list"))
 		UpdateWidgetList(true);
 }
 

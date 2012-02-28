@@ -92,23 +92,6 @@ TBRect TBRect::Clip(const TBRect &clip_rect) const
 	return tmp;
 }
 
-// == TBGetHash ======================================================
-
-uint32 TBGetHash(const char *str)
-{
-	if (!str || !*str)
-		return 0;
-	// FNV hash
-	uint32 hash = 2166136261U;
-	int i = 0;
-	while (str[i])
-	{
-		char c = str[i++];
-		hash = (16777619U * hash) ^ c;
-	}
-	return hash;
-}
-
 // ===================================================================
 
 const char *stristr(const char *arg1, const char *arg2)
