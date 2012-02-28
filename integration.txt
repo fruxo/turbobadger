@@ -66,8 +66,8 @@ Some apps need to unload all graphics and reload it again, f.ex when the app
 is put to sleep in the background. Tinkerbell loads all its bitmaps through the skin,
 so unloading & reloading all textures can be done with:
 
-	TBSkin::UnloadBitmaps()
-	TBSkin::ReloadBitmaps()
+	g_tb_skin->UnloadBitmaps()
+	g_tb_skin->ReloadBitmaps()
 
 System integration
 ------------------
