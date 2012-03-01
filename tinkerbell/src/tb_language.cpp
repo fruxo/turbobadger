@@ -48,7 +48,7 @@ const char *TBLanguage::GetString(const TBID &id)
 		return *str;
 #ifdef _DEBUG
 	static TBStr tmp;
-	tmp.SetFormatted("<TRANSLATE:%s>", id.debug_string);
+	tmp.SetFormatted("<TRANSLATE:%s>", id.debug_string.CStr());
 	return tmp;
 #else
 	return "<TRANSLATE!>";

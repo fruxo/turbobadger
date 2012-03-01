@@ -9,8 +9,8 @@ INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/freeglut" -I"."
 CFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
 CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 --std=c++0x $(INCPATH)
 #debug
-#CFLAGS = -g $(INCPATH)
-#CXXFLAGS = -g --std=c++0x $(INCPATH)
+#CFLAGS = -D_DEBUG -g $(INCPATH)
+#CXXFLAGS = -D_DEBUG -g --std=c++0x $(INCPATH)
 
 ifeq ($(UNAME),Darwin)
  CFLAGS += -DMACOSX -Dnullptr=0
