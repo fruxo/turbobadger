@@ -13,9 +13,11 @@ namespace tinkerbell {
 // On C++ compilers that support it, use const expr for hash so that
 // TBID comparisions turn into simple uint32 comparisions compiletime.
 // Disabled for debug builds, so TBID string debugging is available.
+//
+// Note: GCC may need -std=c++0x or -std=c++11 to enable this feature.
 
 #ifndef _DEBUG
-#if __cplusplus >= 201103L
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
 #define TB_SUPPORT_CONSTEXPR
 #endif
 #endif
@@ -38,7 +40,7 @@ constexpr uint32 TBGetHash(const char* str)
 	return (str && *str) ? TBGetHash_one(str[0], str + 1, basis) : 0;
 }
 
-#define TBIDC(str) TBID(TBGetHash(str))
+#define TBIDC(str) TBGetHash(str)
 
 #else // TB_SUPPORT_CONSTEXPR
 
@@ -52,3 +54,4 @@ uint32 TBGetHash(const char *str);
 }; // namespace tinkerbell
 
 #endif // TB_HASH_H
+
