@@ -8,7 +8,32 @@
 #include <assert.h>
 #include <stdlib.h>
 
+// There is no re-entrant qsort in the standard but there is most often qsort_r or qsort_s.
+#ifdef WIN32
+#define tb_qsort qsort_s
+#else
+#define tb_qsort qsort_r
+#endif
+
 namespace tinkerbell {
+
+// == Sort callback for sorting items ===================================================
+
+struct SELECT_LIST_SORT_CONTEXT {
+	TBSelectItemSource *source;
+};
+
+int select_list_sort_cb(void *_context, const void *_a, const void *_b)
+{
+	SELECT_LIST_SORT_CONTEXT *context = static_cast<SELECT_LIST_SORT_CONTEXT *>(_context);
+	int a = *((int*) _a);
+	int b = *((int*) _b);
+	const char *str_a = context->source->GetItemString(a);
+	const char *str_b = context->source->GetItemString(b);
+	if (context->source->GetSort() == TB_SORT_DESCENDING)
+		return -strcmp(str_a, str_b);
+	return strcmp(str_a, str_b);
+}
 
 /** TBSimpleLayoutItemWidget is a item containing a layout with the following:
 	-TBSkinImage showing the item image.
@@ -248,21 +273,40 @@ void TBSelectList::ValidateList()
 		child->m_parent->RemoveChild(child);
 		delete child;
 	}
-	// Create new items
-	if (!m_source)
+	if (!m_source || !m_source->GetNumItems())
 		return;
+
+	// Create a sorted list of the items we should include using the current filter.
+	int num_sorted_items = 0;
+	int *sorted_index = new int[m_source->GetNumItems()];
+	if (!sorted_index)
+		return; // Out of memory
+
+	// Populate the sorted index list
 	for (int i = 0; i < m_source->GetNumItems(); i++)
+		if (m_filter.IsEmpty() || m_source->Filter(i, m_filter))
+			sorted_index[num_sorted_items++] = i;
+
+	// Sort
+	if (m_source->GetSort() != TB_SORT_NONE)
 	{
-		// Skip items if source says the filter doesn't match
-		if (!m_filter.IsEmpty() && !m_source->Filter(i, m_filter))
-			continue;
-		if (Widget *widget = m_source->CreateItemWidget(i))
+		SELECT_LIST_SORT_CONTEXT context = { m_source };
+		tb_qsort(sorted_index, num_sorted_items, sizeof(int *), select_list_sort_cb, &context);
+	}
+
+	// Create new items
+	for (int i = 0; i < num_sorted_items; i++)
+	{
+		int item_index = sorted_index[i];
+		if (Widget *widget = m_source->CreateItemWidget(item_index))
 		{
 			// Use item data as widget to index lookup
-			widget->m_data = i;
+			widget->m_data = item_index;
 			m_layout.GetContentRoot()->AddChild(widget);
 		}
 	}
+	delete [] sorted_index;
+
 	SelectItem(m_value, true);
 	m_scroll_to_current = true;
 }

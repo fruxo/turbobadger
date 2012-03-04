@@ -15,11 +15,18 @@
 namespace tinkerbell {
 
 // FIX: A maximum items showed option, and a automatic "Show more" item at the bottom.
-// FIX: ScrollableContainer: Scrolla inte om man håller i en scrollbar.
+// FIX: ScrollableContainer: Scrolla inte om man håller i en scrollbar eller draggar.
 // FIX: Item-quick-find by pressing one or two keys in the list!
 // FIX: gör även en default string source med checkboxar (multiselectable)??
 // Indentera alla items, och ge menyn ett bg skin/underlay ifall någon har ikon!
 // Treeview item, item column, och indent för items utan ikon.. använda samma indent system?
+// FIX: ändring av source måste kunna updatera alla listor.
+
+enum TB_SORT {
+	TB_SORT_NONE,		///< No sorting. Items appear in list order.
+	TB_SORT_ASCENDING,	///< Ascending sort.
+	TB_SORT_DESCENDING	///< Descending sort.
+};
 
 /** TBSelectItemSource is a item provider interface for list widgets (TBSelectList and
 	TBSelectDropdown).
@@ -33,7 +40,7 @@ namespace tinkerbell {
 class TBSelectItemSource
 {
 public:
-	TBSelectItemSource() : m_in_use_count(0) {}
+	TBSelectItemSource() : m_in_use_count(0), m_sort(TB_SORT_NONE) {}
 	virtual ~TBSelectItemSource();
 
 	/** Return true if a item matches the given filter text.
@@ -42,7 +49,8 @@ public:
 
 	/** Get the string of a item. If a item has more than one string,
 		return the one that should be used for inline-find (pressing keys
-		in the list will scroll to the item starting with the same letters) */
+		in the list will scroll to the item starting with the same letters),
+		and for sorting the list. */
 	virtual const char *GetItemString(int index) = 0;
 
 	/** Get the source to be used if this item should open a sub menu. */
@@ -61,10 +69,15 @@ public:
 
 	/** Get the number of items that would be shown with the given filter. */
 	int GetNumVisibleItems(const char *filter);
+
+	/** Set sort type. Default is TB_SORT_NONE. */
+	void SetSort(TB_SORT sort) { m_sort = sort; }
+	TB_SORT GetSort() const { return m_sort; }
 private:
 	friend class TBSelectList;
 	friend class TBSelectDropdown;
 	int m_in_use_count; ///< How many lists that currently have this source set.
+	TB_SORT m_sort;
 };
 
 class TBGenericStringItem
