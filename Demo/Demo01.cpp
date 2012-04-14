@@ -414,6 +414,7 @@ bool DemoApplication::Init()
 	i = 0;
 	while (boy_names[i])
 		name_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
+	name_source.SetSort(TB_SORT_ASCENDING);
 
 // FIX: separator, shortcuts, disabled, icon, submenus!
 // FIX: Also positioning of multiple menus.. Upper-right combos from point.
