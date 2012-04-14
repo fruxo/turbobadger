@@ -74,6 +74,13 @@ TBLayout
 		TBEditField
 			password 1
 			text fgdfgdfgsg
+	TBSlider
+	TBSlider
+		min 100
+		max 200
+		value 150
+	TBSlider
+		axis y
 	TBScrollContainer
 		TBLayout
 			axis y

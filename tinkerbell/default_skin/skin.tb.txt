@@ -175,6 +175,7 @@ elements
 	TBSelectItem.separatorX
 		bitmap item_separator_x.png
 		type Stretch Image
+
 	TBScrollBarBgX
 		bitmap scroll_bg_x.png
 		cut 11
@@ -191,6 +192,26 @@ elements
 		bitmap scroll_fg_y.png
 		cut 11
 		expand 5
+
+	TBSliderBgX
+		bitmap slider_bg_x.png
+		cut 9
+		min-height 19
+		max-height 19
+		min-width 50
+	TBSliderFgX
+		bitmap slider_handle.png
+		expand 5
+
+	TBSliderBgY
+		bitmap slider_bg_y.png
+		cut 9
+		min-width 19
+		max-width 19
+		min-height 50
+	TBSliderFgY
+		clone TBSliderFgX
+
 	TBResizer
 		bitmap resizer.png
 	TBInlineSelect

@@ -52,8 +52,8 @@ Widget *CreateTBInlineSelect(CREATE_INFO *info)
 	{
 		const char *axis = info->node->GetValueString("axis", "x");
 		iselect->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		int min = info->node->GetValueInt("min", iselect->GetMin());
-		int max = info->node->GetValueInt("max", iselect->GetMax());
+		int min = info->node->GetValueInt("min", iselect->GetMinValue());
+		int max = info->node->GetValueInt("max", iselect->GetMaxValue());
 		iselect->SetLimits(min, max);
 		return iselect;
 	}
@@ -202,6 +202,21 @@ Widget *CreateTBScrollBar(CREATE_INFO *info)
 	return nullptr;
 }
 
+Widget *CreateTBSlider(CREATE_INFO *info)
+{
+	if (TBSlider *slider = new TBSlider())
+	{
+		const char *axis = info->node->GetValueString("axis", "x");
+		slider->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
+		slider->SetGravity(*axis == 'x' ? WIDGET_GRAVITY_LEFT_RIGHT : WIDGET_GRAVITY_TOP_BOTTOM);
+		double min = (double) info->node->GetValueFloat("min", (float) slider->GetMinValue());
+		double max = (double) info->node->GetValueFloat("max", (float) slider->GetMaxValue());
+		slider->SetLimits(min, max);
+		return slider;
+	}
+	return nullptr;
+}
+
 DECLARE_CREATE_FUNCTION(TBSkinImage);
 DECLARE_CREATE_FUNCTION(TBSeparator);
 DECLARE_CREATE_FUNCTION(TBProgressSpinner);
@@ -236,6 +251,7 @@ bool TBWidgetsReader::Init()
 	fail |= !AddCreator("TBSelectDropdown", CreateTBSelectDropdown);
 	fail |= !AddCreator("TBSelectList", CreateTBSelectList);
 	fail |= !AddCreator("TBScrollBar", CreateTBScrollBar);
+	fail |= !AddCreator("TBSlider", CreateTBSlider);
 	fail |= !AddCreator("TBSkinImage", CreateTBSkinImage);
 	fail |= !AddCreator("TBSeparator", CreateTBSeparator);
 	fail |= !AddCreator("TBProgressSpinner", CreateTBProgressSpinner);

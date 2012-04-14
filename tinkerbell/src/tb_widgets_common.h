@@ -281,8 +281,9 @@ public:
 	double GetMaxValue() const { return m_max; }
 	double GetVisible() const { return m_visible; }
 
+	/** Same as SetValue, but with double precision. */
 	void SetValueDouble(double value);
-	double GetValueDouble() { return m_value; }
+	double GetValueDouble() const { return m_value; }
 
 	void SetValue(int value) { SetValueDouble(value); }
 	int GetValue() { return (int) GetValueDouble(); }
@@ -293,6 +294,50 @@ protected:
 	AXIS m_axis;
 	double m_value;
 	double m_min, m_max, m_visible;
+	double m_to_pixel_factor;
+	void UpdateHandle();
+};
+
+/** TBSlider is a horizontal or vertical slider for a number within a range. */
+
+// FIX: Add a "track value" showing as a line within the track (to be used for buffering etc).
+// FIX: Also add a auto track that keeps it up to date with value (default).
+class TBSlider : public Widget
+{
+public:
+	// For safe typecasting
+	WIDGET_SUBCLASS("TBSlider", Widget);
+
+	TBSlider();
+	~TBSlider();
+
+	/** Set along which axis the scrollbar should scroll */
+	void SetAxis(AXIS axis);
+	AXIS GetAxis() const { return m_axis; }
+
+	/** Set the min, max limits for the slider. */
+	void SetLimits(double min, double max);
+
+	double GetMinValue() const { return m_min; }
+	double GetMaxValue() const { return m_max; }
+
+	/** Get a small value (depending on the min and max limits) for stepping by f.ex. keyboard. */
+	double GetSmallStep() const { return (m_max - m_min) / 100.0; }
+
+	/** Same as SetValue, but with double precision. */
+	void SetValueDouble(double value);
+	double GetValueDouble() const { return m_value; }
+
+	void SetValue(int value) { SetValueDouble(value); }
+	int GetValue() { return (int) GetValueDouble(); }
+
+	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual void OnResized(int old_w, int old_h);
+protected:
+	Widget m_handle;
+	AXIS m_axis;
+	double m_value;
+	double m_min, m_max;
 	double m_to_pixel_factor;
 	void UpdateHandle();
 };

@@ -254,8 +254,8 @@ public:
 	AXIS GetAxis() const { return m_layout.GetAxis(); }
 
 	void SetLimits(int min, int max);
-	int GetMin() { return m_min; }
-	int GetMax() { return m_max; }
+	int GetMinValue() const { return m_min; }
+	int GetMaxValue() const { return m_max; }
 
 	virtual void SetValue(int value) { SetValueInternal(value, true); }
 	virtual int GetValue() { return m_value; }

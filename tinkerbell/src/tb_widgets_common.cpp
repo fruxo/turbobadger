@@ -469,6 +469,138 @@ void TBScrollBar::UpdateHandle()
 	m_handle.SetRect(rect);
 }
 
+// == TBSlider ============================================
+
+TBSlider::TBSlider()
+	: m_axis(AXIS_Y) ///< Make SetAxis below always succeed and set the skin
+	, m_value(0)
+	, m_min(0)
+	, m_max(1)
+	, m_to_pixel_factor(0)
+{
+	SetIsFocusable(true);
+	SetAxis(AXIS_X);
+	AddChild(&m_handle);
+}
+
+TBSlider::~TBSlider()
+{
+	RemoveChild(&m_handle);
+}
+
+void TBSlider::SetAxis(AXIS axis)
+{
+	if (axis == m_axis)
+		return;
+	m_axis = axis;
+	if (axis == AXIS_X)
+	{
+		m_skin_bg.Set("TBSliderBgX");
+		m_handle.m_skin_bg.Set("TBSliderFgX");
+	}
+	else
+	{
+		m_skin_bg.Set("TBSliderBgY");
+		m_handle.m_skin_bg.Set("TBSliderFgY");
+	}
+	Invalidate();
+}
+
+void TBSlider::SetLimits(double min, double max)
+{
+	min = MIN(min, max);
+	if (min == m_min && max == m_max)
+		return;
+	m_min = min;
+	m_max = max;
+	SetValueDouble(m_value);
+	UpdateHandle();
+}
+
+void TBSlider::SetValueDouble(double value)
+{
+	value = CLAMP(value, m_min, m_max);
+	if (value == m_value)
+		return;
+	m_value = value;
+
+	UpdateHandle();
+	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	InvokeEvent(ev);
+}
+
+bool TBSlider::OnEvent(const WidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_POINTER_MOVE && captured_widget == &m_handle)
+	{
+		if (m_to_pixel_factor > 0)
+		{
+			int dx = ev.target_x - pointer_down_widget_x;
+			int dy = ev.target_y - pointer_down_widget_y;
+			double delta_val = (m_axis == AXIS_X ? dx : dy) / m_to_pixel_factor;
+			SetValueDouble(m_value + delta_val);
+		}
+		return true;
+	}
+	else if (ev.type == EVENT_TYPE_POINTER_MOVE && ev.target == this)
+		return true;
+	else if (ev.type == EVENT_TYPE_WHEEL)
+	{
+		double old_val = m_value;
+		SetValueDouble(m_value + GetSmallStep() * ev.delta);
+		return m_value != old_val;
+	}
+	else if (ev.type == EVENT_TYPE_KEY_DOWN)
+	{
+		if (ev.special_key == TB_KEY_LEFT || ev.special_key == TB_KEY_UP)
+			SetValueDouble(GetValueDouble() - GetSmallStep());
+		else if (ev.special_key == TB_KEY_RIGHT || ev.special_key == TB_KEY_DOWN)
+			SetValueDouble(GetValueDouble() + GetSmallStep());
+		else
+			return false;
+		return true;
+	}
+	else if (ev.type == EVENT_TYPE_KEY_UP)
+	{
+		if (ev.special_key == TB_KEY_LEFT || ev.special_key == TB_KEY_UP ||
+			ev.special_key == TB_KEY_RIGHT || ev.special_key == TB_KEY_DOWN)
+			return true;
+	}
+	return false;
+}
+
+void TBSlider::UpdateHandle()
+{
+	// Calculate the handle position
+	bool horizontal = m_axis == AXIS_X;
+	int available_pixels = horizontal ? m_rect.w : m_rect.h;
+	int available_thickness_pixels = horizontal ? m_rect.h : m_rect.w;
+
+	TBRect rect;
+	if (m_max - m_min > 0)
+	{
+		PreferredSize ps = m_handle.GetPreferredSize();
+		int handle_pixels = horizontal ? ps.pref_w : ps.pref_h;
+		m_to_pixel_factor = (double)(available_pixels - handle_pixels) / (m_max - m_min)/*+ 0.5*/;
+
+		int pixel_pos = (int)((m_value - m_min) * m_to_pixel_factor);
+
+		if (horizontal)
+			rect.Set(pixel_pos, (m_rect.h - ps.pref_h) / 2, ps.pref_w, ps.pref_h);
+		else
+			rect.Set((m_rect.w - ps.pref_w) / 2, pixel_pos, ps.pref_w, ps.pref_h);
+	}
+	else
+		m_to_pixel_factor = 0;
+
+	m_handle.SetRect(rect);
+}
+
+void TBSlider::OnResized(int old_w, int old_h)
+{
+	UpdateHandle();
+}
+
 // == TBContainer ===================================
 
 TBContainer::TBContainer()
