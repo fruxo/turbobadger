@@ -47,7 +47,7 @@ void DemoOutput(const char *format, ...)
 	// Append the text at the last line of the debug field and scroll.
 	if (TBEditField *edit = TBSafeGetByIDInRoot(Application::GetApp()->GetRoot(), TBEditField, "debug_output"))
 	{
-		edit->GetStyleEdit()->InsertText(buf, len, true, true);
+		edit->GetStyleEdit()->AppendText(buf, len, true);
 		edit->GetStyleEdit()->ScrollIfNeeded();
 	}
 }

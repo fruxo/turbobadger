@@ -72,7 +72,7 @@ TBLayout
 		TBEditField
 			text Spaghetti and Marshmallows!
 		TBEditField
-			password 1
+			type password
 			text fgdfgdfgsg
 	TBSlider
 	TBSlider

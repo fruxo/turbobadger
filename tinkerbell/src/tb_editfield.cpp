@@ -76,14 +76,15 @@ void TBEditField::SetReadOnly(bool readonly)
 	m_style_edit.SetReadOnly(readonly);
 }
 
-void TBEditField::SetPassword(bool password)
-{
-	m_style_edit.SetPassword(password);
-}
-
 void TBEditField::SetWrapping(bool wrapping)
 {
 	m_style_edit.SetWrapping(wrapping);
+}
+
+void TBEditField::SetEditType(EDIT_TYPE type)
+{
+	m_edit_type = type;
+	m_style_edit.SetPassword(type == EDIT_TYPE_PASSWORD);
 }
 
 bool TBEditField::OnEvent(const WidgetEvent &ev)

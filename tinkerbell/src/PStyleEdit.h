@@ -166,16 +166,6 @@ private:
 	uint32 ref_count;
 };
 
-/*class PStyleA
-{
-public:
-	PStyle *ref;
-	PStyleA(PStyleA &style) { ref = style.ref; ref->IncRef(); }
-	PStyleA(PStyle *new_ref) { ref = new_ref; ref->IncRef(); }
-	~PStyleA() { ref->DecRef(); }
-	void operator = (const PStyleA& style) { ref->DecRef(); ref = style.ref; ref->IncRef(); }
-};*/
-
 class PPaintInfo
 {
 public:
@@ -412,6 +402,7 @@ public:
 	// void SetStyle();  If there is selection this applies style to the whole selection, otherwise just for further inserting.
 
 	void InsertText(const char *text, int32 len = -1, bool after_last = false, bool clear_undo_redo = false);
+	void AppendText(const char *text, int32 len = -1, bool clear_undo_redo = false) { InsertText(text, len, true, clear_undo_redo); }
 
 	PBlock *FindBlock(int32 y);
 

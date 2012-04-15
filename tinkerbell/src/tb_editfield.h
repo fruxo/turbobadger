@@ -16,14 +16,16 @@ namespace tinkerbell {
 	They are just hints for virtual keyboard, so it can show special keys. */
 enum EDIT_TYPE {
 	EDIT_TYPE_TEXT,				///< Any text allowed
+	EDIT_TYPE_PASSWORD,			///< Any text allowed
 	EDIT_TYPE_EMAIL,			///< Any text allowed
 	EDIT_TYPE_PHONE,			///< Any text allowed
 	EDIT_TYPE_URL,				///< Any text allowed
 	EDIT_TYPE_NUMBER			///< Any text allowed
 };
 
-/** TBEditField is a one line or multi line textfield that is editable.
-	It can also be a passwordfield by calling SetPassword(true). */
+/** TBEditField is a one line or multi line textfield that is editable or
+	read-only. It can also be a passwordfield by calling
+	SetEditType(EDIT_TYPE_PASSWORD). */
 
 class TBEditField : public Widget, private PStyleEditListener, public TBMessageHandler
 {
@@ -45,15 +47,12 @@ public:
 	void SetReadOnly(bool readonly);
 	bool GetReadOnly() const { return m_style_edit.packed.read_only; }
 
-	void SetPassword(bool password);
-	bool GetPassword() const { return m_style_edit.packed.password_on; }
-
 	void SetWrapping(bool wrapping);
 	bool GetWrapping() const { return m_style_edit.packed.wrapping; }
 
 	PStyleEdit *GetStyleEdit() { return &m_style_edit; }
 
-	void SetEditType(EDIT_TYPE type) { m_edit_type = type; }
+	void SetEditType(EDIT_TYPE type);
 	EDIT_TYPE GetEditType() { return m_edit_type; }
 
 	/** Set which alignment the text should have if the space

@@ -79,13 +79,13 @@ Widget *CreateTBEditField(CREATE_INFO *info)
 	{
 		editfield->SetMultiline(info->node->GetValueInt("multiline", 0) ? true : false);
 		editfield->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
-		editfield->SetPassword(info->node->GetValueInt("password", 0) ? true : false);
 		editfield->SetWrapping(info->node->GetValueInt("wrap", editfield->GetWrapping()) ? true : false);
 		if (const char *text = GetTranslatableString(info->node, "placeholder"))
 			editfield->SetPlaceholderText(text);
 		if (const char *type = info->node->GetValueString("type", nullptr))
 		{
 			if (stristr(type, "text"))			editfield->SetEditType(EDIT_TYPE_TEXT);
+			else if (stristr(type, "password"))	editfield->SetEditType(EDIT_TYPE_PASSWORD);
 			else if (stristr(type, "email"))	editfield->SetEditType(EDIT_TYPE_EMAIL);
 			else if (stristr(type, "phone"))	editfield->SetEditType(EDIT_TYPE_PHONE);
 			else if (stristr(type, "url"))		editfield->SetEditType(EDIT_TYPE_URL);
