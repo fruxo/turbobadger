@@ -652,8 +652,14 @@ void Widget::InvokePaint(const PaintProps &parent_paint_props)
 	// Paint content
 	OnPaint(paint_props);
 
+	if (used_element)
+		g_renderer->Translate(used_element->content_ofs_x, used_element->content_ofs_y);
+
 	// Paint children
 	OnPaintChildren(paint_props);
+
+	if (used_element)
+		g_renderer->Translate(-used_element->content_ofs_x, -used_element->content_ofs_y);
 
 	g_renderer->Translate(-trns_x, -trns_y);
 	g_renderer->SetOpacity(old_opacity);

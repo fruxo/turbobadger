@@ -94,9 +94,10 @@ public:
 	int16 max_width;	///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
 	int16 max_height;	///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
 	int8 spacing;		///< Spacing used on layout. SKIN_DEFAULT_SPACING by default.
+	int8 content_ofs_x;	///< X offset of the content in the widget.
+	int8 content_ofs_y;	///< Y offset of the content in the widget.
 	float opacity;		///< Opacity that should be used for the whole widget (0.f-1.f).
 	TBColor text_color;
-	// FIX: offset for content! (pressed button may move content)
 
 	/** List of override elements (See TBSkin::PaintSkin) */
 	TBSkinElementStateList m_override_elements;

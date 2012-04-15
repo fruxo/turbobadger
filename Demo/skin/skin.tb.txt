@@ -30,3 +30,5 @@ elements
 		bitmap special_button_pressed.png
 		cut 17
 		expand 7
+		content-ofs-x 1
+		content-ofs-y 1

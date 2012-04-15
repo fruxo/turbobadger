@@ -127,6 +127,8 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			e->max_width = n->GetValueInt("max-width", SKIN_VALUE_NOT_SPECIFIED);
 			e->max_height = n->GetValueInt("max-height", SKIN_VALUE_NOT_SPECIFIED);
 			e->spacing = n->GetValueInt("spacing", SKIN_DEFAULT_SPACING);
+			e->content_ofs_x = n->GetValueInt("content-ofs-x", 0);
+			e->content_ofs_y = n->GetValueInt("content-ofs-y", 0);
 			e->opacity = n->GetValueFloat("opacity", 1.f);
 
 			if (const char *color = n->GetValueString("text-color", nullptr))
@@ -383,6 +385,7 @@ TBSkinElement::TBSkinElement()
 	, min_width(SKIN_VALUE_NOT_SPECIFIED), min_height(SKIN_VALUE_NOT_SPECIFIED)
 	, max_width(SKIN_VALUE_NOT_SPECIFIED), max_height(SKIN_VALUE_NOT_SPECIFIED)
 	, spacing(SKIN_DEFAULT_SPACING)
+	, content_ofs_x(0), content_ofs_y(0)
 	, opacity(1.f)
 {
 }
