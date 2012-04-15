@@ -37,10 +37,19 @@ public:
 	/** Get the visible rect (the GetPaddingRect() minus any scrollbars) */
 	TBRect GetVisibleRect();
 
+	/** Set if multiple lines should be allowed or not.
+		Will also set wrapping (to true if multiline, and false if not). */
 	void SetMultiline(bool multiline);
+	bool GetMultiline() const { return m_style_edit.packed.multiline_on; }
+
 	void SetReadOnly(bool readonly);
+	bool GetReadOnly() const { return m_style_edit.packed.read_only; }
+
 	void SetPassword(bool password);
+	bool GetPassword() const { return m_style_edit.packed.password_on; }
+
 	void SetWrapping(bool wrapping);
+	bool GetWrapping() const { return m_style_edit.packed.wrapping; }
 
 	PStyleEdit *GetStyleEdit() { return &m_style_edit; }
 

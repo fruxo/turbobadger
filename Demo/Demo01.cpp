@@ -1,5 +1,6 @@
 #include "Demo.h"
 #include <stdio.h>
+#include <stdarg.h>
 #include "tb_system.h"
 #include "tb_select.h"
 #include "tb_editfield.h"
@@ -32,6 +33,24 @@ void const_expr_test()
 }
 
 #endif // TB_SUPPORT_CONSTEXPR
+
+void DemoOutput(const char *format, ...)
+{
+	if (!format)
+		return;
+	static char buf[1024];
+	va_list ap;
+	va_start(ap, format);
+	int len = vsnprintf(buf, 1024, format, ap);
+	va_end(ap);
+
+	// Append the text at the last line of the debug field and scroll.
+	if (TBEditField *edit = TBSafeGetByIDInRoot(Application::GetApp()->GetRoot(), TBEditField, "debug_output"))
+	{
+		edit->GetStyleEdit()->InsertText(buf, len, true, true);
+		edit->GetStyleEdit()->ScrollIfNeeded();
+	}
+}
 
 class TestItemSource : public TBGenericStringItemSource
 {
@@ -368,6 +387,14 @@ bool MyWindow::OnEvent(const WidgetEvent &ev)
 			m_parent->AddChild(new MyToolbarWindow(100, 240, "Demo/ui_resources/test_layout01.tb.txt"));
 			return true;
 		}
+	}
+	else if (ev.type == EVENT_TYPE_CHANGED)
+	{
+		// Output the new value and text
+		TBStr text;
+		if (ev.target->GetText(text) && text.Length() > 24)
+			sprintf(text.CStr() + 20, "...");
+		DemoOutput("Changed to: %.2f (\"%s\")\n", ev.target->GetValueDouble(), text);
 	}
 	return TBWindow::OnEvent(ev);
 }

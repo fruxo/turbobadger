@@ -537,7 +537,7 @@ bool TBSlider::OnEvent(const WidgetEvent &ev)
 		{
 			int dx = ev.target_x - pointer_down_widget_x;
 			int dy = ev.target_y - pointer_down_widget_y;
-			double delta_val = (m_axis == AXIS_X ? dx : dy) / m_to_pixel_factor;
+			double delta_val = (m_axis == AXIS_X ? dx : -dy) / m_to_pixel_factor;
 			SetValueDouble(m_value + delta_val);
 		}
 		return true;
@@ -547,15 +547,17 @@ bool TBSlider::OnEvent(const WidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_WHEEL)
 	{
 		double old_val = m_value;
-		SetValueDouble(m_value + GetSmallStep() * ev.delta);
+		double step = (m_axis == AXIS_X ? GetSmallStep() : -GetSmallStep());
+		SetValueDouble(m_value + step * ev.delta);
 		return m_value != old_val;
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN)
 	{
+		double step = (m_axis == AXIS_X ? GetSmallStep() : -GetSmallStep());
 		if (ev.special_key == TB_KEY_LEFT || ev.special_key == TB_KEY_UP)
-			SetValueDouble(GetValueDouble() - GetSmallStep());
+			SetValueDouble(GetValueDouble() - step);
 		else if (ev.special_key == TB_KEY_RIGHT || ev.special_key == TB_KEY_DOWN)
-			SetValueDouble(GetValueDouble() + GetSmallStep());
+			SetValueDouble(GetValueDouble() + step);
 		else
 			return false;
 		return true;
@@ -583,7 +585,9 @@ void TBSlider::UpdateHandle()
 		int handle_pixels = horizontal ? ps.pref_w : ps.pref_h;
 		m_to_pixel_factor = (double)(available_pixels - handle_pixels) / (m_max - m_min)/*+ 0.5*/;
 
-		int pixel_pos = (int)((m_value - m_min) * m_to_pixel_factor);
+		// Invert the value for vertical slider (increasing value goes up)
+		double tmp_val = horizontal ? m_value : m_max - m_value;
+		int pixel_pos = (int)((tmp_val - m_min) * m_to_pixel_factor);
 
 		if (horizontal)
 			rect.Set(pixel_pos, (m_rect.h - ps.pref_h) / 2, ps.pref_w, ps.pref_h);

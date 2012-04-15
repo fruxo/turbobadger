@@ -5,6 +5,7 @@ TBTabContainer
 		TBButton: text: "Skin"
 		TBButton: text: "Spinner"
 			TBSkinImage: skin: Icon16
+		TBButton: text: "Debug"
 	TBLayout: axis: y
 		TBInlineSelect
 		TBLayout
@@ -28,3 +29,6 @@ TBTabContainer
 		TBButton: id: start_spinner, text: Start spinner
 		TBButton: id: stop_spinner, text: Stop spinner
 		TBProgressSpinner: id: spinner
+	TBLayout
+		axis y
+		TBEditField: id: debug_output, multiline: 1, wrap: 0, gravity: all

@@ -8,19 +8,19 @@ Tinkerbell Integration guide
 
 This is a short guide to integrating tinkerbell in a game or application.
 It basically list what you most probably want to do.
-More defails is found in the method definitions.
+More details is found in the method definitions.
 
 Input
 -----
 
-You need to create a "root widget" for your UI widgets. Just a widget that act
-as receiver for input, painting etc, and that contains all your other widgets.
+You need to create a "root widget" for your UI widgets. A Widget that act
+as receiver for input, painting etc, and is parent to your other widgets.
 Tinkerbell will handle input capture, focus, etc. automatically.
 
-List of input triggers:
+List of input triggers (root is your root Widget):
 
 	root->InvokePointer[Down/Up/Move] - Mouse or touch input.
-	root->InvokeWheel                 - Mouse wheel support
+	root->InvokeWheel                 - Mouse wheel input
 	root->InvokeKey                   - Keyboard input
 
 Layout & Painting
@@ -45,10 +45,10 @@ Message handling
 TBMessageHandler::ProcessMessages() needs to be called frequently to process
 the message queue.
 
-If you have a game running its loop all the time, you can just call ProcessMessages()
+If you have a game running its loop continuously, you can just call ProcessMessages()
 each time.
 
-If you have a event driven application that should only consume CPU while needed
+If you have a event driven application that should only consume CPU when needed
 you can call TBMessageHandler::GetNextMessageFireTime() for scheduleing when to run
 ProcessMessage next. Also, TBSystem::RescheduleTimer will be called back if the time
 it needs to run next is changed.

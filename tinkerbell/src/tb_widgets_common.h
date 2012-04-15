@@ -193,11 +193,13 @@ public:
 	bool IsRunning() { return m_value > 0; }
 
 	/** Begin/End are used to start or stop the animation in a incremental way.
-		If several sources may activate the same spinner, calling Begin/End instead
+		If several tasks may activate the same spinner, calling Begin/End instead
 		of using SetValue, so it will keep running as long as any source wants it to. */
 	void Begin() { SetValue(GetValue() + 1); }
 	void End() { SetValue(GetValue() - 1); }
 
+	/** Setting the value to 1 will start the spinner.
+		Setting it to 0 will stop it. */
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
 
@@ -283,10 +285,10 @@ public:
 
 	/** Same as SetValue, but with double precision. */
 	void SetValueDouble(double value);
-	double GetValueDouble() const { return m_value; }
+	virtual double GetValueDouble() { return m_value; }
 
-	void SetValue(int value) { SetValueDouble(value); }
-	int GetValue() { return (int) GetValueDouble(); }
+	virtual void SetValue(int value) { SetValueDouble(value); }
+	virtual int GetValue() { return (int) GetValueDouble(); }
 
 	virtual bool OnEvent(const WidgetEvent &ev);
 protected:
@@ -326,10 +328,10 @@ public:
 
 	/** Same as SetValue, but with double precision. */
 	void SetValueDouble(double value);
-	double GetValueDouble() const { return m_value; }
+	virtual double GetValueDouble() { return m_value; }
 
-	void SetValue(int value) { SetValueDouble(value); }
-	int GetValue() { return (int) GetValueDouble(); }
+	virtual void SetValue(int value) { SetValueDouble(value); }
+	virtual int GetValue() { return (int) GetValueDouble(); }
 
 	virtual bool OnEvent(const WidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);

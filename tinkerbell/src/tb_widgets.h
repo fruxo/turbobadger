@@ -176,6 +176,9 @@ enum WIDGET_HIT_STATUS {
 /** Call GetWidgetByID and cast. Will return nullptr if the widget is of the wrong type, or if it was not found.  */
 #define TBSafeGetByID(classname, id) (static_cast<classname *>(GetWidgetByID(id, #classname)))
 
+/** Call GetWidgetByID on root and cast. Will return nullptr if the widget is of the wrong type, or if it was not found.  */
+#define TBSafeGetByIDInRoot(root, classname, id) (static_cast<classname *>(root->GetWidgetByID(id, #classname)))
+
 /** The base Widget class.
 	Make a subclass to implement UI controls.
 	Each widget has a background skin (no skin specified by default) which will be used to
@@ -451,6 +454,10 @@ public:
 		Note: Some widgets also provide special setters with other types (such as double). */
 	virtual void SetValue(int value) {}
 	virtual int GetValue() { return 0; }
+
+	/** Return the value in double precision. It only makes sense to use this instead
+		of GetValue() on widgets that store the value as double, such as TBScrollBar, TBSlider. */
+	virtual double GetValueDouble() { return (double) GetValue(); }
 
 	/** Set the text of this widget. Implemented by most widgets (that has text). */
 	virtual bool SetText(const char *text) { return true; }

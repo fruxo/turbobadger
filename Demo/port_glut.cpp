@@ -16,6 +16,7 @@ TdFont *g_uisymbolfont;
 Widget *g_root = nullptr;
 
 Application *application = nullptr;
+/*static */Application *Application::GetApp() { return application; }
 
 int mainWindow;
 int window_w = 1280;
@@ -247,6 +248,7 @@ int main(int argc, char** argv)
 	glutMainLoop();
 
 	delete application;
+	application = nullptr;
 
 	delete g_root;
 	shutdown_tinkerbell();

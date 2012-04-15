@@ -16,6 +16,9 @@ public:
 	Application(Widget *root) : m_root(root) {}
 	virtual ~Application() {}
 
+	static Application *GetApp();
+	Widget *GetRoot() { return m_root; }
+
 	virtual bool Init() = 0;
 	virtual void Process() = 0;
 	virtual void RenderFrame(int window_w, int window_h) = 0;

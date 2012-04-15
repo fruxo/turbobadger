@@ -80,6 +80,7 @@ Widget *CreateTBEditField(CREATE_INFO *info)
 		editfield->SetMultiline(info->node->GetValueInt("multiline", 0) ? true : false);
 		editfield->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
 		editfield->SetPassword(info->node->GetValueInt("password", 0) ? true : false);
+		editfield->SetWrapping(info->node->GetValueInt("wrap", editfield->GetWrapping()) ? true : false);
 		if (const char *text = GetTranslatableString(info->node, "placeholder"))
 			editfield->SetPlaceholderText(text);
 		if (const char *type = info->node->GetValueString("type", nullptr))
