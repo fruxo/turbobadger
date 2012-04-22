@@ -271,6 +271,6 @@ protected:
 	void SetValueInternal(int value, bool update_text);
 };
 
-};
+}; // namespace tinkerbell
 
 #endif // TB_SELECT_H

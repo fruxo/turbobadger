@@ -38,9 +38,12 @@ enum EVENT_TYPE {
 	EVENT_TYPE_POINTER_UP,
 	EVENT_TYPE_POINTER_MOVE,
 	EVENT_TYPE_WHEEL,
+	/** Invoked after changing text in a TBTextField, or changing
+		selected item in a TBSelectList etc. */
 	EVENT_TYPE_CHANGED,
 	EVENT_TYPE_KEY_DOWN,
 	EVENT_TYPE_KEY_UP,
+	/** Invoked when a context menu should be opened at the event x and y coordinates. */
 	EVENT_TYPE_CONTEXT_MENU
 };
 

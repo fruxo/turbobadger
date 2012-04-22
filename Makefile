@@ -49,6 +49,9 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/parser/TBNodeTree.cpp \
       tinkerbell/src/parser/TBParser.cpp \
       tinkerbell/src/parser/TBValue.cpp \
+      tinkerbell/src/tests/tb_test.cpp \
+      tinkerbell/src/tests/test_tb_linklist.cpp \
+      tinkerbell/src/tests/test_tb_test.cpp \
       tdfont/tdfont.cpp \
       tdfont/tdfont_gl.cpp \
       tbanimation/Animation.cpp \

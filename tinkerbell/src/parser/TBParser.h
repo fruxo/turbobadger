@@ -45,6 +45,6 @@ private:
 	void OnCompactLine(char *line, ParserTarget *target);
 };
 
-};
+}; // namespace tinkerbell
 
 #endif // TBParser_H

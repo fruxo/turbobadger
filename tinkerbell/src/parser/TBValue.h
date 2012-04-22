@@ -88,6 +88,6 @@ public:
 	int GetArrayLength() const { return IsArray() ? val_arr->GetLength() : 0; }
 };
 
-};
+}; // namespace tinkerbell
 
 #endif // TBValue_H

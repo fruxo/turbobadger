@@ -28,6 +28,9 @@
     <Filter Include="Source Files\tbanimation">
       <UniqueIdentifier>{02dc40a7-f4f8-4dcc-85a4-200f636b1e9e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\tinkerbell\tests">
+      <UniqueIdentifier>{fcdf0ffd-9c2a-44eb-b675-c8ec88878322}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Demo01.cpp">
@@ -141,6 +144,15 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\tb_test.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_test.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -249,6 +261,9 @@
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_hash.h">
       <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tests\tb_test.h">
+      <Filter>Source Files\tinkerbell\tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

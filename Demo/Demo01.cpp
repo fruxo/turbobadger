@@ -1,6 +1,7 @@
 #include "Demo.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include "tests/tb_test.h"
 #include "tb_system.h"
 #include "tb_select.h"
 #include "tb_editfield.h"
@@ -428,6 +429,9 @@ const char *boy_names[] = {
 
 bool DemoApplication::Init()
 {
+	// Run unit tests
+	TBRunTests();
+
 	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_CENTER"));
 	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_LEFT_TOP"));
 	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_RIGHT_BOTTOM"));

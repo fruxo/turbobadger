@@ -12,8 +12,58 @@
 namespace tinkerbell {
 
 class TBLinkList;
+class TBLink;
 
-/** Link - To be inserted in LinkList */
+/** TBLinkListIterator - The backend class for a safe iteration of a TBLinkList.
+
+	You would normally recieve a typed iterator from a TBLinkListOf::IterateForward
+	or TBLinkListOf::IterateBackward, instead of creating this object directly.
+
+	Safe iteration means that if a link is removed from a linked list, _all_ iterators that currently
+	point to that link will automatically step to the next link in the iterators direction. */
+
+class TBLinkListIterator
+{
+public:
+	TBLinkListIterator(const TBLinkListIterator &iter);
+	TBLinkListIterator(TBLinkList *linklist, bool forward);
+	~TBLinkListIterator();
+
+	/** Set the iterator to the first link in we iterate forward,
+		or set it to the last link if we iterate backward.  */
+	void Reset();
+
+	/** Get the current link or nullptr if out of bounds. */
+	TBLink *Get() const { return m_current_link; }
+
+	/** Get the current link and step the iterator to the next (forward or backward). */
+	TBLink *GetAndStep();
+
+	operator TBLink *() const { return m_current_link; }
+
+	const TBLinkListIterator& operator = (const TBLinkListIterator &iter);
+private:
+	TBLinkList *m_linklist;			///< The linklist we are iterating.
+	TBLink *m_current_link;			///< The current link, or nullptr.
+	bool m_forward;					///< true if we iterate from first to last item.
+
+	TBLinkListIterator *m_prev;		///< Link in list of iterators for m_linklist
+	TBLinkListIterator *m_next;		///< Link in list of iterators for m_linklist
+
+	/** RemoveLink is called when removing/deleting links in the target linklist.
+		This will make sure iterators skip the deleted item. */
+	void RemoveLink(TBLink *link);
+	friend class TBLinkList;
+
+	/** Add ourself to the chain of iterators in the linklist. */
+	void Register();
+
+	/** Unlink ourself from the chain of iterators in the linklist. */
+	void Unregister();
+};
+
+/** TBLink - The backend class to be inserted in TBLinkList.
+	Use the typed TBLinkOf for object storing! */
 
 class TBLink
 {
@@ -34,13 +84,14 @@ public:
 	inline T *GetNext() const { return (T *) next; }
 };
 
-/** LinkList - This is the backend for TBLinkListOf and TBLinkListAutoDeleteOf.
+/** TBLinkList - This is the backend for TBLinkListOf and TBLinkListAutoDeleteOf.
 	You should use the typed TBLinkListOf or TBLinkListAutoDeleteOf for object storing! */
 
 class TBLinkList
 {
 public:
-	TBLinkList() : first(nullptr), last(nullptr) {}
+	TBLinkList() : first(nullptr), last(nullptr), first_iterator(nullptr) {}
+	~TBLinkList();
 
 	void Remove(TBLink *link);
 	void Delete(TBLink *link);
@@ -57,6 +108,7 @@ public:
 public:
 	TBLink *first;
 	TBLink *last;
+	TBLinkListIterator *first_iterator;
 };
 
 /** TBLinkListOf is a double linked linklist. */
@@ -100,6 +152,22 @@ public:
 
 	/** Count the number of links in this list by iterating through all links. */
 	int CountItems() const { return m_linklist.CountItems(); }
+
+	/** Typed iterator for safe iteration. For more info, see TBLinkListIterator. */
+	class Iterator : public TBLinkListIterator
+	{
+	public:
+		Iterator(TBLinkListOf<T> *linklistof, bool forward) : TBLinkListIterator(&linklistof->m_linklist, forward) {}
+		inline T *Get() const { return (T *) TBLinkListIterator::Get(); }
+		inline T *GetAndStep() { return (T *) TBLinkListIterator::GetAndStep(); }
+		inline operator T *() const { return (T *) Get(); }
+	};
+
+	/** Get a forward iterator that starts with the first link. */
+	Iterator IterateForward() { return Iterator(this, true); }
+
+	/** Get a backward iterator that starts with the last link. */
+	Iterator IterateBackward() { return Iterator(this, false); }
 private:
 	TBLinkList m_linklist;
 };

@@ -67,6 +67,7 @@ private:
 };
 
 /** TBHashTableIterator is a iterator for stepping through all content stored in a TBHashTable. */
+//FIX: make it safe in case the current item is removed from the hashtable
 class TBHashTableIterator
 {
 public:
