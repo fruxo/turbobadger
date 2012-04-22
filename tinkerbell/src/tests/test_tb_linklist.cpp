@@ -15,24 +15,32 @@ TB_TEST_GROUP(tb_linklist)
 	class Apple : public TBLinkOf<Apple>
 	{
 	public:
-		Apple(int id) : id(id) {}
+		Apple(int id) : id(id) { total_apple_count++; }
+		~Apple() { total_apple_count--; }
+
 		int id;
+		static int total_apple_count;
 	};
+	int Apple::total_apple_count = 0;
 
 	TBLinkListOf<Apple> list;
 
-	bool SetupList(int num_apples)
+	bool AddAppless(int num_apples)
 	{
-		list.DeleteAll();
 		for (int i = 0; i < num_apples; i++)
 			list.AddLast(new Apple(i + 1));
 		return list.CountItems() == num_apples;
 	}
 
+	TB_TEST(Setup)
+	{
+		// Add 3 apples to list for each test.
+		list.DeleteAll();
+		TB_VERIFY(AddAppless(3));
+	}
+
 	TB_TEST(iteration_while_delete_all)
 	{
-		TB_VERIFY(SetupList(3));
-
 		TBLinkListOf<Apple>::Iterator iterator = list.IterateForward();
 		while (Apple *apple = iterator.GetAndStep())
 		{
@@ -46,8 +54,6 @@ TB_TEST_GROUP(tb_linklist)
 
 	TB_TEST(iteration_while_delete)
 	{
-		TB_VERIFY(SetupList(3));
-
 		TBLinkListOf<Apple>::Iterator iterator = list.IterateForward();
 		while (Apple *apple = iterator.GetAndStep())
 		{
@@ -63,8 +69,6 @@ TB_TEST_GROUP(tb_linklist)
 
 	TB_TEST(forward_iterator)
 	{
-		TB_VERIFY(SetupList(3));
-
 		TBLinkListOf<Apple>::Iterator i = list.IterateForward();
 		TB_VERIFY(i.Get()->id == 1);
 
@@ -79,8 +83,6 @@ TB_TEST_GROUP(tb_linklist)
 
 	TB_TEST(backward_iterator)
 	{
-		TB_VERIFY(SetupList(3));
-
 		TBLinkListOf<Apple>::Iterator i = list.IterateBackward();
 		TB_VERIFY(i.Get()->id == 3);
 
@@ -95,8 +97,6 @@ TB_TEST_GROUP(tb_linklist)
 
 	TB_TEST(multiple_iterators_assign)
 	{
-		TB_VERIFY(SetupList(3));
-
 		TBLinkListOf<Apple>::Iterator iA = list.IterateForward();
 		TBLinkListOf<Apple>::Iterator iB = list.IterateBackward();
 
@@ -111,7 +111,6 @@ TB_TEST_GROUP(tb_linklist)
 
 	TB_TEST(multiple_iterators_assign_swap_list)
 	{
-		TB_VERIFY(SetupList(3));
 		TBLinkListOf<Apple> other_list;
 		other_list.AddLast(new Apple(42));
 
@@ -124,6 +123,20 @@ TB_TEST_GROUP(tb_linklist)
 		iA = iB;
 		TB_VERIFY(iA.GetAndStep()->id == 42);
 		TB_VERIFY(iA.Get() == nullptr);
+	}
+
+	TB_TEST(autodelete)
+	{
+		// Check that the apples really are destroyed.
+		int old_total_apple_count = Apple::total_apple_count;
+		// Scope for TBLinkListAutoDeleteOf
+		{
+			TBLinkListAutoDeleteOf<Apple> autodelete_list;
+			autodelete_list.AddLast(new Apple(1));
+			autodelete_list.AddLast(new Apple(2));
+			TB_VERIFY(Apple::total_apple_count == old_total_apple_count + 2);
+		}
+		TB_VERIFY(Apple::total_apple_count == old_total_apple_count);
 	}
 }
 

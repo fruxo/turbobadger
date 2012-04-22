@@ -16,8 +16,8 @@
 	I've chosen to not use any other framework for tinkerbells internal
 	testing to minimize dependences.
 
-	How to define a test run:
-	------------------------
+	How to define a single test:
+	---------------------------
 
 	TB_TEST_GROUP(groupname)
 	{
@@ -29,8 +29,8 @@
 		}
 	}
 
-	How to define a test with additional data, setup, cleanup and multiple tests:
-	----------------------------------------------------------------------------
+	How to define multiple tests, with data, setup and cleanup:
+	----------------------------------------------------------
 
 	TB_TEST_GROUP(groupname)
 	{
