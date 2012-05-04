@@ -29,7 +29,7 @@ TB_TEST_GROUP(tb_linklist)
 	{
 		for (int i = 0; i < num_apples; i++)
 			list.AddLast(new Apple(i + 1));
-		return list.CountItems() == num_apples;
+		return list.CountLinks() == num_apples;
 	}
 
 	TB_TEST(Setup)
@@ -49,7 +49,7 @@ TB_TEST_GROUP(tb_linklist)
 			list.DeleteAll();
 		}
 		// success already, if we didn't crash
-		TB_VERIFY(list.CountItems() == 0);
+		TB_VERIFY(list.CountLinks() == 0);
 	}
 
 	TB_TEST(iteration_while_delete)
@@ -64,7 +64,7 @@ TB_TEST_GROUP(tb_linklist)
 			list.Delete(apple);
 		}
 		// success already, if we didn't crash
-		TB_VERIFY(list.CountItems() == 0);
+		TB_VERIFY(list.CountLinks() == 0);
 	}
 
 	TB_TEST(forward_iterator)

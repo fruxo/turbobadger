@@ -59,9 +59,7 @@ void TBWindow::ResizeToFitContent(RESIZE_FIT fit)
 
 void TBWindow::Close()
 {
-	if (m_parent)
-		m_parent->RemoveChild(this);
-	delete this;
+	Die();
 }
 
 bool TBWindow::IsActive()
@@ -158,11 +156,11 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 	}
 	if (settings & WINDOW_SETTINGS_CLOSE_BUTTON)
 	{
-		if (!m_close_button.m_parent)		AddChild(&m_close_button);
+		if (!m_close_button.m_parent)	AddChild(&m_close_button);
 	}
 	else if (!(settings & WINDOW_SETTINGS_CLOSE_BUTTON))
 	{
-		if (m_close_button.m_parent)			RemoveChild(&m_close_button);
+		if (m_close_button.m_parent)	RemoveChild(&m_close_button);
 	}
 
 	// FIX: invalidate layout / resize window!

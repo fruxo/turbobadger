@@ -93,6 +93,21 @@ void Widget::InvalidateStates()
 	update_widget_states = true;
 }
 
+void Widget::Die()
+{
+	if (m_packed.is_dying)
+		return;
+	m_packed.is_dying = true;
+	OnDie();
+	if (!TBGlobalWidgetListener::InvokeWidgetDying(this))
+	{
+		// No one was interested, so die immediately.
+		if (m_parent)
+			m_parent->RemoveChild(this);
+		delete this;
+	}
+}
+
 Widget *Widget::GetWidgetByID(const TBID &id, const char *classname)
 {
 	if (m_id == id && (!classname || IsOfType(classname)))
@@ -273,7 +288,7 @@ bool Widget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 {
 	if (focused_widget == this)
 		return true;
-	if (GetDisabled() || !GetIsFocusable() || !GetVisibility())
+	if (GetDisabled() || !GetIsFocusable() || !GetVisibility() || GetIsDying())
 		return false;
 
 	// Update windows last focus
@@ -357,7 +372,7 @@ Widget *Widget::GetPrevDeep() const
 
 WIDGET_HIT_STATUS Widget::GetHitStatus(int x, int y)
 {
-	if (m_opacity == 0 || GetIgnoreInput() || GetState(WIDGET_STATE_DISABLED))
+	if (m_opacity == 0 || GetIgnoreInput() || GetState(WIDGET_STATE_DISABLED) || GetIsDying())
 		return WIDGET_HIT_STATUS_NO_HIT;
 	return x >= 0 && y >= 0 && x < m_rect.w && y < m_rect.h ? WIDGET_HIT_STATUS_HIT : WIDGET_HIT_STATUS_NO_HIT;
 }
@@ -832,6 +847,7 @@ void Widget::InvokeKey(int key, int special_key, MODIFIER_KEYS modifierkeys, boo
 		// Emulate a click on the focused widget when pressing space or enter
 		if (!modifierkeys && focused_widget->GetClickByKey() &&
 			!focused_widget->GetDisabled() &&
+			!focused_widget->GetIsDying() &&
 			(special_key == TB_KEY_ENTER || key == ' '))
 		{
 			// Set the pressed state while the key is down, if it

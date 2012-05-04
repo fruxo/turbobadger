@@ -13,7 +13,7 @@ namespace tinkerbell {
 
 /** Base class for widget animations. This animation object will
 	be deleted automatically if the widget is deleted. */
-class WidgetAnimationObject : public AnimationObject
+class WidgetAnimationObject : public AnimationObject, public TBLinkOf<WidgetAnimationObject>
 {
 public:
 	WidgetAnimationObject(Widget *widget);
@@ -25,13 +25,14 @@ public:
 class WidgetAnimationOpacity : public WidgetAnimationObject
 {
 public:
-	WidgetAnimationOpacity(Widget *widget, float src_opacity, float dst_opacity);
+	WidgetAnimationOpacity(Widget *widget, float src_opacity, float dst_opacity, bool die);
 	virtual void OnAnimationStart();
 	virtual void OnAnimationUpdate(float progress);
 	virtual void OnAnimationStop(bool aborted);
 private:
 	float m_src_opacity;
 	float m_dst_opacity;
+	bool m_die;
 };
 
 class WidgetAnimationRect : public WidgetAnimationObject
@@ -56,6 +57,7 @@ public:
 
 	// == TBGlobalWidgetListener ==================
 	virtual void OnWidgetDelete(Widget *widget);
+	virtual bool OnWidgetDying(Widget *widget);
 	virtual void OnWidgetAdded(Widget *widget);
 	virtual void OnWidgetRemove(Widget *widget);
 };

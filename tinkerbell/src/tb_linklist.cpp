@@ -206,7 +206,7 @@ void TBLinkList::DeleteAll()
 	}
 }
 
-int TBLinkList::CountItems() const
+int TBLinkList::CountLinks() const
 {
 	int count = 0;
 	for (TBLink *link = first; link; link = link->next)

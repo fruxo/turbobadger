@@ -211,6 +211,18 @@ public:
 			EVENT_TYPE_CLICK, EVENT_TYPE_CHANGED, EVENT_TYPE_KEYDOWN, EVENT_TYPE_KEYUP. */
 	void InvalidateStates();
 
+	/** Delete the widget with the possibility for some extended life during animations.
+
+		If any widgetlistener responds true to OnWidgetDying it will be kept as a child and live
+		until the animations are done, but the widgets and all its children are marked as dying.
+		Dying widgets get no input or focus.
+
+		If no widgetlistener responded, it will be deleted immediately. */
+	void Die();
+
+	/** Return true if this widget or any of its parents is dying. */
+	bool GetIsDying() { return m_packed.is_dying || (m_parent && m_parent->GetIsDying()); }
+
 	/** Get the id reference for this widgets. This id is 0 by default.
 		You can use this id to receive the widget from GetWidgetByID (or
 		preferable TBSafeGetByID to avoid dangerous casts). */
@@ -406,6 +418,10 @@ public:
 	/** Called when a this widget has been removed from its parent (after calling OnChildRemove on parent). */
 	virtual void OnRemove() {}
 
+	/** Called when Die() is called on this widget. Note: Not called for children to the widget Die() was
+		invoked on even though they are also dying. */
+	virtual void OnDie() {}
+
 	/** Called when this view has been resized.
 		The default implementation move and resize all children according to their gravity. */
 	virtual void OnResized(int old_w, int old_h);
@@ -570,6 +586,7 @@ public:
 			uint16 is_focusable : 1;
 			uint16 click_by_key : 1;
 			uint16 ignore_input : 1;
+			uint16 is_dying: 1;
 		} m_packed;
 		uint16 m_packed_init;
 	};

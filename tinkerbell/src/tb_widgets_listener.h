@@ -30,6 +30,15 @@ public:
 	/** Called when widget is being deleted (in its destructor, so virtual functions are already gone). */
 	virtual void OnWidgetDelete(Widget *widget) {}
 
+	/** This is called when the widget request to be deleted.
+		Return true if you want the widget to not die immediately, f.ex. to fade it out before it
+		is deleted. If you return true, it's up to you to finally remove it from its parent delete it.
+
+		Remember that the widget may still be deleted prematurely for many other reasons (f.ex if its parent is
+		deleted or several listeners respond true and take on the task to delete it at some point). You can
+		use TBWidgetSafePointer to safely handle that. */
+	virtual bool OnWidgetDying(Widget *widget) { return false; }
+
 	/** Called when widget has been added to a parent, after its parents OnChildAdded. */
 	virtual void OnWidgetAdded(Widget *widget) {}
 
@@ -46,6 +55,7 @@ public:
 private:
 	friend class Widget;
 	static void InvokeWidgetDelete(Widget *widget);
+	static bool InvokeWidgetDying(Widget *widget);
 	static void InvokeWidgetAdded(Widget *widget);
 	static void InvokeWidgetRemove(Widget *widget);
 	static void InvokeWidgetFocusChanged(Widget *widget, bool focused);
@@ -80,6 +90,6 @@ private:
 	Widget *m_widget;
 };
 
-};
+}; // namespace tinkerbell
 
 #endif // TB_WIDGETSLISTENER_H

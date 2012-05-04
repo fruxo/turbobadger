@@ -130,6 +130,12 @@ bool TBMessageWindow::OnEvent(const WidgetEvent &ev)
 	return TBWindow::OnEvent(ev);
 }
 
+void TBMessageWindow::OnDie()
+{
+	if (Widget *dimmer = m_dimmer.Get())
+		dimmer->Die();
+}
+
 void TBMessageWindow::OnWidgetDelete(Widget *widget)
 {
 	TBWidgetSafePointer::OnWidgetDelete(widget);

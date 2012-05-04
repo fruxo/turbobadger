@@ -28,6 +28,15 @@ void TBGlobalWidgetListener::InvokeWidgetDelete(Widget *widget)
 		listener->OnWidgetDelete(widget);
 }
 
+bool TBGlobalWidgetListener::InvokeWidgetDying(Widget *widget)
+{
+	bool handled = false;
+	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
+	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
+		handled |= listener->OnWidgetDying(widget);
+	return handled;
+}
+
 void TBGlobalWidgetListener::InvokeWidgetAdded(Widget *widget)
 {
 	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();

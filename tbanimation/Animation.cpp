@@ -30,8 +30,8 @@ void AnimationManager::Update()
 {
 	double time_now = TBSystem::GetTimeMS();
 
-	AnimationObject *obj = animating_objects.GetFirst();
-	while (obj)
+	TBLinkListOf<AnimationObject>::Iterator iter = animating_objects.IterateForward();
+	while (AnimationObject *obj = iter.GetAndStep())
 	{
 		// Calculate current progress
 		float progress = (float)(time_now - obj->animation_start_time) / (float)obj->animation_duration;
@@ -45,6 +45,9 @@ void AnimationManager::Update()
 			tmp = 1 - progress;
 			progress = 1 - tmp * tmp * tmp;
 			break;
+		case ANIMATION_CURVE_SPEED_UP:
+			progress = progress * progress * progress;
+			break;
 		case ANIMATION_CURVE_BEZIER:
 			progress = SMOOTHSTEP(progress);
 			break;
@@ -56,14 +59,11 @@ void AnimationManager::Update()
 		obj->OnAnimationUpdate(progress);
 
 		// Remove completed animations
-		AnimationObject *next_obj = obj->GetNext();
 		if (progress == 1.0f)
 		{
 			animating_objects.Remove(obj);
 			obj->OnAnimationStop(false);
 		}
-
-		obj = next_obj;
 	}
 }
 

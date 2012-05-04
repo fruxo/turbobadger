@@ -52,6 +52,7 @@ public:
 	virtual Widget *GetEventDestination() { return Get(); }
 
 	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual void OnDie();
 private:
 	void AddButton(TBID id, bool focused);
 	virtual void OnWidgetDelete(Widget *widget);
