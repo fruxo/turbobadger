@@ -118,10 +118,10 @@ class TBLinkListOf
 {
 public:
 	/** Remove link from this linklist. */
-	void Remove(T *link)			{ m_linklist.Remove((T::TBLinkOf<T>*)link); }
+	void Remove(T *link)			{ m_linklist.Remove((TBLinkOf<T>*)link); }
 
 	/** Remove link from this linklist and delete it. */
-	void Delete(T *link)			{ m_linklist.Delete((T::TBLinkOf<T>*)link); }
+	void Delete(T *link)			{ m_linklist.Delete((TBLinkOf<T>*)link); }
 
 	/** Remove all links without deleding them. */
 	void RemoveAll()				{ m_linklist.RemoveAll(); }
@@ -130,16 +130,16 @@ public:
 	void DeleteAll()				{ m_linklist.DeleteAll(); }
 
 	/** Add link first in this linklist. */
-	void AddFirst(T *link)			{ m_linklist.AddFirst((T::TBLinkOf<T>*)link); }
+	void AddFirst(T *link)			{ m_linklist.AddFirst((TBLinkOf<T>*)link); }
 
 	/** Add link last in this linklist. */
-	void AddLast(T *link)			{ m_linklist.AddLast((T::TBLinkOf<T>*)link); }
+	void AddLast(T *link)			{ m_linklist.AddLast((TBLinkOf<T>*)link); }
 
 	/** Add link before the reference link (which must be added to this linklist). */
-	void AddBefore(T *link, T *reference) { m_linklist.AddBefore((T::TBLinkOf<T>*)link, reference); }
+	void AddBefore(T *link, T *reference) { m_linklist.AddBefore((TBLinkOf<T>*)link, reference); }
 
 	/** Add link after the reference link (which must be added to this linklist). */
-	void AddAfter(T *link, T *reference) { m_linklist.AddAfter((T::TBLinkOf<T>*)link, reference); }
+	void AddAfter(T *link, T *reference) { m_linklist.AddAfter((TBLinkOf<T>*)link, reference); }
 
 	/** Get the first link, or nullptr. */
 	T *GetFirst() const { return (T *) m_linklist.first; }
@@ -158,9 +158,9 @@ public:
 	{
 	public:
 		Iterator(TBLinkListOf<T> *linklistof, bool forward) : TBLinkListIterator(&linklistof->m_linklist, forward) {}
-		inline T *Get() const { return (T *) (T::TBLinkOf<T>*) TBLinkListIterator::Get(); }
-		inline T *GetAndStep() { return (T *) (T::TBLinkOf<T>*) TBLinkListIterator::GetAndStep(); }
-		inline operator T *() const { return (T *) (T::TBLinkOf<T>*) Get(); }
+		inline T *Get() const { return (T *) (TBLinkOf<T>*) TBLinkListIterator::Get(); }
+		inline T *GetAndStep() { return (T *) (TBLinkOf<T>*) TBLinkListIterator::GetAndStep(); }
+		inline operator T *() const { return (T *) (TBLinkOf<T>*) Get(); }
 	};
 
 	/** Get a forward iterator that starts with the first link. */
