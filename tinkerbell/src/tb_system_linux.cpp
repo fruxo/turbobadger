@@ -13,7 +13,7 @@ namespace tinkerbell {
 
 void TBDebugOut(const char *str)
 {
-	printf(str);
+	printf("%s", str);
 }
 
 #endif // _DEBUG

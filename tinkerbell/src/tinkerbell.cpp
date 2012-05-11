@@ -15,12 +15,12 @@
 
 namespace tinkerbell {
 
-static char *empty = "";
+static const char *empty = "";
 inline void safe_delete(char *&str)
 {
 	if(str != empty && str)
 		free(str);
-	str = empty;
+	str = const_cast<char*>(empty);
 }
 
 // ================================================================
@@ -121,14 +121,14 @@ TBStr::TBStr(const char* str)
 	: TBStrC(str == empty ? empty : strdup(str))
 {
 	if (!s)
-		s = empty;
+		s = const_cast<char*>(empty);
 }
 
 TBStr::TBStr(const TBStr &str)
 	: TBStrC(str.s == empty ? empty : strdup(str.s))
 {
 	if (!s)
-		s = empty;
+		s = const_cast<char*>(empty);
 }
 
 TBStr::TBStr(const char* str, int len)

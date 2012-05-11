@@ -395,7 +395,7 @@ bool MyWindow::OnEvent(const WidgetEvent &ev)
 		TBStr text;
 		if (ev.target->GetText(text) && text.Length() > 24)
 			sprintf(text.CStr() + 20, "...");
-		DemoOutput("Changed to: %.2f (\"%s\")\n", ev.target->GetValueDouble(), text);
+		DemoOutput("Changed to: %.2f (\"%s\")\n", ev.target->GetValueDouble(), text.CStr());
 	}
 	return TBWindow::OnEvent(ev);
 }

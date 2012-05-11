@@ -124,10 +124,10 @@ const int8 EMBEDDED_CHARCODE = 1;
 #endif
 const char EMBEDDED_CHARSTR[2] = { EMBEDDED_CHARCODE, 0 };
 
-const char special_char_newln[] = { (char)0xB6, NULL };
-const char special_char_space[] = { (char)0xB7, NULL };
-const char special_char_tab[] = { (char)0xBB, NULL };
-const char special_char_password[] = { (char)'•', NULL };
+const char special_char_newln[] = { (char)0xB6, 0 };
+const char special_char_space[] = { (char)0xB7, 0 };
+const char special_char_tab[] = { (char)0xBB, 0 };
+const char special_char_password[] = { (char)'•', 0 };
 
 static bool is_space(int8 c)
 {
