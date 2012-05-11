@@ -9,10 +9,16 @@
 #include <stdlib.h>
 
 // There is no re-entrant qsort in the standard but there is most often qsort_r or qsort_s.
+// In addition to that mess, linux have a different qsort_r from BSD.
 #ifdef WIN32
-#define tb_qsort qsort_s
+# define tb_qsort(base, num, width, cb, context) qsort_s(base, num, width, cb, context)
+# define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
+#elif defined(LINUX)
+# define tb_qsort(base, num, width, cb, context) qsort_r(base, num, width, cb, context)
+# define tb_sort_cb(context, a, b) int select_list_sort_cb(const void *a, const void *b, void *context)
 #else
-#define tb_qsort qsort_r
+# define tb_qsort(base, num, width, cb, context) qsort_r(base, num, width, context, cb)
+# define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
 #endif
 
 namespace tinkerbell {
@@ -23,7 +29,7 @@ struct SELECT_LIST_SORT_CONTEXT {
 	TBSelectItemSource *source;
 };
 
-int select_list_sort_cb(void *_context, const void *_a, const void *_b)
+tb_sort_cb(_context, _a, _b)
 {
 	SELECT_LIST_SORT_CONTEXT *context = static_cast<SELECT_LIST_SORT_CONTEXT *>(_context);
 	int a = *((int*) _a);
@@ -291,7 +297,7 @@ void TBSelectList::ValidateList()
 	if (m_source->GetSort() != TB_SORT_NONE)
 	{
 		SELECT_LIST_SORT_CONTEXT context = { m_source };
-		tb_qsort(sorted_index, num_sorted_items, sizeof(int *), select_list_sort_cb, &context);
+		tb_qsort(sorted_index, num_sorted_items, sizeof(int), select_list_sort_cb, &context);
 	}
 
 	// Create new items
