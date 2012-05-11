@@ -1,4 +1,9 @@
+#ifdef MACOSX
+#include "GLUT/glut.h"
+#define glutLeaveMainLoop() exit(0)
+#else
 #include "GL/freeglut.h"
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -213,7 +218,9 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(window_w, window_h);
 	mainWindow = glutCreateWindow("Demo");
+#ifndef MACOSX
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+#endif
 
 	glutDisplayFunc(DisplayFunc);
 	glutReshapeFunc(ResizeFunc);
@@ -222,7 +229,9 @@ int main(int argc, char** argv)
 	glutSpecialFunc(KeyboardSpecialDown);
 	glutSpecialUpFunc(KeyboardSpecialUp);
 	glutMouseFunc(Mouse);
+#ifndef MACOSX
 	glutMouseWheelFunc(MouseWheel);
+#endif
 	glutMotionFunc(MouseMotion);
 	glutPassiveMotionFunc(MouseMotionPassive);
 
