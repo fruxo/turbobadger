@@ -15,7 +15,20 @@ int fail_line_nr;
 const char *fail_file;
 const char *fail_text;
 
-TBLinkListOf<TBTestGroup> tests;
+TBLinkListOf<TBTestGroup> groups;
+
+// == Misc functions ==========================================================
+
+TBStr tb_get_test_file_name(const char *testpath, const char *filename)
+{
+	TBStr str;
+	int test_path_len = strlen(testpath);
+	for (int i = test_path_len - 1; i > 0 && testpath[i] != '/' && testpath[i] != '\\'; i--)
+		test_path_len = i;
+	str.Set(testpath, test_path_len);
+	str.Append(filename);
+	return str;
+}
 
 // == TBRegisterCall ==========================================================
 
@@ -26,6 +39,10 @@ TBRegisterCall::TBRegisterCall(TBTestGroup *test, TBCall *call)
 		test->setup = call;
 	else if (strcmp(call->name(), "Cleanup") == 0)
 		test->cleanup = call;
+	else if (strcmp(call->name(), "Init") == 0)
+		test->init = call;
+	else if (strcmp(call->name(), "Shutdown") == 0)
+		test->shutdown = call;
 	else
 		test->calls.AddLast(call);
 }
@@ -39,14 +56,14 @@ TBRegisterCall::~TBRegisterCall()
 // == TBTestGroup =============================================================
 
 TBTestGroup::TBTestGroup(const char *name)
-	: name(name), setup(nullptr), cleanup(nullptr)
+	: name(name), setup(nullptr), cleanup(nullptr), init(nullptr), shutdown(nullptr)
 {
-	tests.AddLast(this);
+	groups.AddLast(this);
 }
 
 TBTestGroup::~TBTestGroup()
 {
-	tests.Remove(this);
+	groups.Remove(this);
 }
 
 const char *CallAndOutput(TBTestGroup *test, TBCall *call)
@@ -83,20 +100,35 @@ void TBRunTests(uint32 settings)
 
 	TBDebugOut("Running tests...\n");
 
-	TBLinkListOf<TBTestGroup>::Iterator i = tests.IterateForward();
-	while (TBTestGroup *test = i.GetAndStep())
+	TBLinkListOf<TBTestGroup>::Iterator i = groups.IterateForward();
+	while (TBTestGroup *group = i.GetAndStep())
 	{
-		for (TBCall *call = test->calls.GetFirst(); call; call = call->GetNext())
+		if (group->init && CallAndOutput(group, group->init))
+		{
+			// The whole group failed because init failed.
+			int num_tests_in_group = 0;
+			for (TBCall *call = group->calls.GetFirst(); call; call = call->GetNext())
+				if (!group->IsSpecialTest(call))
+					num_tests_in_group++;
+
+			TBStr msg;
+			msg.SetFormatted("  %d tests skipped.\n", num_tests_in_group);
+			TBDebugOut(msg);
+
+			num_failed += num_tests_in_group;
+			continue;
+		}
+		for (TBCall *call = group->calls.GetFirst(); call; call = call->GetNext())
 		{
 			// Execute test (and call setup and cleanup if available).
 			int fail = 0;
-			if (test->setup)
-				fail = !!CallAndOutput(test, test->setup);
+			if (group->setup)
+				fail = !!CallAndOutput(group, group->setup);
 			if (!fail) // Only run if setup succeeded
 			{
-				fail |= !!CallAndOutput(test, call);
-				if (test->cleanup)
-					fail |= !!CallAndOutput(test, test->cleanup);
+				fail |= !!CallAndOutput(group, call);
+				if (group->cleanup)
+					fail |= !!CallAndOutput(group, group->cleanup);
 			}
 			// Handle result
 			if (fail)
@@ -104,9 +136,11 @@ void TBRunTests(uint32 settings)
 			else
 			{
 				num_passed++;
-				OutputPass(test, call->name());
+				OutputPass(group, call->name());
 			}
 		}
+		if (group->shutdown && CallAndOutput(group, group->shutdown))
+			CallAndOutput(group, group->shutdown);
 	}
 
 	TBStr msg;

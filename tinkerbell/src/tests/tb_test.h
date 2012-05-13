@@ -16,6 +16,20 @@
 	I've chosen to not use any other framework for tinkerbells internal
 	testing to minimize dependences.
 
+	Test groups and tests:
+	---------------------
+
+	Tests are specified in named groups, that can contain multiple named tests
+	that are run in the order specified, except for special tests.
+
+	Special tests are test with the names Init, Shutdown, Setup, Cleanup.
+	They can be left out if they are not needed.
+
+	Init and Shutdown - Called once per group. If Init fail, the tests in the
+						group and Shutdown will be skipped.
+	Setup and Cleanup - Called once per test. If Setup fail, the current test
+						and Cleanup will be skipped.
+
 	How to define a single test:
 	---------------------------
 
@@ -24,7 +38,7 @@
 		TB_TEST(testname)
 		{
 			// Here goes test code and calls
-			// to TB_VERIFY, TB_PASS, TB_FAIL
+			// to TB_VERIFY, TB_PASS, TB_FAIL etc.
 			TB_VERIFY(1);
 		}
 	}
@@ -34,7 +48,7 @@
 
 	TB_TEST_GROUP(groupname)
 	{
-		// Here goes the data
+		// Here goes the data for this group
 		TBStr str;
 
 		// Here goes methods with access to data
@@ -70,6 +84,7 @@
 
 #include "tb_types.h"
 #include "tb_linklist.h"
+#include <math.h>
 
 namespace tinkerbell {
 
@@ -88,11 +103,20 @@ void TBRunTests(uint32 settings = TB_TEST_VERBOSE);
 /** Verify that the expression is true and fail if it isn't. */
 #define TB_VERIFY(expr) { fail_line_nr = __LINE__; fail_file = __FILE__; if (!(expr)) { fail_text = (#expr); return; } }
 
+/** Verify that the values are approximately the same. */
+#define TB_VERIFY_FLOAT(val, ref_val) { TB_VERIFY(fabs(ref_val - val) < 1.0E-5); }
+
+/** Verify that the strings are equal. */
+#define TB_VERIFY_STR(str1, str2) { TB_VERIFY(strcmp(str1, str2) == 0); }
+
 /** End the test with a pass. */
 #define TB_PASS() return;
 
 /** End the test with a description why it failed. */
 #define TB_FAIL(error) { fail_line_nr = __LINE__; fail_file = __FILE__; fail_text = error; return; }
+
+/** Return a absolute path for the given filename relative to the test source file. */
+#define TB_TEST_FILE(filename) tb_get_test_file_name(__FILE__, filename)
 
 /** TBCall is used to execute callbacks for tests in TBTestGroup. */
 class TBCall : public TBLinkOf<TBCall>
@@ -110,10 +134,13 @@ class TBTestGroup : public TBLinkOf<TBTestGroup>
 public:
 	TBTestGroup(const char *name);
 	~TBTestGroup();
+	bool IsSpecialTest(TBCall *call) const { return !call->linklist; }
 public:
 	const char *name;		///< Test group name.
 	TBCall *setup;			///< Setup call, or nullptr.
 	TBCall *cleanup;		///< Cleanup call, or nullptr.
+	TBCall *init;			///< Init call, or nullptr.
+	TBCall *shutdown;		///< Shutdown call, or nullptr.
 	TBLinkListOf<TBCall> calls;///< All test calls to call.
 };
 
@@ -150,6 +177,8 @@ private:
 			TBRegisterCall callname##reg(&the_group_obj, &callname); \
 			const char *CallObj##callname::name() { return #callname; } \
 			void CallObj##callname::exec()
+
+TBStr tb_get_test_file_name(const char *testpath, const char *filename);
 
 // Internal globals
 extern uint32 test_settings;	///< Settings, as sent to TBRunTests
