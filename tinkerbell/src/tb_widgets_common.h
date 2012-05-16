@@ -56,6 +56,7 @@ public:
 	/** Set the text of the textfield. */
 	virtual bool SetText(const char *text);
 	virtual bool GetText(TBStr &text) { return m_text.GetText(text); }
+	using Widget::GetText; ///< Make all versions in base class available.
 
 	/** Set which alignment the text should have if the space
 		given when painting is larger than the text. */
@@ -103,6 +104,7 @@ public:
 	/** Set the text of the button. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
+	using Widget::GetText; ///< Make all versions in base class available.
 
 	virtual void SetValue(int value) { SetState(WIDGET_STATE_PRESSED, value ? true : false); }
 	virtual int GetValue() { return GetState(WIDGET_STATE_PRESSED); }
@@ -142,6 +144,7 @@ public:
 	/** Set the text of the label. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
+	using Widget::GetText; ///< Make all versions in base class available.
 
 	virtual PreferredSize GetPreferredContentSize() { return m_layout.GetPreferredSize(); }
 
@@ -284,7 +287,7 @@ public:
 	double GetVisible() const { return m_visible; }
 
 	/** Same as SetValue, but with double precision. */
-	void SetValueDouble(double value);
+	virtual void SetValueDouble(double value);
 	virtual double GetValueDouble() { return m_value; }
 
 	virtual void SetValue(int value) { SetValueDouble(value); }
@@ -327,7 +330,7 @@ public:
 	double GetSmallStep() const { return (m_max - m_min) / 100.0; }
 
 	/** Same as SetValue, but with double precision. */
-	void SetValueDouble(double value);
+	virtual void SetValueDouble(double value);
 	virtual double GetValueDouble() { return m_value; }
 
 	virtual void SetValue(int value) { SetValueDouble(value); }

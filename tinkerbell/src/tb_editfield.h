@@ -63,6 +63,7 @@ public:
 	virtual bool SetText(const char *text) { return m_style_edit.SetText(text); }
 	virtual bool SetText(const char *text, bool move_caret_to_end) { return m_style_edit.SetText(text, move_caret_to_end); }
 	virtual bool GetText(TBStr &text) { return m_style_edit.GetText(text); }
+	using Widget::GetText; ///< Make all versions in base class available.
 
 	/** Set the placeholder text. It will be visible only when the textfield is empty. */
 	virtual bool SetPlaceholderText(const char *text) { return m_placeholder.SetText(text); }

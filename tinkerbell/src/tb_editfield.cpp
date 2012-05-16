@@ -254,6 +254,8 @@ void TBEditField::OnMessageReceived(TBMessage *msg)
 
 void TBEditField::OnChange()
 {
+	//FIX: some of theese in tinkerbell doesn't check if the widget is removed afterwards!
+	//     it's not unlikely that it might result in the widget to be removed.
 	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 }

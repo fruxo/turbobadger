@@ -239,24 +239,24 @@ TBWidgetsReader *TBWidgetsReader::Create()
 bool TBWidgetsReader::Init()
 {
 	bool fail = false;
-	fail |= !AddCreator("TBButton", CreateTBButton, WIDGET_Z_BOTTOM);
-	fail |= !AddCreator("TBInlineSelect", CreateTBInlineSelect);
-	fail |= !AddCreator("TBClickLabel", CreateTBClickLabel, WIDGET_Z_BOTTOM);
-	fail |= !AddCreator("TBTextField", CreateTBTextField);
-	fail |= !AddCreator("TBEditField", CreateTBEditField);
-	fail |= !AddCreator("TBCheckBox", CreateTBCheckBox);
-	fail |= !AddCreator("TBRadioButton", CreateTBRadioButton);
-	fail |= !AddCreator("TBLayout", CreateTBLayout);
-	fail |= !AddCreator("TBScrollContainer", CreateTBScrollContainer);
-	fail |= !AddCreator("TBTabContainer", CreateTBTabContainer);
-	fail |= !AddCreator("TBSelectDropdown", CreateTBSelectDropdown);
-	fail |= !AddCreator("TBSelectList", CreateTBSelectList);
-	fail |= !AddCreator("TBScrollBar", CreateTBScrollBar);
-	fail |= !AddCreator("TBSlider", CreateTBSlider);
-	fail |= !AddCreator("TBSkinImage", CreateTBSkinImage);
-	fail |= !AddCreator("TBSeparator", CreateTBSeparator);
-	fail |= !AddCreator("TBProgressSpinner", CreateTBProgressSpinner);
-	fail |= !AddCreator("TBContainer", CreateTBContainer);
+	fail |= !AddCreator("TBButton", CreateTBButton, TBValue::TYPE_NULL, WIDGET_Z_BOTTOM);
+	fail |= !AddCreator("TBInlineSelect", CreateTBInlineSelect, TBValue::TYPE_INT);
+	fail |= !AddCreator("TBClickLabel", CreateTBClickLabel, TBValue::TYPE_STRING, WIDGET_Z_BOTTOM);
+	fail |= !AddCreator("TBTextField", CreateTBTextField, TBValue::TYPE_STRING);
+	fail |= !AddCreator("TBEditField", CreateTBEditField, TBValue::TYPE_STRING);
+	fail |= !AddCreator("TBCheckBox", CreateTBCheckBox, TBValue::TYPE_INT);
+	fail |= !AddCreator("TBRadioButton", CreateTBRadioButton, TBValue::TYPE_INT);
+	fail |= !AddCreator("TBLayout", CreateTBLayout, TBValue::TYPE_NULL);
+	fail |= !AddCreator("TBScrollContainer", CreateTBScrollContainer, TBValue::TYPE_NULL);
+	fail |= !AddCreator("TBTabContainer", CreateTBTabContainer, TBValue::TYPE_NULL);
+	fail |= !AddCreator("TBSelectDropdown", CreateTBSelectDropdown, TBValue::TYPE_INT);
+	fail |= !AddCreator("TBSelectList", CreateTBSelectList, TBValue::TYPE_INT);
+	fail |= !AddCreator("TBScrollBar", CreateTBScrollBar, TBValue::TYPE_FLOAT);
+	fail |= !AddCreator("TBSlider", CreateTBSlider, TBValue::TYPE_FLOAT);
+	fail |= !AddCreator("TBSkinImage", CreateTBSkinImage, TBValue::TYPE_NULL);
+	fail |= !AddCreator("TBSeparator", CreateTBSeparator, TBValue::TYPE_NULL);
+	fail |= !AddCreator("TBProgressSpinner", CreateTBProgressSpinner, TBValue::TYPE_INT);
+	fail |= !AddCreator("TBContainer", CreateTBContainer, TBValue::TYPE_NULL);
 	return !fail;
 }
 
@@ -264,7 +264,7 @@ TBWidgetsReader::~TBWidgetsReader()
 {
 }
 
-bool TBWidgetsReader::AddCreator(const char *name, WIDGET_CREATE_CB cb, WIDGET_Z add_child_z)
+bool TBWidgetsReader::AddCreator(const char *name, WIDGET_CREATE_CB cb, TBValue::TYPE sync_type, WIDGET_Z add_child_z)
 {
 	WidgetFactory *wc = new WidgetFactory;
 	if (!wc)
@@ -272,6 +272,7 @@ bool TBWidgetsReader::AddCreator(const char *name, WIDGET_CREATE_CB cb, WIDGET_Z
 	wc->name = name;
 	wc->cb = cb;
 	wc->add_child_z = add_child_z;
+	wc->sync_type = sync_type;
 	callbacks.AddLast(wc);
 	return true;
 }
@@ -333,6 +334,19 @@ bool TBWidgetsReader::CreateWidget(Widget *target, TBNode *node, WIDGET_Z add_ch
 	new_widget->m_data = node->GetValueInt("data", 0);
 	if (const char *text = GetTranslatableString(node, "text"))
 		new_widget->SetText(text);
+	if (const char *connection = node->GetValueString("connection", nullptr))
+	{
+		// If we already have a widget value with this name, just connect to it and the widget will
+		// adjust its value to it. Otherwise create a new widget value, and give it the value we
+		// got from the resource.
+		if (TBWidgetValue *value = g_value_group.GetValue(connection))
+			new_widget->Connect(value);
+		else if (TBWidgetValue *value = g_value_group.CreateValueIfNeeded(connection, wc->sync_type))
+		{
+			value->SetFromWidget(new_widget);
+			new_widget->Connect(value);
+		}
+	}
 	if (const char *bg_skin = node->GetValueString("bg_skin", nullptr))
 		new_widget->m_skin_bg.Set(bg_skin);
 	if (const char *gravity = node->GetValueString("gravity", nullptr))

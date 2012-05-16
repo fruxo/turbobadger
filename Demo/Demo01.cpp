@@ -255,6 +255,16 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 		if (TBProgressSpinner *spinner = TBSafeGetByID(TBProgressSpinner, TBIDC("spinner")))
 			spinner->SetValue(0);
 	}
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("reset-master-volume"))
+	{
+		if (TBWidgetValue *val = g_value_group.GetValue(TBIDC("master-volume")))
+			val->SetInt(50);
+	}
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("reset-user-name"))
+	{
+		if (TBWidgetValue *val = g_value_group.GetValue(TBIDC("user-name")))
+			val->SetText("");
+	}
 	return TBWindow::OnEvent(ev);
 }
 
@@ -386,6 +396,7 @@ bool MyWindow::OnEvent(const WidgetEvent &ev)
 			m_parent->AddChild(new MyToolbarWindow(100, 170, "Demo/ui_resources/test_toolbar02.tb.txt"));
 			m_parent->AddChild(new MyToolbarWindow(100, 650, "Demo/ui_resources/test_toolbar03.tb.txt"));
 			m_parent->AddChild(new MyToolbarWindow(100, 240, "Demo/ui_resources/test_layout01.tb.txt"));
+			m_parent->AddChild(new MyToolbarWindow(300, 300, "Demo/ui_resources/test_toolbar04.tb.txt"));
 			return true;
 		}
 	}

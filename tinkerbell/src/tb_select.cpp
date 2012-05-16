@@ -708,9 +708,11 @@ void TBInlineSelect::SetValueInternal(int value, bool update_text)
 		m_editfield.SetText(strval);
 	}
 
-	//FIX: some of theese in tinkerbell doesn't check if the widget is removed afterwards!
-	//WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
-	//InvokeEvent(ev);
+	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	InvokeEvent(ev);
+
+	// Warning: Do nothing here since the event might have deleted us.
+	//          If needed, check if we are alive using a safe pointer first.
 }
 
 void TBInlineSelect::OnSkinChanged()

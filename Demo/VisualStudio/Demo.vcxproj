@@ -115,10 +115,12 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_common.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_listener.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_reader.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_widget_value.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\tb_test.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_test.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_widget_value.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tinkerbell.cpp" />
     <ClCompile Include="..\Demo01.cpp" />
     <ClCompile Include="..\Demo02.cpp" />
@@ -159,6 +161,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_common.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_listener.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_reader.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_widget_value.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tests\tb_test.h" />
     <ClInclude Include="..\..\tinkerbell\src\tinkerbell.h" />

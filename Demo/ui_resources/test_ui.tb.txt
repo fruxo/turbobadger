@@ -7,7 +7,6 @@ TBLayout
 			id new
 		TBButton
 			text @close
-			Close this window!
 			id TBWindow.close
 	TBLayout
 		TBButton
@@ -81,6 +80,9 @@ TBLayout
 		value 150
 	TBSlider
 		axis y
+		min 0
+		max 100
+		connection master-volume
 	TBScrollContainer
 		TBLayout
 			axis y

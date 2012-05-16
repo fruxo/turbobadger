@@ -75,6 +75,7 @@ public:
 	/** Set the window title. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
+	using Widget::GetText; ///< Make all versions in base class available.
 
 	virtual TBRect GetPaddingRect();
 	virtual PreferredSize GetPreferredSize();

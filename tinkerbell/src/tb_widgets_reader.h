@@ -29,6 +29,7 @@ public:
 	const char *name;
 	WIDGET_CREATE_CB cb;
 	WIDGET_Z add_child_z;
+	TBValue::TYPE sync_type;
 };
 
 class TBWidgetsReader
@@ -37,7 +38,7 @@ public:
 	static TBWidgetsReader *Create();
 	~TBWidgetsReader();
 
-	bool AddCreator(const char *name, WIDGET_CREATE_CB cb, WIDGET_Z add_child_z = WIDGET_Z_TOP);
+	bool AddCreator(const char *name, WIDGET_CREATE_CB cb, TBValue::TYPE sync_type, WIDGET_Z add_child_z = WIDGET_Z_TOP);
 
 	bool LoadFile(Widget *target, const char *filename);
 	bool LoadData(Widget *target, const char *data);

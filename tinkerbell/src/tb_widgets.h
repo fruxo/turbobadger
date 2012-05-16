@@ -9,6 +9,7 @@
 #include "tinkerbell.h"
 #include "tb_skin.h"
 #include "tb_linklist.h"
+#include "tb_widget_value.h"
 
 namespace tinkerbell {
 
@@ -38,11 +39,14 @@ enum EVENT_TYPE {
 	EVENT_TYPE_POINTER_UP,
 	EVENT_TYPE_POINTER_MOVE,
 	EVENT_TYPE_WHEEL,
-	/** Invoked after changing text in a TBTextField, or changing
-		selected item in a TBSelectList etc. */
+
+	/** Invoked after changing text in a TBTextField, changing selected item
+		in a TBSelectList etc. Invoking this event trigs synchronization with
+		connected TBWidgetValue and other widgets connected to it. */
 	EVENT_TYPE_CHANGED,
 	EVENT_TYPE_KEY_DOWN,
 	EVENT_TYPE_KEY_UP,
+
 	/** Invoked when a context menu should be opened at the event x and y coordinates. */
 	EVENT_TYPE_CONTEXT_MENU
 };
@@ -474,13 +478,35 @@ public:
 	virtual void SetValue(int value) {}
 	virtual int GetValue() { return 0; }
 
+	/** Set the value in double precision. It only makes sense to use this instead
+		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
+	virtual void SetValueDouble(double value) { SetValue((int) value); }
+
 	/** Return the value in double precision. It only makes sense to use this instead
-		of GetValue() on widgets that store the value as double, such as TBScrollBar, TBSlider. */
+		of GetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
 	virtual double GetValueDouble() { return (double) GetValue(); }
 
 	/** Set the text of this widget. Implemented by most widgets (that has text). */
 	virtual bool SetText(const char *text) { return true; }
+
+	/** Get the text of this widget. Implemented by most widgets (that has text).
+		returns false if it failed. */
 	virtual bool GetText(TBStr &text) { text.Clear(); return true; }
+
+	/** Get the text of this widget. Implemented by most widgets (that has text). */
+	TBStr GetText() { TBStr str; GetText(str); return str; }
+
+	/** Connect this widget to a widget value.
+	
+		When this widget invoke EVENT_TYPE_CHANGED, it will automatically update the
+		connected widget value, and any other widgets that may be connected to it.
+
+		On connection, the value of this widget will be updated to the value of the
+		given TBWidgetValue. */
+	void Connect(TBWidgetValue *value) { m_connection.Connect(value, this); }
+
+	/** Unconnect, if this widget is connected to a TBWidgetValue. */
+	void Unconnect() { m_connection.Unconnect(); }
 
 	/** Get the classname of this Widget.
 		Note: When you subclass a widget, use the WIDGET_SUBCLASS macro
@@ -544,6 +570,9 @@ public:
 		If the widgets OnEvent returns false (event not handled), it will continue traversing to
 		GetEventDestination (by default the parent) until a widget handles the event.
 
+		Note: When invoking event EVENT_TYPE_CHANGED, this will update the value of other widgets connected
+			  to the same group.
+
 		Note: Some event types will automatically invalidate states (See InvalidateStates())
 
 		Note: Remember that this widgets may be deleted after this call! So if you really must do something after
@@ -578,6 +607,7 @@ public:
 	TBID m_skin_bg;					///< ID for the background skin (0 for no skin).
 	TBID m_id;						///< ID for GetWidgetByID and others.
 	TBID m_group_id;				///< ID for button groups (such as TBRadioButton)
+	TBWidgetValueConnection m_connection; ///< Widget value connection
 	uint32 m_data;					///< Additional generic data (depends on widget). Initially 0.
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
 	union {

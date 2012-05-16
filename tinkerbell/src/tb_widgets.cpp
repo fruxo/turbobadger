@@ -690,6 +690,13 @@ bool Widget::InvokeEvent(WidgetEvent &ev)
 	TBWidgetSafePointer this_widget(this);
 	if (TBGlobalWidgetListener::InvokeWidgetInvokeEvent(ev))
 		return true;
+
+	if (!this_widget.Get())
+		return true; // We got removed so we actually handled this event.
+
+	if (ev.type == EVENT_TYPE_CHANGED)
+		m_connection.SyncFromWidget(this);
+
 	if (!this_widget.Get())
 		return true; // We got removed so we actually handled this event.
 
