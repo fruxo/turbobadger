@@ -9,7 +9,7 @@
 #include "tinkerbell.h"
 #include "tb_linklist.h"
 #include "tb_hashtable.h"
-#include "parser/TBValue.h"
+#include "tb_value.h"
 
 namespace tinkerbell {
 

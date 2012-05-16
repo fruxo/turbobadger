@@ -98,7 +98,6 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_list.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\parser\TBNodeTree.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\parser\TBParser.cpp" />
-    <ClCompile Include="..\..\tinkerbell\src\parser\TBValue.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\PStyleEdit.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_editfield.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hashtable.cpp" />
@@ -111,6 +110,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_skin.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_system_win.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_tab_container.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_value.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_common.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_listener.cpp" />
@@ -143,7 +143,6 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_list.h" />
     <ClInclude Include="..\..\tinkerbell\src\parser\TBNodeTree.h" />
     <ClInclude Include="..\..\tinkerbell\src\parser\TBParser.h" />
-    <ClInclude Include="..\..\tinkerbell\src\parser\TBValue.h" />
     <ClInclude Include="..\..\tinkerbell\src\PStyleEdit.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_editfield.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_hashtable.h" />
@@ -157,6 +156,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_skin.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_system.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_tab_container.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_value.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_common.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_listener.h" />

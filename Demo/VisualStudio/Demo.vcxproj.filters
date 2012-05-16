@@ -66,9 +66,6 @@
     <ClCompile Include="..\..\tinkerbell\src\parser\TBParser.cpp">
       <Filter>Source Files\tinkerbell\parser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\parser\TBValue.cpp">
-      <Filter>Source Files\tinkerbell\parser</Filter>
-    </ClCompile>
     <ClCompile Include="..\tb_renderer_gl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -159,6 +156,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_widget_value.cpp">
       <Filter>Source Files\tinkerbell\tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_value.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -194,9 +194,6 @@
       <Filter>Source Files\tinkerbell\parser</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\parser\TBParser.h">
-      <Filter>Source Files\tinkerbell\parser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\parser\TBValue.h">
       <Filter>Source Files\tinkerbell\parser</Filter>
     </ClInclude>
     <ClInclude Include="..\tb_renderer_gl.h">
@@ -272,6 +269,9 @@
       <Filter>Source Files\tinkerbell\tests</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_widget_value.h">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_value.h">
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
   </ItemGroup>

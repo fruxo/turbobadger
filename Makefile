@@ -41,6 +41,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_tempbuffer.cpp \
       tinkerbell/src/tb_hash.cpp \
       tinkerbell/src/tb_hashtable.cpp \
+      tinkerbell/src/tb_value.cpp \
       tinkerbell/src/tb_linklist.cpp \
       tinkerbell/src/tb_list.cpp \
       tinkerbell/src/PStyleEdit.cpp \
@@ -49,7 +50,6 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_widgets_listener.cpp \
       tinkerbell/src/parser/TBNodeTree.cpp \
       tinkerbell/src/parser/TBParser.cpp \
-      tinkerbell/src/parser/TBValue.cpp \
       tinkerbell/src/tests/tb_test.cpp \
       tinkerbell/src/tests/test_tb_widget_value.cpp \
       tinkerbell/src/tests/test_tb_linklist.cpp \

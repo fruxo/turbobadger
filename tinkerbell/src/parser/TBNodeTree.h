@@ -27,6 +27,9 @@ public:
 	/** Read a tree of nodes from a null terminated string buffer. */
 	void ReadData(const char *data);
 
+	/** Clear the contens of this node. */
+	void Clear();
+
 	// FIX: Add write support!
 	//bool WriteFile(const char *filename);
 

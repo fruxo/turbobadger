@@ -13,12 +13,7 @@ namespace tinkerbell {
 
 TBNode::~TBNode()
 {
-	free(m_name);
-	while (TBNode *n = GetFirstChild())
-	{
-		Remove(n);
-		delete n;
-	}
+	Clear();
 }
 
 TBNode *TBNode::Create(const char *name)
@@ -53,12 +48,10 @@ TBNode *TBNode::GetNode(const char *request)
 
 TBNode *TBNode::GetNode(const char *name, int name_len) const
 {
-	TBNode *n = GetFirstChild();
-	while (n)
+	for (TBNode *n = GetFirstChild(); n; n = n->GetNext())
 	{
 		if (strncmp(n->m_name, name, name_len) == 0 && n->m_name[name_len] == 0)
 			return n;
-		n = n->GetNext();
 	}
 	return nullptr;
 }
@@ -179,6 +172,7 @@ private:
 
 bool TBNode::ReadFile(const char *filename)
 {
+	Clear();
 	FileParser p;
 	TBNodeTarget t(this);
 	return p.Read(filename, &t);
@@ -186,9 +180,17 @@ bool TBNode::ReadFile(const char *filename)
 
 void TBNode::ReadData(const char *data)
 {
+	Clear();
 	DataParser p;
 	TBNodeTarget t(this);
 	p.Read(data, strlen(data), &t);
+}
+
+void TBNode::Clear()
+{
+	free(m_name);
+	m_name = nullptr;
+	m_children.DeleteAll();
 }
 
 }; // namespace tinkerbell

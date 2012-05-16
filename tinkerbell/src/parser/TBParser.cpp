@@ -7,13 +7,6 @@
 #include "tb_tempbuffer.h"
 #include <assert.h>
 
-/* TEST
-FIX: Put theese in a _DEBUG section selftest
-
-testA: text1: " foo bar : , ", text2: "      \"        "  , text3:   ""
-testB: text1: "\\", text2: "\"", text3: "\"", text3: "\\\\\\\\", text3: "\\\\\""
-*/
-
 namespace tinkerbell {
 
 Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)

@@ -6,7 +6,7 @@
 #ifndef TBParser_H
 #define TBParser_H
 
-#include "parser/TBValue.h"
+#include "tb_value.h"
 
 namespace tinkerbell {
 

@@ -3,8 +3,8 @@
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
-#ifndef TBValue_H
-#define TBValue_H
+#ifndef TB_VALUE_H
+#define TB_VALUE_H
 
 #include "tinkerbell.h"
 #include "tb_list.h"
@@ -106,4 +106,4 @@ private:
 
 }; // namespace tinkerbell
 
-#endif // TBValue_H
+#endif // TB_VALUE_H
