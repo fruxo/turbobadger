@@ -78,6 +78,43 @@ TBValueArray *TBValueArray::Clone(TBValueArray *source)
 
 // == TBValue =======================================
 
+TBValue::TBValue()
+	: m_packed_init(0)
+{
+}
+
+TBValue::TBValue(const TBValue &value)
+	: m_packed_init(0)
+{
+	Copy(value);
+}
+
+TBValue::TBValue(TYPE type)
+	: m_packed_init(0)
+{
+	switch (type)
+	{
+	case TYPE_NULL:
+		SetNull();
+		break;
+	case TYPE_STRING:
+		SetString("", SET_AS_STATIC);
+		break;
+	case TYPE_FLOAT:
+		SetFloat(0);
+		break;
+	case TYPE_INT:
+		SetInt(0);
+		break;
+	case TYPE_ARRAY:
+		if (TBValueArray *arr = new TBValueArray())
+			SetArray(arr, SET_TAKE_OWNERSHIP);
+		break;
+	default:
+		assert(!"Not implemented!");
+	};
+}
+
 TBValue::~TBValue()
 {
 	SetNull();
@@ -85,72 +122,75 @@ TBValue::~TBValue()
 
 void TBValue::TakeOver(TBValue &source_value)
 {
-	if (source_value.t == TYPE_STRING)
-		SetString(source_value.val_str, source_value.allocated ? SET_TAKE_OWNERSHIP : SET_NEW_COPY);
-	else if (source_value.t == TYPE_ARRAY)
-		SetArray(source_value.val_arr, source_value.allocated ? SET_TAKE_OWNERSHIP : SET_NEW_COPY);
+	if (source_value.m_packed.type == TYPE_STRING)
+		SetString(source_value.val_str, source_value.m_packed.allocated ? SET_TAKE_OWNERSHIP : SET_NEW_COPY);
+	else if (source_value.m_packed.type == TYPE_ARRAY)
+		SetArray(source_value.val_arr, source_value.m_packed.allocated ? SET_TAKE_OWNERSHIP : SET_NEW_COPY);
 	else
 		*this = source_value;
-	source_value.t = TYPE_NULL;
+	source_value.m_packed.type = TYPE_NULL;
 }
 
 void TBValue::Copy(const TBValue &source_value)
 {
-	if (source_value.t == TYPE_STRING)
+	if (source_value.m_packed.type == TYPE_STRING)
 		SetString(source_value.val_str, SET_NEW_COPY);
-	else if (source_value.t == TYPE_ARRAY)
+	else if (source_value.m_packed.type == TYPE_ARRAY)
 		SetArray(source_value.val_arr, SET_NEW_COPY);
 	else
-		*this = source_value;
+	{
+		// Assumes we are a POD, which we should be
+		memcpy(this, &source_value, sizeof(TBValue));
+	}
 }
 
 void TBValue::SetNull()
 {
-	if (t == TYPE_STRING && allocated)
+	if (m_packed.type == TYPE_STRING && m_packed.allocated)
 		free(val_str);
-	else if (t == TYPE_ARRAY && allocated)
+	else if (m_packed.type == TYPE_ARRAY && m_packed.allocated)
 		delete val_arr;
-	t = TYPE_NULL;
+	m_packed.type = TYPE_NULL;
 }
 
 void TBValue::SetInt(int val)
 {
 	SetNull();
-	t = TYPE_INT32;
-	val_int32 = val;
+	m_packed.type = TYPE_INT;
+	val_int = val;
 }
 
 void TBValue::SetFloat(float val)
 {
 	SetNull();
-	t = TYPE_FLOAT;
+	m_packed.type = TYPE_FLOAT;
 	val_float = val;
 }
 
 void TBValue::SetString(const char *val, SET set)
 {
 	SetNull();
-	allocated = (set == SET_NEW_COPY || set == SET_TAKE_OWNERSHIP);
+	m_packed.allocated = (set == SET_NEW_COPY || set == SET_TAKE_OWNERSHIP);
 	if (set != SET_NEW_COPY)
 	{
 		val_str = const_cast<char *>(val);
-		t = TYPE_STRING;
+		m_packed.type = TYPE_STRING;
 	}
 	else if (val_str = strdup(val))
-		t = TYPE_STRING;
+		m_packed.type = TYPE_STRING;
 }
 
 void TBValue::SetArray(TBValueArray *arr, SET set)
 {
 	SetNull();
-	allocated = (set == SET_NEW_COPY || set == SET_TAKE_OWNERSHIP);
+	m_packed.allocated = (set == SET_NEW_COPY || set == SET_TAKE_OWNERSHIP);
 	if (set != SET_NEW_COPY)
 	{
 		val_arr = arr;
-		t = TYPE_ARRAY;
+		m_packed.type = TYPE_ARRAY;
 	}
 	else if (val_arr = TBValueArray::Clone(arr))
-		t = TYPE_ARRAY;
+		m_packed.type = TYPE_ARRAY;
 }
 
 void TBValue::SetFromStringAuto(const char *str, SET set)
@@ -210,43 +250,43 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 
 int TBValue::GetInt()
 {
-	if (t == TYPE_STRING)
+	if (m_packed.type == TYPE_STRING)
 		SetInt(atoi(val_str));
-	else if (t == TYPE_FLOAT)
+	else if (m_packed.type == TYPE_FLOAT)
 		return (int) val_float;
-	else if (t == TYPE_ARRAY)
+	else if (m_packed.type == TYPE_ARRAY)
 		return 0;
-	return t == TYPE_INT32 ? val_int32 : 0;
+	return m_packed.type == TYPE_INT ? val_int : 0;
 }
 
 float TBValue::GetFloat()
 {
-	if (t == TYPE_STRING)
+	if (m_packed.type == TYPE_STRING)
 		SetFloat((float)atof(val_str));
-	else if (t == TYPE_INT32)
-		return (float) val_int32;
-	else if (t == TYPE_ARRAY)
+	else if (m_packed.type == TYPE_INT)
+		return (float) val_int;
+	else if (m_packed.type == TYPE_ARRAY)
 		return 0;
-	return t == TYPE_FLOAT ? val_float : 0;
+	return m_packed.type == TYPE_FLOAT ? val_float : 0;
 }
 
 const char *TBValue::GetString()
 {
-	if (t == TYPE_INT32)
+	if (m_packed.type == TYPE_INT)
 	{
 		char tmp[32];
-		sprintf(tmp, "%d", val_int32);
+		sprintf(tmp, "%d", val_int);
 		SetString(tmp, SET_NEW_COPY);
 	}
-	else if (t == TYPE_FLOAT)
+	else if (m_packed.type == TYPE_FLOAT)
 	{
 		char tmp[32];
 		sprintf(tmp, "%f", val_float);
 		SetString(tmp, SET_NEW_COPY);
 	}
-	else if (t == TYPE_ARRAY)
+	else if (m_packed.type == TYPE_ARRAY)
 		return "";
-	return t == TYPE_STRING ? val_str : "";
+	return m_packed.type == TYPE_STRING ? val_str : "";
 }
 
 }; // namespace tinkerbell

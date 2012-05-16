@@ -33,23 +33,27 @@ private:
 	as a value (instead or accessing the arrays values), it will return 0 (or "" for string). */
 class TBValue
 {
-private:
-	union {
-		float val_float;
-		int val_int32;
-		char *val_str;
-		TBValueArray *val_arr;
-	};
+public:
+	/** The current type of the value.
+		It may change when using a getter of a different type. */
 	enum TYPE {
 		TYPE_NULL,
 		TYPE_STRING,
 		TYPE_FLOAT,
-		TYPE_INT32,
+		TYPE_INT,
 		TYPE_ARRAY
-	} t;
-	bool allocated;
-public:
-	TBValue() : t(TYPE_NULL) {}
+	};
+
+	/** How to deal with the dynamic memory when setting string and array. */
+	enum SET {
+		SET_NEW_COPY,			///< A new copy of the data will be made.
+		SET_TAKE_OWNERSHIP,		///< The data passed in will be stored and freed.
+		SET_AS_STATIC			///< The data passed in will be stored but never freed.
+	};
+
+	TBValue();
+	TBValue(const TBValue &value);
+	TBValue(TYPE type);
 	~TBValue();
 
 	/** Take over ownership of content of source_value.
@@ -61,13 +65,6 @@ public:
 	void SetNull();
 	void SetInt(int val);
 	void SetFloat(float val);
-
-	/** How to deal with the dynamic memory for string and array. */
-	enum SET {
-		SET_NEW_COPY,			///< A new copy of the data will be made.
-		SET_TAKE_OWNERSHIP,		///< The data passed in will be stored and freed.
-		SET_AS_STATIC			///< The data passed in will be stored but never freed.
-	};
 
 	/** Set the passed in string */
 	void SetString(const char *val, SET set);
@@ -83,9 +80,28 @@ public:
 	const char *GetString();
 	TBValueArray *GetArray() const { return IsArray() ? val_arr : nullptr; }
 
-	bool IsString() const { return t == TYPE_STRING; }
-	bool IsArray() const { return t == TYPE_ARRAY; }
+	TYPE GetType() const { return (TYPE) m_packed.type; }
+	bool IsString() const { return m_packed.type == TYPE_STRING; }
+	bool IsFloat() const { return m_packed.type == TYPE_FLOAT; }
+	bool IsInt() const { return m_packed.type == TYPE_INT; }
+	bool IsArray() const { return m_packed.type == TYPE_ARRAY; }
 	int GetArrayLength() const { return IsArray() ? val_arr->GetLength() : 0; }
+
+	const TBValue& operator = (const TBValue &val) { Copy(val); return *this; }
+private:
+	union {
+		float val_float;
+		int val_int;
+		char *val_str;
+		TBValueArray *val_arr;
+	};
+	union {
+		struct {
+			uint32 type : 8;
+			uint32 allocated : 1;
+		} m_packed;
+		uint32 m_packed_init;
+	};
 };
 
 }; // namespace tinkerbell
