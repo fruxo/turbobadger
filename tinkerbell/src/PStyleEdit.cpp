@@ -1524,6 +1524,9 @@ void PStyleEdit::Clear(bool init_new)
 
 void PStyleEdit::ScrollIfNeeded(bool x, bool y)
 {
+	if (layout_width <= 0 || layout_height <= 0)
+		return; // This is likely during construction before layout.
+
 	int32 newx = scroll_x, newy = scroll_y;
 	if (x)
 	{
@@ -1920,6 +1923,7 @@ bool PStyleEdit::SetText(const char *text, bool place_caret_at_end)
 	if (text == NULL || text[0] == 0)
 	{
 		Clear(true);
+		ScrollIfNeeded(true, true);
 		return true;
 	}
 
@@ -1934,6 +1938,8 @@ bool PStyleEdit::SetText(const char *text, bool place_caret_at_end)
 
 	if (place_caret_at_end)
 		caret.Place(blocks.GetLast(), blocks.GetLast()->str_len);
+
+	listener->OnChange();
 	return true;
 }
 
