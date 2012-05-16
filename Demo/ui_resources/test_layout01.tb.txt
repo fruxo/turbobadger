@@ -1,3 +1,6 @@
+WindowInfo
+	title Layout size & gravity
+	position 100 240
 TBLayout
 	axis y
 	TBLayout

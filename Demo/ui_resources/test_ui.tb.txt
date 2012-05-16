@@ -1,3 +1,5 @@
+WindowInfo
+	title Tinkerbell demo
 TBLayout
 	distribution available
 	axis y

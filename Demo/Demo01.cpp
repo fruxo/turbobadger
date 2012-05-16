@@ -8,6 +8,7 @@
 #include "tb_tab_container.h"
 #include "tb_bitmap_fragment.h"
 #include "tbanimation/tb_animation.h"
+#include "parser/TBNodeTree.h"
 
 TBGenericStringItemSource position_toggle_source;
 TBGenericStringItemSource name_source;
@@ -34,6 +35,41 @@ void const_expr_test()
 }
 
 #endif // TB_SUPPORT_CONSTEXPR
+
+class DemoWindow : public TBWindow
+{
+public:
+	bool Load(const char *filename);
+};
+
+class MainWindow : public DemoWindow, public TBMessageHandler
+{
+public:
+	MainWindow();
+	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual void OnMessageReceived(TBMessage *msg);
+};
+
+bool DemoWindow::Load(const char *filename)
+{
+	// We could do g_widgets_reader->LoadFile(this, filename) but we want
+	// some extra data we store under "WindowInfo", so read into node tree.
+	TBNode node;
+	if (!node.ReadFile(filename))
+		return false;
+	g_widgets_reader->LoadNodeTree(this, &node);
+
+	// Get title from the WindowInfo section (or use "" if not specified)
+	SetText(node.GetValueString("WindowInfo>title", ""));
+
+	if (TBNode *pos = node.GetNode("WindowInfo>position"))
+		if (pos->GetValue().GetArrayLength() == 2)
+			SetPosition(TBPoint(pos->GetValue().GetArray()->GetValue(0)->GetInt(),
+								pos->GetValue().GetArray()->GetValue(1)->GetInt()));
+
+	ResizeToFitContent();
+	return true;
+}
 
 void DemoOutput(const char *format, ...)
 {
@@ -90,23 +126,12 @@ Widget *TestItemSource::CreateItemWidget(int index)
 }
 TestItemSource advanced_source;
 
-class TestWindow : public TBWindow
-{
-public:
-	TestWindow(const char *title, const char *resource_file)
-	{
-		SetText(title);
-		g_widgets_reader->LoadFile(this, resource_file);
-		ResizeToFitContent();
-	}
-};
-
-class ListWindow : public TestWindow
+class ListWindow : public DemoWindow
 {
 public:
 	ListWindow(TBSelectItemSource *source, SCROLL_MODE scrollmode = SCROLL_MODE_Y_AUTO)
-		: TestWindow("List and filter", "Demo/ui_resources/test_select.tb.txt")
 	{
+		Load("Demo/ui_resources/test_select.tb.txt");
 		if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
 		{
 			select->SetSource(source);
@@ -127,11 +152,12 @@ public:
 	}
 };
 
-class EditWindow : public TestWindow
+class EditWindow : public DemoWindow
 {
 public:
-	EditWindow() : TestWindow("Text editing", "Demo/ui_resources/test_textwindow.tb.txt")
+	EditWindow()
 	{
+		Load("Demo/ui_resources/test_textwindow.tb.txt");
 	}
 	virtual void OnProcessStates()
 	{
@@ -173,21 +199,16 @@ public:
 	}
 };
 
-class MyToolbarWindow : public TBWindow
+class MyToolbarWindow : public DemoWindow
 {
 public:
-	MyToolbarWindow(int x, int y, const char *filename, WINDOW_SETTINGS settings = WINDOW_SETTINGS_DEFAULT);
+	MyToolbarWindow(const char *filename);
 	virtual bool OnEvent(const WidgetEvent &ev);
 };
 
-MyToolbarWindow::MyToolbarWindow(int x, int y, const char *filename, WINDOW_SETTINGS settings)
+MyToolbarWindow::MyToolbarWindow(const char *filename)
 {
-	SetSettings(settings);
-
-	bool ret = g_widgets_reader->LoadFile(this, filename);
-	
-	PreferredSize ps = GetPreferredSize();
-	SetRect(TBRect(x, y, ps.pref_w, ps.pref_h));
+	Load(filename);
 
 	if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "select position"))
 		select->SetSource(&position_toggle_source);
@@ -268,22 +289,11 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 	return TBWindow::OnEvent(ev);
 }
 
-class MyWindow : public TBWindow, public TBMessageHandler
-{
-public:
-	MyWindow();
-	bool Load(const char *filename);
-	virtual bool OnEvent(const WidgetEvent &ev);
-	virtual void OnMessageReceived(TBMessage *msg);
-};
-
-MyWindow::MyWindow()
+MainWindow::MainWindow()
 {
 	SetRect(TBRect(50, 100, 200, 300));
 
 	Load("Demo/ui_resources/test_ui.tb.txt");
-
-	SetText("Demo");
 
 	SetOpacity(0.97f);
 
@@ -291,15 +301,7 @@ MyWindow::MyWindow()
 		select->SetSource(&name_source);
 }
 
-bool MyWindow::Load(const char *filename)
-{
-	bool ret = g_widgets_reader->LoadFile(this, filename);
-
-	ResizeToFitContent();
-	return ret;
-}
-
-void MyWindow::OnMessageReceived(TBMessage *msg)
+void MainWindow::OnMessageReceived(TBMessage *msg)
 {
 	if (msg->message == TBIDC("delayedmsg"))
 	{
@@ -310,13 +312,13 @@ void MyWindow::OnMessageReceived(TBMessage *msg)
 	}
 }
 
-bool MyWindow::OnEvent(const WidgetEvent &ev)
+bool MainWindow::OnEvent(const WidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CLICK)
 	{
 		if (ev.target->GetID() == TBIDC("new"))
 		{
-			m_parent->AddChild(new MyWindow());
+			m_parent->AddChild(new MainWindow());
 			return true;
 		}
 		if (ev.target->GetID() == TBIDC("msg"))
@@ -392,11 +394,11 @@ bool MyWindow::OnEvent(const WidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("misc tests"))
 		{
-			m_parent->AddChild(new MyToolbarWindow(100, 100, "Demo/ui_resources/test_toolbar01.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow(100, 170, "Demo/ui_resources/test_toolbar02.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow(100, 650, "Demo/ui_resources/test_toolbar03.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow(100, 240, "Demo/ui_resources/test_layout01.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow(300, 300, "Demo/ui_resources/test_toolbar04.tb.txt"));
+			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar01.tb.txt"));
+			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar02.tb.txt"));
+			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar03.tb.txt"));
+			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_layout01.tb.txt"));
+			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar04.tb.txt"));
 			return true;
 		}
 	}
@@ -471,22 +473,21 @@ bool DemoApplication::Init()
 	// Give the first item a skin image
 	popup_menu_source.GetItem(0)->SetSkinImage(TBIDC("Icon16"));
 
-	MyWindow *win = new MyWindow();
+	MainWindow *win = new MainWindow();
 	m_root->AddChild(win);
 
 	TBWindow *textwindow = new EditWindow;
-	textwindow->SetPosition(TBPoint(600, 100));
 	m_root->AddChild(textwindow);
 
 	ListWindow *listwindow = new ListWindow(&name_source);
-	listwindow->SetPosition(TBPoint(1050, 450));
+	listwindow->SetPosition(TBPoint(1050, 500));
 	m_root->AddChild(listwindow);
 
 	listwindow = new ListWindow(&advanced_source, SCROLL_MODE_X_AUTO_Y_AUTO);
-	listwindow->SetRect(TBRect(900, 100, 300, 300));
+	listwindow->SetRect(TBRect(950, 50, 300, 300));
 	m_root->AddChild(listwindow);
 
-	m_root->AddChild(new MyToolbarWindow(600, 500, "Demo/ui_resources/test_tabcontainer01.tb.txt"));
+	m_root->AddChild(new MyToolbarWindow("Demo/ui_resources/test_tabcontainer01.tb.txt"));
 
 	// We could have put this UI inside a resource file too, and read it with TBWidgetsReader,
 	// but something has to demo how to build ui programmatically :)

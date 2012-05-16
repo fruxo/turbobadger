@@ -1,3 +1,5 @@
+WindowInfo
+	title List and filter
 TBLayout
 	axis y
 	distribution available

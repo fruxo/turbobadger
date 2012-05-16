@@ -1,3 +1,6 @@
+WindowInfo
+	title Flat button skin
+	position 100 650
 TBLayout
 	TBLayout
 		TBLayout

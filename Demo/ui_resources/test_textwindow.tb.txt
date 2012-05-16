@@ -1,3 +1,6 @@
+WindowInfo
+	title Text editing
+	position 600 50
 TBLayout: axis: y, distribution: available
 	TBLayout: distribution: gravity
 		TBButton: id: undo

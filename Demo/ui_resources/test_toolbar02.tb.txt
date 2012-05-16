@@ -1,3 +1,6 @@
+WindowInfo
+	title Layout spacing
+	position 100 170
 TBLayout
 	TBLayout
 		spacing -1
