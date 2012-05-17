@@ -533,12 +533,29 @@ static stbi_uc *hdr_to_ldr(float   *data, int x, int y, int comp);
 
 static unsigned char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req_comp)
 {
+   #ifndef STBI_NO_JPG
    if (stbi_jpeg_test(s)) return stbi_jpeg_load(s,x,y,comp,req_comp);
+   #endif
+
+   #ifndef STBI_NO_PNG
    if (stbi_png_test(s))  return stbi_png_load(s,x,y,comp,req_comp);
+   #endif
+
+   #ifndef STBI_NO_BMP
    if (stbi_bmp_test(s))  return stbi_bmp_load(s,x,y,comp,req_comp);
+   #endif
+
+   #ifndef STBI_NO_GIF
    if (stbi_gif_test(s))  return stbi_gif_load(s,x,y,comp,req_comp);
+   #endif
+
+   #ifndef STBI_NO_PSD
    if (stbi_psd_test(s))  return stbi_psd_load(s,x,y,comp,req_comp);
+   #endif
+
+   #ifndef STBI_NO_PIC
    if (stbi_pic_test(s))  return stbi_pic_load(s,x,y,comp,req_comp);
+   #endif
 
    #ifndef STBI_NO_HDR
    if (stbi_hdr_test(s)) {
@@ -547,9 +564,11 @@ static unsigned char *stbi_load_main(stbi *s, int *x, int *y, int *comp, int req
    }
    #endif
 
+   #ifndef STBI_NO_TGA
    // test tga last because it's a crappy test!
    if (stbi_tga_test(s))
       return stbi_tga_load(s,x,y,comp,req_comp);
+   #endif
    return epuc("unknown image type", "Image not of any known type, or corrupt");
 }
 
