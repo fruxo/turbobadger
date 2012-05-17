@@ -18,12 +18,10 @@ public:
 
 	void MakeEmpty() { delete [] data; data = 0; width = height = bits_per_pixel = 0; }
 
-	bool NewData(int new_width, int new_height);
-	bool LoadPNG(const char *filename);
-	bool SavePNG(const char *filename);
+	//bool SavePNG(const char *filename);
 
-	static TdImage *Create(int width, int height);
-	static TdImage *CreateFromFile(const char *filename);
+	//static TdImage *Create(int width, int height);
+	//static TdImage *CreateFromFile(const char *filename);
 };
 
 #endif // TD_IMAGE_H

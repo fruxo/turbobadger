@@ -3,51 +3,44 @@
 #include <string.h>
 #include <stdio.h>
 
-#ifdef WIN32
-#define strcasecmp stricmp
-#endif // WIN32
+#define STBI_NO_FAILURE_STRINGS
+#define STBI_NO_HDR
+#define STBI_NO_JPG
+#define STBI_NO_BMP
+#define STBI_NO_GIF
+#define STBI_NO_PSD
+#define STBI_NO_PIC
+#define STBI_NO_TGA
+#include "stb_image.c"
 
-bool TdImage::NewData(int new_width, int new_height)
-{
-	if (new_width == width && new_height == height)
-		return true;
-	MakeEmpty();
-	if (data = new unsigned char[new_width * new_height * 4])
-	{
-		width = new_width;
-		height = new_height;
-		bits_per_pixel = 32;
-	}
-	return data ? true : false;
-}
+// stbi is faster than lodepng: 1118ms -> 770ms
+// stbi is about same size: 161kb -> 163kb of Demo.exe with only png. (145kb without image loading support)
+// stbi supports more formats (191kb with all)
+// stbi use no STL
 
-TdImage *TdImage::Create(int width, int height)
-{
-	TdImage *img = new TdImage;
-	if (img && img->NewData(width, height))
-		return img;
-	delete img;
-	return 0;
-}
+// TEST: Mem leaks?
+// TEST: 64bit support?
 
-TdImage *TdImage::CreateFromFile(const char *filename)
-{
-	const char *suff;
-	int o = 0;
-	while (filename[o] != 0) o++;
-	suff = &filename[o - 3];
-	if (strcasecmp(suff, "png") == 0)
-	{
-		TdImage *img = new TdImage();
-		if (img && img->LoadPNG(filename))
-			return img;
-		delete img;
-		return 0;
-	}
-	return 0;
-}
+//bool TdImage::SavePNG(const char *filename)
+//{
+//	return false;
+//}
 
 tinkerbell::TBImageLoader *tinkerbell::TBImageLoader::CreateFromFile(const char *filename)
 {
-	return TdImage::CreateFromFile(filename);
+	int w, h, comp;
+	if (unsigned char *data = stbi_load(filename, &w, &h, &comp, 4))
+	{
+		if (TdImage *img = new TdImage())
+		{
+			img->width = w;
+			img->height = h;
+			img->bits_per_pixel = 32;
+			img->data = data;
+			return img;
+		}
+		else
+			stbi_image_free(data);
+	}
+	return nullptr;
 }
