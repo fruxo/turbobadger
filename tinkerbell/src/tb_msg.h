@@ -8,6 +8,7 @@
 
 #include "tinkerbell.h"
 #include "tb_linklist.h"
+#include "tb_value.h"
 
 namespace tinkerbell {
 
@@ -22,20 +23,24 @@ class TBMessageHandler;
 class TBMessageData
 {
 public:
-	TBMessageData() : param1(0), param2(0) {}
-	TBMessageData(uint32 param1, uint32 param2) : param1(param1), param2(param2) {}
+	TBMessageData() {}
+	TBMessageData(int v1, int v2) : v1(v1), v2(v2) {}
 	virtual ~TBMessageData() {}
 public:
-// FIX: Add a TBValueArray here by default?
-	uint32 param1;
-	uint32 param2;
+	TBValue v1; ///< Use for anything
+	TBValue v2; ///< Use for anything
 };
+
+/** TBMessageLink should never be created or subclassed anywhere except in TBMessage.
+	It's only purpose is to add a extra typed link for TBMessage, since it needs to be
+	added in multiple lists. */
+class TBMessageLink : public TBLinkOf<TBMessageLink> { };
 
 /** TBMessage is a message created and owned by TBMessageHandler.
 	It carries a message id, and may also carry a TBMessageData with
 	additional parameters. */
 
-class TBMessage
+class TBMessage : public TBLinkOf<TBMessage>, public TBMessageLink
 {
 private:
 	TBMessage(TBID message, TBMessageData *data, double fire_time_ms, TBMessageHandler *mh);
@@ -51,8 +56,6 @@ public:
 private:
 	friend class TBMessageHandler;
 	double fire_time_ms;
-	TBLink link_in_global;
-	TBLink link_in_mh;
 	TBMessageHandler *mh;
 };
 
@@ -111,7 +114,7 @@ public:
 		If there's no more messages to process at the moment, it returns TB_NOT_SOON (No call to ProcessMessages is needed). */
 	static double GetNextMessageFireTime();
 private:
-	TBLinkList m_messages;
+	TBLinkListOf<TBMessage> m_messages;
 };
 
 }; // namespace tinkerbell

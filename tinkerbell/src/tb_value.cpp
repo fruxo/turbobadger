@@ -115,6 +115,24 @@ TBValue::TBValue(TYPE type)
 	};
 }
 
+TBValue::TBValue(int value)
+	: m_packed_init(0)
+{
+	SetInt(value);
+}
+
+TBValue::TBValue(float value)
+	: m_packed_init(0)
+{
+	SetFloat(value);
+}
+
+TBValue::TBValue(const char *value)
+	: m_packed_init(0)
+{
+	SetString(value, SET_NEW_COPY);
+}
+
 TBValue::~TBValue()
 {
 	SetNull();

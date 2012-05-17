@@ -54,6 +54,11 @@ public:
 	TBValue();
 	TBValue(const TBValue &value);
 	TBValue(TYPE type);
+
+	TBValue(int value);
+	TBValue(float value);
+	TBValue(const char *value);
+
 	~TBValue();
 
 	/** Take over ownership of content of source_value.

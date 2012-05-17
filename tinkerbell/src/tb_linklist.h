@@ -104,6 +104,8 @@ public:
 	void AddBefore(TBLink *link, TBLink *reference);
 	void AddAfter(TBLink *link, TBLink *reference);
 
+	bool ContainsLink(TBLink *link) const { return link->linklist == this; }
+
 	int CountLinks() const;
 public:
 	TBLink *first;
@@ -141,11 +143,14 @@ public:
 	/** Add link after the reference link (which must be added to this linklist). */
 	void AddAfter(T *link, T *reference) { m_linklist.AddAfter((TBLinkOf<T>*)link, reference); }
 
+	/** Return true if the link is currently added to this linklist. */
+	bool ContainsLink(T *link) const { return m_linklist.ContainsLink((TBLinkOf<T>*)link); }
+
 	/** Get the first link, or nullptr. */
-	T *GetFirst() const { return (T *) m_linklist.first; }
+	T *GetFirst() const { return (T *) (TBLinkOf<T>*) m_linklist.first; }
 
 	/** Get the last link, or nullptr. */
-	T *GetLast() const { return (T *) m_linklist.last; }
+	T *GetLast() const { return (T *) (TBLinkOf<T>*) m_linklist.last; }
 
 	/** Return true if this linklist contains any links. */
 	bool HasLinks() const { return m_linklist.first ? true : false; }
