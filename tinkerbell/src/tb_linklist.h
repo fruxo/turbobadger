@@ -69,7 +69,6 @@ class TBLink
 {
 public:
 	TBLink() : prev(nullptr), next(nullptr), linklist(nullptr) {}
-	virtual ~TBLink() { assert(!linklist); }
 public:
 	TBLink *prev;
 	TBLink *next;
@@ -94,9 +93,7 @@ public:
 	~TBLinkList();
 
 	void Remove(TBLink *link);
-	void Delete(TBLink *link);
 	void RemoveAll();
-	void DeleteAll();
 
 	void AddFirst(TBLink *link);
 	void AddLast(TBLink *link);
@@ -123,13 +120,13 @@ public:
 	void Remove(T *link)			{ m_linklist.Remove((TBLinkOf<T>*)link); }
 
 	/** Remove link from this linklist and delete it. */
-	void Delete(T *link)			{ m_linklist.Delete((TBLinkOf<T>*)link); }
+	void Delete(T *link)			{ m_linklist.Remove((TBLinkOf<T>*)link); delete link; }
 
 	/** Remove all links without deleding them. */
 	void RemoveAll()				{ m_linklist.RemoveAll(); }
 
 	/** Delete all links in this linklist. */
-	void DeleteAll()				{ m_linklist.DeleteAll(); }
+	void DeleteAll()				{ while (T *t = GetFirst()) Delete(t); }
 
 	/** Add link first in this linklist. */
 	void AddFirst(T *link)			{ m_linklist.AddFirst((TBLinkOf<T>*)link); }

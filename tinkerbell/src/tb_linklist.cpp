@@ -165,12 +165,6 @@ void TBLinkList::Remove(TBLink *link)
 	link->next = 0;
 }
 
-void TBLinkList::Delete(TBLink *link)
-{
-	Remove(link);
-	delete link;
-}
-
 void TBLinkList::RemoveAll()
 {
 	// Reset all iterators.
@@ -192,18 +186,6 @@ void TBLinkList::RemoveAll()
 	}
 	first = 0;
 	last = 0;
-}
-
-void TBLinkList::DeleteAll()
-{
-	TBLink *link = first;
-	while (link)
-	{
-		TBLink *next = link->next;
-		Remove(link);
-		delete link;
-		link = next;
-	}
 }
 
 int TBLinkList::CountLinks() const
