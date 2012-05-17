@@ -59,8 +59,6 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tbanimation/Animation.cpp \
       tbanimation/tb_animation.cpp \
       tdimage/tdimage.cpp \
-      tdimage/tdimage_png.cpp \
-      tdimage/lodepng.cpp \
       Demo/Demo01.cpp \
       Demo/port_glut.cpp \
       Demo/tb_renderer_gl.cpp
