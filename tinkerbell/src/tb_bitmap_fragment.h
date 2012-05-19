@@ -20,20 +20,25 @@ class TBBitmap;
 int TBGetNearestPowerOfTwo(int val);
 
 /** TBImageloader is a class used to load skin images. It can be implemented
- * in any way the system wants, but the system has to provide a image loader
- * capable of handling all image formats used in the skin. */
+	in any way the system wants, but the system has to provide a image loader
+	capable of handling all image formats used in the skin. */
 class TBImageLoader
 {
 public:
 	/** Static method used to create an image loader. The system must implement this
-	 * function and create an implementation of the TBImageLoader interface. */
+		function and create an implementation of the TBImageLoader interface. */
 	static TBImageLoader *CreateFromFile(const char *filename);
+
 	virtual ~TBImageLoader() {}
+
 	/** Return the width of the loaded bitmap. */
 	virtual int Width() = 0;
+
 	/** Return the height of the loaded bitmap. */
 	virtual int Height() = 0;
-	/** Return the data of the loaded bitmap. */
+
+	/** Return the data of the loaded bitmap.
+		This data should always be in 32bit RGBA format. */
 	virtual uint32 *Data() = 0;
 };
 

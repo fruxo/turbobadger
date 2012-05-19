@@ -375,7 +375,16 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("reload skin bitmaps"))
 		{
-			g_tb_skin->ReloadBitmaps();
+			int reload_count = 100;
+			double t1 = TBSystem::GetTimeMS();
+			for (int i = 0; i < reload_count; i++)
+				g_tb_skin->ReloadBitmaps();
+			double t2 = TBSystem::GetTimeMS();
+
+			TBStr message;
+			message.SetFormatted("Reloading the skin graphics %d times took %dms", reload_count, (int)(t2 - t1));
+			TBMessageWindow *msg_win = new TBMessageWindow(ev.target, TBID());
+			msg_win->Show("GFX load performance", message);
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))
