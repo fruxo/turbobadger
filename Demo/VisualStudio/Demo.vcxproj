@@ -84,11 +84,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp" />
     <ClCompile Include="..\..\tbanimation\Animation.cpp" />
     <ClCompile Include="..\..\tbanimation\tb_animation.cpp" />
     <ClCompile Include="..\..\tdfont\tdfont.cpp" />
     <ClCompile Include="..\..\tdfont\tdfont_gl.cpp" />
-    <ClCompile Include="..\..\tdimage\tdimage.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_tempbuffer.cpp" />
@@ -132,7 +132,6 @@
     <ClInclude Include="..\..\tbanimation\Animation.h" />
     <ClInclude Include="..\..\tbanimation\tb_animation.h" />
     <ClInclude Include="..\..\tdfont\tdfont.h" />
-    <ClInclude Include="..\..\tdimage\tdimage.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_bitmap_fragment.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_hash.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_tempbuffer.h" />

@@ -22,14 +22,14 @@
     <Filter Include="Source Files\tdfont">
       <UniqueIdentifier>{2a6a4b9b-c5d8-4145-bea6-0882e5d4a662}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tdimage">
-      <UniqueIdentifier>{9acb1ab5-177f-4e46-827a-3035dee9e3fb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\tbanimation">
       <UniqueIdentifier>{02dc40a7-f4f8-4dcc-85a4-200f636b1e9e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\tinkerbell\tests">
       <UniqueIdentifier>{fcdf0ffd-9c2a-44eb-b675-c8ec88878322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\stb_image">
+      <UniqueIdentifier>{9635f581-5440-40ed-9040-6534391f08fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -71,9 +71,6 @@
     </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_system_win.cpp">
       <Filter>Source Files\tinkerbell</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\tdimage\tdimage.cpp">
-      <Filter>Source Files\tdimage</Filter>
     </ClCompile>
     <ClCompile Include="..\..\tdfont\tdfont.cpp">
       <Filter>Source Files\tdfont</Filter>
@@ -153,6 +150,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_value.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp">
+      <Filter>Source Files\stb_image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -198,9 +198,6 @@
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_system.h">
       <Filter>Source Files\tinkerbell</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\tdimage\tdimage.h">
-      <Filter>Source Files\tdimage</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tdfont\tdfont.h">
       <Filter>Source Files\tdfont</Filter>

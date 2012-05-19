@@ -54,8 +54,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tests/test_tb_widget_value.cpp \
       tinkerbell/src/tests/test_tb_linklist.cpp \
       tinkerbell/src/tests/test_tb_test.cpp \
-      tdfont/tdfont.cpp \
-      tdfont/tdfont_gl.cpp \
+      stb_image/tb_image_loader_stb.cpp \
       tbanimation/Animation.cpp \
       tbanimation/tb_animation.cpp \
       tdimage/tdimage.cpp \
