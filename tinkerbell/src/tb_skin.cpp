@@ -186,7 +186,15 @@ bool TBSkin::ReloadBitmaps()
 	UnloadBitmaps();
 	bool success = ReloadBitmapsInternal();
 	// Create all bitmaps for the bitmap fragment maps
-	return success && m_frag_manager.CreateBitmaps();
+	if (success)
+		success = m_frag_manager.CreateBitmaps();
+
+#ifdef _DEBUG
+	TBStr info;
+	info.SetFormatted("Skin loaded using %d bitmaps.\n", m_frag_manager.GetNumMaps());
+	TBDebugOut(info);
+#endif
+	return success;
 }
 
 bool TBSkin::ReloadBitmapsInternal()

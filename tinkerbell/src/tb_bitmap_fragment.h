@@ -112,6 +112,8 @@ public:
 	/** Create bitmaps for all loaded fragments. */
 	bool CreateBitmaps();
 
+	/** Get number of fragment maps that is currently used. */
+	int GetNumMaps() const { return m_fragment_maps.GetNumItems(); }
 #ifdef _DEBUG
 	/** Render the maps on screen, to analyze fragment positioning. */
 	void Debug();
