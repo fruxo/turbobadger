@@ -5,12 +5,13 @@ LD = g++
 LDFLAGS =
 LIBS = 
 INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/freeglut" -I"."
+
 #release
 CFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
-CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 --std=c++0x $(INCPATH)
+CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
 #debug
 #CFLAGS = -D_DEBUG -g $(INCPATH)
-#CXXFLAGS = -D_DEBUG -g --std=c++0x $(INCPATH)
+#CXXFLAGS = -D_DEBUG -g $(INCPATH)
 
 ifeq ($(UNAME),Darwin)
  CFLAGS += -DMACOSX -Dnullptr=0
@@ -18,7 +19,7 @@ ifeq ($(UNAME),Darwin)
  LIBS +=  -framework GLUT -framework OpenGL
 else
  CFLAGS += -DLINUX -Dnullptr=0
- CXXFLAGS += -DLINUX -Dnullptr=0
+ CXXFLAGS += -DLINUX -Dnullptr=0 --std=c++0x
  LIBS += -lglut
 endif
 
@@ -54,10 +55,11 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tests/test_tb_widget_value.cpp \
       tinkerbell/src/tests/test_tb_linklist.cpp \
       tinkerbell/src/tests/test_tb_test.cpp \
+      tdfont/tdfont.cpp \
+      tdfont/tdfont_gl.cpp \
       stb_image/tb_image_loader_stb.cpp \
       tbanimation/Animation.cpp \
       tbanimation/tb_animation.cpp \
-      tdimage/tdimage.cpp \
       Demo/Demo01.cpp \
       Demo/port_glut.cpp \
       Demo/tb_renderer_gl.cpp
