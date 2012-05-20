@@ -67,7 +67,15 @@ bool DemoWindow::Load(const char *filename)
 			SetPosition(TBPoint(pos->GetValue().GetArray()->GetValue(0)->GetInt(),
 								pos->GetValue().GetArray()->GetValue(1)->GetInt()));
 
-	ResizeToFitContent();
+	if (TBNode *pos = node.GetNode("WindowInfo>size"))
+	{
+		if (pos->GetValue().GetArrayLength() == 2)
+			SetSize(pos->GetValue().GetArray()->GetValue(0)->GetInt(),
+					pos->GetValue().GetArray()->GetValue(1)->GetInt());
+	}
+	else
+		ResizeToFitContent();
+
 	return true;
 }
 
@@ -167,6 +175,12 @@ public:
 				undo->SetState(WIDGET_STATE_DISABLED, !edit->GetStyleEdit()->CanUndo());
 			if (Widget *redo = GetWidgetByID("redo"))
 				redo->SetState(WIDGET_STATE_DISABLED, !edit->GetStyleEdit()->CanRedo());
+			if (TBTextField *info = TBSafeGetByID(TBTextField, "info"))
+			{
+				TBStr text;
+				text.SetFormatted("Caret ofs: %d", edit->GetStyleEdit()->caret.GetGlobalOfs());
+				info->SetText(text);
+			}
 		}
 	}
 	virtual bool OnEvent(const WidgetEvent &ev)
@@ -524,8 +538,8 @@ DemoApplication::~DemoApplication()
 void DemoApplication::Process()
 {
 	WidgetsAnimationManager::Update();
-	m_root->InvokeProcess();
 	m_root->InvokeProcessStates();
+	m_root->InvokeProcess();
 
 	// Update the FPS counter
 	double time = TBSystem::GetTimeMS();

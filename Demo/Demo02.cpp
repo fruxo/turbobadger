@@ -157,8 +157,8 @@ UIEditorApplication::~UIEditorApplication()
 
 void UIEditorApplication::Process()
 {
-	m_root->InvokeProcess();
 	m_root->InvokeProcessStates();
+	m_root->InvokeProcess();
 }
 
 void UIEditorApplication::RenderFrame(int window_w, int window_h)

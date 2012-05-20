@@ -202,8 +202,11 @@ public:
 	void SetRect(const TBRect &rect);
 	TBRect GetRect() { return m_rect; }
 
-	/** Set position for this widget in its parent. The position is relative to the parent widget. */
+	/** Set position of this widget in its parent. The position is relative to the parent widget. */
 	void SetPosition(const TBPoint &pos) { SetRect(TBRect(pos.x, pos.y, m_rect.w, m_rect.h)); }
+
+	/** Set size of this widget. */
+	void SetSize(int width, int height) { SetRect(TBRect(m_rect.x, m_rect.y, width, height)); }
 
 	/** Invalidate should be called if the widget need to be repainted,
 		to make sure the renderer repaints it and its children next frame. */
@@ -372,7 +375,7 @@ public:
 
 	/** Callback for doing state updates that depend on your application state.
 		F.ex setting the disabled state on a widget which action is currently not
-		available. This callback is called for all widgets after OnProcess if
+		available. This callback is called for all widgets before OnProcess if
 		something has called InvalidateStates().*/
 	virtual void OnProcessStates() {}
 

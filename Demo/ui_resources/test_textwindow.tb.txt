@@ -1,6 +1,7 @@
 WindowInfo
 	title Text editing
 	position 600 50
+	size 310 400
 TBLayout: axis: y, distribution: available
 	TBLayout: distribution: gravity
 		TBButton: id: undo
@@ -11,6 +12,7 @@ TBLayout: axis: y, distribution: available
 		TBLayout
 			gravity left right
 			distribution_position right bottom
+			TBTextField: id: info
 			TBClickLabel: text: Wrap
 				TBCheckBox: value: 1, id: wrap
 	TBEditField: multiline: 1, gravity: all, id: editfield, autofocus: 1

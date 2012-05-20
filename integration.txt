@@ -26,11 +26,11 @@ List of input triggers (root is your root Widget):
 Layout & Painting
 -----------------
 
-Before painting, it is a good time to update widgets layouts and input states
+Before painting, it is a good time to update widgets input states and layouts
 that might affect the rendering. This is done by calling:
 
-	root->InvokeProcess
 	root->InvokeProcessStates
+	root->InvokeProcess
 
 Before painting the root widget (and all its children), you need to prepare
 the renderer to set up the correct matrix etc.
