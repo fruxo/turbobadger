@@ -81,9 +81,6 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_tab_container.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\PStyleEdit.cpp">
-      <Filter>Source Files\tinkerbell</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_editfield.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
@@ -153,6 +150,15 @@
     <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp">
       <Filter>Source Files\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_styleedit.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_style_edit_content.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_style_edit.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -203,9 +209,6 @@
       <Filter>Source Files\tdfont</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_tab_container.h">
-      <Filter>Source Files\tinkerbell</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\PStyleEdit.h">
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_editfield.h">
@@ -260,6 +263,12 @@
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_value.h">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_style_edit_content.h">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_style_edit.h">
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
   </ItemGroup>

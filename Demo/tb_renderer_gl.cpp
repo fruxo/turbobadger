@@ -301,6 +301,13 @@ int TBRendererGL::GetFontHeight()
 	return TdFontRenderer::GetFontHeight(g_uifont);
 }
 
+int TBRendererGL::GetFontBaseline()
+{
+	if (!g_uifont)
+		return 0;
+	return (int32)(TdFontRenderer::GetFontHeight(g_uifont) * 0.75f);
+}
+
 TBBitmap *TBRendererGL::CreateBitmap(int width, int height, uint32 *data)
 {
 	TBBitmapGL *bitmap = new TBBitmapGL;

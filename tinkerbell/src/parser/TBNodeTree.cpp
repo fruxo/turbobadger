@@ -180,10 +180,15 @@ bool TBNode::ReadFile(const char *filename)
 
 void TBNode::ReadData(const char *data)
 {
+	ReadData(data, strlen(data));
+}
+
+void TBNode::ReadData(const char *data, int data_len)
+{
 	Clear();
 	DataParser p;
 	TBNodeTarget t(this);
-	p.Read(data, strlen(data), &t);
+	p.Read(data, data_len, &t);
 }
 
 void TBNode::Clear()

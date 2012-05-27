@@ -78,6 +78,7 @@ Widget *CreateTBEditField(CREATE_INFO *info)
 	if (TBEditField *editfield = new TBEditField())
 	{
 		editfield->SetMultiline(info->node->GetValueInt("multiline", 0) ? true : false);
+		editfield->SetStyling(info->node->GetValueInt("styling", 0) ? true : false);
 		editfield->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
 		editfield->SetWrapping(info->node->GetValueInt("wrap", editfield->GetWrapping()) ? true : false);
 		if (const char *text = GetTranslatableString(info->node, "placeholder"))
@@ -290,6 +291,14 @@ bool TBWidgetsReader::LoadData(Widget *target, const char *data)
 {
 	TBNode node;
 	node.ReadData(data);
+	LoadNodeTree(target, &node);
+	return true;
+}
+
+bool TBWidgetsReader::LoadData(Widget *target, const char *data, int data_len)
+{
+	TBNode node;
+	node.ReadData(data, data_len);
 	LoadNodeTree(target, &node);
 	return true;
 }

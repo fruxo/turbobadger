@@ -23,21 +23,6 @@ TBStr FilenameToPath(const char *filename)
 	return TBStr(filename_start, filename - filename_start);
 }
 
-TBColor StringToColor(const char *str)
-{
-	int r, g, b, a;
-	int len = strlen(str);
-	if (len == 9 && sscanf(str, "#%2x%2x%2x%2x", &r, &g, &b, &a) == 4)	// rrggbbaa
-		return TBColor(r, g, b, a);
-	if (len == 7 && sscanf(str, "#%2x%2x%2x", &r, &g, &b) == 3)			// rrggbb
-		return TBColor(r, g, b);
-	if (len == 5 && sscanf(str, "#%1x%1x%1x%1x", &r, &g, &b, &a) == 4)	// rgba
-		return TBColor(r + (r << 4), g + (g << 4), b + (b << 4), a + (a << 4));
-	if (len == 4 && sscanf(str, "#%1x%1x%1x", &r, &g, &b) == 3)			// rgb
-		return TBColor(r + (r << 4), g + (g << 4), b + (b << 4));
-	return TBColor();
-}
-
 // == TBSkin ================================================================
 
 TBSkin::TBSkin()
@@ -68,7 +53,7 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 	TBStr skin_path = FilenameToPath(skin_file);
 
 	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
-		m_default_text_color = StringToColor(color);
+		m_default_text_color.SetFromString(color, strlen(color));
 
 	// Iterate through all elements nodes and add skin elements
 	TBNode *elements = node.GetNode("elements");
@@ -132,7 +117,7 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			e->opacity = n->GetValueFloat("opacity", 1.f);
 
 			if (const char *color = n->GetValueString("text-color", nullptr))
-				e->text_color = StringToColor(color);
+				e->text_color.SetFromString(color, strlen(color));
 			else
 				e->text_color = m_default_text_color;
 

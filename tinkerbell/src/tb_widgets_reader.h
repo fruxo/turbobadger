@@ -42,6 +42,7 @@ public:
 
 	bool LoadFile(Widget *target, const char *filename);
 	bool LoadData(Widget *target, const char *data);
+	bool LoadData(Widget *target, const char *data, int data_len);
 	void LoadNodeTree(Widget *target, TBNode *node);
 private:
 	bool Init();

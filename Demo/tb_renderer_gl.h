@@ -62,6 +62,7 @@ public:
 	virtual void DrawString(int x, int y, const TBColor &color, const char *str, int len);
 	virtual int GetStringWidth(const char *str, int len);
 	virtual int GetFontHeight();
+	virtual int GetFontBaseline();
 
 	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data);
 public:

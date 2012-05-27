@@ -45,7 +45,8 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_value.cpp \
       tinkerbell/src/tb_linklist.cpp \
       tinkerbell/src/tb_list.cpp \
-      tinkerbell/src/PStyleEdit.cpp \
+      tinkerbell/src/tb_style_edit.cpp \
+      tinkerbell/src/tb_style_edit_content.cpp \
       tinkerbell/src/tb_language.cpp \
       tinkerbell/src/tb_msg.cpp \
       tinkerbell/src/tb_widgets_listener.cpp \

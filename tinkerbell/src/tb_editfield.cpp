@@ -7,6 +7,8 @@
 #include "tb_select.h"
 #include "tb_system.h"
 #include "tb_language.h"
+#include "tb_style_edit_content.h"
+#include "tb_widgets_reader.h"
 
 namespace tinkerbell {
 
@@ -32,6 +34,8 @@ TBEditField::TBEditField()
 	SetIsFocusable(true);
 	AddChild(&m_scrollbar_x);
 	AddChild(&m_scrollbar_y);
+	AddChild(&m_root);
+	m_root.SetGravity(WIDGET_GRAVITY_ALL);
 	m_scrollbar_x.SetGravity(WIDGET_GRAVITY_BOTTOM | WIDGET_GRAVITY_LEFT_RIGHT);
 	m_scrollbar_y.SetGravity(WIDGET_GRAVITY_RIGHT | WIDGET_GRAVITY_TOP_BOTTOM);
 	m_scrollbar_y.SetAxis(AXIS_Y);
@@ -45,11 +49,17 @@ TBEditField::TBEditField()
 	m_skin_bg.Set("TBEditField");
 	m_style_edit.SetListener(this);
 
+	m_root.SetRect(GetVisibleRect());
+
 	m_placeholder.SetTextAlign(TB_TEXT_ALIGN_LEFT);
+
+	m_content_factory.editfield = this;
+	m_style_edit.SetContentFactory(&m_content_factory);
 }
 
 TBEditField::~TBEditField()
 {
+	RemoveChild(&m_root);
 	RemoveChild(&m_scrollbar_y);
 	RemoveChild(&m_scrollbar_x);
 }
@@ -67,8 +77,15 @@ TBRect TBEditField::GetVisibleRect()
 void TBEditField::SetMultiline(bool multiline)
 {
 	m_scrollbar_y.SetOpacity(multiline ? 1.f : 0.f);
+	m_root.SetRect(GetVisibleRect());
+
 	m_style_edit.SetMultiline(multiline);
 	m_style_edit.SetWrapping(multiline);
+}
+
+void TBEditField::SetStyling(bool styling)
+{
+	m_style_edit.SetStyling(styling);
 }
 
 void TBEditField::SetReadOnly(bool readonly)
@@ -270,16 +287,12 @@ void TBEditField::Invalidate(const TBRect &rect)
 	Widget::Invalidate();
 }
 
-void TBEditField::SetStyle(PStyle *style)
-{
-}
-
 void TBEditField::DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len)
 {
 	g_renderer->DrawString(x, y, color, str, len);
 }
 
-void TBEditField::DrawBackground(const TBRect &rect, PBlock *block)
+void TBEditField::DrawBackground(const TBRect &rect, TBBlock *block)
 {
 }
 
@@ -336,6 +349,108 @@ void TBEditField::CaretBlinkStop()
 	// Remove the blink message if we have one
 	if (TBMessage *msg = GetMessageByID(TBIDC("blink")))
 		DeleteMessage(msg);
+}
+
+// == TBEditFieldScrollRoot =======================================================================
+
+void TBEditFieldScrollRoot::OnPaintChildren(const PaintProps &paint_props)
+{
+	TBRect old_clip_rect = g_renderer->SetClipRect(TBRect(0, 0, m_rect.w, m_rect.h), true);
+	Widget::OnPaintChildren(paint_props);
+	g_renderer->SetClipRect(old_clip_rect, false);
+}
+
+void TBEditFieldScrollRoot::GetChildTranslation(int &x, int &y) const
+{
+	TBEditField *edit_field = static_cast<TBEditField *>(m_parent);
+	x = (int) -edit_field->GetStyleEdit()->scroll_x;
+	y = (int) -edit_field->GetStyleEdit()->scroll_y;
+}
+
+WIDGET_HIT_STATUS TBEditFieldScrollRoot::GetHitStatus(int x, int y)
+{
+	// Return no hit on this widget, but maybe on any of the children.
+	if (Widget::GetHitStatus(x, y) && GetWidgetAt(x, y, false))
+		return WIDGET_HIT_STATUS_HIT;
+	return WIDGET_HIT_STATUS_NO_HIT;
+}
+
+// == TBTextFragmentContentWidget =================================================================
+
+class TBTextFragmentContentWidget : public TBTextFragmentContent
+{
+public:
+	TBTextFragmentContentWidget(Widget *parent, Widget *widget);
+	virtual ~TBTextFragmentContentWidget();
+
+	virtual void UpdatePos(int x, int y);
+	virtual int32 GetWidth(TBTextFragment *fragment);
+	virtual int32 GetHeight(TBTextFragment *fragment);
+	virtual int32 GetBaseline(TBTextFragment *fragment);
+private:
+	Widget *m_widget;
+};
+
+TBTextFragmentContentWidget::TBTextFragmentContentWidget(Widget *parent, Widget *widget)
+	: m_widget(widget)
+{
+	parent->GetContentRoot()->AddChild(widget);
+}
+
+TBTextFragmentContentWidget::~TBTextFragmentContentWidget()
+{
+	m_widget->m_parent->RemoveChild(m_widget);
+	delete m_widget;
+}
+
+void TBTextFragmentContentWidget::UpdatePos(int x, int y)
+{
+	m_widget->SetRect(TBRect(x, y, GetWidth(nullptr), GetHeight(nullptr)));
+}
+
+int32 TBTextFragmentContentWidget::GetWidth(TBTextFragment *fragment)
+{
+	return m_widget->m_rect.w ? m_widget->m_rect.w : m_widget->GetPreferredSize().pref_w;
+}
+
+int32 TBTextFragmentContentWidget::GetHeight(TBTextFragment *fragment)
+{
+	return m_widget->m_rect.h ? m_widget->m_rect.h : m_widget->GetPreferredSize().pref_h;
+}
+
+int32 TBTextFragmentContentWidget::GetBaseline(TBTextFragment *fragment)
+{
+	int height = GetHeight(fragment);
+	return height - (fragment->block->CalculateLineHeight() - fragment->block->CalculateBaseline());
+}
+
+// == TBEditFieldContentFactory ===================================================================
+
+int TBEditFieldContentFactory::GetContent(const char *text)
+{
+	return TBTextFragmentContentFactory::GetContent(text);
+}
+
+TBTextFragmentContent *TBEditFieldContentFactory::CreateFragmentContent(const char *text, int text_len)
+{
+	if (strncmp(text, "<widget ", MIN(text_len, 8)) == 0)
+	{
+		// Create a wrapper for the generated widget.
+		// Its size will adapt to the content.
+		if (Widget *widget = new Widget())
+		{
+			g_widgets_reader->LoadData(widget, text + 8, text_len - 9);
+
+			if (widget->GetFirstChild())
+				widget->GetFirstChild()->SetGravity(WIDGET_GRAVITY_ALL);
+
+			if (TBTextFragmentContentWidget *cw = new TBTextFragmentContentWidget(editfield, widget))
+				return cw;
+			delete widget;
+		}
+	}
+
+	return TBTextFragmentContentFactory::CreateFragmentContent(text, text_len);
 }
 
 }; // namespace tinkerbell

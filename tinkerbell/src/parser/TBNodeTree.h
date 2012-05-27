@@ -27,6 +27,9 @@ public:
 	/** Read a tree of nodes from a null terminated string buffer. */
 	void ReadData(const char *data);
 
+	/** Read a tree of nodes from a buffer with a known length. */
+	void ReadData(const char *data, int data_len);
+
 	/** Clear the contens of this node. */
 	void Clear();
 

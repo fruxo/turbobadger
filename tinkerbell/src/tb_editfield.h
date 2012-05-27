@@ -8,7 +8,7 @@
 
 #include "tb_widgets_common.h"
 #include "tb_msg.h"
-#include "PStyleEdit.h"
+#include "tb_style_edit.h"
 
 namespace tinkerbell {
 
@@ -23,11 +23,53 @@ enum EDIT_TYPE {
 	EDIT_TYPE_NUMBER			///< Any text allowed
 };
 
+/** The default content factory for embedded content in TBEditField with styling enabled.
+
+	Creates all that TBTextFragmentContentFactory creates by default,
+	and any type of widget from a inline resource string.
+
+	Syntax: <widget xxx> Where xxx is parsed by TBWidgetsReader.
+
+	Example - Create a button with id "hello":
+
+		<widget TBButton: text: "Hello world!" id: "hello">
+
+	Example - Create a image from skin element "Icon48":
+
+		<widget TBSkinImage: skin: "Icon48">
+*/
+
+class TBEditFieldContentFactory : public TBTextFragmentContentFactory
+{
+public:
+	class TBEditField *editfield;
+	virtual int GetContent(const char *text);
+	virtual TBTextFragmentContent *CreateFragmentContent(const char *text, int text_len);
+};
+
+/** TBEditFieldScrollRoot - Internal for TBEditField.
+	Acts as a scrollable container for any widget created as embedded content. */
+
+class TBEditFieldScrollRoot : public Widget
+{
+private: // May only be used by TBEditField.
+	friend class TBEditField;
+	TBEditFieldScrollRoot() {}
+public:
+	virtual void OnPaintChildren(const PaintProps &paint_props);
+	virtual void GetChildTranslation(int &x, int &y) const;
+	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
+};
+
 /** TBEditField is a one line or multi line textfield that is editable or
 	read-only. It can also be a passwordfield by calling
-	SetEditType(EDIT_TYPE_PASSWORD). */
+	SetEditType(EDIT_TYPE_PASSWORD).
+	
+	It may perform styling of text and contain custom embedded content,
+	if enabled by SetStyling(true). Disabled by default.
+*/
 
-class TBEditField : public Widget, private PStyleEditListener, public TBMessageHandler
+class TBEditField : public Widget, private TBStyleEditListener, public TBMessageHandler
 {
 public:
 	// For safe typecasting
@@ -44,13 +86,17 @@ public:
 	void SetMultiline(bool multiline);
 	bool GetMultiline() const { return m_style_edit.packed.multiline_on; }
 
+	/** Set if styling should be enabled or not. Default is disabled. */
+	void SetStyling(bool styling);
+	bool GetStyling() const { return m_style_edit.packed.styling_on; }
+
 	void SetReadOnly(bool readonly);
 	bool GetReadOnly() const { return m_style_edit.packed.read_only; }
 
 	void SetWrapping(bool wrapping);
 	bool GetWrapping() const { return m_style_edit.packed.wrapping; }
 
-	PStyleEdit *GetStyleEdit() { return &m_style_edit; }
+	TBStyleEdit *GetStyleEdit() { return &m_style_edit; }
 
 	void SetEditType(EDIT_TYPE type);
 	EDIT_TYPE GetEditType() { return m_edit_type; }
@@ -73,24 +119,26 @@ public:
 	virtual void OnPaint(const PaintProps &paint_props);
 	virtual void OnFocusChanged(bool focused);
 	virtual void OnResized(int old_w, int old_h);
+	virtual Widget *GetContentRoot() { return &m_root; }
 
 	virtual PreferredSize GetPreferredContentSize();
 
 	virtual void OnMessageReceived(TBMessage *msg);
 private:
-	PStyleEdit m_style_edit;
 	TBScrollBar m_scrollbar_x;
 	TBScrollBar m_scrollbar_y;
 	TBWidgetString m_placeholder;
 	EDIT_TYPE m_edit_type;
+	TBEditFieldScrollRoot m_root;
+	TBEditFieldContentFactory m_content_factory;
+	TBStyleEdit m_style_edit;
 
-	// == PStyleEditListener =======================
+	// == TBStyleEditListener =======================
 	virtual void OnChange();
 	virtual bool OnEnter();
 	virtual void Invalidate(const TBRect &rect);
-	virtual void SetStyle(PStyle *style);
 	virtual void DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len);
-	virtual void DrawBackground(const TBRect &rect, PBlock *block);
+	virtual void DrawBackground(const TBRect &rect, TBBlock *block);
 	virtual void DrawRect(const TBRect &rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color);
 	virtual void DrawTextSelectionBg(const TBRect &rect);

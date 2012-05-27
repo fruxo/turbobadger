@@ -76,6 +76,9 @@ public:
 	/** Get height of the font in pixels. */
 	virtual int GetFontHeight() = 0;
 
+	/** Get baseline of the font in pixels. */
+	virtual int GetFontBaseline() = 0;
+
 	/** Create a new TBBitmap from the given data (in BGRA32 format).
 		Width and height mustbe a power of two.
 		Return nullptr if fail. */

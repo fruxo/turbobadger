@@ -191,6 +191,12 @@ public:
 
 	uint8 b, g, r, a;
 
+	void Set(const TBColor &color) { *this = color; }
+
+	/** Set the color from string in any of the following formats:
+		"#rrggbbaa", "#rrggbb", "#rgba", "#rgb" */
+	void SetFromString(const char *str, int len);
+
 	operator uint32 () const		{ return *((uint32*)&b); }
 	bool operator == (const TBColor &c) const { return *this == (uint32)c; }
 	bool operator != (const TBColor &c) const { return !(*this == c); }

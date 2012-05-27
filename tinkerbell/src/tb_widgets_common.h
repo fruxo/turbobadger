@@ -23,7 +23,7 @@ enum TB_TEXT_ALIGN {
 class TBWidgetString
 {
 public:
-// FIX: Use PStyleEdit if wanted, to support rich text
+// FIX: Use TBStyleEdit if wanted, to support rich text
 	TBWidgetString();
 
 	void Paint(const TBRect &rect, const TBColor &color);

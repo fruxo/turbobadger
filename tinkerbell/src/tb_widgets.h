@@ -167,7 +167,6 @@ enum WIDGET_FOCUS_REASON {
 /** Hit status return value for Widget::GetHitStatus */
 enum WIDGET_HIT_STATUS {
 	WIDGET_HIT_STATUS_NO_HIT = 0,			///< The widget was not hit
-	//WIDGET_HIT_STATUS_NO_HIT_MAYBE_CHILDREN,///< The widget was not hit, but a child may be hit
 	WIDGET_HIT_STATUS_HIT,					///< The widget was hit, any child may be hit too.
 	WIDGET_HIT_STATUS_HIT_NO_CHILDREN		///< The widget was hit, no children should be hit.
 };
