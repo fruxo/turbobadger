@@ -330,6 +330,14 @@ public:
 	void SetPassword(bool password = true);
 	void SetWrapping(bool wrapping = true);
 
+	/** Set if line breaks should be inserted in windows style (\r\n)
+		or unix style (\n). The default is windows style on the windows
+		platform and disabled elsewhere.
+
+		Note: This only affects InsertBreak (pressing enter). Content set from
+		      SetText (and clipboard etc.) maintains the used line break. */
+	void SetWindowsStyleBreak(bool win_style_br) { packed.win_style_br = win_style_br; }
+
 	void Cut();
 	void Copy();
 	void Paste();
@@ -386,6 +394,7 @@ public:
 		uint32 show_whitespace : 1;
 		uint32 password_on : 1;
 		uint32 wrapping : 1;
+		uint32 win_style_br : 1;
 	} packed;
 	uint32 packed_init;
 	};

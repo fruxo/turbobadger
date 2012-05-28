@@ -22,12 +22,6 @@ namespace tinkerbell {
 
 const int TAB_SPACE = 4;
 
-/*#ifdef WIN32
-#define NEW_LINE_STR "\r\n"
-#else*/
-#define NEW_LINE_STR "\n"
-//#endif
-
 const char special_char_newln[] = { (char)0xB6, 0 };
 const char special_char_space[] = { (char)0xB7, 0 };
 const char special_char_tab[] = { (char)0xBB, 0 };
@@ -1155,15 +1149,16 @@ void TBTextFragment::Paint(int32 translate_x, int32 translate_y, TBTextProps *pr
 		for(int i = 0; i < len; i++)
 			listener->DrawString(x + i * cw, y, color, special_char_password, 1);
 	}
-	else if (IsTab())
+	else if (block->styledit->packed.show_whitespace)
 	{
-		if (block->styledit->packed.show_whitespace)
+		if (IsTab())
 			listener->DrawString(x, y, color, special_char_tab, 1);
-	}
-	else if (IsBreak())
-	{
-		if (block->styledit->packed.show_whitespace)
+		else if (IsBreak())
 			listener->DrawString(x, y, color, special_char_newln, len);
+		else if (IsSpace())
+			listener->DrawString(x, y, color, special_char_space, len);
+		else
+			listener->DrawString(x, y, color, Str(), len);
 	}
 	else
 		listener->DrawString(x, y, color, Str(), len);
@@ -1300,8 +1295,10 @@ TBStyleEdit::TBStyleEdit()
 {
 	caret.styledit = this;
 	selection.styledit = this;
-#ifdef _DEBUG
-	packed.show_whitespace = true;
+	TMPDEBUG(packed.show_whitespace = true);
+
+#ifdef WIN32
+	packed.win_style_br = 1;
 #endif
 
 	Clear();
@@ -1464,9 +1461,16 @@ void TBStyleEdit::InsertBreak()
 {
 	if (!packed.multiline_on)
 		return;
+
+	const char *new_line_str = packed.win_style_br ? "\r\n" : "\n";
+
+	// If we stand at the end and don't have any ending break, we're standing at the last line and
+	// should insert breaks twice. One to end the current line, and one for the new empty line.
 	if (caret.pos.ofs == caret.pos.block->str_len && !caret.pos.block->fragments.GetLast()->IsBreak())
-		InsertText(NEW_LINE_STR);
-	InsertText(NEW_LINE_STR);
+		InsertText(new_line_str);
+
+	InsertText(new_line_str);
+
 	caret.AvoidLineBreak();
 	if (caret.pos.block->GetNext())
 		caret.Place(caret.pos.block->GetNext(), 0);
