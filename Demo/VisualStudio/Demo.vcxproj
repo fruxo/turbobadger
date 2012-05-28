@@ -118,7 +118,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\tb_test.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp" />
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_styleedit.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_style_edit.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_test.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_widget_value.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tinkerbell.cpp" />

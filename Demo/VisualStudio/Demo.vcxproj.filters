@@ -150,14 +150,14 @@
     <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp">
       <Filter>Source Files\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_styleedit.cpp">
-      <Filter>Source Files\tinkerbell\tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_style_edit_content.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_style_edit.cpp">
       <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_style_edit.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
