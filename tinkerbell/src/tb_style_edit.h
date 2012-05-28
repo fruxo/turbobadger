@@ -319,6 +319,7 @@ public:
 	void Clear(bool init_new = true);
 	bool Load(const char *filename);
 	bool SetText(const char *text, bool place_caret_at_end = false);
+	bool SetText(const char *text, int text_len, bool place_caret_at_end);
 	bool GetText(TBStr &text);
 	bool IsEmpty();
 

@@ -1739,6 +1739,11 @@ void TBStyleEdit::Focus(bool focus)
 
 bool TBStyleEdit::SetText(const char *text, bool place_caret_at_end)
 {
+	return SetText(text, strlen(text), place_caret_at_end);
+}
+
+bool TBStyleEdit::SetText(const char *text, int text_len, bool place_caret_at_end)
+{
 	if (!text || !*text)
 	{
 		Clear(true);
@@ -1746,10 +1751,8 @@ bool TBStyleEdit::SetText(const char *text, bool place_caret_at_end)
 		return true;
 	}
 
-	//FIX: nu kan len läggas till i settext!
 	Clear(true);
-	int len = strlen(text);
-	blocks.GetFirst()->InsertText(0, text, len, true);
+	blocks.GetFirst()->InsertText(0, text, text_len, true);
 
 	caret.Place(blocks.GetFirst(), 0);
 	caret.UpdateWantedX();
