@@ -421,7 +421,7 @@ int32 TBTextFragmentContentWidget::GetHeight(TBTextFragment *fragment)
 int32 TBTextFragmentContentWidget::GetBaseline(TBTextFragment *fragment)
 {
 	int height = GetHeight(fragment);
-	return height - (fragment->block->CalculateLineHeight() - fragment->block->CalculateBaseline());
+	return (height + fragment->block->CalculateBaseline()) / 2;
 }
 
 // == TBEditFieldContentFactory ===================================================================

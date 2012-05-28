@@ -25,7 +25,7 @@ What features does it have
   Tinkerbell core:
 
   -Widgets (many common standard widgets)
-  -Text editing widget (With clipboard, undo/redo, styling functionality...)
+  -Text editing widget (With clipboard, undo/redo, styling functionality, embedded content...)
   -Extendable skin system with automatic runtime atlas creation.
   -Automatic widget layout (No need to specify widget dimensions by pixels)
   -Text based UI resource format (No need to write C++ to create UI)
