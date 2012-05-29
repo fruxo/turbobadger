@@ -302,7 +302,7 @@ bool TBSelection::IsFragmentSelected(TBTextFragment *elm)
 	return false;
 }
 
-bool TBSelection::IsSelected()
+bool TBSelection::IsSelected() const
 {
 	return start.block ? true : false;
 }
@@ -348,9 +348,9 @@ void TBSelection::RemoveContent()
 			styledit->undoredo.Commit(styledit, start_gofs, commit_string.GetAppendPos(), commit_string.GetData(), false);
 		}
 		stop.block->RemoveContent(0, stop.ofs);
-
-		start.block->Merge();
 	}
+	stop.block->Merge();
+	start.block->Merge();
 	styledit->caret.Place(start.block, start.ofs);
 	styledit->caret.UpdateWantedX();
 	SelectNothing();
@@ -384,7 +384,7 @@ bool TBSelection::GetText(TBStr &text)
 
 // == TBTextOfs =========================================================================
 
-int32 TBTextOfs::GetGlobalOfs(TBStyleEdit *se)
+int32 TBTextOfs::GetGlobalOfs(TBStyleEdit *se) const
 {
 	int32 gofs = 0;
 	TBBlock *b = se->blocks.GetFirst();
@@ -546,8 +546,6 @@ bool TBCaret::Place(TBBlock *block, int ofs, bool allow_snap, bool snap_forward)
 			ofs = block->str_len;
 
 		// Avoid being inside linebreak
-// fortfarande bug
-// pasta rad med tom rad på slutet och ångra.får t.om assert för out of range
 		if (allow_snap)
 		{
 			TBTextFragment *fragment = block->FindFragment(ofs);
@@ -734,6 +732,8 @@ int32 TBBlock::InsertText(int32 ofs, const char *text, int32 len, bool allow_lin
 
 void TBBlock::RemoveContent(int32 ofs, int32 len)
 {
+	if (!len)
+		return;
 	str.Remove(ofs, len);
 	str_len -= len;
 	Layout(true, true);
@@ -776,21 +776,21 @@ void TBBlock::Merge()
 		str.Append(GetNext()->str);
 		str_len = str.Length();
 
-		next_block->SetSize(0, 0, true); // Propagate height of the following, before we delete it.
 		styledit->blocks.Delete(next_block);
 
+		height = 0; // Ensure that Layout propagate height to remaining blocks.
 		Layout(true, true);
 	}
 }
 
-int32 TBBlock::CalculateTabWidth(int32 xpos)
+int32 TBBlock::CalculateTabWidth(int32 xpos) const
 {
 	int tabsize = g_renderer->GetStringWidth("x", 1) * TAB_SPACE;
 	int p2 = int(xpos / tabsize) * tabsize + tabsize;
 	return p2 - xpos;
 }
 
-int32 TBBlock::CalculateStringWidth(const char *str, int len)
+int32 TBBlock::CalculateStringWidth(const char *str, int len) const
 {
 	if (styledit->packed.password_on)
 	{
@@ -801,17 +801,17 @@ int32 TBBlock::CalculateStringWidth(const char *str, int len)
 	return g_renderer->GetStringWidth(str, len);
 }
 
-int32 TBBlock::CalculateLineHeight()
+int32 TBBlock::CalculateLineHeight() const
 {
 	return g_renderer->GetFontHeight();
 }
 
-int32 TBBlock::CalculateBaseline()
+int32 TBBlock::CalculateBaseline() const
 {
 	return g_renderer->GetFontBaseline();
 }
 
-int TBBlock::GetStartIndentation(int first_line_len)
+int TBBlock::GetStartIndentation(int first_line_len) const
 {
 	// Lines beginning with whitespace or list points, should
 	// indent to the same as the beginning when wrapped.
@@ -1043,7 +1043,7 @@ void TBBlock::SetSize(int32 new_w, int32 new_h, bool propagate_height)
 	styledit->content_height = styledit->GetContentHeight();
 }
 
-TBTextFragment *TBBlock::FindFragment(int32 ofs, bool prefer_first)
+TBTextFragment *TBBlock::FindFragment(int32 ofs, bool prefer_first) const
 {
 	TBTextFragment *fragment = fragments.GetFirst();
 	while (fragment)
@@ -1057,7 +1057,7 @@ TBTextFragment *TBBlock::FindFragment(int32 ofs, bool prefer_first)
 	return fragments.GetLast();
 }
 
-TBTextFragment *TBBlock::FindFragment(int32 x, int32 y)
+TBTextFragment *TBBlock::FindFragment(int32 x, int32 y) const
 {
 	TBTextFragment *fragment = fragments.GetFirst();
 	while (fragment)
@@ -1242,22 +1242,22 @@ int32 TBTextFragment::GetStringWidth(const char *str, int len)
 	return block->CalculateStringWidth(str, len);
 }
 
-bool TBTextFragment::IsBreak()
+bool TBTextFragment::IsBreak() const
 {
 	return Str()[0] == '\r' || Str()[0] == '\n';
 }
 
-bool TBTextFragment::IsSpace()
+bool TBTextFragment::IsSpace() const
 {
 	return is_space(Str()[0]);
 }
 
-bool TBTextFragment::IsTab()
+bool TBTextFragment::IsTab() const
 {
 	return Str()[0] == '\t';
 }
 
-bool TBTextFragment::GetAllowBreakBefore()
+bool TBTextFragment::GetAllowBreakBefore() const
 {
 	if (content)
 		return content->GetAllowBreakBefore();
@@ -1266,7 +1266,7 @@ bool TBTextFragment::GetAllowBreakBefore()
 	return false;
 }
 
-bool TBTextFragment::GetAllowBreakAfter()
+bool TBTextFragment::GetAllowBreakAfter() const
 {
 	if (content)
 		return content->GetAllowBreakAfter();
@@ -1421,12 +1421,12 @@ void TBStyleEdit::Reformat(bool update_fragments)
 	listener->Invalidate(TBRect(0, end_y, layout_width, tmp));
 }
 
-int32 TBStyleEdit::GetContentWidth()
+int32 TBStyleEdit::GetContentWidth() const
 {
 	return content_width;
 }
 
-int32 TBStyleEdit::GetContentHeight()
+int32 TBStyleEdit::GetContentHeight() const
 {
 	return blocks.GetLast()->ypos + blocks.GetLast()->height;
 }
@@ -1492,13 +1492,12 @@ void TBStyleEdit::InsertText(const char *text, int32 len, bool after_last, bool 
 	else
 		undoredo.Commit(this, caret.GetGlobalOfs(), len_inserted, text, true);
 
-	//ibland vill man framåt efter br, ibland innan? går inte lösa med renare kod utan behöver specialfall.
-	caret.Place(caret.pos.block, caret.pos.ofs + len/*, true, true*/);
+	caret.Place(caret.pos.block, caret.pos.ofs + len);
 	caret.UpdatePos();
 	caret.UpdateWantedX();
 }
 
-TBBlock *TBStyleEdit::FindBlock(int32 y)
+TBBlock *TBStyleEdit::FindBlock(int32 y) const
 {
 	TBBlock *block = blocks.GetFirst();
 	while (block)
@@ -1801,7 +1800,7 @@ bool TBStyleEdit::GetText(TBStr &text)
 	return tmp_selection.GetText(text);
 }
 
-bool TBStyleEdit::IsEmpty()
+bool TBStyleEdit::IsEmpty() const
 {
 	return blocks.GetFirst() == blocks.GetLast() && blocks.GetFirst()->str.IsEmpty();
 }
@@ -1881,15 +1880,19 @@ void TBUndoRedoStack::Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse)
 	applying = true;
 	if (e->insert == reverse)
 	{
-		styledit->caret.SetGlobalOfs(e->gofs);
+		styledit->caret.SetGlobalOfs(e->gofs, false);
+		assert(TBTextOfs(styledit->caret.pos).GetGlobalOfs(styledit) == e->gofs);
+
 		TBTextOfs start = styledit->caret.pos;
-		styledit->caret.SetGlobalOfs(e->gofs + e->text.Length(), true, true);
+		styledit->caret.SetGlobalOfs(e->gofs + e->text.Length(), false);
+		assert(TBTextOfs(styledit->caret.pos).GetGlobalOfs(styledit) == e->gofs + e->text.Length());
+
 		styledit->selection.Select(start, styledit->caret.pos);
 		styledit->selection.RemoveContent();
 	}
 	else
 	{
-		styledit->caret.SetGlobalOfs(e->gofs);
+		styledit->caret.SetGlobalOfs(e->gofs, false);
 		styledit->InsertText(e->text);
 	}
 	applying = false;

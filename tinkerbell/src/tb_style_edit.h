@@ -68,7 +68,7 @@ public:
 	void Set(TBBlock *new_block, int32 new_ofs) { block = new_block; ofs = new_ofs; }
 	void Set(const TBTextOfs &pos) { block = pos.block; ofs = pos.ofs; }
 
-	int32 GetGlobalOfs(TBStyleEdit *se);
+	int32 GetGlobalOfs(TBStyleEdit *se) const;
 	bool SetGlobalOfs(TBStyleEdit *se, int32 gofs);
 
 public:
@@ -92,7 +92,7 @@ public:
 	void CorrectOrder();
 	void CopyToClipboard();
 	bool IsFragmentSelected(TBTextFragment *elm);
-	bool IsSelected();
+	bool IsSelected() const;
 	void RemoveContent();
 	bool GetText(TBStr &text);
 public:
@@ -122,7 +122,7 @@ public:
 	void ResetBlink();
 	void UpdateWantedX();
 
-	int32 GetGlobalOfs() { return pos.GetGlobalOfs(styledit); }
+	int32 GetGlobalOfs() const { return pos.GetGlobalOfs(styledit); }
 	void SetGlobalOfs(int32 gofs, bool allow_snap = true, bool snap_forward = false);
 
 	TBTextFragment *GetFragment();
@@ -190,13 +190,13 @@ public:
 		moved if the height changed. */
 	void SetSize(int32 new_w, int32 new_h, bool propagate_height);
 
-	TBTextFragment *FindFragment(int32 ofs, bool prefer_first = false);
-	TBTextFragment *FindFragment(int32 x, int32 y);
+	TBTextFragment *FindFragment(int32 ofs, bool prefer_first = false) const;
+	TBTextFragment *FindFragment(int32 x, int32 y) const;
 
-	int32 CalculateStringWidth(const char *str, int len);
-	int32 CalculateTabWidth(int32 xpos);
-	int32 CalculateLineHeight();
-	int32 CalculateBaseline();
+	int32 CalculateStringWidth(const char *str, int len) const;
+	int32 CalculateTabWidth(int32 xpos) const;
+	int32 CalculateLineHeight() const;
+	int32 CalculateBaseline() const;
 
 	void Invalidate();
 	void Paint(int32 translate_x, int32 translate_y, TBTextProps *props);
@@ -212,7 +212,7 @@ public:
 	int32 str_len;
 
 private:
-	int GetStartIndentation(int first_line_len);
+	int GetStartIndentation(int first_line_len) const;
 };
 
 /** Event in the TBUndoRedoStack. Each insert or remove change is stored as a TBUndoEvent, but they may also be merged when appropriate. */
@@ -269,11 +269,11 @@ public:
 	void Paint(int32 translate_x, int32 translate_y, TBTextProps *props);
 	void Click(int button, uint32 modifierkeys);
 
-	bool IsText()					{ return !IsEmbedded(); }
-	bool IsEmbedded()				{ return content ? true : false; }
-	bool IsBreak();
-	bool IsSpace();
-	bool IsTab();
+	bool IsText() const					{ return !IsEmbedded(); }
+	bool IsEmbedded() const				{ return content ? true : false; }
+	bool IsBreak() const;
+	bool IsSpace() const;
+	bool IsTab() const;
 
 	int32 GetCharX(int32 ofs);
 	int32 GetCharOfs(int32 x);
@@ -281,8 +281,8 @@ public:
 	/** Get the stringwidth. Handles passwordmode, tab, linebreaks etc automatically. */
 	int32 GetStringWidth(const char *str, int len = -1);
 
-	bool GetAllowBreakBefore();
-	bool GetAllowBreakAfter();
+	bool GetAllowBreakBefore() const;
+	bool GetAllowBreakAfter() const;
 
 	const char *Str() const			{ return block->str.CStr() + ofs; }
 
@@ -321,7 +321,7 @@ public:
 	bool SetText(const char *text, bool place_caret_at_end = false);
 	bool SetText(const char *text, int text_len, bool place_caret_at_end);
 	bool GetText(TBStr &text);
-	bool IsEmpty();
+	bool IsEmpty() const;
 
 	void SetAlign(TB_TEXT_ALIGN align);
 	void SetMultiline(bool multiline = true);
@@ -345,25 +345,25 @@ public:
 
 	void Undo() { undoredo.Undo(this); }
 	void Redo() { undoredo.Redo(this); }
-	bool CanUndo() { return undoredo.undos.GetNumItems() ? true : false; }
-	bool CanRedo() { return undoredo.redos.GetNumItems() ? true : false; }
+	bool CanUndo() const { return undoredo.undos.GetNumItems() ? true : false; }
+	bool CanRedo() const { return undoredo.redos.GetNumItems() ? true : false; }
 
 	void InsertText(const char *text, int32 len = -1, bool after_last = false, bool clear_undo_redo = false);
 	void AppendText(const char *text, int32 len = -1, bool clear_undo_redo = false) { InsertText(text, len, true, clear_undo_redo); }
 	void InsertBreak();
 
-	TBBlock *FindBlock(int32 y);
+	TBBlock *FindBlock(int32 y) const;
 
 	void ScrollIfNeeded(bool x = true, bool y = true);
 	void SetScrollPos(int32 x, int32 y);
 	void SetLayoutSize(int32 width, int32 height);
 	void Reformat(bool update_fragments);
 
-	int32 GetContentWidth();
-	int32 GetContentHeight();
+	int32 GetContentWidth() const;
+	int32 GetContentHeight() const;
 
-	int32 GetOverflowX() { return MAX(content_width - layout_width, 0); }
-	int32 GetOverflowY() { return MAX(content_height - layout_height, 0); }
+	int32 GetOverflowX() const { return MAX(content_width - layout_width, 0); }
+	int32 GetOverflowY() const { return MAX(content_height - layout_height, 0); }
 public:
 	TBStyleEditListener *listener;
 	TBTextFragmentContentFactory default_content_factory;
