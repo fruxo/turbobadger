@@ -92,7 +92,7 @@ void OutputPass(TBTestGroup *test, const char *call_name)
 	TBDebugOut(msg);
 }
 
-void TBRunTests(uint32 settings)
+int TBRunTests(uint32 settings)
 {
 	test_settings = settings;
 	int num_failed = 0;
@@ -146,7 +146,7 @@ void TBRunTests(uint32 settings)
 	TBStr msg;
 	msg.SetFormatted("Test results: %d passed, %d failed.\n", num_passed, num_failed);
 	TBDebugOut(msg);
-	assert(num_failed == 0);
+	return num_failed;
 }
 
 #endif // TB_UNIT_TESTING

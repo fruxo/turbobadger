@@ -466,7 +466,7 @@ const char *boy_names[] = {
 bool DemoApplication::Init()
 {
 	// Run unit tests
-	TBRunTests();
+	int num_failed_tests = TBRunTests();
 
 	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_CENTER"));
 	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_LEFT_TOP"));
@@ -527,6 +527,14 @@ bool DemoApplication::Init()
 	click_label->GetContentRoot()->AddChild(fps_checkbox, WIDGET_Z_BOTTOM);
 
 	WidgetsAnimationManager::Init();
+
+	if (num_failed_tests)
+	{
+		TBStr text;
+		text.SetFormatted("There is %d failed tests!\nCheck the output for details.", num_failed_tests);
+		TBMessageWindow *msg_win = new TBMessageWindow(m_root, TBIDC(""));
+		msg_win->Show("Testing results", text);
+	}
 	return true;
 }
 

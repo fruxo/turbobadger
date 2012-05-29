@@ -97,8 +97,8 @@ namespace tinkerbell {
 
 #ifdef TB_UNIT_TESTING
 
-/** Run the tests */
-void TBRunTests(uint32 settings = TB_TEST_VERBOSE);
+/** Run the tests. Return the number of fails. */
+int TBRunTests(uint32 settings = TB_TEST_VERBOSE);
 
 /** Verify that the expression is true and fail if it isn't. */
 #define TB_VERIFY(expr) { fail_line_nr = __LINE__; fail_file = __FILE__; if (!(expr)) { fail_text = (#expr); return; } }
@@ -188,7 +188,7 @@ extern const char *fail_text;	///< Fail text description
 
 #else
 
-inline void TBRunTests(uint32 settings = TB_TEST_VERBOSE) {}
+inline int TBRunTests(uint32 settings = TB_TEST_VERBOSE) { return 0; }
 
 #endif
 
