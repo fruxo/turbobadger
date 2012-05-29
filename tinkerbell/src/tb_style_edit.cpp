@@ -1467,7 +1467,7 @@ void TBStyleEdit::InsertBreak()
 	// If we stand at the end and don't have any ending break, we're standing at the last line and
 	// should insert breaks twice. One to end the current line, and one for the new empty line.
 	if (caret.pos.ofs == caret.pos.block->str_len && !caret.pos.block->fragments.GetLast()->IsBreak())
-		InsertText(new_line_str);
+		new_line_str = packed.win_style_br ? "\r\n\r\n" : "\n\n";
 
 	InsertText(new_line_str);
 
