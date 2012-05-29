@@ -320,7 +320,7 @@ void TBSelection::RemoveContent()
 	else
 	{
 		// Remove text in first block
-		TBStr commit_string;
+		TBTempBuffer commit_string;
 		int32 start_gofs = 0;
 		if (!styledit->undoredo.applying)
 		{
@@ -334,7 +334,7 @@ void TBSelection::RemoveContent()
 		while (block != stop.block)
 		{
 			if (!styledit->undoredo.applying)
-				commit_string.Append(block->str);
+				commit_string.Append(block->str, block->str_len);
 
 			TBBlock *next = block->GetNext();
 			styledit->blocks.Delete(block);
@@ -345,7 +345,7 @@ void TBSelection::RemoveContent()
 		if (!styledit->undoredo.applying)
 		{
 			commit_string.Append(stop.block->str, stop.ofs);
-			styledit->undoredo.Commit(styledit, start_gofs, commit_string.Length(), commit_string, false);
+			styledit->undoredo.Commit(styledit, start_gofs, commit_string.GetAppendPos(), commit_string.GetData(), false);
 		}
 		stop.block->RemoveContent(0, stop.ofs);
 
