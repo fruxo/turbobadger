@@ -1166,7 +1166,7 @@ void TBTextFragment::Paint(int32 translate_x, int32 translate_y, TBTextProps *pr
 	if (props->data->underline)
 	{
 		int font_height = props->data->font.GetSize();
-		int line_h = (font_height + 6) / 10;
+		int line_h = (font_height + 4) / 10;
 		line_h = MAX(line_h, 1);
 		listener->DrawRectFill(TBRect(x, y + GetBaseline() + 1, GetWidth(), line_h), color);
 	}
