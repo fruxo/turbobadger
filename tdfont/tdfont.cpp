@@ -164,7 +164,7 @@ void TdFont::FindGlyphs(int width, int height, unsigned int *data32)
 	average_shadow /= average_shadow_glyph_count;
 	for(o=1;o<FONT_NUM_GLYPH_SLOTS;o++)
 	{
-		glyph[o].advance = glyph[o].w - average_shadow + 1;
+		glyph[o].advance = glyph[o].w - average_shadow;
 	}
 #endif
 
