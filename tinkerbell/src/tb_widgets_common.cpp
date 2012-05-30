@@ -99,12 +99,7 @@ PreferredSize TBTextField::GetPreferredContentSize()
 
 void TBTextField::OnPaint(const PaintProps &paint_props)
 {
-	TBRect clip_rect = GetPaddingRect();
-	TBRect old_clip_rect = g_renderer->SetClipRect(clip_rect, true);
-
-	m_text.Paint(clip_rect, paint_props.text_color);
-
-	g_renderer->SetClipRect(old_clip_rect, false);
+	m_text.Paint(GetPaddingRect(), paint_props.text_color);
 }
 
 // == TBButton =======================================
