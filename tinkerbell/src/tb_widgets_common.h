@@ -43,7 +43,7 @@ public:
 	TB_TEXT_ALIGN m_text_align;
 };
 
-/** TBTextField is a one line textfield that is not editable. */
+/** TBTextField is a one line text field that is not editable. */
 
 class TBTextField : public Widget
 {
@@ -53,7 +53,7 @@ public:
 
 	TBTextField();
 
-	/** Set the text of the textfield. */
+	/** Set the text of the text field. */
 	virtual bool SetText(const char *text);
 	virtual bool GetText(TBStr &text) { return m_text.GetText(text); }
 	using Widget::GetText; ///< Make all versions in base class available.
@@ -63,7 +63,7 @@ public:
 	void SetTextAlign(TB_TEXT_ALIGN align) { m_text.SetTextAlign(align); }
 	TB_TEXT_ALIGN GetTextAlign() { return m_text.GetTextAlign(); }
 
-	/** Set if this textfield should be allowed to squeeze below its
+	/** Set if this text field should be allowed to squeeze below its
 		preferred size. If squeezable it may shrink to width 0. */
 	void SetSqueezable(bool squeezable);
 	bool GetSqueezable() { return m_squeezable; }
@@ -76,7 +76,7 @@ protected:
 };
 
 /** TBButton is a regular button widget.
-	Has a textfield in its internal layout by default. Other widgets can be added
+	Has a text field in its internal layout by default. Other widgets can be added
 	under GetContentRoot(). */
 
 class TBButton : public Widget, protected TBMessageHandler
@@ -92,7 +92,7 @@ public:
 	void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
 	AXIS GetAxis() const { return m_layout.GetAxis(); }
 
-	/** Set if the textfield should be allowed to squeeze below its
+	/** Set if the text field should be allowed to squeeze below its
 		preferred size. If squeezable it may shrink to width 0. */
 	void SetSqueezable(bool squeezable) { m_textfield.SetSqueezable(squeezable); }
 	bool GetSqueezable() { return m_textfield.GetSqueezable(); }
@@ -124,9 +124,9 @@ protected:
 	bool m_auto_repeat_click;
 };
 
-/** TBClickLabel has a textfield in its internal layout by default. Pointer input on the textfield
-	will be redirected to another child widget (that you add) to it.
-	Typically useful for creating checkboxes, radiobuttons with labels. */
+/** TBClickLabel has a text field in its internal layout by default. Pointer input on the
+	text field will be redirected to another child widget (that you add) to it.
+	Typically useful for creating check boxes, radio buttons with labels. */
 
 class TBClickLabel : public Widget
 {

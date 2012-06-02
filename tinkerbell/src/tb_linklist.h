@@ -122,7 +122,7 @@ public:
 	/** Remove link from this linklist and delete it. */
 	void Delete(T *link)			{ m_linklist.Remove((TBLinkOf<T>*)link); delete link; }
 
-	/** Remove all links without deleding them. */
+	/** Remove all links without deleting them. */
 	void RemoveAll()				{ m_linklist.RemoveAll(); }
 
 	/** Delete all links in this linklist. */

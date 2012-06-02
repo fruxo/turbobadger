@@ -91,7 +91,7 @@ public:
 												count(1), key(0), special_key(0), modifierkeys(modifierkeys) {}
 
 	/** The count value may be 1 to infinity. If you f.ex want to see which count it is for something
-		handling click and doubleclick, call GetCountCycle(2). If you also handle trippleclick, call
+		handling click and double click, call GetCountCycle(2). If you also handle triple click, call
 		GetCountCycle(3) and so on. That way you'll get a count that always cycle in the range you need. */
 	int GetCountCycle(int max) { return ((count - 1) % max) + 1; }
 
@@ -141,6 +141,9 @@ public:
 	PreferredSize() : min_w(0), min_h(0)
 					, max_w(10000), max_h(10000)
 					, pref_w(0), pref_h(0) {}
+	PreferredSize(int w, int h) : min_w(w), min_h(h)
+								, max_w(w), max_h(h)
+								, pref_w(w), pref_h(h) {}
 
 	int min_w, min_h;			///< The minimal preferred width and height.
 	int max_w, max_h;			///< The maximum preferred width and height.
@@ -171,7 +174,7 @@ enum WIDGET_HIT_STATUS {
 	WIDGET_HIT_STATUS_HIT_NO_CHILDREN		///< The widget was hit, no children should be hit.
 };
 
-/** Implement the methods for safe typecasting without requireing RTTI */
+/** Implement the methods for safe typecasting without requiring RTTI */
 #define WIDGET_SUBCLASS(classname, baseclass) \
 	virtual const char *GetClassName() const { return classname; } \
 	virtual bool IsOfType(const char *name) const { return strcmp(name, classname) == 0 ? true : baseclass::IsOfType(name); }
@@ -219,11 +222,11 @@ public:
 
 	/** Delete the widget with the possibility for some extended life during animations.
 
-		If any widgetlistener responds true to OnWidgetDying it will be kept as a child and live
+		If any widget listener responds true to OnWidgetDying it will be kept as a child and live
 		until the animations are done, but the widgets and all its children are marked as dying.
 		Dying widgets get no input or focus.
 
-		If no widgetlistener responded, it will be deleted immediately. */
+		If no widget listener responded, it will be deleted immediately. */
 	void Die();
 
 	/** Return true if this widget or any of its parents is dying. */
@@ -264,7 +267,7 @@ public:
 	static void SetAutoFocusState(bool on);
 
 	/** Set opacity for this widget and its children from 0.0 - 1.0.
-		If opacity is 0 (invisible), the widget won't recieve any input. */
+		If opacity is 0 (invisible), the widget won't receive any input. */
 	void SetOpacity(float opacity);
 	float GetOpacity() const { return m_opacity; }
 
@@ -274,7 +277,7 @@ public:
 	/** Return true if this widget or any of its parents are disabled (has state WIDGET_STATE_DISABLED). */
 	bool GetDisabled();
 
-	/** Add the child to this widget. The childwidget will automatically be deleted when
+	/** Add the child to this widget. The child widget will automatically be deleted when
 		this widget is deleted. (If the child isn't removed again with RemoveChild.) */
 	void AddChild(Widget *child, WIDGET_Z z = WIDGET_Z_TOP, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
@@ -282,12 +285,12 @@ public:
 	void RemoveChild(Widget *child, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
 	/** Sets the z-order of this widget related to its siblings. When a widget is added with AddChild, it will be
-		placed at the top in the parent (Above previosly added widget). SetZ can be used to change the order. */
+		placed at the top in the parent (Above previously added widget). SetZ can be used to change the order. */
 	void SetZ(WIDGET_Z z);
 
 	/** Set the widget gravity (any combination of WIDGET_GRAVITY).
 		For child widgets in a layout, the gravity affects how the layout is done depending on the layout settings.
-		For child widgets in a nonlayout widget, it will do some basic resizing/moving:
+		For child widgets in a non layout widget, it will do some basic resizing/moving:
 			-left && right: Widget resize horizontally when parent resize.
 			-!left && right: Widget follows the right edge when parent resize.
 			-top && bottom: Widget resize vertically when parent resize.
@@ -309,11 +312,11 @@ public:
 	TBSkinElement *GetSkinBgElement();
 
 	/** Set if this widget is a group root. Grouped widgets (such as TBRadioButton) will toggle all other
-		widgets with the same group_id under the nearese parent group root. TBWindow is a group root by default. */
+		widgets with the same group_id under the nearest parent group root. TBWindow is a group root by default. */
 	void SetIsGroupRoot(bool group_root) { m_packed.is_group_root = group_root; }
 	bool GetIsGroupRoot() { return m_packed.is_group_root; }
 
-	/** Set if this widget should be able to recieve focus or not. */
+	/** Set if this widget should be able to receive focus or not. */
 	void SetIsFocusable(bool focusable) { m_packed.is_focusable = focusable; }
 	bool GetIsFocusable() { return m_packed.is_focusable; }
 
@@ -341,7 +344,7 @@ public:
 		backwards in the widget order. */
 	void MoveFocus(bool forward);
 
-	/** Returns the childwidget that contains the coordinate or nullptr if no one does. If include_children
+	/** Returns the child widget that contains the coordinate or nullptr if no one does. If include_children
 		is true, the search will recurse into the childrens children. */
 	Widget *GetWidgetAt(int x, int y, bool include_children) const;
 
@@ -547,7 +550,7 @@ public:
 		- When a layout widget get this, it should mark its layout as invalid and do the layout later
 		  (in GetPreferredContentSize/GetPreferredSize are called). If a layout knows that no parents will
 		  be affected, it may stop recursion to parents to avoid unnecessary relayout.
-		- When setting the size of a layout widget (typically from another layoutwidget or from a OnResize),
+		- When setting the size of a layout widget (typically from another layout widget or from a OnResize),
 		  it should be called with INVALIDATE_LAYOUT_TARGET_ONLY to avoid recursing back up to parents when
 		  already recursing down, to avoid unnecessary computation.
 		*/
