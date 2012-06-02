@@ -1160,7 +1160,7 @@ void TBTextFragment::Paint(int32 translate_x, int32 translate_y, TBTextProps *pr
 		else
 			listener->DrawString(x, y, color, Str(), len);
 	}
-	else
+	else if (!IsTab() && !IsBreak() && !IsSpace())
 		listener->DrawString(x, y, color, Str(), len);
 
 	if (props->data->underline)
