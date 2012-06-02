@@ -129,11 +129,10 @@ public:
 };
 
 /** TBTestGroup has a collection of callbacks for tests, and optional Setup and Cleanup calls. */
-class TBTestGroup : public TBLinkOf<TBTestGroup>
+class TBTestGroup
 {
 public:
 	TBTestGroup(const char *name);
-	~TBTestGroup();
 	bool IsSpecialTest(TBCall *call) const { return !call->linklist; }
 public:
 	const char *name;		///< Test group name.
@@ -142,6 +141,7 @@ public:
 	TBCall *init;			///< Init call, or nullptr.
 	TBCall *shutdown;		///< Shutdown call, or nullptr.
 	TBLinkListOf<TBCall> calls;///< All test calls to call.
+	TBTestGroup *next_test_group;
 };
 
 /** TBRegisterCall is used for registering calls on TBTestGroup .*/

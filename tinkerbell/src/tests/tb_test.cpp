@@ -15,7 +15,10 @@ int fail_line_nr;
 const char *fail_file;
 const char *fail_text;
 
-TBLinkListOf<TBTestGroup> groups;
+// We can't use a linked list object since we don't know if its constructor
+// would run before of after any test group constructor that add itself
+// to it. Using a manual one way link list is very simple.
+TBTestGroup *g_test_groups = nullptr;
 
 // == Misc functions ==========================================================
 
@@ -56,14 +59,9 @@ TBRegisterCall::~TBRegisterCall()
 // == TBTestGroup =============================================================
 
 TBTestGroup::TBTestGroup(const char *name)
-	: name(name), setup(nullptr), cleanup(nullptr), init(nullptr), shutdown(nullptr)
+	: name(name), setup(nullptr), cleanup(nullptr), init(nullptr), shutdown(nullptr), next_test_group(g_test_groups)
 {
-	groups.AddLast(this);
-}
-
-TBTestGroup::~TBTestGroup()
-{
-	groups.Remove(this);
+	g_test_groups = this;
 }
 
 const char *CallAndOutput(TBTestGroup *test, TBCall *call)
@@ -100,8 +98,7 @@ int TBRunTests(uint32 settings)
 
 	TBDebugOut("Running tests...\n");
 
-	TBLinkListOf<TBTestGroup>::Iterator i = groups.IterateForward();
-	while (TBTestGroup *group = i.GetAndStep())
+	for (TBTestGroup *group = g_test_groups; group; group = group->next_test_group)
 	{
 		if (group->init && CallAndOutput(group, group->init))
 		{
