@@ -25,7 +25,7 @@ Application *application = nullptr;
 
 int mainWindow;
 int window_w = 1280;
-int window_h = 768;
+int window_h = 740;
 bool has_pending_update = false;
 
 TdFont *LoadFont(const char *filename)
