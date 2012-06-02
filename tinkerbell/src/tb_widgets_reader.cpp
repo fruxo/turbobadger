@@ -14,215 +14,167 @@
 
 namespace tinkerbell {
 
-/** Simple widget (that doesn't have any nongeneric data), can use this to create its creation callback. */
-#define DECLARE_CREATE_FUNCTION(classname) \
-	Widget *Create##classname(CREATE_INFO *info) \
-	{ \
-		if (classname *new_widget = new classname()) \
-			return new_widget; \
-		return nullptr; \
-	}
-
-const char *GetTranslatableString(TBNode *node, const char *request)
+TB_WIDGET_FACTORY(TBButton, TBValue::TYPE_NULL, WIDGET_Z_BOTTOM)
 {
-	if (const char *string = node->GetValueString(request, nullptr))
-	{
-		// FIX: If it's a number after @, look it up from the number!
-		if (*string == '@')
-			string = g_tb_lng->GetString(string + 1);
-		return string;
-	}
-	return nullptr;
+	const char *axis = info->node->GetValueString("axis", "x");
+	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
 }
 
-Widget *CreateTBButton(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBInlineSelect, TBValue::TYPE_INT, WIDGET_Z_TOP)
 {
-	if (TBButton *button = new TBButton())
-	{
-		const char *axis = info->node->GetValueString("axis", "x");
-		button->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		return button;
-	}
-	return nullptr;
+	const char *axis = info->node->GetValueString("axis", "x");
+	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
+	int min = info->node->GetValueInt("min", widget->GetMinValue());
+	int max = info->node->GetValueInt("max", widget->GetMaxValue());
+	widget->SetLimits(min, max);
 }
 
-Widget *CreateTBInlineSelect(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBClickLabel, TBValue::TYPE_STRING, WIDGET_Z_BOTTOM)
 {
-	if (TBInlineSelect *iselect = new TBInlineSelect())
-	{
-		const char *axis = info->node->GetValueString("axis", "x");
-		iselect->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		int min = info->node->GetValueInt("min", iselect->GetMinValue());
-		int max = info->node->GetValueInt("max", iselect->GetMaxValue());
-		iselect->SetLimits(min, max);
-		return iselect;
-	}
-	return nullptr;
+	const char *axis = info->node->GetValueString("axis", "x");
+	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
 }
 
-Widget *CreateTBClickLabel(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBEditField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
 {
-	if (TBClickLabel *label = new TBClickLabel())
+	widget->SetMultiline(info->node->GetValueInt("multiline", 0) ? true : false);
+	widget->SetStyling(info->node->GetValueInt("styling", 0) ? true : false);
+	widget->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
+	widget->SetWrapping(info->node->GetValueInt("wrap", widget->GetWrapping()) ? true : false);
+	if (const char *text = info->reader->GetTranslatableString(info->node, "placeholder"))
+		widget->SetPlaceholderText(text);
+	if (const char *type = info->node->GetValueString("type", nullptr))
 	{
-		const char *axis = info->node->GetValueString("axis", "x");
-		label->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		return label;
+		if (stristr(type, "text"))			widget->SetEditType(EDIT_TYPE_TEXT);
+		else if (stristr(type, "password"))	widget->SetEditType(EDIT_TYPE_PASSWORD);
+		else if (stristr(type, "email"))	widget->SetEditType(EDIT_TYPE_EMAIL);
+		else if (stristr(type, "phone"))	widget->SetEditType(EDIT_TYPE_PHONE);
+		else if (stristr(type, "url"))		widget->SetEditType(EDIT_TYPE_URL);
+		else if (stristr(type, "number"))	widget->SetEditType(EDIT_TYPE_NUMBER);
 	}
-	return nullptr;
 }
 
-DECLARE_CREATE_FUNCTION(TBTextField);
-
-Widget *CreateTBEditField(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
-	if (TBEditField *editfield = new TBEditField())
+	const char *axis = info->node->GetValueString("axis", "x");
+	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
+	widget->SetSpacing(info->node->GetValueInt("spacing", SPACING_FROM_SKIN));
+	widget->SetGravity(WIDGET_GRAVITY_ALL);
+	if (const char *size = info->node->GetValueString("size", nullptr))
 	{
-		editfield->SetMultiline(info->node->GetValueInt("multiline", 0) ? true : false);
-		editfield->SetStyling(info->node->GetValueInt("styling", 0) ? true : false);
-		editfield->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
-		editfield->SetWrapping(info->node->GetValueInt("wrap", editfield->GetWrapping()) ? true : false);
-		if (const char *text = GetTranslatableString(info->node, "placeholder"))
-			editfield->SetPlaceholderText(text);
-		if (const char *type = info->node->GetValueString("type", nullptr))
-		{
-			if (stristr(type, "text"))			editfield->SetEditType(EDIT_TYPE_TEXT);
-			else if (stristr(type, "password"))	editfield->SetEditType(EDIT_TYPE_PASSWORD);
-			else if (stristr(type, "email"))	editfield->SetEditType(EDIT_TYPE_EMAIL);
-			else if (stristr(type, "phone"))	editfield->SetEditType(EDIT_TYPE_PHONE);
-			else if (stristr(type, "url"))		editfield->SetEditType(EDIT_TYPE_URL);
-			else if (stristr(type, "number"))	editfield->SetEditType(EDIT_TYPE_NUMBER);
-		}
-		return editfield;
+		LAYOUT_SIZE ls = LAYOUT_SIZE_PREFERRED;
+		if (strstr(size, "available"))
+			ls = LAYOUT_SIZE_AVAILABLE;
+		else if (strstr(size, "gravity"))
+			ls = LAYOUT_SIZE_GRAVITY;
+		widget->SetLayoutSize(ls);
 	}
-	return nullptr;
+	if (const char *pos = info->node->GetValueString("position", nullptr))
+	{
+		LAYOUT_POSITION lp = LAYOUT_POSITION_CENTER;
+		if (strstr(pos, "left") || strstr(pos, "top"))
+			lp = LAYOUT_POSITION_LEFT_TOP;
+		else if (strstr(pos, "right") || strstr(pos, "bottom"))
+			lp = LAYOUT_POSITION_RIGHT_BOTTOM;
+		else if (strstr(pos, "gravity"))
+			lp = LAYOUT_POSITION_GRAVITY;
+		widget->SetLayoutPosition(lp);
+	}
+	if (const char *pos = info->node->GetValueString("overflow", nullptr))
+	{
+		LAYOUT_OVERFLOW lo = LAYOUT_OVERFLOW_CLIP;
+		if (strstr(pos, "scroll"))
+			lo = LAYOUT_OVERFLOW_SCROLL;
+		widget->SetLayoutOverflow(lo);
+	}
+	if (const char *dist = info->node->GetValueString("distribution", nullptr))
+	{
+		LAYOUT_DISTRIBUTION ld = LAYOUT_DISTRIBUTION_PREFERRED;
+		if (strstr(dist, "available"))
+			ld = LAYOUT_DISTRIBUTION_AVAILABLE;
+		else if (strstr(dist, "gravity"))
+			ld = LAYOUT_DISTRIBUTION_GRAVITY;
+		widget->SetLayoutDistribution(ld);
+	}
+	if (const char *dist = info->node->GetValueString("distribution_position", nullptr))
+	{
+		LAYOUT_DISTRIBUTION_POSITION ld = LAYOUT_DISTRIBUTION_POSITION_CENTER;
+		if (strstr(dist, "left") || strstr(dist, "top"))
+			ld = LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP;
+		else if (strstr(dist, "right") || strstr(dist, "bottom"))
+			ld = LAYOUT_DISTRIBUTION_POSITION_RIGHT_BOTTOM;
+		widget->SetLayoutDistributionPosition(ld);
+	}
 }
 
-DECLARE_CREATE_FUNCTION(TBCheckBox);
-DECLARE_CREATE_FUNCTION(TBRadioButton);
-
-Widget *CreateTBLayout(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBScrollContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
-	if (TBLayout *layout = new TBLayout())
-	{
-		const char *axis = info->node->GetValueString("axis", "x");
-		layout->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		layout->SetSpacing(info->node->GetValueInt("spacing", SPACING_FROM_SKIN));
-		layout->SetGravity(WIDGET_GRAVITY_ALL);
-		if (const char *size = info->node->GetValueString("size", nullptr))
-		{
-			LAYOUT_SIZE ls = LAYOUT_SIZE_PREFERRED;
-			if (strstr(size, "available"))
-				ls = LAYOUT_SIZE_AVAILABLE;
-			else if (strstr(size, "gravity"))
-				ls = LAYOUT_SIZE_GRAVITY;
-			layout->SetLayoutSize(ls);
-		}
-		if (const char *pos = info->node->GetValueString("position", nullptr))
-		{
-			LAYOUT_POSITION lp = LAYOUT_POSITION_CENTER;
-			if (strstr(pos, "left") || strstr(pos, "top"))
-				lp = LAYOUT_POSITION_LEFT_TOP;
-			else if (strstr(pos, "right") || strstr(pos, "bottom"))
-				lp = LAYOUT_POSITION_RIGHT_BOTTOM;
-			else if (strstr(pos, "gravity"))
-				lp = LAYOUT_POSITION_GRAVITY;
-			layout->SetLayoutPosition(lp);
-		}
-		if (const char *pos = info->node->GetValueString("overflow", nullptr))
-		{
-			LAYOUT_OVERFLOW lo = LAYOUT_OVERFLOW_CLIP;
-			if (strstr(pos, "scroll"))
-				lo = LAYOUT_OVERFLOW_SCROLL;
-			layout->SetLayoutOverflow(lo);
-		}
-		if (const char *dist = info->node->GetValueString("distribution", nullptr))
-		{
-			LAYOUT_DISTRIBUTION ld = LAYOUT_DISTRIBUTION_PREFERRED;
-			if (strstr(dist, "available"))
-				ld = LAYOUT_DISTRIBUTION_AVAILABLE;
-			else if (strstr(dist, "gravity"))
-				ld = LAYOUT_DISTRIBUTION_GRAVITY;
-			layout->SetLayoutDistribution(ld);
-		}
-		if (const char *dist = info->node->GetValueString("distribution_position", nullptr))
-		{
-			LAYOUT_DISTRIBUTION_POSITION ld = LAYOUT_DISTRIBUTION_POSITION_CENTER;
-			if (strstr(dist, "left") || strstr(dist, "top"))
-				ld = LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP;
-			else if (strstr(dist, "right") || strstr(dist, "bottom"))
-				ld = LAYOUT_DISTRIBUTION_POSITION_RIGHT_BOTTOM;
-			layout->SetLayoutDistributionPosition(ld);
-		}
-		return layout;
-	}
-	return nullptr;
+	widget->SetGravity(WIDGET_GRAVITY_ALL);
 }
 
-Widget *CreateTBScrollContainer(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBTabContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
-	if (TBScrollContainer *container = new TBScrollContainer())
+	widget->SetGravity(WIDGET_GRAVITY_ALL);
+	const char *axis = info->node->GetValueString("axis", "y");
+	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
+	if (const char *align = info->node->GetValueString("align", nullptr))
 	{
-		container->SetGravity(WIDGET_GRAVITY_ALL);
-		return container;
+		if (!strcmp(align, "left"))			widget->SetAlignment(TB_ALIGN_LEFT);
+		else if (!strcmp(align, "top"))		widget->SetAlignment(TB_ALIGN_TOP);
+		else if (!strcmp(align, "right"))	widget->SetAlignment(TB_ALIGN_RIGHT);
+		else if (!strcmp(align, "bottom"))	widget->SetAlignment(TB_ALIGN_BOTTOM);
 	}
-	return nullptr;
+	if (TBNode *tabs = info->node->GetNode("tabs"))
+		info->reader->LoadNodeTree(widget->GetTabLayout(), tabs);
 }
 
-Widget *CreateTBTabContainer(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBScrollBar, TBValue::TYPE_FLOAT, WIDGET_Z_TOP)
 {
-	if (TBTabContainer *container = new TBTabContainer())
-	{
-		container->SetGravity(WIDGET_GRAVITY_ALL);
-		const char *axis = info->node->GetValueString("axis", "y");
-		container->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		if (const char *align = info->node->GetValueString("align", nullptr))
-		{
-			if (!strcmp(align, "left"))			container->SetAlignment(TB_ALIGN_LEFT);
-			else if (!strcmp(align, "top"))		container->SetAlignment(TB_ALIGN_TOP);
-			else if (!strcmp(align, "right"))	container->SetAlignment(TB_ALIGN_RIGHT);
-			else if (!strcmp(align, "bottom"))	container->SetAlignment(TB_ALIGN_BOTTOM);
-		}
-		if (TBNode *tabs = info->node->GetNode("tabs"))
-			info->reader->LoadNodeTree(container->GetTabLayout(), tabs);
-		return container;
-	}
-	return nullptr;
+	const char *axis = info->node->GetValueString("axis", "x");
+	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
+	widget->SetGravity(*axis == 'x' ? WIDGET_GRAVITY_LEFT_RIGHT : WIDGET_GRAVITY_TOP_BOTTOM);
 }
 
-DECLARE_CREATE_FUNCTION(TBSelectDropdown);
-DECLARE_CREATE_FUNCTION(TBSelectList);
-
-Widget *CreateTBScrollBar(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBSlider, TBValue::TYPE_FLOAT, WIDGET_Z_TOP)
 {
-	if (TBScrollBar *scrollbar = new TBScrollBar())
-	{
-		const char *axis = info->node->GetValueString("axis", "x");
-		scrollbar->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		scrollbar->SetGravity(*axis == 'x' ? WIDGET_GRAVITY_LEFT_RIGHT : WIDGET_GRAVITY_TOP_BOTTOM);
-		return scrollbar;
-	}
-	return nullptr;
+	const char *axis = info->node->GetValueString("axis", "x");
+	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
+	widget->SetGravity(*axis == 'x' ? WIDGET_GRAVITY_LEFT_RIGHT : WIDGET_GRAVITY_TOP_BOTTOM);
+	double min = (double) info->node->GetValueFloat("min", (float) widget->GetMinValue());
+	double max = (double) info->node->GetValueFloat("max", (float) widget->GetMaxValue());
+	widget->SetLimits(min, max);
 }
 
-Widget *CreateTBSlider(CREATE_INFO *info)
+TB_WIDGET_FACTORY(TBCheckBox, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBRadioButton, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBTextField, TBValue::TYPE_STRING, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSelectDropdown, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSelectList, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSkinImage, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSeparator, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBProgressSpinner, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
+
+// == TBWidgetFactory ===================================
+
+// We can't use a linked list object since we don't know if its constructor
+// would run before of after any widget factory constructor that add itself
+// to it. Using a manual one way link list is very simple.
+TBWidgetFactory *g_registered_factories = nullptr;
+
+TBWidgetFactory::TBWidgetFactory(const char *name, TBValue::TYPE sync_type, WIDGET_Z add_child_z)
+	: name(name)
+	, sync_type(sync_type)
+	, add_child_z(add_child_z)
+	, next_registered_wf(nullptr)
 {
-	if (TBSlider *slider = new TBSlider())
-	{
-		const char *axis = info->node->GetValueString("axis", "x");
-		slider->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-		slider->SetGravity(*axis == 'x' ? WIDGET_GRAVITY_LEFT_RIGHT : WIDGET_GRAVITY_TOP_BOTTOM);
-		double min = (double) info->node->GetValueFloat("min", (float) slider->GetMinValue());
-		double max = (double) info->node->GetValueFloat("max", (float) slider->GetMaxValue());
-		slider->SetLimits(min, max);
-		return slider;
-	}
-	return nullptr;
 }
 
-DECLARE_CREATE_FUNCTION(TBSkinImage);
-DECLARE_CREATE_FUNCTION(TBSeparator);
-DECLARE_CREATE_FUNCTION(TBProgressSpinner);
-DECLARE_CREATE_FUNCTION(TBContainer);
+void TBWidgetFactory::Register()
+{
+	next_registered_wf = g_registered_factories;
+	g_registered_factories = this;
+}
 
 // == TBWidgetsReader ===================================
 
@@ -239,43 +191,26 @@ TBWidgetsReader *TBWidgetsReader::Create()
 
 bool TBWidgetsReader::Init()
 {
-	bool fail = false;
-	fail |= !AddCreator("TBButton", CreateTBButton, TBValue::TYPE_NULL, WIDGET_Z_BOTTOM);
-	fail |= !AddCreator("TBInlineSelect", CreateTBInlineSelect, TBValue::TYPE_INT);
-	fail |= !AddCreator("TBClickLabel", CreateTBClickLabel, TBValue::TYPE_STRING, WIDGET_Z_BOTTOM);
-	fail |= !AddCreator("TBTextField", CreateTBTextField, TBValue::TYPE_STRING);
-	fail |= !AddCreator("TBEditField", CreateTBEditField, TBValue::TYPE_STRING);
-	fail |= !AddCreator("TBCheckBox", CreateTBCheckBox, TBValue::TYPE_INT);
-	fail |= !AddCreator("TBRadioButton", CreateTBRadioButton, TBValue::TYPE_INT);
-	fail |= !AddCreator("TBLayout", CreateTBLayout, TBValue::TYPE_NULL);
-	fail |= !AddCreator("TBScrollContainer", CreateTBScrollContainer, TBValue::TYPE_NULL);
-	fail |= !AddCreator("TBTabContainer", CreateTBTabContainer, TBValue::TYPE_NULL);
-	fail |= !AddCreator("TBSelectDropdown", CreateTBSelectDropdown, TBValue::TYPE_INT);
-	fail |= !AddCreator("TBSelectList", CreateTBSelectList, TBValue::TYPE_INT);
-	fail |= !AddCreator("TBScrollBar", CreateTBScrollBar, TBValue::TYPE_FLOAT);
-	fail |= !AddCreator("TBSlider", CreateTBSlider, TBValue::TYPE_FLOAT);
-	fail |= !AddCreator("TBSkinImage", CreateTBSkinImage, TBValue::TYPE_NULL);
-	fail |= !AddCreator("TBSeparator", CreateTBSeparator, TBValue::TYPE_NULL);
-	fail |= !AddCreator("TBProgressSpinner", CreateTBProgressSpinner, TBValue::TYPE_INT);
-	fail |= !AddCreator("TBContainer", CreateTBContainer, TBValue::TYPE_NULL);
-	return !fail;
+	for (TBWidgetFactory *wf = g_registered_factories; wf; wf = wf->next_registered_wf)
+		if (!AddFactory(wf))
+			return false;
+	return true;
 }
 
 TBWidgetsReader::~TBWidgetsReader()
 {
 }
 
-bool TBWidgetsReader::AddCreator(const char *name, WIDGET_CREATE_CB cb, TBValue::TYPE sync_type, WIDGET_Z add_child_z)
+const char *TBWidgetsReader::GetTranslatableString(TBNode *node, const char *request)
 {
-	WidgetFactory *wc = new WidgetFactory;
-	if (!wc)
-		return false;
-	wc->name = name;
-	wc->cb = cb;
-	wc->add_child_z = add_child_z;
-	wc->sync_type = sync_type;
-	callbacks.AddLast(wc);
-	return true;
+	if (const char *string = node->GetValueString(request, nullptr))
+	{
+		// FIX: If it's a number after @, look it up from the number!
+		if (*string == '@')
+			string = g_tb_lng->GetString(string + 1);
+		return string;
+	}
+	return nullptr;
 }
 
 bool TBWidgetsReader::LoadFile(Widget *target, const char *filename)
@@ -325,13 +260,13 @@ bool TBWidgetsReader::CreateWidget(Widget *target, TBNode *node, WIDGET_Z add_ch
 	CREATE_INFO info = { this, target->GetContentRoot(), node };
 
 	// Find a widget creator from the node name
-	WidgetFactory *wc = nullptr;
-	for (wc = callbacks.GetFirst(); wc; wc = wc->GetNext())
+	TBWidgetFactory *wc = nullptr;
+	for (wc = factories.GetFirst(); wc; wc = wc->GetNext())
 		if (strcmp(node->GetName(), wc->name) == 0)
 			break;
 
 	// Create the widget
-	Widget *new_widget = wc ? wc->cb(&info) : nullptr;
+	Widget *new_widget = wc ? wc->Create(&info) : nullptr;
 	if (!new_widget)
 		return false;
 
@@ -356,8 +291,6 @@ bool TBWidgetsReader::CreateWidget(Widget *target, TBNode *node, WIDGET_Z add_ch
 			new_widget->Connect(value);
 		}
 	}
-	if (const char *bg_skin = node->GetValueString("bg_skin", nullptr))
-		new_widget->m_skin_bg.Set(bg_skin);
 	if (const char *gravity = node->GetValueString("gravity", nullptr))
 	{
 		WIDGET_GRAVITY g = 0;
