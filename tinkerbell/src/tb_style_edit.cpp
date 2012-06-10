@@ -8,6 +8,7 @@
 #include "tb_style_edit_content.h"
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
+#include "utf8/utf8.h"
 #include <assert.h>
 
 namespace tinkerbell {
@@ -22,10 +23,10 @@ namespace tinkerbell {
 
 const int TAB_SPACE = 4;
 
-const char special_char_newln[] = { (char)0xB6, 0 };
-const char special_char_space[] = { (char)0xB7, 0 };
-const char special_char_tab[] = { (char)0xBB, 0 };
-const char special_char_password[] = { (char)'•', 0 };
+const char *special_char_newln = "Â¶";		// 00B6 PILCROW SIGN
+const char *special_char_space = "Â·";		// 00B7 MIDDLE DOT
+const char *special_char_tab = "Â»";		// 00BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+const char *special_char_password = "â€¢";	// 2022 BULLET
 
 static bool is_space(int8 c)
 {
@@ -452,9 +453,6 @@ void TBCaret::UpdatePos()
 	Invalidate();
 }
 
-/// FIX: hoppa över embed characters och \r\n vilken det nu är.
-/// FIX: ta bort \r\n från block strängarna!?
-
 bool TBCaret::Move(bool forward, bool word)
 {
 	// Make it stay on the same line if it reach the wrap point.
@@ -485,7 +483,12 @@ bool TBCaret::Move(bool forward, bool word)
 	else
 	{
 		// Avoid skipping the first/last character when wrapping to a new box.
-		pos.ofs += forward ? 1 : -1;
+		int i = pos.ofs;
+		if (forward)
+			utf8::move_inc(pos.block->str, &i, pos.block->str_len);
+		else
+			utf8::move_dec(pos.block->str, &i);
+		pos.ofs = i;
 		if (pos.ofs > pos.block->str_len && pos.block->GetNext())
 		{
 			pos.block = pos.block->GetNext();
@@ -794,9 +797,9 @@ int32 TBBlock::CalculateStringWidth(const char *str, int len) const
 {
 	if (styledit->packed.password_on)
 	{
-		if (len == -1)
-			len = strlen(str);
-		return g_renderer->GetStringWidth(special_char_password, 1) * len;
+		// Convert the length in number or characters, since that's what matters for password width.
+		len = utf8::count_characters(str, len);
+		return g_renderer->GetStringWidth(special_char_password) * len;
 	}
 	return g_renderer->GetStringWidth(str, len);
 }
@@ -1145,18 +1148,19 @@ void TBTextFragment::Paint(int32 translate_x, int32 translate_y, TBTextProps *pr
 
 	if (block->styledit->packed.password_on)
 	{
-		int cw = block->CalculateStringWidth(special_char_password, 1);
-		for(int i = 0; i < len; i++)
-			listener->DrawString(x + i * cw, y, color, special_char_password, 1);
+		int cw = block->CalculateStringWidth(special_char_password);
+		int num_char = utf8::count_characters(Str(), len);
+		for(int i = 0; i < num_char; i++)
+			listener->DrawString(x + i * cw, y, color, special_char_password);
 	}
 	else if (block->styledit->packed.show_whitespace)
 	{
 		if (IsTab())
-			listener->DrawString(x, y, color, special_char_tab, 1);
+			listener->DrawString(x, y, color, special_char_tab);
 		else if (IsBreak())
-			listener->DrawString(x, y, color, special_char_newln, len);
+			listener->DrawString(x, y, color, special_char_newln);
 		else if (IsSpace())
-			listener->DrawString(x, y, color, special_char_space, len);
+			listener->DrawString(x, y, color, special_char_space);
 		else
 			listener->DrawString(x, y, color, Str(), len);
 	}
@@ -1223,12 +1227,17 @@ int32 TBTextFragment::GetCharOfs(int32 x)
 		return 0;
 
 	const char *str = block->str.CStr() + ofs;
-	for(int i=0; i<len; i++)
+	int i = 0;
+	while (i < len)
 	{
-		int w = block->CalculateStringWidth(&str[0], i);
-		int cw = block->CalculateStringWidth(&str[i], 1);
-		if (x < w + cw / 2)
-			return i;
+		int pos = i;
+		utf8::move_inc(str, &i, len);
+		int last_char_len = i - pos;
+		// Always measure from the beginning of the fragment because of eventual kerning & text shaping etc.
+		int width_except_last_char = block->CalculateStringWidth(str, i - last_char_len);
+		int width = block->CalculateStringWidth(str, i);
+		if (x < width - (width - width_except_last_char) / 2)
+			return pos;
 	}
 	return len;
 }
@@ -1509,9 +1518,9 @@ TBBlock *TBStyleEdit::FindBlock(int32 y) const
 	return blocks.GetLast();
 }
 
-int8 toupr(int8 ascii)
+// @return Return the upper case of a ascii charcter. Only for shortcut handling.
+int8 toupr_ascii(int8 ascii)
 {
-	// Shotcuts checks below are upper case
 	if (ascii >= 'a' && ascii <= 'z')
 		return ascii + 'A' - 'a';
 	return ascii;
@@ -1558,12 +1567,12 @@ bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 		caret.Place(TBPoint(0, caret.y));
 	else if (function == TB_KEY_END)
 		caret.Place(TBPoint(32000, caret.y));
-	else if (toupr(ascii) == '8' && (modifierkeys & TB_CTRL))
+	else if (toupr_ascii(ascii) == '8' && (modifierkeys & TB_CTRL))
 	{
 		packed.show_whitespace = !packed.show_whitespace;
 		listener->Invalidate(TBRect(0, 0, layout_width, layout_height));
 	}
-	else if (toupr(ascii) == 'A' && (modifierkeys & TB_CTRL))
+	else if (toupr_ascii(ascii) == 'A' && (modifierkeys & TB_CTRL))
 		selection.SelectAll();
 	else if (!packed.read_only && (function == TB_KEY_DELETE || function == TB_KEY_BACKSPACE))
 	{
@@ -1574,12 +1583,12 @@ bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 		}
 		selection.RemoveContent();
 	}
-	else if ((toupr(ascii) == 'Z' && (modifierkeys & TB_CTRL)) ||
-			(toupr(ascii) == 'Y' && (modifierkeys & TB_CTRL)))
+	else if ((toupr_ascii(ascii) == 'Z' && (modifierkeys & TB_CTRL)) ||
+			(toupr_ascii(ascii) == 'Y' && (modifierkeys & TB_CTRL)))
 	{
 		if (!packed.read_only)
 		{
-			bool undo = toupr(ascii) == 'Z';
+			bool undo = toupr_ascii(ascii) == 'Z';
 			if (modifierkeys & TB_SHIFT)
 				undo = !undo;
 			if (undo)
@@ -1588,15 +1597,15 @@ bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 				undoredo.Redo(this);
 		}
 	}
-	else if (!packed.read_only && (toupr(ascii) == 'X' && (modifierkeys & TB_CTRL)))
+	else if (!packed.read_only && (toupr_ascii(ascii) == 'X' && (modifierkeys & TB_CTRL)))
 	{
 		Cut();
 	}
-	else if ((toupr(ascii) == 'C' || function == TB_KEY_INSERT) && (modifierkeys & TB_CTRL))
+	else if ((toupr_ascii(ascii) == 'C' || function == TB_KEY_INSERT) && (modifierkeys & TB_CTRL))
 	{
 		Copy();
 	}
-	else if (!packed.read_only && ((toupr(ascii) == 'V' && (modifierkeys & TB_CTRL)) ||
+	else if (!packed.read_only && ((toupr_ascii(ascii) == 'V' && (modifierkeys & TB_CTRL)) ||
 								(function == TB_KEY_INSERT && (modifierkeys & TB_SHIFT))))
 	{
 		Paste();
@@ -1606,7 +1615,11 @@ bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 	else if (!packed.read_only && (function == TB_KEY_ENTER && packed.multiline_on) && !(modifierkeys & TB_CTRL))
 		InsertBreak();
 	else if (!packed.read_only && (ascii && !(modifierkeys & TB_CTRL)) && function != TB_KEY_ENTER)
-		InsertText(&ascii, 1);
+	{
+		char utf8[8];
+		int len = utf8::encode((unsigned char)ascii, utf8);
+		InsertText(utf8, len);
+	}
 	else
 		handled = false;
 

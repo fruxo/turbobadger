@@ -10,8 +10,6 @@
 
 namespace tinkerbell {
 
-#define ALL_TO_TERMINATION 2147483647
-
 class TBBitmapFragment;
 
 /** TBBitmap is a minimal interface for bitmap to be painted by TBRenderer. */
@@ -67,11 +65,11 @@ public:
 	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color) = 0;
 
 	/** Draw string at position x, y (marks the upper left corner of the text). */
-	virtual void DrawString(int x, int y, const TBColor &color, const char *str, int len = ALL_TO_TERMINATION) = 0;
+	virtual void DrawString(int x, int y, const TBColor &color, const char *str, int len = TB_ALL_TO_TERMINATION) = 0;
 
 	/** Measure the width of the given string. Should measure len characters or to the null
 		termination (whatever comes first). */
-	virtual int GetStringWidth(const char *str, int len = ALL_TO_TERMINATION) = 0;
+	virtual int GetStringWidth(const char *str, int len = TB_ALL_TO_TERMINATION) = 0;
 
 	/** Get height of the font in pixels. */
 	virtual int GetFontHeight() = 0;
@@ -80,7 +78,7 @@ public:
 	virtual int GetFontBaseline() = 0;
 
 	/** Create a new TBBitmap from the given data (in BGRA32 format).
-		Width and height mustbe a power of two.
+		Width and height must be a power of two.
 		Return nullptr if fail. */
 	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data) = 0;
 };

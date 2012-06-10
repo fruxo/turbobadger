@@ -29,7 +29,7 @@ public:
 	virtual void OnChange() {};
 	virtual bool OnEnter() { return false; };
 	virtual void Invalidate(const TBRect &rect) = 0;
-	virtual void DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len) = 0;
+	virtual void DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len = TB_ALL_TO_TERMINATION) = 0;
 	virtual void DrawBackground(const TBRect &rect, TBBlock *block) = 0;
 	virtual void DrawRect(const TBRect &rect, const TBColor &color) = 0;
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color) = 0;
@@ -193,7 +193,7 @@ public:
 	TBTextFragment *FindFragment(int32 ofs, bool prefer_first = false) const;
 	TBTextFragment *FindFragment(int32 x, int32 y) const;
 
-	int32 CalculateStringWidth(const char *str, int len) const;
+	int32 CalculateStringWidth(const char *str, int len = TB_ALL_TO_TERMINATION) const;
 	int32 CalculateTabWidth(int32 xpos) const;
 	int32 CalculateLineHeight() const;
 	int32 CalculateBaseline() const;

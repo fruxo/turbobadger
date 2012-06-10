@@ -39,9 +39,17 @@ public:
 class TBClipboard
 {
 public:
+	/** Empty the contents of the clipboard. */
 	static void Empty();
+
+	/** Return true if the clipboard currently contains text. */
 	static bool HasText();
+
+	/** Set the text of the clipboard in UTF-8 format. */
 	static bool SetText(const char *text);
+
+	/** Get the text from the clipboard in UTF-8 format.
+		Returns true on success. */
 	static bool GetText(TBStr &text);
 };
 

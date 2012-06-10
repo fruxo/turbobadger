@@ -52,6 +52,10 @@ freely, subject to the following restrictions:
 
 namespace tinkerbell {
 
+/** Use as parameter for string length if you know the string is null terminated.
+	Can be used in functions that support it. */
+#define TB_ALL_TO_TERMINATION 2147483647
+
 /** Simple point class. */
 
 class TBPoint

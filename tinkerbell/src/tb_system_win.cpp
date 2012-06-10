@@ -41,7 +41,11 @@ int TBSystem::GetPanThreshold()
 
 void TBClipboard::Empty()
 {
-	EmptyClipboard();
+	if (OpenClipboard(NULL))
+	{
+		EmptyClipboard();
+		CloseClipboard();
+	}
 }
 
 bool TBClipboard::HasText()
@@ -49,7 +53,9 @@ bool TBClipboard::HasText()
 	bool has_text = false;
 	if (OpenClipboard(NULL))
 	{
-		has_text = IsClipboardFormatAvailable(CF_TEXT) || IsClipboardFormatAvailable(CF_OEMTEXT);
+		has_text =	IsClipboardFormatAvailable(CF_TEXT) ||
+					IsClipboardFormatAvailable(CF_OEMTEXT) ||
+					IsClipboardFormatAvailable(CF_UNICODETEXT);
 		CloseClipboard();
 	}
 	return has_text;
@@ -59,14 +65,17 @@ bool TBClipboard::SetText(const char *text)
 {
 	if (OpenClipboard(NULL))
 	{
-		EmptyClipboard();
+		int num_wide_chars_needed = MultiByteToWideChar(CP_UTF8, 0, text, -1, NULL, 0);
+		if (HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, num_wide_chars_needed * sizeof(wchar_t)))
+		{
+			LPWSTR pchData = (LPWSTR) GlobalLock(hClipboardData);
+			MultiByteToWideChar(CP_UTF8, 0, text, -1, pchData, num_wide_chars_needed);
+			GlobalUnlock(hClipboardData);
 
-		HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, strlen(text) + 1);
-		char *pchData = (char*) GlobalLock(hClipboardData);
-		strcpy(pchData, text);
-		GlobalUnlock(hClipboardData);
+			EmptyClipboard();
+			SetClipboardData(CF_UNICODETEXT, hClipboardData);
+		}
 
-		SetClipboardData(CF_TEXT, hClipboardData);
 		CloseClipboard();
 		return true;
 	}
@@ -75,16 +84,24 @@ bool TBClipboard::SetText(const char *text)
 
 bool TBClipboard::GetText(TBStr &text)
 {
+	bool success = false;
 	if (HasText() && OpenClipboard(NULL))
 	{
-		HANDLE hClipboardData = GetClipboardData(CF_TEXT);
-		char *pchData = (char*)GlobalLock(hClipboardData);
-		bool ret = text.Set(pchData);
-		GlobalUnlock(hClipboardData);
+		if (HANDLE hClipboardData = GetClipboardData(CF_UNICODETEXT))
+		{
+			wchar_t *pchData = (wchar_t*) GlobalLock(hClipboardData);
+			int len = WideCharToMultiByte(CP_UTF8, 0, pchData, -1, NULL, 0, NULL, NULL);
+			if (char *utf8 = new char[len])
+			{
+				WideCharToMultiByte(CP_UTF8, 0, pchData, -1, utf8, len, NULL, NULL);
+				success = text.Set(utf8);
+				delete [] utf8;
+			}
+			GlobalUnlock(hClipboardData);
+		}
 		CloseClipboard();
-		return ret;
 	}
-	return false;
+	return success;
 }
 
 // == TBFile =====================================

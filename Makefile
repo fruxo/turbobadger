@@ -52,6 +52,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_widgets_listener.cpp \
       tinkerbell/src/parser/TBNodeTree.cpp \
       tinkerbell/src/parser/TBParser.cpp \
+      tinkerbell/src/utf8/utf8.cpp \
       tinkerbell/src/tests/tb_test.cpp \
       tinkerbell/src/tests/test_tb_style_edit.cpp \
       tinkerbell/src/tests/test_tb_widget_value.cpp \

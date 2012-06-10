@@ -40,6 +40,8 @@ What features does it have
   -No dependency on stl, exceptions, RTTI
   -Very portable & easy to implement new backends (Image loading, fonts, renderer)
   -Support 32/64bit architectures and tested on Windows/Linux/Mac/Android/iOS
+  -Uses constexpr by default for all ID comparisions on compilers that support it.
+  -Unicode support (UTF8)
 
   Optional components:
 
@@ -50,7 +52,7 @@ What features does it have
 What features does it NOT have
 -------------------------------
 
-  -BIDI, Unicode support (The latter might be added later)
+  -BIDI
 
   -No painting API except the skin & string rendering.
    The idea is that you plug tinkerbell into a OpenGL/Direct2D/3D environment anyway.

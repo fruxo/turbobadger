@@ -17,7 +17,6 @@
 using namespace tinkerbell;
 
 TdFont *g_uifont;
-TdFont *g_uisymbolfont;
 Widget *g_root = nullptr;
 
 Application *application = nullptr;
@@ -236,8 +235,6 @@ int main(int argc, char** argv)
 	glutPassiveMotionFunc(MouseMotionPassive);
 
 	g_uifont = LoadFont("tdfont/default_font/font_segoe_white_14.png");
-	g_uisymbolfont = LoadFont("tdfont/default_font/symbolfontsmall.png");
-	TdFontRenderer::SetSymbolFont(g_uisymbolfont);
 
 	init_tinkerbell(new TBRendererGL(), "tinkerbell/lng_en.tb.txt");
 

@@ -42,8 +42,11 @@ void TBWidgetString::Paint(const TBRect &rect, const TBColor &color)
 	{
 		// There's not enough room for the entire string
 		// so cut it off and end with ellipsis (...)
-		// FIX: When unicode support is in place, use U+2026!
+
+		// const char *end = "…"; // 2026 HORIZONTAL ELLIPSIS
+		// Some fonts seem to render ellipsis a lot uglier than three dots.
 		const char *end = "...";
+
 		int endw = g_renderer->GetStringWidth(end);
 		int startw = 0;
 		int startlen = 0;

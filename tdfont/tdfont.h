@@ -1,5 +1,12 @@
-#ifndef FONTSYS_H
-#define FONTSYS_H
+#ifndef TDFONT_H
+#define TDFONT_H
+
+/** Define to take utf8 data in TdFontRenderer::GetStringWidth and
+	TdFontRenderer::DrawString instead of ISO 8859-1 (ISO Latin-1).
+
+	Note: The font still does not support unicode. This is only done
+	for compability with UTF-8 applications that doesn't require it. */
+#define TDFONT_USE_UTF8
 
 struct TDFNT_GLYPH
 {
@@ -75,6 +82,7 @@ public:
 	static void BeginDrawString(TdFont *font);
 	static void EndDrawString(TdFont *font);
 
+#ifndef TDFONT_USE_UTF8
 	/** Set the font used for symbols. This will not take ownership of the font, and it
 		must exist as long as it's set. It can be unset by passing NULL to this function.
 
@@ -82,11 +90,14 @@ public:
 		The escape code is \x1B followed by a comma and a 2 character hex value.
 		F.ex "Foo\x1B,00Bar" will draw "Foo", the first glyph in the symbol font, and "Bar" */
 	static void SetSymbolFont(TdFont *font);
+#endif // TDFONT_USE_UTF8
 
 #ifdef _DEBUG
+#ifndef TDFONT_USE_UTF8
 	static void DebugDrawPositioning(TdFont *font, float x, float y);
+#endif
 	static void DebugDrawFontTexture(TdFont *font, float x, float y);
 #endif
 };
 
-#endif
+#endif // TDFONT_H

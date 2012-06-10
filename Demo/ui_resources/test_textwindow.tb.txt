@@ -16,4 +16,4 @@ TBLayout: axis: y, distribution: available
 			TBClickLabel: text: Wrap
 				TBCheckBox: value: 1, id: wrap
 	TBEditField: multiline: 1, styling: 1, gravity: all, id: editfield, autofocus: 1
-		text <u>Tinkerbell UI Toolkit!</u>\n\nThings to test:\n • resizing\n • right clicking\n • searching\n • keyboard navigation\n • scrolling\n • mouse wheel & dragging.\n • This is a list item that should wrap in a smart way.\n • Embedded content in textfield, such as this button: <widget TBButton: text: ":)">\n
+		text <u>Tinkerbell UI Toolkit!</u>\n\nThings to test:\n â€¢ resizing\n â€¢ right clicking\n â€¢ searching\n â€¢ keyboard navigation\n â€¢ scrolling\n â€¢ mouse wheel & dragging.\n â€¢ This is a list item that should wrap in a smart way.\n â€¢ Embedded content in textfield, such as this button: <widget TBButton: text: ":)">\n

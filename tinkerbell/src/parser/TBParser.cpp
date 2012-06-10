@@ -21,6 +21,17 @@ Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 	while (int read_len = stream->GetMoreData((char *)work.GetData(), work.GetCapacity()))
 	{
 		char *buf = work.GetData();
+
+		// Skip BOM (BYTE ORDER MARK) character, often in the beginning of UTF-8 documents.
+		if (current_line_nr == 1 && read_len > 3 &&
+			(uint8)buf[0] == 239 &&
+			(uint8)buf[1] == 187 &&
+			(uint8)buf[2] == 191)
+		{
+			read_len -= 3;
+			buf += 3;
+		}
+
 		int line_pos = 0;
 		while (true)
 		{

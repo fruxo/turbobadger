@@ -11,7 +11,6 @@
 #include "tdfont/tdfont.h"
 //// TEMP HACK
 extern TdFont *g_uifont;
-extern TdFont *g_uisymbolfont;
 
 namespace tinkerbell {
 

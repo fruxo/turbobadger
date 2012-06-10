@@ -13,11 +13,57 @@
 #include <assert.h>
 #include <ctype.h>
 
+#ifdef TDFONT_USE_UTF8
+#include "utf8/utf8.h"
+#endif
+
 float extra_char_space = 0;
 int begin_draw_string_counter = 0;
 TdFont *symbol_font = 0;
 
 TdFontRendererBackend *g_backend = nullptr;
+
+#ifdef TDFONT_USE_UTF8
+unsigned char UCS4_to_tdfnt(UCS4 c)
+{
+	// some conversion..
+	switch (c)
+	{
+	case 0x20AC: return '€'; // EURO SIGN
+	case 0x201A: return '‚'; // SINGLE LOW-9 QUOTATION MARK
+	case 0x0192: return 'ƒ'; // LATIN SMALL LETTER F WITH HOOK
+	case 0x201E: return '„'; // DOUBLE LOW-9 QUOTATION MARK
+	case 0x2026: return '…'; // HORIZONTAL ELLIPSIS
+	case 0x2020: return '†'; // DAGGER
+	case 0x2021: return '‡'; // DOUBLE DAGGER
+	case 0x02C6: return 'ˆ'; // MODIFIER LETTER CIRCUMFLEX ACCENT
+	case 0x2030: return '‰'; // PER MILLE SIGN
+	case 0x0160: return 'Š'; // LATIN CAPITAL LETTER S WITH CARON
+	case 0x2039: return '‹'; // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+	case 0x0152: return 'Œ'; // LATIN CAPITAL LIGATURE OE
+	case 0x017D: return 'Ž'; // LATIN CAPITAL LETTER Z WITH CARON
+	case 0x2018: return '‘'; // LEFT SINGLE QUOTATION MARK
+	case 0x2019: return '’'; // RIGHT SINGLE QUOTATION MARK
+	case 0x201C: return '“'; // LEFT DOUBLE QUOTATION MARK
+	case 0x201D: return '”'; // RIGHT DOUBLE QUOTATION MARK
+	case 0x2022: return '•'; // BULLET
+	case 0x2013: return '–'; // EN DASH
+	case 0x2014: return '—'; // EM DASH
+	case 0x02DC: return '˜'; // SMALL TILDE
+	case 0x2122: return '™'; // TRADE MARK SIGN
+	case 0x0161: return 'š'; // LATIN SMALL LETTER S WITH CARON
+	case 0x203A: return '›'; // SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+	case 0x0153: return 'œ'; // LATIN SMALL LIGATURE OE
+	case 0x017E: return 'ž'; // LATIN SMALL LETTER Z WITH CARON
+	case 0x0178: return 'Ÿ'; // LATIN CAPITAL LETTER Y WITH DIAERESIS
+	default:
+		if (c > 255)
+			return '?'; // It's a character we can't display
+		return (unsigned char)c;
+	};
+}
+
+#endif // TDFONT_USE_UTF8
 
 // == GL SPECIFIC ===========================================
 
@@ -90,28 +136,34 @@ void TdFontRenderer::SetExtraCharSpacing(float extra_char_spacing)
 float TdFontRenderer::GetStringWidth(TdFont *font, const char *str, int len)
 {
 	float w = 0;
-	while(len > 0 && *str)
+	int i = 0;
+	while (i < len && str[i])
 	{
-		TDFNT_GLYPH *glyph = font->GetGlyph(*str);
-		if (symbol_font && *str == '\x1B' && str[1] != 0 && str[2] != 0 && str[3] != 0)
+#ifdef TDFONT_USE_UTF8
+		UCS4 uc = utf8::decode_next(str, &i, len);
+		char c = UCS4_to_tdfnt(uc);
+		TDFNT_GLYPH *glyph = font->GetGlyph(c);
+#else
+		char c = str[i++];
+		TDFNT_GLYPH *glyph = font->GetGlyph(c);
+		if (symbol_font && c == '\x1B' && str[i] != 0 && str[i + 1] != 0 && str[i + 2] != 0)
 		{
 			// Get glyph from symbol font
-			int glyph_index = (tdfnt_hexnibble(str[2]) << 4) + tdfnt_hexnibble(str[3]);
+			int glyph_index = (tdfnt_hexnibble(str[i + 1]) << 4) + tdfnt_hexnibble(str[i + 2]);
 			glyph = symbol_font->GetGlyph(glyph_index + 33);
-			str += 3;
+			i += 3;
 		}
+#endif
 		w += (glyph->advance + extra_char_space);
-		if (*str == ' ') // Snap to closest pixel on new word
-			w = (int)w;
-		str++;
-		len--;
+		if (c == ' ') // Snap to closest pixel on new word
+			w = (float)(int)w;
 	}
 	return w;
 }
 
 float TdFontRenderer::GetFontHeight(TdFont *font)
 {
-	return font->fonth;
+	return (float)font->fonth;
 }
 
 void TdFontRenderer::DrawString(TdFont *font, float x, float y, unsigned int pos, const char *str, int len)
@@ -125,39 +177,48 @@ void TdFontRenderer::DrawString(TdFont *font, float x, float y, unsigned int pos
 	if (pos & TDFNT_CENTER_Y)
 		y -= (int) GetFontHeight(font) / 2; // (int) to snap to not cause unnecessary blurriness
 
-	while(len > 0 && *str)
+	int i = 0;
+	while (i < len && str[i])
 	{
-		TDFNT_GLYPH *glyph = font->GetGlyph(*str);
-
-		if (symbol_font && *str == '\x1B' && str[1] != 0 && str[2] != 0 && str[3] != 0)
+#ifdef TDFONT_USE_UTF8
+		UCS4 uc = utf8::decode_next(str, &i, len);
+		char c = UCS4_to_tdfnt(uc);
+		TDFNT_GLYPH *glyph = font->GetGlyph(c);
+#else
+		char c = str[i++];
+		TDFNT_GLYPH *glyph = font->GetGlyph(c);
+		if (symbol_font && c == '\x1B' && str[i] != 0 && str[i + 1] != 0 && str[i + 2] != 0)
 		{
 			// Get glyph from symbol font
-			int glyph_index = (tdfnt_hexnibble(str[2]) << 4) + tdfnt_hexnibble(str[3]);
+			int glyph_index = (tdfnt_hexnibble(str[i + 1]) << 4) + tdfnt_hexnibble(str[i + 2]);
 			glyph = symbol_font->GetGlyph(glyph_index + 33);
 			float ydiff = (font->fonth - symbol_font->fonth) / 2;
 			g_backend->DrawGlyph(x, y + ydiff, glyph, symbol_font->texture_id);
-			str += 3;
+			i += 3;
 		}
-		else if (glyph->w > 0 && *str != ' ')
+		else
+#endif
+		if (glyph->w > 0 && c != ' ')
 			g_backend->DrawGlyph(x, y, glyph, font->texture_id);
 
 		x += (glyph->advance + extra_char_space);
-		if (*str == ' ') // Snap to closest pixel on new word
-			x = (int)x;
-		str++;
-		len--;
+		if (c == ' ') // Snap to closest pixel on new word
+			x = (float)(int)x;
 	}
 
 	EndDrawString(font);
 }
 
+#ifndef TDFONT_USE_UTF8
 void TdFontRenderer::SetSymbolFont(TdFont *font)
 {
 	symbol_font = font;
 }
+#endif
 
 #ifdef _DEBUG
 
+#ifndef TDFONT_USE_UTF8
 void TdFontRenderer::DebugDrawPositioning(TdFont *font, float x, float y)
 {
 	const char *test[] = {
@@ -192,6 +253,7 @@ void TdFontRenderer::DebugDrawPositioning(TdFont *font, float x, float y)
 		i++;
 	}
 }
+#endif // !TDFONT_USE_UTF8
 
 void TdFontRenderer::DebugDrawFontTexture(TdFont *font, float x, float y)
 {
