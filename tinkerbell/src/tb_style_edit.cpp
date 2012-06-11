@@ -819,21 +819,23 @@ int TBBlock::GetStartIndentation(int first_line_len) const
 	// Lines beginning with whitespace or list points, should
 	// indent to the same as the beginning when wrapped.
 	int indentation = 0;
-	const char *current = str;
-	while (current < str.CStr() + first_line_len)
+	int i = 0;
+	while (i < first_line_len)
 	{
-		switch (*current)
+		const char *current_str = str.CStr() + i;
+		UCS4 uc = utf8::decode_next(str, &i, first_line_len);
+		switch (uc)
 		{
 		case '\t':
 			indentation += CalculateTabWidth(indentation);
-			current++;
 			continue;
 		case ' ':
 		case '-':
 		case '*':
-		case '•':
-			indentation += CalculateStringWidth(str, 1);
-			current++;
+			indentation += CalculateStringWidth(current_str, 1);
+			continue;
+		case 0x2022: // BULLET
+			indentation += CalculateStringWidth(current_str, 3);
 			continue;
 		};
 		break;
