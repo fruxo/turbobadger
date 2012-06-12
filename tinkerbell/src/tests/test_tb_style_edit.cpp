@@ -49,6 +49,31 @@ TB_TEST_GROUP(tb_editfield)
 		TB_VERIFY_STR(edit->GetText(), "One\r\nTwo");
 	}
 
+	TB_TEST(settext_singleline_malformed_utf8)
+	{
+		// Should not detect theese sequences as having new line character
+
+		edit->SetText("\xC0\x8A", true);
+		TB_VERIFY(sedit->blocks.CountLinks() == 1);
+
+		edit->SetText("\xE0\x80\x8A", true);
+		TB_VERIFY(sedit->blocks.CountLinks() == 1);
+
+		edit->SetText("\xF0\x80\x80\x8A", true);
+		TB_VERIFY(sedit->blocks.CountLinks() == 1);
+
+		edit->SetText("\xF8\x80\x80\x80\x8A", true);
+		TB_VERIFY(sedit->blocks.CountLinks() == 1);
+
+		edit->SetText("\xFC\x80\x80\x80\x80\x8A", true);
+		TB_VERIFY(sedit->blocks.CountLinks() == 1);
+
+		// Should detect the new line character
+
+		edit->SetText("\xF0\nHello", true);
+		TB_VERIFY(sedit->blocks.CountLinks() == 2);
+	}
+
 	TB_TEST(settext_undoredo_ins)
 	{
 		// 1 len insertions in sequence should be merged to word boundary.
