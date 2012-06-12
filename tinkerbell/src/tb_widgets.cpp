@@ -385,7 +385,7 @@ Widget *Widget::GetWidgetAt(int x, int y, bool include_children) const
 	y -= child_translation_y;
 
 	Widget *tmp = GetFirstChild();
-	Widget *last_match = NULL;
+	Widget *last_match = nullptr;
 	while (tmp)
 	{
 		WIDGET_HIT_STATUS hit_status = tmp->GetHitStatus(x - tmp->m_rect.x, y - tmp->m_rect.y);

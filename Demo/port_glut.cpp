@@ -31,7 +31,7 @@ TdFont *LoadFont(const char *filename)
 {
 	TBImageLoader *img = TBImageLoader::CreateFromFile(filename);
 	if (!img)
-		return NULL;
+		return nullptr;
 	TdFont *font = TdFont::Create(img->Width(), img->Height(), (unsigned int *) img->Data());
 	delete img;
 	return font;

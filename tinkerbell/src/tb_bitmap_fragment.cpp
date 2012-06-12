@@ -28,6 +28,7 @@ TBBitmapFragmentMap::TBBitmapFragmentMap()
 	, m_bitmap_h(0)
 	, m_bitmap_data(nullptr)
 	, m_bitmap(nullptr)
+	, m_need_update(false)
 {
 }
 
@@ -51,7 +52,7 @@ TBBitmapFragmentMap::~TBBitmapFragmentMap()
 	delete [] m_bitmap_data;
 }
 
-TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h, uint32 *frag_data)
+TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h, uint32 *frag_data, bool add_border)
 {
 	// Finding available space works like this:
 	// The map size is sliced up horizontally in rows (initially just one row covering
@@ -67,11 +68,14 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 	int border = 0;
 	int needed_w = frag_w;
 	int needed_h = frag_h;
-	if (needed_w != m_bitmap_w || needed_h != m_bitmap_h)
+	if (add_border)
 	{
-		border = 1;
-		needed_w += 2;
-		needed_h += 2;
+		if (needed_w != m_bitmap_w || needed_h != m_bitmap_h)
+		{
+			border = 1;
+			needed_w += 2;
+			needed_h += 2;
+		}
 	}
 
 	if (!rows.GetNumItems())
@@ -119,6 +123,7 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 		frag->m_rect.Set(best_row->used_width + border, best_row->y + border, frag_w, frag_h);
 		best_row->used_width += needed_w;
 		CopyData(frag, frag_data, border);
+		m_need_update = true;
 		return frag;
 	}
 	return nullptr;
@@ -155,10 +160,22 @@ void TBBitmapFragmentMap::CopyData(TBBitmapFragment *frag, uint32 *frag_data, in
 	}
 }
 
-bool TBBitmapFragmentMap::CreateBitmap()
+TBBitmap *TBBitmapFragmentMap::GetBitmap()
 {
-	if (!m_bitmap)
-		m_bitmap = g_renderer->CreateBitmap(m_bitmap_w, m_bitmap_h, m_bitmap_data);
+	ValidateBitmap();
+	return m_bitmap;
+}
+
+bool TBBitmapFragmentMap::ValidateBitmap()
+{
+	if (m_need_update)
+	{
+		if (m_bitmap)
+			m_bitmap->SetData(m_bitmap_data);
+		else
+			m_bitmap = g_renderer->CreateBitmap(m_bitmap_w, m_bitmap_h, m_bitmap_data);
+		m_need_update = false;
+	}
 	return m_bitmap ? true : false;
 }
 
@@ -169,23 +186,34 @@ TBBitmapFragmentManager::~TBBitmapFragmentManager()
 	Clear();
 }
 
-TBBitmapFragment *TBBitmapFragmentManager::CreateNewBitmapFragment(const char *filename, bool dedicated_map)
+TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filename, bool dedicated_map)
 {
-	TBBitmapFragment *frag = nullptr;
+	TBID id(filename);
+
 	// If we already have a fragment for this filename, return that
-	if (!dedicated_map)
-	{
-		frag = m_fragments.Get(TBGetHash(filename));
-		if (frag)
-			return frag;
-	}
+	TBBitmapFragment *frag = m_fragments.Get(id);
+	if (frag)
+		return frag;
+
 	// Load the file
 	TBImageLoader *img = TBImageLoader::CreateFromFile(filename);
 	if (!img)
 	{
-		TBDebugOut("CreateNewBitmapFragment: Failed to load bitmap!");
+		TBDebugOut("TBBitmapFragmentManager::GetFragmentFromFile : Failed to load image!");
 		return nullptr;
 	}
+
+	frag = CreateNewFragment(id, dedicated_map, img->Width(), img->Height(), img->Data(), true);
+	delete img;
+	return frag;
+}
+
+TBBitmapFragment *TBBitmapFragmentManager::CreateNewFragment(const TBID &id, bool dedicated_map, int data_w, int data_h, uint32 *data, bool add_border)
+{
+	assert(!GetFragment(id));
+
+	TBBitmapFragment *frag = nullptr;
+
 	// Create a fragment in any of the fragment maps. Doing it in the reverse order
 	// would be faster since it's most likely to succeed, but we want to maximize
 	// the amount of fragments per map, so do it in the creation order.
@@ -193,34 +221,39 @@ TBBitmapFragment *TBBitmapFragmentManager::CreateNewBitmapFragment(const char *f
 	{
 		for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
 		{
-			if (frag = m_fragment_maps[i]->CreateNewFragment(img->Width(), img->Height(), img->Data()))
+			if (frag = m_fragment_maps[i]->CreateNewFragment(data_w, data_h, data, add_border))
 				break;
 		}
 	}
 	// If we couldn't create the fragment in any map, create a new map where we know it will fit.
-	if (!frag)
+	if (!frag && m_fragment_maps.GrowIfNeeded())
 	{
-		int po2w = TBGetNearestPowerOfTwo(MAX(img->Width(), default_frag_map_w));
-		int po2h = TBGetNearestPowerOfTwo(MAX(img->Height(), default_frag_map_h));
+		int po2w = TBGetNearestPowerOfTwo(MAX(data_w, default_frag_map_w));
+		int po2h = TBGetNearestPowerOfTwo(MAX(data_h, default_frag_map_h));
 		if (dedicated_map)
 		{
-			po2w = TBGetNearestPowerOfTwo(img->Width());
-			po2h = TBGetNearestPowerOfTwo(img->Height());
+			po2w = TBGetNearestPowerOfTwo(data_w);
+			po2h = TBGetNearestPowerOfTwo(data_h);
 		}
 		TBBitmapFragmentMap *fm = new TBBitmapFragmentMap();
 		if (fm && fm->Init(po2w, po2h))
 		{
 			m_fragment_maps.Add(fm);
-			frag = fm->CreateNewFragment(img->Width(), img->Height(), img->Data());
+			frag = fm->CreateNewFragment(data_w, data_h, data, add_border);
 		}
 		else
 			delete fm;
 	}
-	// Finally, add the new fragment to the hash and delete the img since it's not copied into the map.
-	if (frag)
-		m_fragments.Add(TBGetHash(filename), frag);
-	delete img;
-	return frag;
+	// Finally, add the new fragment to the hash.
+	if (frag && m_fragments.Add(id, frag))
+		return frag;
+	delete frag;
+	return nullptr;
+}
+
+TBBitmapFragment *TBBitmapFragmentManager::GetFragment(const TBID &id) const
+{
+	return m_fragments.Get(id);
 }
 
 void TBBitmapFragmentManager::Clear()
@@ -229,11 +262,11 @@ void TBBitmapFragmentManager::Clear()
 	m_fragments.DeleteAll();
 }
 
-bool TBBitmapFragmentManager::CreateBitmaps()
+bool TBBitmapFragmentManager::ValidateBitmaps()
 {
 	bool success = true;
 	for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
-		if (!m_fragment_maps[i]->CreateBitmap())
+		if (!m_fragment_maps[i]->ValidateBitmap())
 			success = false;
 	return success;
 }

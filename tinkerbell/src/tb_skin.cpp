@@ -172,7 +172,7 @@ bool TBSkin::ReloadBitmaps()
 	bool success = ReloadBitmapsInternal();
 	// Create all bitmaps for the bitmap fragment maps
 	if (success)
-		success = m_frag_manager.CreateBitmaps();
+		success = m_frag_manager.ValidateBitmaps();
 
 #ifdef _DEBUG
 	TBStr info;
@@ -194,8 +194,9 @@ bool TBSkin::ReloadBitmapsInternal()
 	{
 		if (!element->bitmap_file.IsEmpty())
 		{
+			// FIX: dedicated_map is not needed for all backends (only deprecated fixed function GL)
 			bool dedicated_map = element->type == SKIN_ELEMENT_TYPE_TILE;
-			element->bitmap = frag_man->CreateNewBitmapFragment(element->bitmap_file, dedicated_map);
+			element->bitmap = frag_man->GetFragmentFromFile(element->bitmap_file, dedicated_map);
 			if (!element->bitmap)
 				success = false;
 		}

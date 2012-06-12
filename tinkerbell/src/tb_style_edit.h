@@ -251,14 +251,14 @@ private:
 class TBTextFragment : public TBLinkOf<TBTextFragment>
 {
 public:
-	TBTextFragment(TBTextFragmentContent *content = NULL)
+	TBTextFragment(TBTextFragmentContent *content = nullptr)
 				: xpos(0)
 				, ypos(0)
 				, ofs(0)
 				, len(0)
 				, line_ypos(0)
 				, line_height(0)
-				, block(NULL)
+				, block(nullptr)
 				, content(content) {}
 	~TBTextFragment();
 

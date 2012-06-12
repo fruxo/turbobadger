@@ -28,6 +28,7 @@ public:
 	bool Init(int width, int height, uint32 *data);
 	virtual int Width() { return m_w; }
 	virtual int Height() { return m_h; }
+	virtual void SetData(uint32 *data);
 public:
 	int m_w, m_h;
 	GLuint m_texture;
@@ -73,7 +74,6 @@ public:
 	TBRect m_clip_rect;
 	int m_translation_x;
 	int m_translation_y;
-	GLuint m_current_texture;
 };
 
 }; // namespace tinkerbell

@@ -57,13 +57,14 @@ public:
 
 	/** Create a new fragment with the given size and data in this map.
 		Returns nullptr if there is not enough room in this map or on any other fail. */
-	TBBitmapFragment *CreateNewFragment(int frag_w, int frag_h, uint32 *frag_data);
+	TBBitmapFragment *CreateNewFragment(int frag_w, int frag_h, uint32 *frag_data, bool add_border);
 
-	/** Return the bitmap for this map. */
-	TBBitmap *GetBitmap() { return m_bitmap; }
+	/** Return the bitmap for this map. If the data is not not valid (up to date),
+		it will be updated before returning. */
+	TBBitmap *GetBitmap();
 private:
 	friend class TBBitmapFragmentManager;
-	bool CreateBitmap();
+	bool ValidateBitmap();
 	void CopyData(TBBitmapFragment *frag, uint32 *frag_data, int border);
 	struct ROW {
 		int y, height, used_width;
@@ -72,6 +73,7 @@ private:
 	int m_bitmap_w, m_bitmap_h;
 	uint32 *m_bitmap_data;
 	TBBitmap *m_bitmap;
+	bool m_need_update;
 };
 
 /** TBBitmapFragment represents a sub part of a TBBitmap.
@@ -99,18 +101,30 @@ class TBBitmapFragmentManager
 public:
 	~TBBitmapFragmentManager();
 
-	/** Load the given image file into a new fragment.
-		The fragment won't be ready for use until you have called CreateBitmaps.
+	/** Get the fragment with the given image filename. If it's not already loaded,
+		it will be loaded into a new fragment with the filename as id.
 		returns nullptr on fail. */
-	TBBitmapFragment *CreateNewBitmapFragment(const char *filename, bool dedicated_map);
+	TBBitmapFragment *GetFragmentFromFile(const char *filename, bool dedicated_map);
+
+	/** Get the fragment with the given id, or nullptr if it doesn't exist. */
+	TBBitmapFragment *GetFragment(const TBID &id) const;
+
+	/** Create a new fragment from the given data.
+		@param id The id that should be used to identify the fragment.
+		@param dedicated_map if true, it will get a dedicated map.
+		@param data_w the width of the data.
+		@param data_h the height of the data.
+		@param data pointer to the data in BGRA32 format.
+		@param add_border if true, a 1px border will be added if needed so stretching won't get filtering artifacts. */
+	TBBitmapFragment *CreateNewFragment(const TBID &id, bool dedicated_map, int data_w, int data_h, uint32 *data, bool add_border);
 
 	/** Clear all loaded bitmaps and all created bitmap fragments and maps.
 		After this call, do not keep any pointers to any TBBitmapFragment created
 		by this fragment manager. */
 	void Clear();
 
-	/** Create bitmaps for all loaded fragments. */
-	bool CreateBitmaps();
+	/** Validate bitmaps on fragment maps that has changed. */
+	bool ValidateBitmaps();
 
 	/** Get number of fragment maps that is currently used. */
 	int GetNumMaps() const { return m_fragment_maps.GetNumItems(); }

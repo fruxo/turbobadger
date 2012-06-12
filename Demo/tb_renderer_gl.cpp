@@ -65,6 +65,18 @@ void Batch::AddVertex(float x, float y, float u, float v, uint32 color)
 		Flush();
 }
 
+GLuint g_current_texture = 0;
+
+void BindTexture(GLuint texture)
+{
+	if (texture != g_current_texture)
+	{
+		batch.Flush();
+		g_current_texture = texture;
+		glBindTexture(GL_TEXTURE_2D, g_current_texture);
+	}
+}
+
 // == TBBitmapGL ==================================================================================
 
 TBBitmapGL::TBBitmapGL()
@@ -79,26 +91,32 @@ TBBitmapGL::~TBBitmapGL()
 
 bool TBBitmapGL::Init(int width, int height, uint32 *data)
 {
-	assert(width = TBGetNearestPowerOfTwo(width));
-	assert(height = TBGetNearestPowerOfTwo(height));
+	assert(width == TBGetNearestPowerOfTwo(width));
+	assert(height == TBGetNearestPowerOfTwo(height));
 
 	m_w = width;
 	m_h = height;
 
 	glGenTextures(1, &m_texture);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
+	BindTexture(m_texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	glBindTexture(GL_TEXTURE_2D, 0);
+
+	SetData(data);
 
 	return true;
+}
+
+void TBBitmapGL::SetData(uint32 *data)
+{
+	BindTexture(m_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_w, m_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
 
 // == TBRendererGL ================================================================================
 
 TBRendererGL::TBRendererGL()
-	: m_opacity(255), m_translation_x(0), m_translation_y(0), m_current_texture(0)
+	: m_opacity(255), m_translation_x(0), m_translation_y(0)
 {
 }
 
@@ -123,7 +141,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 {
 	m_screen_rect.Set(0, 0, render_target_w, render_target_h);
 	m_clip_rect = m_screen_rect;
-	m_current_texture = 0;
+	g_current_texture = 0;
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -207,12 +225,7 @@ void TBRendererGL::DrawTexture(const TBRect &dst_rect, float u, float v, float u
 
 void TBRendererGL::DrawTexture(const TBRect &dst_rect, float u, float v, float uu, float vv, GLuint texture, uint32 color)
 {
-	if (texture != m_current_texture)
-	{
-		batch.Flush();
-		m_current_texture = texture;
-		glBindTexture(GL_TEXTURE_2D, m_current_texture);
-	}
+	BindTexture(texture);
 	int dst_x = dst_rect.x + m_translation_x;
 	int dst_y = dst_rect.y + m_translation_y;
 

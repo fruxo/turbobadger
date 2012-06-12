@@ -106,8 +106,7 @@ const char *stristr(const char *arg1, const char *arg2)
 			if(!*b) 
 				return arg1;
 	}
-
-	return NULL;
+	return nullptr;
 }
 
 // == TBStr ==========================================================

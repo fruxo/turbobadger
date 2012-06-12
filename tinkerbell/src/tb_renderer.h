@@ -20,6 +20,9 @@ public:
 	virtual ~TBBitmap() {}
 	virtual int Width() = 0;
 	virtual int Height() = 0;
+
+	/** Update the bitmap with the given data (in BGRA32 format). */
+	virtual void SetData(uint32 *data) = 0;
 };
 
 /** TBRenderer is a minimal interface for painting strings and bitmaps. */
