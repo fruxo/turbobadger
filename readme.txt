@@ -43,12 +43,6 @@ What features does it have
   -Uses constexpr by default for all ID comparisions on compilers that support it.
   -Unicode support (UTF8)
 
-  Optional components:
-
-  -TdFont (Optional)
-  -TdImage (Optional)
-  -TdAnimation (Optional)
-
 What features does it NOT have
 -------------------------------
 

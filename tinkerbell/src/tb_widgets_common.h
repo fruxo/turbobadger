@@ -26,10 +26,10 @@ public:
 // FIX: Use TBStyleEdit if wanted, to support rich text
 	TBWidgetString();
 
-	void Paint(const TBRect &rect, const TBColor &color);
+	void Paint(Widget *widget, const TBRect &rect, const TBColor &color);
 
-	int GetWidth();
-	int GetHeight();
+	int GetWidth(Widget *widget);
+	int GetHeight(Widget *widget);
 
 	bool SetText(const char *text) { return m_text.Set(text); }
 	bool GetText(TBStr &text) const { return text.Set(m_text); }
@@ -69,6 +69,7 @@ public:
 	bool GetSqueezable() { return m_squeezable; }
 
 	virtual PreferredSize GetPreferredContentSize();
+	virtual void OnFontChanged();
 	virtual void OnPaint(const PaintProps &paint_props);
 protected:
 	TBWidgetString m_text;

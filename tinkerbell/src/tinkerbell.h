@@ -206,26 +206,39 @@ public:
 	bool operator != (const TBColor &c) const { return !(*this == c); }
 };
 
-/** TBFontDescription describes a font. */
+/** TBFontDescription describes a font.
+	By default when nothing is set, the font is unspecified and means it should be inherited
+	from a parent widget that specifies a font, or use the default font if no parent does. */
 
 class TBFontDescription
 {
 public:
+	/** Set the index of the font to use.
+		This index maps to the index of TBFontInfo, which is managed from
+		TBFontManager::AddFontInfo, TBFontManager::GetFontInfo. */
 	void SetIndex(uint32 index)											{ m_packed.index = MIN(index, 0x8000); }
 	uint32 GetIndex() const												{ return m_packed.index; }
 
 	void SetSize(uint32 size)											{ m_packed.size = MIN(size, 0x8000); }
 	uint32 GetSize() const												{ return m_packed.size; }
 
-	void SetBold(bool bold)												{ m_packed.bold = bold; }
-	bool GetBold() const												{ return m_packed.bold; }
+	//not connected to anything yet
+	//void SetBold(bool bold)											{ m_packed.bold = bold; }
+	//bool GetBold() const												{ return m_packed.bold; }
 
-	void SetItalic(bool italic)											{ m_packed.italic = italic; }
-	bool GetItalic() const												{ return m_packed.italic; }
+	//not connected to anything yet
+	//void SetItalic(bool italic)										{ m_packed.italic = italic; }
+	//bool GetItalic() const											{ return m_packed.italic; }
 
 	TBFontDescription() : m_packed_init(0) {}
 	TBFontDescription(const TBFontDescription &src)						{ m_packed_init = src.m_packed_init; }
 	const TBFontDescription& operator = (const TBFontDescription &src)	{ m_packed_init = src.m_packed_init; return *this; }
+	bool operator == (const TBFontDescription &fd) const { return m_packed_init == fd.m_packed_init; }
+	bool operator != (const TBFontDescription &fd) const { return !(*this == fd); }
+
+	/** Get the TBID for this font description. If this is 0, it means the font description
+		is unspecified and should be inherited. */
+	TBID GetID() const { return TBID(m_packed_init); }
 private:
 	union {
 		struct {
@@ -242,11 +255,13 @@ class TBRenderer;
 class TBSkin;
 class TBWidgetsReader;
 class TBLanguage;
+class TBFontManager;
 
 extern TBRenderer *g_renderer;
 extern TBSkin *g_tb_skin;
 extern TBWidgetsReader *g_widgets_reader;
 extern TBLanguage *g_tb_lng;
+extern TBFontManager *g_font_manager;
 
 /** Initialize tinkerbell. Call this before using any tinkerbell API. */
 bool init_tinkerbell(TBRenderer *renderer, const char *lng_file);

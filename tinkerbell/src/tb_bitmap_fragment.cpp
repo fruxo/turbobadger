@@ -278,7 +278,7 @@ void TBBitmapFragmentManager::Debug()
 	for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
 	{
 		TBBitmapFragmentMap *fm = m_fragment_maps[i];
-		g_renderer->DrawBitmap(TBRect(x, 0, fm->m_bitmap_w, fm->m_bitmap_h), TBRect(0, 0, fm->m_bitmap_w, fm->m_bitmap_h), fm->m_bitmap);
+		g_renderer->DrawBitmap(TBRect(x, 0, fm->m_bitmap_w, fm->m_bitmap_h), TBRect(0, 0, fm->m_bitmap_w, fm->m_bitmap_h), fm->GetBitmap());
 		x += fm->m_bitmap_w + 5;
 	}
 }

@@ -53,14 +53,13 @@ you can call TBMessageHandler::GetNextMessageFireTime() for scheduleing when to 
 ProcessMessage next. Also, TBSystem::RescheduleTimer will be called back if the time
 it needs to run next is changed.
 
-Rendering & font backend
-------------------------
+Rendering
+---------
 
 There is already a OpenGL renderer implementation, using fixed function pipeline.
-The font system is also implemented in the renderer backend.
 
 TBBitmap   - FIX: write something here.
-TBRenderer - FIX: write something here. Write about fonts (+TDFont)
+TBRenderer - FIX: write something here.
 
 Some apps need to unload all graphics and reload it again, f.ex when the app
 is put to sleep in the background. Tinkerbell loads all its bitmaps through the skin,
@@ -68,6 +67,16 @@ so unloading & reloading all textures can be done with:
 
 	g_tb_skin->UnloadBitmaps()
 	g_tb_skin->ReloadBitmaps()
+
+Font system
+-----------
+
+There is font implementations for freetype and stb_truetype.h, and a bitmap font
+system (tbbf - "tinker bell bitmap font") that is very simple to use and supports
+any range or characters, glow & shadow. You can choose any of theese or add your own.
+
+The implementation API render glyph by glyph, but if it's requested to externalize
+the entire string measuring & drawing, support for that shouldn't be hard to add.
 
 System integration
 ------------------

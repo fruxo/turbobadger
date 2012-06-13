@@ -16,7 +16,6 @@
 #endif // _WIN32
 
 #include "tb_renderer.h"
-#include "tdfont/tdfont.h"
 
 namespace tinkerbell {
 
@@ -34,16 +33,10 @@ public:
 	GLuint m_texture;
 };
 
-class TBRendererGL : public TBRenderer, public TdFontRendererBackend
+class TBRendererGL : public TBRenderer
 {
 public:
 	TBRendererGL();
-
-	// == TdFontRendererBackend ===================================
-
-	virtual void BeginDrawString(TdFont *font);
-	virtual void EndDrawString(TdFont *font);
-	virtual void DrawGlyph(float x, float y, TDFNT_GLYPH *glyph, unsigned int texture);
 
 	// == TBRenderer ==============================================
 
@@ -57,13 +50,11 @@ public:
 	virtual TBRect GetClipRect();
 	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmapFragment *bitmap_fragment);
 	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmap *bitmap);
+	virtual void DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmapFragment *bitmap_fragment);
+	virtual void DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmap *bitmap);
 	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap);
 	virtual void DrawRect(const TBRect &dst_rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color);
-	virtual void DrawString(int x, int y, const TBColor &color, const char *str, int len);
-	virtual int GetStringWidth(const char *str, int len);
-	virtual int GetFontHeight();
-	virtual int GetFontBaseline();
 
 	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data);
 public:

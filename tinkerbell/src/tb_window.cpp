@@ -167,15 +167,19 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 	Invalidate();
 }
 
+int TBWindow::GetTitleHeight()
+{
+	if (m_settings & WINDOW_SETTINGS_TITLEBAR)
+		return m_mover.GetPreferredSize().pref_h;
+	return 0;
+}
+
 TBRect TBWindow::GetPaddingRect()
 {
 	TBRect padding_rect = Widget::GetPaddingRect();
-	if (m_settings & WINDOW_SETTINGS_TITLEBAR)
-	{
-		// FIX: remove hardcoded title height from allover this file!
-		padding_rect.y += 30;
-		padding_rect.h -= 30;
-	}
+	int title_height = GetTitleHeight();
+	padding_rect.y += title_height;
+	padding_rect.h -= title_height;
 	return padding_rect;
 }
 
@@ -192,11 +196,9 @@ PreferredSize TBWindow::GetPreferredSize()
 		ps.pref_h += e->padding_top + e->padding_bottom;
 	}
 	// Add window title bar height
-	if (m_settings & WINDOW_SETTINGS_TITLEBAR)
-	{
-		ps.min_h += 30;
-		ps.pref_h += 30;
-	}
+	int title_height = GetTitleHeight();
+	ps.min_h += title_height;
+	ps.pref_h += title_height;
 	return ps;
 }
 
@@ -238,7 +240,8 @@ void TBWindow::OnResized(int old_w, int old_h)
 	Widget::OnResized(old_w, old_h);
 	// Manually move our own decoration children
 	// FIX: Put a layout in the TBMover so we can add things there nicely.
-	m_mover.SetRect(TBRect(0, 0, m_rect.w, 30));
+	int title_height = GetTitleHeight();
+	m_mover.SetRect(TBRect(0, 0, m_rect.w, title_height));
 	m_resizer.SetRect(TBRect(m_rect.w - 20, m_rect.h - 20, 20, 20));
 	TBRect mover_rect = m_mover.GetPaddingRect();
 	int button_size = mover_rect.h;

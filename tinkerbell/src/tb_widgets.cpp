@@ -9,6 +9,7 @@
 #include "tb_renderer.h"
 #include "tb_widgets_common.h"
 #include "tb_system.h"
+#include "tb_font_renderer.h"
 #include <assert.h>
 
 namespace tinkerbell {
@@ -988,6 +989,50 @@ void Widget::SetCapturedWidget(Widget *widget)
 		Widget::captured_widget->Invalidate();
 		Widget::captured_widget->OnCaptureChanged(true);
 	}
+}
+
+bool Widget::SetFontDescription(const TBFontDescription &font_desc)
+{
+	if (m_font_desc == font_desc)
+		return true;
+
+	// Set the font description only if we have a matching font, or succeed creating one.
+	if (g_font_manager->HasFontFace(font_desc))
+		m_font_desc = font_desc;
+	else if (TBFontFace * font = g_font_manager->CreateFontFace(font_desc))
+		m_font_desc = font_desc;
+	else
+		return false;
+
+	InvokeFontChanged();
+	return true;
+}
+
+void Widget::InvokeFontChanged()
+{
+	OnFontChanged();
+
+	// Recurse to children that inherit the font
+	for (Widget *child = GetFirstChild(); child; child = child->GetNext())
+		if (child->m_font_desc.GetID() == 0)
+			child->InvokeFontChanged();
+}
+
+TBFontDescription Widget::GetCalculatedFontDescription() const
+{
+	const Widget *tmp = this;
+	while (tmp)
+	{
+		if (tmp->m_font_desc.GetID() != 0)
+			return tmp->m_font_desc;
+		tmp = tmp->m_parent;
+	}
+	return g_font_manager->GetDefaultFontDescription();
+}
+
+TBFontFace *Widget::GetFont() const
+{
+	return g_font_manager->GetFontFace(GetCalculatedFontDescription());
 }
 
 }; // namespace tinkerbell

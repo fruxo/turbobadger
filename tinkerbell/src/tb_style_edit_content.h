@@ -25,9 +25,9 @@ public:
 
 	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props) {}
 	virtual void Click(TBTextFragment *fragment, int button, uint32 modifierkeys) {}
-	virtual int32 GetWidth(TBTextFragment *fragment) { return 0; }
-	virtual int32 GetHeight(TBTextFragment *fragment) { return 0; }
-	virtual int32 GetBaseline(TBTextFragment *fragment) { return GetHeight(fragment); }
+	virtual int32 GetWidth(TBFontFace *font, TBTextFragment *fragment) { return 0; }
+	virtual int32 GetHeight(TBFontFace *font, TBTextFragment *fragment) { return 0; }
+	virtual int32 GetBaseline(TBFontFace *font, TBTextFragment *fragment) { return GetHeight(font, fragment); }
 	virtual bool GetAllowBreakBefore() { return true; }
 	virtual bool GetAllowBreakAfter() { return true; }
 
@@ -43,8 +43,8 @@ public:
 	PHorizontalLineContent(int32 width_in_percent, int32 height, const TBColor &color);
 
 	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
-	virtual int32 GetWidth(TBTextFragment *fragment);
-	virtual int32 GetHeight(TBTextFragment *fragment);
+	virtual int32 GetWidth(TBFontFace *font, TBTextFragment *fragment);
+	virtual int32 GetHeight(TBFontFace *font, TBTextFragment *fragment);
 private:
 	int32 width_in_percent, height;
 	TBColor color;

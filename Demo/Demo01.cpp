@@ -572,7 +572,12 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 	g_renderer->BeginPaint(window_w, window_h);
 	m_root->InvokePaint(Widget::PaintProps());
 #ifdef _DEBUG
-	//g_tb_skin->Debug(); // Enable to debug skin bitmap fragments
+	// Enable to debug skin bitmap fragments
+	//g_tb_skin->Debug();
+	// Enable to debug font glyph fragments (the font of the hovered widget)
+	//g_font_manager->GetFontFace(Widget::hovered_widget ?
+	//							Widget::hovered_widget->GetCalculatedFontDescription() :
+	//							g_font_manager->GetDefaultFontDescription())->Debug();
 #endif
 	g_renderer->EndPaint();
 

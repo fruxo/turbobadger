@@ -19,9 +19,6 @@
     <Filter Include="Source Files\tinkerbell\parser">
       <UniqueIdentifier>{47eb1a1a-5b78-4ef1-933d-c2d0acb0f79c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\tdfont">
-      <UniqueIdentifier>{2a6a4b9b-c5d8-4145-bea6-0882e5d4a662}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\tbanimation">
       <UniqueIdentifier>{02dc40a7-f4f8-4dcc-85a4-200f636b1e9e}</UniqueIdentifier>
     </Filter>
@@ -69,17 +66,8 @@
     <ClCompile Include="..\..\tinkerbell\src\parser\TBParser.cpp">
       <Filter>Source Files\tinkerbell\parser</Filter>
     </ClCompile>
-    <ClCompile Include="..\tb_renderer_gl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_system_win.cpp">
       <Filter>Source Files\tinkerbell</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\tdfont\tdfont.cpp">
-      <Filter>Source Files\tdfont</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\tdfont\tdfont_gl.cpp">
-      <Filter>Source Files\tdfont</Filter>
     </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_tab_container.cpp">
       <Filter>Source Files\tinkerbell</Filter>
@@ -165,6 +153,15 @@
     <ClCompile Include="..\..\tinkerbell\src\utf8\utf8.cpp">
       <Filter>Source Files\utf8</Filter>
     </ClCompile>
+    <ClCompile Include="..\tb_renderer_gl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -202,17 +199,11 @@
     <ClInclude Include="..\..\tinkerbell\src\parser\TBParser.h">
       <Filter>Source Files\tinkerbell\parser</Filter>
     </ClInclude>
-    <ClInclude Include="..\tb_renderer_gl.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Demo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_system.h">
       <Filter>Source Files\tinkerbell</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\tdfont\tdfont.h">
-      <Filter>Source Files\tdfont</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_tab_container.h">
       <Filter>Source Files\tinkerbell</Filter>
@@ -281,6 +272,12 @@
       <Filter>Source Files\utf8</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_types.h">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tb_renderer_gl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_font_renderer.h">
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
   </ItemGroup>

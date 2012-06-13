@@ -53,10 +53,19 @@ public:
 		sent to SetClipRect, due to intersecting with the previous cliprect! */
 	virtual TBRect GetClipRect() = 0;
 
+	/** Draw the src_rect part of the fragment stretched to dst_rect. */
 	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmapFragment *bitmap_fragment) = 0;
 
 	/** Draw the src_rect part of the bitmap stretched to dst_rect. */
 	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmap *bitmap) = 0;
+
+	/** Draw the src_rect part of the fragment stretched to dst_rect.
+		The bitmap will be used as a mask for the color. */
+	virtual void DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmapFragment *bitmap_fragment) = 0;
+
+	/** Draw the src_rect part of the bitmap stretched to dst_rect.
+		The bitmap will be used as a mask for the color. */
+	virtual void DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmap *bitmap) = 0;
 
 	/** Draw the bitmap tiled into dst_rect. */
 	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap) = 0;
@@ -66,19 +75,6 @@ public:
 
 	/** Draw a filled rectangle. */
 	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color) = 0;
-
-	/** Draw string at position x, y (marks the upper left corner of the text). */
-	virtual void DrawString(int x, int y, const TBColor &color, const char *str, int len = TB_ALL_TO_TERMINATION) = 0;
-
-	/** Measure the width of the given string. Should measure len characters or to the null
-		termination (whatever comes first). */
-	virtual int GetStringWidth(const char *str, int len = TB_ALL_TO_TERMINATION) = 0;
-
-	/** Get height of the font in pixels. */
-	virtual int GetFontHeight() = 0;
-
-	/** Get baseline of the font in pixels. */
-	virtual int GetFontBaseline() = 0;
 
 	/** Create a new TBBitmap from the given data (in BGRA32 format).
 		Width and height must be a power of two.

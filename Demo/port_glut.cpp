@@ -12,11 +12,11 @@
 #include "tb_system.h"
 #include "tb_widgets.h"
 #include "tb_renderer_gl.h"
+#include "tb_font_renderer.h"
 #include "Demo.h"
 
 using namespace tinkerbell;
 
-TdFont *g_uifont;
 Widget *g_root = nullptr;
 
 Application *application = nullptr;
@@ -26,16 +26,6 @@ int mainWindow;
 int window_w = 1280;
 int window_h = 740;
 bool has_pending_update = false;
-
-TdFont *LoadFont(const char *filename)
-{
-	TBImageLoader *img = TBImageLoader::CreateFromFile(filename);
-	if (!img)
-		return nullptr;
-	TdFont *font = TdFont::Create(img->Width(), img->Height(), (unsigned int *) img->Data());
-	delete img;
-	return font;
-}
 
 MODIFIER_KEYS GlutModToTBMod()
 {
@@ -234,9 +224,38 @@ int main(int argc, char** argv)
 	glutMotionFunc(MouseMotion);
 	glutPassiveMotionFunc(MouseMotionPassive);
 
-	g_uifont = LoadFont("tdfont/default_font/font_segoe_white_14.png");
-
 	init_tinkerbell(new TBRendererGL(), "tinkerbell/lng_en.tb.txt");
+
+	// Register tbbf font renderer
+	void register_tbbf_font_renderer();
+	register_tbbf_font_renderer();
+
+	// Register freetype font renderer - if you compile with tb_font_renderer_freetype.cpp
+	//void register_freetype_font_renderer();
+	//register_freetype_font_renderer();
+
+	// Add a font to the font manager.
+	// If you use the freetype or stb backend, you can add true type files
+	// TBFontInfo *font_info = g_font_manager->AddFontInfo("vera.ttf");
+	TBFontInfo *font_info = g_font_manager->AddFontInfo("tinkerbell/default_font/segoe_white_with_shadow.tb.txt");
+	TBFontInfo *font_info2 = g_font_manager->AddFontInfo("tinkerbell/default_font/neon.tb.txt");
+
+	// Set the default font description for widgets to the index of the font info we just added
+	TBFontDescription fd;
+	fd.SetIndex(font_info->GetIndex());
+	fd.SetSize(14);
+	g_font_manager->SetDefaultFontDescription(fd);
+
+	// Create the font now.
+	TBFontFace *font = g_font_manager->CreateFontFace(g_font_manager->GetDefaultFontDescription());
+
+	// Render some glyphs in one go now since we know we are going to use them. It would work fine
+	// without this since glyphs are rendered when needed, but with some extra updating of the glyph bitmap.
+	if (font)
+		font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+							"€‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ¡¢£¤¥¦§¨©ª«¬®"
+							"¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßà�"
+							"�âãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ");
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
 	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/skin/skin.tb.txt");
@@ -257,6 +276,7 @@ int main(int argc, char** argv)
 	application = nullptr;
 
 	delete g_root;
+
 	shutdown_tinkerbell();
 
 	return 0;

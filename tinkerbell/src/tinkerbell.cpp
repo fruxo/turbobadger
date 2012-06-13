@@ -7,6 +7,7 @@
 #include "tb_skin.h"
 #include "tb_widgets_reader.h"
 #include "tb_language.h"
+#include "tb_font_renderer.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <stdarg.h>
@@ -29,12 +30,14 @@ TBRenderer *g_renderer = nullptr;
 TBSkin *g_tb_skin = nullptr;
 TBWidgetsReader *g_widgets_reader = nullptr;
 TBLanguage *g_tb_lng = nullptr;
+TBFontManager *g_font_manager = nullptr;
 
 bool init_tinkerbell(TBRenderer *renderer, const char *lng_file)
 {
 	g_renderer = renderer;
 	g_tb_lng = new TBLanguage;
 	g_tb_lng->Load(lng_file);
+	g_font_manager = new TBFontManager();
 	g_tb_skin = new TBSkin();
 	g_widgets_reader = TBWidgetsReader::Create();
 	return true;
@@ -44,6 +47,7 @@ void shutdown_tinkerbell()
 {
 	delete g_widgets_reader;
 	delete g_tb_skin;
+	delete g_font_manager;
 	delete g_tb_lng;
 	delete g_renderer;
 }

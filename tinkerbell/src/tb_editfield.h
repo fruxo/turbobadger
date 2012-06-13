@@ -117,6 +117,8 @@ public:
 
 	virtual bool OnEvent(const WidgetEvent &ev);
 	virtual void OnPaint(const PaintProps &paint_props);
+	virtual void OnAdded();
+	virtual void OnFontChanged();
 	virtual void OnFocusChanged(bool focused);
 	virtual void OnResized(int old_w, int old_h);
 	virtual Widget *GetContentRoot() { return &m_root; }
@@ -137,7 +139,7 @@ private:
 	virtual void OnChange();
 	virtual bool OnEnter();
 	virtual void Invalidate(const TBRect &rect);
-	virtual void DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len);
+	virtual void DrawString(int32 x, int32 y, TBFontFace *font, const TBColor &color, const char *str, int32 len);
 	virtual void DrawBackground(const TBRect &rect, TBBlock *block);
 	virtual void DrawRect(const TBRect &rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color);

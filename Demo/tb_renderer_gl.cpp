@@ -7,10 +7,7 @@
 #include <stdio.h>
 #include "tb_renderer_gl.h"
 #include "tb_bitmap_fragment.h"
-
-#include "tdfont/tdfont.h"
-//// TEMP HACK
-extern TdFont *g_uifont;
+#include "tb_font_renderer.h"
 
 namespace tinkerbell {
 
@@ -120,23 +117,6 @@ TBRendererGL::TBRendererGL()
 {
 }
 
-void TBRendererGL::BeginDrawString(TdFont *font)
-{
-}
-
-void TBRendererGL::EndDrawString(TdFont *font)
-{
-}
-
-void TBRendererGL::DrawGlyph(float x, float y, TDFNT_GLYPH *glyph, unsigned int texture)
-{
-	float u = glyph->u / (float)glyph->iw;
-	float v = glyph->v / (float)glyph->ih;
-	float uu = (glyph->u + glyph->w) / (float)glyph->iw;
-	float vv = (glyph->v + glyph->h) / (float)glyph->ih;
-	DrawTexture(TBRect(x, y, glyph->w, glyph->h), u, v, uu, vv, texture);
-}
-
 void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 {
 	m_screen_rect.Set(0, 0, render_target_w, render_target_h);
@@ -164,8 +144,6 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2, GL_FLOAT, sizeof(Vertex), (void *) &batch.vertex[0].x);
-
-	TdFontRenderer::SetRendererBackend(this);
 }
 
 void TBRendererGL::EndPaint()
@@ -254,6 +232,23 @@ void TBRendererGL::DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TB
 	DrawTexture(dst_rect, u, v, uu, vv, b->m_texture);
 }
 
+void TBRendererGL::DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmapFragment *bitmap_fragment)
+{
+	if (bitmap_fragment->m_map->GetBitmap())
+		DrawBitmapColored(dst_rect, src_rect.Offset(bitmap_fragment->m_rect.x, bitmap_fragment->m_rect.y), color, bitmap_fragment->GetBitmap());
+}
+
+void TBRendererGL::DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmap *bitmap)
+{
+	TBBitmapGL *b = (TBBitmapGL *) bitmap;
+	float u = (float)src_rect.x / b->m_w;
+	float v = (float)src_rect.y / b->m_h;
+	float uu = (float)(src_rect.x + src_rect.w) / b->m_w;
+	float vv = (float)(src_rect.y + src_rect.h) / b->m_h;
+	uint32 a = (color.a * m_opacity) / 255;
+	DrawTexture(dst_rect, u, v, uu, vv, b->m_texture, VER_COL(color.r, color.g, color.b, a));
+}
+
 void TBRendererGL::DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap)
 {
 	TBBitmapGL *b = (TBBitmapGL *) bitmap;
@@ -290,34 +285,6 @@ void TBRendererGL::DrawRectFill(const TBRect &dst_rect, const TBColor &color)
 		return;
 
 	DrawTexture(dst_rect, 0, 0, 0, 0, 0, VER_COL(color.r, color.g, color.b, color.a));
-}
-
-void TBRendererGL::DrawString(int x, int y, const TBColor &color, const char *str, int len)
-{
-	if (!g_uifont)
-		return;
-	TdFontRenderer::DrawString(g_uifont, x /*+ m_translation_x*/, y /*+ m_translation_y*/, TDFNT_LEFT_TOP, str, len);
-}
-
-int TBRendererGL::GetStringWidth(const char *str, int len)
-{
-	if (!g_uifont)
-		return 0;
-	return TdFontRenderer::GetStringWidth(g_uifont, str, len);
-}
-
-int TBRendererGL::GetFontHeight()
-{
-	if (!g_uifont)
-		return 0;
-	return TdFontRenderer::GetFontHeight(g_uifont);
-}
-
-int TBRendererGL::GetFontBaseline()
-{
-	if (!g_uifont)
-		return 0;
-	return (int32)(TdFontRenderer::GetFontHeight(g_uifont) * 0.75f);
 }
 
 TBBitmap *TBRendererGL::CreateBitmap(int width, int height, uint32 *data)

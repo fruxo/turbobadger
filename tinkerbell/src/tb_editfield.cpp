@@ -9,6 +9,7 @@
 #include "tb_language.h"
 #include "tb_style_edit_content.h"
 #include "tb_widgets_reader.h"
+#include "tb_font_renderer.h"
 
 namespace tinkerbell {
 
@@ -193,14 +194,14 @@ void TBEditField::OnPaint(const PaintProps &paint_props)
 
 	// Draw text content, caret etc.
 	visible_rect.x = visible_rect.y = 0;
-	m_style_edit.Paint(visible_rect, paint_props.text_color);
+	m_style_edit.Paint(visible_rect, GetCalculatedFontDescription(), paint_props.text_color);
 
 	// If empty, draw placeholder text with some opacity.
 	if (m_style_edit.IsEmpty())
 	{
 		float old_opacity = g_renderer->GetOpacity();
 		g_renderer->SetOpacity(old_opacity * 0.2f);
-		m_placeholder.Paint(visible_rect, paint_props.text_color);
+		m_placeholder.Paint(this, visible_rect, paint_props.text_color);
 		g_renderer->SetOpacity(old_opacity);
 	}
 
@@ -208,6 +209,16 @@ void TBEditField::OnPaint(const PaintProps &paint_props)
 
 	if (clip)
 		g_renderer->SetClipRect(old_clip, false);
+}
+
+void TBEditField::OnAdded()
+{
+	m_style_edit.SetFont(GetCalculatedFontDescription());
+}
+
+void TBEditField::OnFontChanged()
+{
+	m_style_edit.SetFont(GetCalculatedFontDescription());
 }
 
 void TBEditField::OnFocusChanged(bool focused)
@@ -228,12 +239,13 @@ void TBEditField::OnResized(int old_w, int old_h)
 
 PreferredSize TBEditField::GetPreferredContentSize()
 {
+	int font_height = GetFont()->GetHeight();
 	PreferredSize ps;
-	ps.pref_h = ps.min_h = g_renderer->GetFontHeight();
+	ps.pref_h = ps.min_h = font_height;
 	if (m_style_edit.packed.multiline_on)
 	{
-		ps.pref_w = g_renderer->GetFontHeight() * 10;
-		ps.pref_h = g_renderer->GetFontHeight() * 5;
+		ps.pref_w = font_height * 10;
+		ps.pref_h = font_height * 5;
 	}
 	else
 		ps.max_h = ps.pref_h;
@@ -287,9 +299,9 @@ void TBEditField::Invalidate(const TBRect &rect)
 	Widget::Invalidate();
 }
 
-void TBEditField::DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len)
+void TBEditField::DrawString(int32 x, int32 y, TBFontFace *font, const TBColor &color, const char *str, int32 len)
 {
-	g_renderer->DrawString(x, y, color, str, len);
+	font->DrawString(x, y, color, str, len);
 }
 
 void TBEditField::DrawBackground(const TBRect &rect, TBBlock *block)
@@ -384,9 +396,9 @@ public:
 	virtual ~TBTextFragmentContentWidget();
 
 	virtual void UpdatePos(int x, int y);
-	virtual int32 GetWidth(TBTextFragment *fragment);
-	virtual int32 GetHeight(TBTextFragment *fragment);
-	virtual int32 GetBaseline(TBTextFragment *fragment);
+	virtual int32 GetWidth(TBFontFace *font, TBTextFragment *fragment);
+	virtual int32 GetHeight(TBFontFace *font, TBTextFragment *fragment);
+	virtual int32 GetBaseline(TBFontFace *font, TBTextFragment *fragment);
 private:
 	Widget *m_widget;
 };
@@ -405,23 +417,23 @@ TBTextFragmentContentWidget::~TBTextFragmentContentWidget()
 
 void TBTextFragmentContentWidget::UpdatePos(int x, int y)
 {
-	m_widget->SetRect(TBRect(x, y, GetWidth(nullptr), GetHeight(nullptr)));
+	m_widget->SetRect(TBRect(x, y, GetWidth(nullptr, nullptr), GetHeight(nullptr, nullptr)));
 }
 
-int32 TBTextFragmentContentWidget::GetWidth(TBTextFragment *fragment)
+int32 TBTextFragmentContentWidget::GetWidth(TBFontFace *font, TBTextFragment *fragment)
 {
 	return m_widget->m_rect.w ? m_widget->m_rect.w : m_widget->GetPreferredSize().pref_w;
 }
 
-int32 TBTextFragmentContentWidget::GetHeight(TBTextFragment *fragment)
+int32 TBTextFragmentContentWidget::GetHeight(TBFontFace *font, TBTextFragment *fragment)
 {
 	return m_widget->m_rect.h ? m_widget->m_rect.h : m_widget->GetPreferredSize().pref_h;
 }
 
-int32 TBTextFragmentContentWidget::GetBaseline(TBTextFragment *fragment)
+int32 TBTextFragmentContentWidget::GetBaseline(TBFontFace *font, TBTextFragment *fragment)
 {
-	int height = GetHeight(fragment);
-	return (height + fragment->block->CalculateBaseline()) / 2;
+	int height = GetHeight(font, fragment);
+	return (height + fragment->block->CalculateBaseline(font)) / 2;
 }
 
 // == TBEditFieldContentFactory ===================================================================

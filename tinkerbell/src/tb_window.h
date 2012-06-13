@@ -77,6 +77,10 @@ public:
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
 	using Widget::GetText; ///< Make all versions in base class available.
 
+	/** Get the height of the title bar (or 0 if the WINDOW_SETTINGS say this window
+		shouldn't have any title bar) */
+	int GetTitleHeight();
+
 	virtual TBRect GetPaddingRect();
 	virtual PreferredSize GetPreferredSize();
 

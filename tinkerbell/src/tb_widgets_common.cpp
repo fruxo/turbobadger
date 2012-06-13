@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "tb_widgets_common.h"
+#include "tb_font_renderer.h"
 #include <assert.h>
 
 namespace tinkerbell {
@@ -15,29 +16,30 @@ TBWidgetString::TBWidgetString()
 {
 }
 
-int TBWidgetString::GetWidth()
+int TBWidgetString::GetWidth(Widget *widget)
 {
-	return g_renderer->GetStringWidth(m_text);
+	return widget->GetFont()->GetStringWidth(m_text);
 }
 
-int TBWidgetString::GetHeight()
+int TBWidgetString::GetHeight(Widget *widget)
 {
-	return g_renderer->GetFontHeight();
+	return widget->GetFont()->GetHeight();
 }
 
-void TBWidgetString::Paint(const TBRect &rect, const TBColor &color)
+void TBWidgetString::Paint(Widget *widget, const TBRect &rect, const TBColor &color)
 {
-	int string_w = GetWidth();
+	TBFontFace *font = widget->GetFont();
+	int string_w = GetWidth(widget);
 
 	int x = rect.x;
 	if (m_text_align == TB_TEXT_ALIGN_RIGHT)
 		x += rect.w - string_w;
 	else if (m_text_align == TB_TEXT_ALIGN_CENTER)
 		x += MAX(0, (rect.w - string_w) / 2);
-	int y = rect.y + (rect.h - GetHeight()) / 2;
+	int y = rect.y + (rect.h - GetHeight(widget)) / 2;
 
 	if (string_w <= rect.w)
-		g_renderer->DrawString(x, y, color, m_text);
+		font->DrawString(x, y, color, m_text);
 	else
 	{
 		// There's not enough room for the entire string
@@ -47,20 +49,20 @@ void TBWidgetString::Paint(const TBRect &rect, const TBColor &color)
 		// Some fonts seem to render ellipsis a lot uglier than three dots.
 		const char *end = "...";
 
-		int endw = g_renderer->GetStringWidth(end);
+		int endw = font->GetStringWidth(end);
 		int startw = 0;
 		int startlen = 0;
 		while (m_text.CStr()[startlen])
 		{
-			int new_startw = g_renderer->GetStringWidth(m_text, startlen);
+			int new_startw = font->GetStringWidth(m_text, startlen);
 			if (new_startw + endw > rect.w)
 				break;
 			startw = new_startw;
 			startlen++;
 		}
 		startlen = MAX(0, startlen - 1);
-		g_renderer->DrawString(x, y, color, m_text, startlen);
-		g_renderer->DrawString(x + startw, y, color, end);
+		font->DrawString(x, y, color, m_text, startlen);
+		font->DrawString(x + startw, y, color, end);
 	}
 }
 
@@ -93,16 +95,21 @@ void TBTextField::SetSqueezable(bool squeezable)
 PreferredSize TBTextField::GetPreferredContentSize()
 {
 	PreferredSize ps;
-	ps.pref_w = m_text.GetWidth();
-	ps.pref_h = ps.min_h = m_text.GetHeight();
+	ps.pref_w = m_text.GetWidth(this);
+	ps.pref_h = ps.min_h = m_text.GetHeight(this);
 	if (!m_squeezable)
 		ps.min_w = ps.pref_w;
 	return ps;
 }
 
+void TBTextField::OnFontChanged()
+{
+	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+}
+
 void TBTextField::OnPaint(const PaintProps &paint_props)
 {
-	m_text.Paint(GetPaddingRect(), paint_props.text_color);
+	m_text.Paint(this, GetPaddingRect(), paint_props.text_color);
 }
 
 // == TBButton =======================================

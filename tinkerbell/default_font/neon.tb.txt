@@ -1,0 +1,10 @@
+﻿info
+	glyph_str ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!?.:,”/\*#@&%•-+~=()<>
+	rgb 1
+size_42
+	bitmap neon_42.png
+	ascent 46
+	descent 18
+	x_ofs -6
+	advance_delta -12
+	space_advance 12

@@ -29,7 +29,7 @@ public:
 	virtual void OnChange() {};
 	virtual bool OnEnter() { return false; };
 	virtual void Invalidate(const TBRect &rect) = 0;
-	virtual void DrawString(int32 x, int32 y, const TBColor &color, const char *str, int32 len = TB_ALL_TO_TERMINATION) = 0;
+	virtual void DrawString(int32 x, int32 y, TBFontFace *font, const TBColor &color, const char *str, int32 len = TB_ALL_TO_TERMINATION) = 0;
 	virtual void DrawBackground(const TBRect &rect, TBBlock *block) = 0;
 	virtual void DrawRect(const TBRect &rect, const TBColor &color) = 0;
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color) = 0;
@@ -147,13 +147,17 @@ public:
 	class Data : public TBLinkOf<Data>
 	{
 	public:
-		TBFontDescription font;
+		TBFontDescription font_desc;
 		TBColor text_color;
 		bool underline;
 	};
-	TBTextProps(const TBFontDescription &font, const TBColor &text_color);
+	TBTextProps(const TBFontDescription &font_desc, const TBColor &text_color);
+
 	Data *Push();
 	void Pop();
+
+	/** Get the font face from the current font description. */
+	TBFontFace *GetFont();
 public:
 	TBLinkListOf<Data> data_list;
 	Data base_data;
@@ -193,10 +197,10 @@ public:
 	TBTextFragment *FindFragment(int32 ofs, bool prefer_first = false) const;
 	TBTextFragment *FindFragment(int32 x, int32 y) const;
 
-	int32 CalculateStringWidth(const char *str, int len = TB_ALL_TO_TERMINATION) const;
-	int32 CalculateTabWidth(int32 xpos) const;
-	int32 CalculateLineHeight() const;
-	int32 CalculateBaseline() const;
+	int32 CalculateStringWidth(TBFontFace *font, const char *str, int len = TB_ALL_TO_TERMINATION) const;
+	int32 CalculateTabWidth(TBFontFace *font, int32 xpos) const;
+	int32 CalculateLineHeight(TBFontFace *font) const;
+	int32 CalculateBaseline(TBFontFace *font) const;
 
 	void Invalidate();
 	void Paint(int32 translate_x, int32 translate_y, TBTextProps *props);
@@ -212,7 +216,7 @@ public:
 	int32 str_len;
 
 private:
-	int GetStartIndentation(int first_line_len) const;
+	int GetStartIndentation(TBFontFace *font, int first_line_len) const;
 };
 
 /** Event in the TBUndoRedoStack. Each insert or remove change is stored as a TBUndoEvent, but they may also be merged when appropriate. */
@@ -275,20 +279,20 @@ public:
 	bool IsSpace() const;
 	bool IsTab() const;
 
-	int32 GetCharX(int32 ofs);
-	int32 GetCharOfs(int32 x);
+	int32 GetCharX(TBFontFace *font, int32 ofs);
+	int32 GetCharOfs(TBFontFace *font, int32 x);
 
 	/** Get the stringwidth. Handles passwordmode, tab, linebreaks etc automatically. */
-	int32 GetStringWidth(const char *str, int len = -1);
+	int32 GetStringWidth(TBFontFace *font, const char *str, int len = -1);
 
 	bool GetAllowBreakBefore() const;
 	bool GetAllowBreakAfter() const;
 
 	const char *Str() const			{ return block->str.CStr() + ofs; }
 
-	int32 GetWidth();
-	int32 GetHeight();
-	int32 GetBaseline();
+	int32 GetWidth(TBFontFace *font);
+	int32 GetHeight(TBFontFace *font);
+	int32 GetBaseline(TBFontFace *font);
 public:
 	int16 xpos, ypos;
 	uint16 ofs, len;
@@ -309,7 +313,9 @@ public:
 	void SetListener(TBStyleEditListener *listener);
 	void SetContentFactory(TBTextFragmentContentFactory *content_factory);
 
-	void Paint(const TBRect &rect, const TBColor &text_color);
+	void SetFont(const TBFontDescription &font_desc);
+
+	void Paint(const TBRect &rect, const TBFontDescription &font_desc, const TBColor &text_color);
 	bool KeyDown(char ascii, uint16 function, uint32 modifierkeys);
 	void MouseDown(const TBPoint &point, int button, int clicks, uint32 modifierkeys);
 	void MouseUp(const TBPoint &point, int button, uint32 modifierkeys);
@@ -385,6 +391,10 @@ public:
 	int8 select_state;
 	TBPoint mousedown_point;
 	TBTextFragment *mousedown_fragment;
+
+	/** DEPRECATED! This will be removed when using different fonts is properly supported! */
+	TBFontFace *font;
+	TBFontDescription font_desc;
 
 	TB_TEXT_ALIGN align;
 	union { struct {

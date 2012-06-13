@@ -15,6 +15,7 @@ namespace tinkerbell {
 
 class TBWindow;
 class Widget;
+class TBFontFace;
 
 // == Generic widget stuff =================================================
 
@@ -409,6 +410,9 @@ public:
 	/** Called when the background skin changes by calling SetSkinBg() */
 	virtual void OnSkinChanged() {}
 
+	/** Called when the font has changed. */
+	virtual void OnFontChanged() {}
+
 	/** Called when the focus has changed. */
 	virtual void OnFocusChanged(bool focused) {}
 
@@ -568,6 +572,9 @@ public:
 	/** Invoke paint on this widget and all its children */
 	void InvokePaint(const PaintProps &parent_paint_props);
 
+	/** Invoke OnFontChanged on this widget and recursively on any children that inherit the font. */
+	void InvokeFontChanged();
+
 	/** Invoke a event on this widget.
 
 		This will first check with all registered TBGlobalWidgetListener if the event should be dispatched.
@@ -603,6 +610,23 @@ public:
 
 	/** Make x and y (relative to the upper left corner of the root widget) relative to this widget. */
 	void ConvertFromRoot(int &x, int &y) const;
+
+	/** Set the font description for this widget and any children that inherit the font.
+
+		Setting a unspecified TBFontDescription (no changes made since construction) means
+		it will be inherited from parent (the default).
+
+		This will invoke OnFontChanged on all affected widgets. */
+	bool SetFontDescription(const TBFontDescription &font_desc);
+
+	/** Calculate the font description for this widget. If this widget have unspecified font
+		description, it will be inheritted from parent. If no parent specify any font,
+		the default font description will be returned. */
+	TBFontDescription GetCalculatedFontDescription() const;
+
+	/** Get the TBFontFace for this widget from the current font description (calculated
+		by GetCalculatedFontDescription) */
+	TBFontFace *GetFont() const;
 public:
 	TBLinkListOf<Widget> m_children;///< List of child widgets
 	Widget *m_parent;				///< The parent of this widget
@@ -615,6 +639,7 @@ public:
 	TBWidgetValueConnection m_connection; ///< Widget value connection
 	uint32 m_data;					///< Additional generic data (depends on widget). Initially 0.
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
+	TBFontDescription m_font_desc;	///< The font description.
 	union {
 		struct {
 			uint16 is_group_root : 1;

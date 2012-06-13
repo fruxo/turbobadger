@@ -65,9 +65,9 @@ void PHorizontalLineContent::Paint(TBTextFragment *fragment, int32 translate_x, 
 	listener->DrawRectFill(TBRect(x, y, w, height), color);
 }
 
-int32 PHorizontalLineContent::GetWidth(TBTextFragment *fragment) { return MAX(fragment->block->styledit->layout_width, 0); }
+int32 PHorizontalLineContent::GetWidth(TBFontFace *font, TBTextFragment *fragment) { return MAX(fragment->block->styledit->layout_width, 0); }
 
-int32 PHorizontalLineContent::GetHeight(TBTextFragment *fragment) { return height; }
+int32 PHorizontalLineContent::GetHeight(TBFontFace *font, TBTextFragment *fragment) { return height; }
 
 // ============================================================================
 
