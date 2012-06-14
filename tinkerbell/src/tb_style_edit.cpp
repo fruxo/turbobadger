@@ -447,7 +447,7 @@ void TBCaret::UpdatePos()
 	if (!height)
 	{
 		// If we don't have height, we're probably inside a style switch embed.
-		y = fragment->line_ypos;
+		y = fragment->line_ypos + pos.block->ypos;
 		height = fragment->line_height;
 	}
 	Invalidate();
