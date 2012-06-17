@@ -86,19 +86,31 @@ Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 void UnescapeString(char *str)
 {
 	char *dst = str, *src = str;
-	while(*src)
+	while (*src)
 	{
 		if (*src == '\\')
 		{
+			bool code_found = true;
 			if (src[1] == 'n')
 				*dst = '\n';
+			else if (src[1] == 'r')
+				*dst = '\r';
 			else if (src[1] == 't')
 				*dst = '\t';
 			else if (src[1] == '\"')
 				*dst = '\"';
-			src += 2;
-			dst++;
-			continue;
+			else if (src[1] == '\'')
+				*dst = '\'';
+			else if (src[1] == '\\')
+				*dst = '\\';
+			else
+				code_found = false;
+			if (code_found)
+			{
+				src += 2;
+				dst++;
+				continue;
+			}
 		}
 		*dst = *src;
 		dst++;
