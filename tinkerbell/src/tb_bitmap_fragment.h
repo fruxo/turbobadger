@@ -65,6 +65,7 @@ public:
 private:
 	friend class TBBitmapFragmentManager;
 	bool ValidateBitmap();
+	void DeleteBitmap();
 	void CopyData(TBBitmapFragment *frag, uint32 *frag_data, int border);
 	struct ROW {
 		int y, height, used_width;
@@ -125,6 +126,12 @@ public:
 
 	/** Validate bitmaps on fragment maps that has changed. */
 	bool ValidateBitmaps();
+
+	/** Delete all bitmaps in all fragment maps in this manager.
+		The bitmaps will be recreated automatically when needed, or when
+		calling ValidateBitmaps. You do not need to call this, except when
+		the context is lost and all bitmaps must be forgotten. */
+	void DeleteBitmaps();
 
 	/** Get number of fragment maps that is currently used. */
 	int GetNumMaps() const { return m_fragment_maps.GetNumItems(); }

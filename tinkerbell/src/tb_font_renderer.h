@@ -8,6 +8,7 @@
 
 #include "tinkerbell.h"
 #include "tb_bitmap_fragment.h"
+#include "tb_renderer.h"
 #include "tb_tempbuffer.h"
 #include "tb_linklist.h"
 #include "utf8/utf8.h"
@@ -100,7 +101,7 @@ private:
 };
 
 /** TBFontFace represents a loaded font that can measure and render strings. */
-class TBFontFace
+class TBFontFace : private TBRendererListener
 {
 public:
 	TBFontFace(TBFontRenderer *renderer, int size);
@@ -135,6 +136,10 @@ public:
 	/** Render the glyph bitmaps on screen, to analyze fragment positioning. */
 	void Debug();
 #endif
+
+	// Implementing TBRendererListener
+	virtual void OnContextLost();
+	virtual void OnContextRestored();
 private:
 	TBFontGlyph *GetGlyph(int cp, bool create_if_needed);
 	TBBitmapFragmentManager m_frag_manager;

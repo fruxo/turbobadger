@@ -31,6 +31,7 @@ TBSkin::TBSkin()
 {
 	assert(FilenameToPath("foo.txt").Equals("./"));
 	assert(FilenameToPath("Path/subpath/foo.txt").Equals("Path/subpath/"));
+	g_renderer->AddListener(this);
 }
 
 bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
@@ -209,6 +210,7 @@ bool TBSkin::ReloadBitmapsInternal()
 TBSkin::~TBSkin()
 {
 	delete m_override_skin;
+	g_renderer->RemoveListener(this);
 }
 
 TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id) const
@@ -370,6 +372,25 @@ void TBSkin::Debug()
 	m_frag_manager.Debug();
 }
 #endif // _DEBUG
+
+void TBSkin::OnContextLost()
+{
+	// We could simply do: m_frag_manager.DeleteBitmaps() and then all bitmaps
+	// would be recreated automatically when needed. But because it's easy,
+	// we unload everything so we save some memory (by not keeping any image
+	// data around).
+	// Override skins are handled recursively, so ignore skins having a parent skin.
+	if (!m_parent_skin)
+		UnloadBitmaps();
+}
+
+void TBSkin::OnContextRestored()
+{
+	// Reload bitmaps (since we unloaded everything in OnContextLost())
+	// Override skins are handled recursively, so ignore skins having a parent skin.
+	if (!m_parent_skin)
+		ReloadBitmaps();
+}
 
 // == TBSkinElement =========================================================
 

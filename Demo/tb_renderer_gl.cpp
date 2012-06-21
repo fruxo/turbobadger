@@ -83,6 +83,10 @@ TBBitmapGL::TBBitmapGL()
 
 TBBitmapGL::~TBBitmapGL()
 {
+	// Must unbind before we delete the texture
+	if (m_texture != g_current_texture)
+		BindTexture(0);
+
 	glDeleteTextures(1, &m_texture);
 }
 

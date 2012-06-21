@@ -7,10 +7,23 @@
 #define TB_RENDERER_H
 
 #include "tinkerbell.h"
+#include "tb_linklist.h"
 
 namespace tinkerbell {
 
 class TBBitmapFragment;
+
+/** TBRendererListener is a listener for TBRenderer. */
+class TBRendererListener : public TBLinkOf<TBRendererListener>
+{
+public:
+	/** Called when the context has been lost and all TBBitmaps need to be deleted. */
+	virtual void OnContextLost() = 0;
+
+	/** Called when the context has been restored again, and new TBBitmaps can be created
+		again. */
+	virtual void OnContextRestored() = 0;
+};
 
 /** TBBitmap is a minimal interface for bitmap to be painted by TBRenderer. */
 
@@ -80,6 +93,22 @@ public:
 		Width and height must be a power of two.
 		Return nullptr if fail. */
 	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data) = 0;
+
+	/** Add a listener to this renderer. Does not take ownership. */
+	void AddListener(TBRendererListener *listener) { m_listeners.AddLast(listener); }
+
+	/** Remove a listener from this renderer. */
+	void RemoveListener(TBRendererListener *listener) { m_listeners.Remove(listener); }
+
+	/** Invoke OnContextLost on all listeners.
+		Call when bitmaps should be forgotten. */
+	void InvokeContextLost();
+
+	/** Invoke OnContextRestored on all listeners.
+		Call when bitmaps can safely be restored. */
+	void InvokeContextRestored();
+private:
+	TBLinkListOf<TBRendererListener> m_listeners;
 };
 
 }; // namespace tinkerbell

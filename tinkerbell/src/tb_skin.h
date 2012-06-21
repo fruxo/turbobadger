@@ -116,7 +116,7 @@ public:
 };
 
 /** TBSkin contains a list of TBSkinElement. */
-class TBSkin
+class TBSkin : private TBRendererListener
 {
 public:
 	TBSkin();
@@ -174,10 +174,15 @@ public:
 
 	/** Paint the overlay elements for the given skin element and state. */
 	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state);
+
 #ifdef _DEBUG
 	/** Render the skin bitmaps on screen, to analyze fragment positioning. */
 	void Debug();
 #endif
+
+	// Implementing TBRendererListener
+	virtual void OnContextLost();
+	virtual void OnContextRestored();
 private:
 	TBHashTableAutoDeleteOf<TBSkinElement> m_elements;	///< All skin elements for this skin.
 	TBSkin *m_parent_skin;								///< Parent skin (set to the default skin for for the override skins)

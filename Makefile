@@ -50,6 +50,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_language.cpp \
       tinkerbell/src/tb_msg.cpp \
       tinkerbell/src/tb_widgets_listener.cpp \
+      tinkerbell/src/tb_renderer.cpp \
       tinkerbell/src/tb_font_renderer.cpp \
       tinkerbell/src/tb_font_renderer_tbbf.cpp \
       tinkerbell/src/parser/TBNodeTree.cpp \

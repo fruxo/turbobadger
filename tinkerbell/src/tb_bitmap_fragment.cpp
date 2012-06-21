@@ -179,6 +179,13 @@ bool TBBitmapFragmentMap::ValidateBitmap()
 	return m_bitmap ? true : false;
 }
 
+void TBBitmapFragmentMap::DeleteBitmap()
+{
+	delete m_bitmap;
+	m_bitmap = nullptr;
+	m_need_update = true;
+}
+
 // == TBBitmapFragmentManager =============================================================================
 
 TBBitmapFragmentManager::~TBBitmapFragmentManager()
@@ -269,6 +276,12 @@ bool TBBitmapFragmentManager::ValidateBitmaps()
 		if (!m_fragment_maps[i]->ValidateBitmap())
 			success = false;
 	return success;
+}
+
+void TBBitmapFragmentManager::DeleteBitmaps()
+{
+	for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
+		m_fragment_maps[i]->DeleteBitmap();
 }
 
 #ifdef _DEBUG

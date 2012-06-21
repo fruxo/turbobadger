@@ -56,17 +56,18 @@ it needs to run next is changed.
 Rendering
 ---------
 
-There is already a OpenGL renderer implementation, using fixed function pipeline.
-
-TBBitmap   - FIX: write something here.
-TBRenderer - FIX: write something here.
+TBRenderer & TBBitmap are the interfaces that implements everything that tinkerbell
+needs for rendering. There is already a OpenGL renderer implementation, using fixed
+function pipeline.
 
 Some apps need to unload all graphics and reload it again, f.ex when the app
-is put to sleep in the background. Tinkerbell loads all its bitmaps through the skin,
-so unloading & reloading all textures can be done with:
+is put to sleep in the background and the graphics context is lost.
+Tinkerbell implements a renderer listener to handle this in all places that needs
+it, so the only thing you need to do is to call:
 
-	g_tb_skin->UnloadBitmaps()
-	g_tb_skin->ReloadBitmaps()
+	g_renderer->InvokeContextLost(); // Forget all bitmaps
+	...
+	g_renderer->InvokeContextRestored(); // Reload all bitmaps
 
 Font system
 -----------

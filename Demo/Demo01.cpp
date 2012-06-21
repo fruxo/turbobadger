@@ -389,7 +389,7 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("reload skin bitmaps"))
 		{
-			int reload_count = 100;
+			int reload_count = 10;
 			double t1 = TBSystem::GetTimeMS();
 			for (int i = 0; i < reload_count; i++)
 				g_tb_skin->ReloadBitmaps();
@@ -399,6 +399,16 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 			message.SetFormatted("Reloading the skin graphics %d times took %dms", reload_count, (int)(t2 - t1));
 			TBMessageWindow *msg_win = new TBMessageWindow(ev.target, TBID());
 			msg_win->Show("GFX load performance", message);
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("test context lost"))
+		{
+			g_renderer->InvokeContextLost();
+			g_renderer->InvokeContextRestored();
+			TBMessageWindow *msg_win = new TBMessageWindow(ev.target, TBID());
+			msg_win->Show("Context lost & restore",
+							"Called InvokeContextLost and InvokeContextRestored.\n\n"
+							"Does everything look fine?");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))

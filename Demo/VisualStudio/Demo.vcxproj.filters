@@ -162,6 +162,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_renderer.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">

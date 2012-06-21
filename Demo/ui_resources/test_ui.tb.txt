@@ -17,6 +17,9 @@ TBLayout
 		TBButton
 			text Reload skin bitmaps
 			id reload skin bitmaps
+		TBButton
+			text Context lost & restore
+			id test context lost
 	TBLayout
 		TBButton
 			text Click for image!

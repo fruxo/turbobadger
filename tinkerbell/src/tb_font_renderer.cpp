@@ -128,6 +128,7 @@ TBFontGlyphData *TBFontEffect::Render(TBGlyphMetrics *metrics, const TBFontGlyph
 TBFontFace::TBFontFace(TBFontRenderer *renderer, int size)
 	: m_font_renderer(renderer)
 {
+	g_renderer->AddListener(this);
 	if (m_font_renderer)
 		m_metrics = m_font_renderer->GetMetrics();
 	else
@@ -142,6 +143,7 @@ TBFontFace::TBFontFace(TBFontRenderer *renderer, int size)
 TBFontFace::~TBFontFace()
 {
 	delete m_font_renderer;
+	g_renderer->RemoveListener(this);
 }
 
 bool TBFontFace::RenderGlyphs(const char *glyph_str)
@@ -279,6 +281,16 @@ void TBFontFace::Debug()
 	m_frag_manager.Debug();
 }
 #endif // _DEBUG
+
+void TBFontFace::OnContextLost()
+{
+	m_frag_manager.DeleteBitmaps();
+}
+
+void TBFontFace::OnContextRestored()
+{
+	// No need to do anything. The bitmaps will be created when drawing.
+}
 
 // == TBFontManager ===============================================================================
 

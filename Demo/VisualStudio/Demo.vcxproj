@@ -91,6 +91,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_renderer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_style_edit_content.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_tempbuffer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_linklist.cpp" />
