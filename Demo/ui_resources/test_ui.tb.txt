@@ -1,102 +1,27 @@
 WindowInfo
 	title Tinkerbell demo
-TBLayout
-	distribution available
-	axis y
+	position 10 100
+TBLayout: axis: y
 	TBLayout
 		TBButton
-			text @new
-			id new
-		TBButton
-			text @close
+			text Close with dim & alert
 			id TBWindow.close
-	TBLayout
-		TBButton
-			text Give me a popup menu!
-			id showpopupmenu1
-		TBButton
-			text Reload skin bitmaps
-			id reload skin bitmaps
-		TBButton
-			text Context lost & restore
-			id test context lost
-	TBLayout
-		TBButton
-			text Click for image!
-			id add img
-			TBSkinImage
-				skin Icon16
-		TBButton
-			axis y
-			text Click for image!
-			id add img
-			TBSkinImage
-				skin Icon16
-	TBSelectDropdown
-		text Dropdown
-		id name dropdown
-	TBLayout
-		TBButton
-			text Misc tests!
-			id misc tests
-		TBButton
-			text New buttons!
-			id new buttons
-	TBLayout
-		overflow scroll
-		TBRadioButton
-		TBCheckBox
-			value 1
-		TBSkinImage
-			skin Icon16
-		TBSkinImage
-			skin Icon48
-		TBButton
-			image back
-		TBButton
-			image forward
-		TBButton
-			text Msg!
-			id msg
-		TBButton
-			text Delayed Msg!
-			id delayedmsg
-	TBLayout
-		TBRadioButton
-			group_id group A
-			value 1
-		TBRadioButton
-			group_id group A
-		TBRadioButton
-			group_id group B
-		TBRadioButton
-			group_id group B
-		TBEditField
-			text Hi!
-		TBEditField
-			text Spaghetti and Marshmallows!
-		TBEditField
-			type password
-			text fgdfgdfgsg
-	TBSlider
-	TBSlider
-		min 100
-		max 200
-		value 150
-	TBSlider
-		axis y
-		min 0
-		max 100
-		connection master-volume
-	TBScrollContainer
-		TBLayout
-			axis y
-			TBButton
-				text New buttons!
-				id new buttons
-			TBButton
-				text New buttons!
-				id new buttons
-			TBButton
-				text New buttons!
-				id new buttons
+	TBButton: text: "Layout", id: "test-layout"
+	TBButton: text: "Flat skin", id: "test-flat-skin"
+	TBButton: text: "TBWidgetValue connections", id: "test-connections"
+	TBButton: text: "Radiobutton & Checkbox", id: "test-radio-check"
+	TBButton: text: "ScrollContainer & misc.", id: "test-scroll-container"
+	TBTextField: text: "Graphics tests:"
+	TBButton
+		text Reload skin bitmaps
+		id reload skin bitmaps
+	TBButton
+		text Context lost & restore
+		id test context lost
+	TBTextField: text: "Message tests:"
+	TBButton
+		text Msg!
+		id msg
+	TBButton
+		text Delayed Msg!
+		id delayedmsg

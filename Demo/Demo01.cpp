@@ -9,6 +9,9 @@
 #include "tb_bitmap_fragment.h"
 #include "tbanimation/tb_animation.h"
 #include "parser/TBNodeTree.h"
+#include "tb_tempbuffer.h"
+#include "tb_font_renderer.h"
+#include "utf8/utf8.h"
 
 TBGenericStringItemSource position_toggle_source;
 TBGenericStringItemSource name_source;
@@ -39,7 +42,10 @@ void const_expr_test()
 class DemoWindow : public TBWindow
 {
 public:
-	bool Load(const char *filename);
+	DemoWindow();
+	bool LoadResourceFile(const char *filename);
+	void LoadResourceData(const char *data);
+	void LoadProps(TBNode &node);
 };
 
 class MainWindow : public DemoWindow, public TBMessageHandler
@@ -50,7 +56,12 @@ public:
 	virtual void OnMessageReceived(TBMessage *msg);
 };
 
-bool DemoWindow::Load(const char *filename)
+DemoWindow::DemoWindow()
+{
+	Application::GetApp()->GetRoot()->AddChild(this);
+}
+
+bool DemoWindow::LoadResourceFile(const char *filename)
 {
 	// We could do g_widgets_reader->LoadFile(this, filename) but we want
 	// some extra data we store under "WindowInfo", so read into node tree.
@@ -58,25 +69,41 @@ bool DemoWindow::Load(const char *filename)
 	if (!node.ReadFile(filename))
 		return false;
 	g_widgets_reader->LoadNodeTree(this, &node);
+	LoadProps(node);
+	return true;
+}
 
+void DemoWindow::LoadResourceData(const char *data)
+{
+	// We could do g_widgets_reader->LoadFile(this, filename) but we want
+	// some extra data we store under "WindowInfo", so read into node tree.
+	TBNode node;
+	node.ReadData(data);
+	g_widgets_reader->LoadNodeTree(this, &node);
+	LoadProps(node);
+}
+
+void DemoWindow::LoadProps(TBNode &node)
+{
 	// Get title from the WindowInfo section (or use "" if not specified)
 	SetText(node.GetValueString("WindowInfo>title", ""));
 
-	if (TBNode *pos = node.GetNode("WindowInfo>position"))
-		if (pos->GetValue().GetArrayLength() == 2)
-			SetPosition(TBPoint(pos->GetValue().GetArray()->GetValue(0)->GetInt(),
-								pos->GetValue().GetArray()->GetValue(1)->GetInt()));
-
-	if (TBNode *pos = node.GetNode("WindowInfo>size"))
-	{
-		if (pos->GetValue().GetArrayLength() == 2)
-			SetSize(pos->GetValue().GetArray()->GetValue(0)->GetInt(),
-					pos->GetValue().GetArray()->GetValue(1)->GetInt());
-	}
+	// Use specified size or adapt to the preferred content size.
+	TBNode *tmp = node.GetNode("WindowInfo>size");
+	if (tmp && tmp->GetValue().GetArrayLength() == 2)
+		SetSize(tmp->GetValue().GetArray()->GetValue(0)->GetInt(),
+				tmp->GetValue().GetArray()->GetValue(1)->GetInt());
 	else
 		ResizeToFitContent();
 
-	return true;
+	// Use the specified position or center in parent.
+	tmp = node.GetNode("WindowInfo>position");
+	if (tmp && tmp->GetValue().GetArrayLength() == 2)
+		SetPosition(TBPoint(tmp->GetValue().GetArray()->GetValue(0)->GetInt(),
+							tmp->GetValue().GetArray()->GetValue(1)->GetInt()));
+	else
+		SetPosition(TBPoint((m_parent->m_rect.w - m_rect.w) / 2,
+							(m_parent->m_rect.h - m_rect.h) / 2));
 }
 
 void DemoOutput(const char *format, ...)
@@ -139,7 +166,7 @@ class ListWindow : public DemoWindow
 public:
 	ListWindow(TBSelectItemSource *source, SCROLL_MODE scrollmode = SCROLL_MODE_Y_AUTO)
 	{
-		Load("Demo/ui_resources/test_select.tb.txt");
+		LoadResourceFile("Demo/ui_resources/test_select.tb.txt");
 		if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
 		{
 			select->SetSource(source);
@@ -156,7 +183,7 @@ public:
 				select->SetFilter(filter);
 			return true;
 		}
-		return TBWindow::OnEvent(ev);
+		return DemoWindow::OnEvent(ev);
 	}
 };
 
@@ -165,7 +192,7 @@ class EditWindow : public DemoWindow
 public:
 	EditWindow()
 	{
-		Load("Demo/ui_resources/test_textwindow.tb.txt");
+		LoadResourceFile("Demo/ui_resources/test_textwindow.tb.txt");
 	}
 	virtual void OnProcessStates()
 	{
@@ -209,7 +236,7 @@ public:
 				return true;
 			}
 		}
-		return TBWindow::OnEvent(ev);
+		return DemoWindow::OnEvent(ev);
 	}
 };
 
@@ -222,7 +249,7 @@ public:
 
 MyToolbarWindow::MyToolbarWindow(const char *filename)
 {
-	Load(filename);
+	LoadResourceFile(filename);
 
 	if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "select position"))
 		select->SetSource(&position_toggle_source);
@@ -300,19 +327,78 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 		if (TBWidgetValue *val = g_value_group.GetValue(TBIDC("user-name")))
 			val->SetText("");
 	}
-	return TBWindow::OnEvent(ev);
+	return DemoWindow::OnEvent(ev);
+}
+
+class ScrollContainerWindow : public DemoWindow
+{
+public:
+	ScrollContainerWindow();
+	virtual bool OnEvent(const WidgetEvent &ev);
+};
+
+ScrollContainerWindow::ScrollContainerWindow()
+{
+	LoadResourceFile("Demo/ui_resources/test_scrollcontainer.tb.txt");
+
+	if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "name dropdown"))
+		select->SetSource(&name_source);
+}
+
+bool ScrollContainerWindow::OnEvent(const WidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_CLICK)
+	{
+		if (ev.target->GetID() == TBIDC("add img"))
+		{
+			TBButton *button = TBSafeCast(TBButton, ev.target);
+			TBSkinImage *skin_image = new TBSkinImage;
+			skin_image->SetSkinBg("Icon16");
+			button->GetContentRoot()->AddChild(skin_image, WIDGET_Z_BOTTOM);
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("new buttons"))
+		{
+			char str[100];
+			for(uint32 i = 0; i < ev.target->m_data; i++)
+			{
+				sprintf(str, "Remove %d", i);
+				TBButton *button = new TBButton;
+				button->GetID().Set("remove button");
+				button->SetText(str);
+				ev.target->m_parent->AddChild(button);
+			}
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("remove button"))
+		{
+			ev.target->m_parent->RemoveChild(ev.target);
+			delete ev.target;
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))
+		{
+			TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu1"));
+			menu->Show(&popup_menu_source);
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("popupmenu1"))
+		{
+			TBStr str;
+			str.SetFormatted("Menu event received!\nref_id: %d", (int)ev.ref_id);
+			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("popup_dialog"));
+			msg_win->Show("Info", str);
+			return true;
+		}
+	}
+	return DemoWindow::OnEvent(ev);
 }
 
 MainWindow::MainWindow()
 {
-	SetRect(TBRect(50, 100, 200, 300));
-
-	Load("Demo/ui_resources/test_ui.tb.txt");
+	LoadResourceFile("Demo/ui_resources/test_ui.tb.txt");
 
 	SetOpacity(0.97f);
-
-	if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "name dropdown"))
-		select->SetSource(&name_source);
 }
 
 void MainWindow::OnMessageReceived(TBMessage *msg)
@@ -332,7 +418,7 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 	{
 		if (ev.target->GetID() == TBIDC("new"))
 		{
-			m_parent->AddChild(new MainWindow());
+			new MainWindow();
 			return true;
 		}
 		if (ev.target->GetID() == TBIDC("msg"))
@@ -346,35 +432,10 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 			PostMessageDelayed(TBIDC("delayedmsg"), nullptr, 2000);
 			return true;
 		}
-		else if (ev.target->GetID() == TBIDC("add img"))
-		{
-			TBButton *button = TBSafeCast(TBButton, ev.target);
-			TBSkinImage *skin_image = new TBSkinImage;
-			skin_image->SetSkinBg("Icon16");
-			button->GetContentRoot()->AddChild(skin_image, WIDGET_Z_BOTTOM);
-			return true;
-		}
-		else if (ev.target->GetID() == TBIDC("new buttons"))
-		{
-			char str[100];
-			for(int i = 0; i < 100; i++)
-			{
-				sprintf(str, "Remove %d", i);
-				TBButton *button = new TBButton;
-				button->GetID().Set("remove button");
-				button->SetText(str);
-				ev.target->m_parent->AddChild(button);
-			}
-			return true;
-		}
-		else if (ev.target->GetID() == TBIDC("remove button"))
-		{
-			ev.target->m_parent->RemoveChild(ev.target);
-			delete ev.target;
-			return true;
-		}
 		else if (ev.target->GetID() == TBIDC("TBWindow.close"))
 		{
+			// Intercept the TBWindow.close message and stop it from bubbling
+			// to TBWindow (prevent the window from closing)
 			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("confirm_close_dialog"));
 			TBMessageWindowSettings settings(TB_MSG_YES_NO, TBIDC("Icon48"));
 			settings.dimmer = true;
@@ -411,27 +472,31 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 							"Does everything look fine?");
 			return true;
 		}
-		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))
+		else if (ev.target->GetID() == TBIDC("test-layout"))
 		{
-			TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu1"));
-			menu->Show(&popup_menu_source);
+			new MyToolbarWindow("Demo/ui_resources/test_toolbar01.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_toolbar02.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_layout01.tb.txt");
 			return true;
 		}
-		else if (ev.target->GetID() == TBIDC("popupmenu1"))
+		else if (ev.target->GetID() == TBIDC("test-flat-skin"))
 		{
-			TBStr str;
-			str.SetFormatted("Menu event received!\nref_id: %d", (int)ev.ref_id);
-			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("popup_dialog"));
-			msg_win->Show("Info", str);
+			new MyToolbarWindow("Demo/ui_resources/test_toolbar03.tb.txt");
 			return true;
 		}
-		else if (ev.target->GetID() == TBIDC("misc tests"))
+		else if (ev.target->GetID() == TBIDC("test-connections"))
 		{
-			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar01.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar02.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar03.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_layout01.tb.txt"));
-			m_parent->AddChild(new MyToolbarWindow("Demo/ui_resources/test_toolbar04.tb.txt"));
+			new MyToolbarWindow("Demo/ui_resources/test_toolbar04.tb.txt");
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("test-radio-check"))
+		{
+			new MyToolbarWindow("Demo/ui_resources/radio_checkbox.tb.txt");
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("test-scroll-container"))
+		{
+			new ScrollContainerWindow();
 			return true;
 		}
 	}
@@ -443,7 +508,7 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 			sprintf(text.CStr() + 20, "...");
 		DemoOutput("Changed to: %.2f (\"%s\")\n", ev.target->GetValueDouble(), text.CStr());
 	}
-	return TBWindow::OnEvent(ev);
+	return DemoWindow::OnEvent(ev);
 }
 
 // ======================================================
@@ -507,20 +572,16 @@ bool DemoApplication::Init()
 	popup_menu_source.GetItem(0)->SetSkinImage(TBIDC("Icon16"));
 
 	MainWindow *win = new MainWindow();
-	m_root->AddChild(win);
 
 	TBWindow *textwindow = new EditWindow;
-	m_root->AddChild(textwindow);
 
 	ListWindow *listwindow = new ListWindow(&name_source);
 	listwindow->SetPosition(TBPoint(1050, 500));
-	m_root->AddChild(listwindow);
 
 	listwindow = new ListWindow(&advanced_source, SCROLL_MODE_X_AUTO_Y_AUTO);
 	listwindow->SetRect(TBRect(950, 50, 300, 300));
-	m_root->AddChild(listwindow);
 
-	m_root->AddChild(new MyToolbarWindow("Demo/ui_resources/test_tabcontainer01.tb.txt"));
+	new MyToolbarWindow("Demo/ui_resources/test_tabcontainer01.tb.txt");
 
 	// We could have put this UI inside a resource file too, and read it with TBWidgetsReader,
 	// but something has to demo how to build ui programmatically :)

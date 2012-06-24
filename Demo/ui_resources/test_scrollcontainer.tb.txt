@@ -1,0 +1,84 @@
+WindowInfo
+	title TBScrollContainer with misc widgets
+	size 400 400
+TBLayout
+	gravity all
+	distribution available
+	axis y
+	TBScrollContainer
+		TBLayout
+			position left top
+			axis y
+			TBTextField: text: TBButton containing TBSkinImage:
+			TBLayout
+				TBButton
+					text Click for image!
+					id add img
+					TBSkinImage
+						skin Icon16
+				TBButton
+					axis y
+					text Click for image!
+					id add img
+					TBSkinImage
+						skin Icon16
+			TBTextField: text: "Showing menu manually, and TBSelectDropdown:"
+			TBLayout
+				TBButton
+					text Give me a popup menu!
+					id showpopupmenu1
+				TBSelectDropdown
+					text Dropdown
+					id name dropdown
+			TBLayout
+				overflow scroll
+				TBRadioButton
+				TBCheckBox
+					value 1
+				TBSkinImage
+					skin Icon16
+				TBSkinImage
+					skin Icon48
+				TBButton
+					image back
+				TBButton
+					image forward
+			TBLayout
+				TBEditField
+					text Hi!
+				TBEditField
+					text Spaghetti and Marshmallows!
+				TBEditField
+					type password
+					text fgdfgdfgsg
+			TBSlider
+			TBSlider
+				min 100
+				max 200
+				value 150
+			TBSlider
+				axis y
+				min 0
+				max 100
+				connection master-volume
+			TBTextField: text: Horizontal layout:
+			TBLayout
+				TBButton
+					text "1 new buttons!"
+					id new buttons
+					data 1
+				TBButton
+					text "100 new buttons!"
+					id new buttons
+					data 100
+			TBTextField: text: Vertical layout:
+			TBLayout
+				axis y
+				TBButton
+					text "1 new buttons!"
+					id new buttons
+					data 1
+				TBButton
+					text "100 new buttons!"
+					id new buttons
+					data 100
