@@ -408,6 +408,9 @@ public:
 	} packed;
 	uint32 packed_init;
 	};
+
+	/** Return true if changing layout_width and layout_height requires relayouting. */
+	bool GetSizeAffectsLayout() const;
 };
 
 }; // namespace tinkerbell

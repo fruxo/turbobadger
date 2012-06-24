@@ -883,7 +883,7 @@ void TBBlock::Layout(bool update_fragments, bool propagate_height)
 
 	// Layout
 
-	if (styledit->layout_width <= 0)
+	if (styledit->layout_width <= 0 && styledit->GetSizeAffectsLayout())
 		// Don't layout if we have no space. This will happen when setting text
 		// before the widget has been layouted. We will relayout when we are resized.
 		return;
@@ -1421,13 +1421,20 @@ void TBStyleEdit::SetLayoutSize(int32 width, int32 height)
 	layout_width = width;
 	layout_height = height;
 
-	if (reformat && (packed.wrapping || align != TB_TEXT_ALIGN_LEFT))
+	if (reformat && GetSizeAffectsLayout())
 		Reformat(false);
 
 	caret.UpdatePos();
 	caret.UpdateWantedX();
 
 	SetScrollPos(scroll_x, scroll_y); ///< Trig a bounds check (scroll if outside)
+}
+
+bool TBStyleEdit::GetSizeAffectsLayout() const
+{
+	if (packed.wrapping || align != TB_TEXT_ALIGN_LEFT)
+		return true;
+	return false;
 }
 
 void TBStyleEdit::Reformat(bool update_fragments)
