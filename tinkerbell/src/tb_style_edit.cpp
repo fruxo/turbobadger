@@ -1777,12 +1777,12 @@ void TBStyleEdit::Focus(bool focus)
 	selection.Invalidate();
 }
 
-bool TBStyleEdit::SetText(const char *text, bool place_caret_at_end)
+bool TBStyleEdit::SetText(const char *text, TB_CARET_POS pos)
 {
-	return SetText(text, strlen(text), place_caret_at_end);
+	return SetText(text, strlen(text), pos);
 }
 
-bool TBStyleEdit::SetText(const char *text, int text_len, bool place_caret_at_end)
+bool TBStyleEdit::SetText(const char *text, int text_len, TB_CARET_POS pos)
 {
 	if (!text || !*text)
 	{
@@ -1798,7 +1798,7 @@ bool TBStyleEdit::SetText(const char *text, int text_len, bool place_caret_at_en
 	caret.UpdateWantedX();
 	ScrollIfNeeded(true, false);
 
-	if (place_caret_at_end)
+	if (pos == TB_CARET_POS_END)
 		caret.Place(blocks.GetLast(), blocks.GetLast()->str_len);
 
 	listener->OnChange();

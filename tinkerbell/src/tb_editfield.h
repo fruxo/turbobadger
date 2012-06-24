@@ -106,10 +106,18 @@ public:
 	void SetTextAlign(TB_TEXT_ALIGN align) { m_style_edit.SetAlign(align); }
 	TB_TEXT_ALIGN GetTextAlign() { return m_style_edit.align; }
 
-	virtual bool SetText(const char *text) { return m_style_edit.SetText(text); }
-	virtual bool SetText(const char *text, bool move_caret_to_end) { return m_style_edit.SetText(text, move_caret_to_end); }
+	virtual bool SetText(const char *text) { return m_style_edit.SetText(text, TB_CARET_POS_BEGINNING); }
 	virtual bool GetText(TBStr &text) { return m_style_edit.GetText(text); }
 	using Widget::GetText; ///< Make all versions in base class available.
+
+	/** Set the text and also specify if the caret should be positioned at the beginning
+		or end of the text. */
+	bool SetText(const char *text, TB_CARET_POS pos)
+											{ return m_style_edit.SetText(text, pos); }
+	/** Set the text of the given length and also specify if the caret should be positioned
+		at the beginning or end of the text. */
+	bool SetText(const char *text, int text_len, TB_CARET_POS pos = TB_CARET_POS_BEGINNING)
+											{ return m_style_edit.SetText(text, text_len, pos); }
 
 	/** Set the placeholder text. It will be visible only when the textfield is empty. */
 	virtual bool SetPlaceholderText(const char *text) { return m_placeholder.SetText(text); }

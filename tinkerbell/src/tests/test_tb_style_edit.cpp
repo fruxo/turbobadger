@@ -36,16 +36,16 @@ TB_TEST_GROUP(tb_editfield)
 	TB_TEST(settext_singleline)
 	{
 		edit->SetMultiline(false);
-		edit->SetText("One\nTwo", true);
+		edit->SetText("One\nTwo", TB_CARET_POS_END);
 		TB_VERIFY_STR(edit->GetText(), "One");
 	}
 
 	TB_TEST(settext_multiline)
 	{
 		// Both unix and windows line endings should be ok.
-		edit->SetText("One\nTwo", true);
+		edit->SetText("One\nTwo", TB_CARET_POS_END);
 		TB_VERIFY_STR(edit->GetText(), "One\nTwo");
-		edit->SetText("One\r\nTwo", true);
+		edit->SetText("One\r\nTwo", TB_CARET_POS_END);
 		TB_VERIFY_STR(edit->GetText(), "One\r\nTwo");
 	}
 
@@ -53,24 +53,24 @@ TB_TEST_GROUP(tb_editfield)
 	{
 		// Should not detect theese sequences as having new line character
 
-		edit->SetText("\xC0\x8A", true);
+		edit->SetText("\xC0\x8A", TB_CARET_POS_END);
 		TB_VERIFY(sedit->blocks.CountLinks() == 1);
 
-		edit->SetText("\xE0\x80\x8A", true);
+		edit->SetText("\xE0\x80\x8A", TB_CARET_POS_END);
 		TB_VERIFY(sedit->blocks.CountLinks() == 1);
 
-		edit->SetText("\xF0\x80\x80\x8A", true);
+		edit->SetText("\xF0\x80\x80\x8A", TB_CARET_POS_END);
 		TB_VERIFY(sedit->blocks.CountLinks() == 1);
 
-		edit->SetText("\xF8\x80\x80\x80\x8A", true);
+		edit->SetText("\xF8\x80\x80\x80\x8A", TB_CARET_POS_END);
 		TB_VERIFY(sedit->blocks.CountLinks() == 1);
 
-		edit->SetText("\xFC\x80\x80\x80\x80\x8A", true);
+		edit->SetText("\xFC\x80\x80\x80\x80\x8A", TB_CARET_POS_END);
 		TB_VERIFY(sedit->blocks.CountLinks() == 1);
 
 		// Should detect the new line character
 
-		edit->SetText("\xF0\nHello", true);
+		edit->SetText("\xF0\nHello", TB_CARET_POS_END);
 		TB_VERIFY(sedit->blocks.CountLinks() == 2);
 	}
 
