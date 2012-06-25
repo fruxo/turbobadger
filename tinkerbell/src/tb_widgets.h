@@ -203,7 +203,7 @@ public:
 	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
 		The skin may expand outside this rect to draw f.ex shadows. */
 	void SetRect(const TBRect &rect);
-	TBRect GetRect() { return m_rect; }
+	TBRect GetRect() const { return m_rect; }
 
 	/** Set position of this widget in its parent. The position is relative to the parent widget. */
 	void SetPosition(const TBPoint &pos) { SetRect(TBRect(pos.x, pos.y, m_rect.w, m_rect.h)); }
@@ -231,7 +231,7 @@ public:
 	void Die();
 
 	/** Return true if this widget or any of its parents is dying. */
-	bool GetIsDying() { return m_packed.is_dying || (m_parent && m_parent->GetIsDying()); }
+	bool GetIsDying() const { return m_packed.is_dying || (m_parent && m_parent->GetIsDying()); }
 
 	/** Get the id reference for this widgets. This id is 0 by default.
 		You can use this id to receive the widget from GetWidgetByID (or
@@ -273,10 +273,10 @@ public:
 	float GetOpacity() const { return m_opacity; }
 
 	/** Return true if this widget and all its parents are visible (has a opacity > 0) */
-	bool GetVisibility();
+	bool GetVisibility() const;
 
 	/** Return true if this widget or any of its parents are disabled (has state WIDGET_STATE_DISABLED). */
-	bool GetDisabled();
+	bool GetDisabled() const;
 
 	/** Add the child to this widget. The child widget will automatically be deleted when
 		this widget is deleted. (If the child isn't removed again with RemoveChild.) */
@@ -297,7 +297,7 @@ public:
 			-top && bottom: Widget resize vertically when parent resize.
 			-!top && bottom: Widget follows the bottom edge when parent resize. */
 	void SetGravity(WIDGET_GRAVITY g);
-	WIDGET_GRAVITY GetGravity() { return m_gravity; }
+	WIDGET_GRAVITY GetGravity() const { return m_gravity; }
 
 	/** Set the skin background for this widget and call OnSkinChanged if it changed.
 
@@ -310,24 +310,24 @@ public:
 	void SetSkinBg(const TBID &skin_bg);
 
 	/** Return the skin background element, or nullptr. */
-	TBSkinElement *GetSkinBgElement();
+	TBSkinElement *GetSkinBgElement() const;
 
 	/** Set if this widget is a group root. Grouped widgets (such as TBRadioButton) will toggle all other
 		widgets with the same group_id under the nearest parent group root. TBWindow is a group root by default. */
 	void SetIsGroupRoot(bool group_root) { m_packed.is_group_root = group_root; }
-	bool GetIsGroupRoot() { return m_packed.is_group_root; }
+	bool GetIsGroupRoot() const { return m_packed.is_group_root; }
 
 	/** Set if this widget should be able to receive focus or not. */
 	void SetIsFocusable(bool focusable) { m_packed.is_focusable = focusable; }
-	bool GetIsFocusable() { return m_packed.is_focusable; }
+	bool GetIsFocusable() const { return m_packed.is_focusable; }
 
 	/** Set if this widget should emulate a click when it's focused and pressing enter or space. */
 	void SetClickByKey(bool click_by_key) { m_packed.click_by_key = click_by_key; }
-	bool GetClickByKey() { return m_packed.click_by_key; }
+	bool GetClickByKey() const { return m_packed.click_by_key; }
 
 	/** Set if this widget should ignore input, as if it didn't exist. */
 	void SetIgnoreInput(bool ignore_input) { m_packed.ignore_input = ignore_input; }
-	bool GetIgnoreInput() { return m_packed.ignore_input; }
+	bool GetIgnoreInput() const { return m_packed.ignore_input; }
 
 	/** Set this widget to be the focused widget. It will be the one receiving keyboard input.
 		Widgets can be focused only after enabling it (See SetIsFocusable(true)).
@@ -338,7 +338,7 @@ public:
 
 		Returns true if successfully focused, or if set as last focus in its window. */
 	bool SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
-	bool GetIsFocused() { return focused_widget == this; }
+	bool GetIsFocused() const { return focused_widget == this; }
 
 	/** Move focus from the currently focused widget to another focusable widget. It will search
 		for a focusable widget in the same TBWindow (or top root if there is no window) forward or

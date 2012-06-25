@@ -98,6 +98,14 @@ void TBWindow::Activate()
 
 	SetZ(WIDGET_Z_TOP);
 	SetWindowActiveState(true);
+	EnsureFocus();
+}
+
+bool TBWindow::EnsureFocus()
+{
+	// If we already have focus, we're done.
+	if (focused_widget && IsParentOf(focused_widget))
+		return true;
 
 	// Focus last focused widget (if we have one)
 	bool success = false;
@@ -117,6 +125,7 @@ void TBWindow::Activate()
 			child = child->GetNextDeep();
 		}
 	}
+	return success;
 }
 
 void TBWindow::DeActivate()

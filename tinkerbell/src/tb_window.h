@@ -48,9 +48,15 @@ public:
 
 	/** Activate this window if it's not already activated.
 		This will deactivate any currently activated window.
-		Focus will be restored to the last focused widget in this window,
-		or a widget that has received SetFocus while the window was inactive. */
+		This will automatically call EnsureFocus to restore/set focus to this window. */
 	void Activate();
+
+	/** Ensure that this window has focus by attempting to find a focusable child widget.
+		It will first try to restore focus to the last focused widget in this window,
+		or a widget that has received SetFocus while the window was inactive.
+		If that doesn't succeed, it will go through all children and try to set focus.
+		Returns false if no focusable child was found. */
+	bool EnsureFocus();
 
 	/** Set the widget that should be focused when this window is activated next time.
 		This should not be used to change focus. Call Widget::SetFocus to focus, which

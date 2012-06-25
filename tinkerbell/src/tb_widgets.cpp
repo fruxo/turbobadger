@@ -166,9 +166,9 @@ void Widget::SetOpacity(float opacity)
 	Invalidate();
 }
 
-bool Widget::GetVisibility()
+bool Widget::GetVisibility() const
 {
-	Widget *tmp = this;
+	const Widget *tmp = this;
 	while (tmp)
 	{
 		if (tmp->GetOpacity() == 0)
@@ -178,9 +178,9 @@ bool Widget::GetVisibility()
 	return true;
 }
 
-bool Widget::GetDisabled()
+bool Widget::GetDisabled() const
 {
-	Widget *tmp = this;
+	const Widget *tmp = this;
 	while (tmp)
 	{
 		if (tmp->GetState(WIDGET_STATE_DISABLED))
@@ -255,7 +255,7 @@ void Widget::SetSkinBg(const TBID &skin_bg)
 	OnSkinChanged();
 }
 
-TBSkinElement *Widget::GetSkinBgElement()
+TBSkinElement *Widget::GetSkinBgElement() const
 {
 	return g_tb_skin->GetSkinElement(m_skin_bg);
 }
