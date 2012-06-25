@@ -1,4 +1,5 @@
 #include "Demo.h"
+#include "ResourceEditWindow.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include "tests/tb_test.h"
@@ -39,22 +40,7 @@ void const_expr_test()
 
 #endif // TB_SUPPORT_CONSTEXPR
 
-class DemoWindow : public TBWindow
-{
-public:
-	DemoWindow();
-	bool LoadResourceFile(const char *filename);
-	void LoadResourceData(const char *data);
-	void LoadProps(TBNode &node);
-};
-
-class MainWindow : public DemoWindow, public TBMessageHandler
-{
-public:
-	MainWindow();
-	virtual bool OnEvent(const WidgetEvent &ev);
-	virtual void OnMessageReceived(TBMessage *msg);
-};
+// == DemoWindow ==============================================================
 
 DemoWindow::DemoWindow()
 {
@@ -68,23 +54,23 @@ bool DemoWindow::LoadResourceFile(const char *filename)
 	TBNode node;
 	if (!node.ReadFile(filename))
 		return false;
-	g_widgets_reader->LoadNodeTree(this, &node);
-	LoadProps(node);
+	LoadResource(node);
 	return true;
 }
 
 void DemoWindow::LoadResourceData(const char *data)
 {
-	// We could do g_widgets_reader->LoadFile(this, filename) but we want
+	// We could do g_widgets_reader->LoadData(this, filename) but we want
 	// some extra data we store under "WindowInfo", so read into node tree.
 	TBNode node;
 	node.ReadData(data);
-	g_widgets_reader->LoadNodeTree(this, &node);
-	LoadProps(node);
+	LoadResource(node);
 }
 
-void DemoWindow::LoadProps(TBNode &node)
+void DemoWindow::LoadResource(TBNode &node)
 {
+	g_widgets_reader->LoadNodeTree(this, &node);
+
 	// Get title from the WindowInfo section (or use "" if not specified)
 	SetText(node.GetValueString("WindowInfo>title", ""));
 
@@ -104,6 +90,12 @@ void DemoWindow::LoadProps(TBNode &node)
 	else
 		SetPosition(TBPoint((m_parent->m_rect.w - m_rect.w) / 2,
 							(m_parent->m_rect.h - m_rect.h) / 2));
+
+	// Ensure we have focus - now that we've filled the window with possible focusable
+	// widgets. EnsureFocus was automatically called when the window was activated (by
+	// adding the window to the root), but then we had nothing to focus.
+	// Alternatively, we could add the window after setting it up properly.
+	EnsureFocus();
 }
 
 void DemoOutput(const char *format, ...)
@@ -161,6 +153,8 @@ Widget *TestItemSource::CreateItemWidget(int index)
 }
 TestItemSource advanced_source;
 
+// == ListWindow ==============================================================
+
 class ListWindow : public DemoWindow
 {
 public:
@@ -177,15 +171,15 @@ public:
 	{
 		if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("filter"))
 		{
-			TBStr filter;
-			ev.target->GetText(filter);
 			if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
-				select->SetFilter(filter);
+				select->SetFilter(ev.target->GetText());
 			return true;
 		}
 		return DemoWindow::OnEvent(ev);
 	}
 };
+
+// == EditWindow ==============================================================
 
 class EditWindow : public DemoWindow
 {
@@ -196,6 +190,8 @@ public:
 	}
 	virtual void OnProcessStates()
 	{
+		// Update the disabled state of undo/redo buttons, and caret info.
+
 		if (TBEditField *edit = TBSafeGetByID(TBEditField, "editfield"))
 		{
 			if (Widget *undo = GetWidgetByID("undo"))
@@ -240,12 +236,7 @@ public:
 	}
 };
 
-class MyToolbarWindow : public DemoWindow
-{
-public:
-	MyToolbarWindow(const char *filename);
-	virtual bool OnEvent(const WidgetEvent &ev);
-};
+// == MyToolbarWindow =========================================================
 
 MyToolbarWindow::MyToolbarWindow(const char *filename)
 {
@@ -330,12 +321,7 @@ bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
 	return DemoWindow::OnEvent(ev);
 }
 
-class ScrollContainerWindow : public DemoWindow
-{
-public:
-	ScrollContainerWindow();
-	virtual bool OnEvent(const WidgetEvent &ev);
-};
+// == ScrollContainerWindow ===================================================
 
 ScrollContainerWindow::ScrollContainerWindow()
 {
@@ -359,14 +345,25 @@ bool ScrollContainerWindow::OnEvent(const WidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("new buttons"))
 		{
-			char str[100];
 			for(uint32 i = 0; i < ev.target->m_data; i++)
 			{
-				sprintf(str, "Remove %d", i);
+				TBStr str;
+				str.SetFormatted("Remove %d", i);
 				TBButton *button = new TBButton;
 				button->GetID().Set("remove button");
 				button->SetText(str);
 				ev.target->m_parent->AddChild(button);
+			}
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("new buttons delayed"))
+		{
+			for(uint32 i = 0; i < ev.target->m_data; i++)
+			{
+				TBMessageData *data = new TBMessageData();
+				data->id1 = ev.target->m_parent->m_id;
+				data->v1.SetInt(i);
+				PostMessageDelayed(TBIDC("new button"), data, 100 + i * 500);
 			}
 			return true;
 		}
@@ -394,6 +391,24 @@ bool ScrollContainerWindow::OnEvent(const WidgetEvent &ev)
 	return DemoWindow::OnEvent(ev);
 }
 
+void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
+{
+	if (msg->message == TBIDC("new button") && msg->data)
+	{
+		if (Widget *target = GetWidgetByID(msg->data->id1))
+		{
+			TBStr str;
+			str.SetFormatted("Remove %d", msg->data->v1.GetInt());
+			TBButton *button = new TBButton;
+			button->GetID().Set("remove button");
+			button->SetText(str);
+			target->AddChild(button);
+		}
+	}
+}
+
+// == MainWindow ==============================================================
+
 MainWindow::MainWindow()
 {
 	LoadResourceFile("Demo/ui_resources/test_ui.tb.txt");
@@ -406,7 +421,9 @@ void MainWindow::OnMessageReceived(TBMessage *msg)
 	if (msg->message == TBIDC("delayedmsg"))
 	{
 		TBStr text;
-		text.SetFormatted("This message window was created when a delayed message fired!\n\nIt was received %d ms after its intended fire time.", (int)(TBSystem::GetTimeMS() - msg->GetFireTime()));
+		text.SetFormatted("This message window was created when a delayed message fired!\n\n"
+							"It was received %d ms after its intended fire time.",
+							(int)(TBSystem::GetTimeMS() - msg->GetFireTime()));
 		TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC(""));
 		msg_win->Show("Message window", text);
 	}
@@ -497,6 +514,13 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 		else if (ev.target->GetID() == TBIDC("test-scroll-container"))
 		{
 			new ScrollContainerWindow();
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("test-resource-edit"))
+		{
+			ResourceEditWindow *res_edit_win = new ResourceEditWindow();
+			res_edit_win->Load("Demo/ui_resources/resource_edit_test.tb.txt");
+			m_parent->AddChild(res_edit_win);
 			return true;
 		}
 	}

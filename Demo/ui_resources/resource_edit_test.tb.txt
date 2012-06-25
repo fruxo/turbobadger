@@ -1,0 +1,13 @@
+TBLayout
+	distribution available
+	axis y
+	TBLayout
+		TBButton
+			text Button 1
+		TBRadioButton
+		TBCheckBox
+	TBContainer
+		TBSlider
+	TBContainer
+		TBScrollBar
+			value 1

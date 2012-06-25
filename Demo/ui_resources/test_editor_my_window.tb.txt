@@ -1,8 +1,0 @@
-TBLayout
-	distribution available
-	axis y
-	TBLayout
-		TBButton
-			text Button 1
-		TBButton
-			text Button 2

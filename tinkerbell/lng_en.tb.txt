@@ -10,5 +10,6 @@ TBMessageWindow.cancel Cancel
 TBMessageWindow.yes Yes
 TBMessageWindow.no No
 new New
+save Save
 close Close
 search Search

@@ -93,9 +93,6 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_msg.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
-    <ClCompile Include="..\Demo02.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_window.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
@@ -164,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_renderer.cpp">
       <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ResourceEditWindow.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +282,9 @@
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_font_renderer.h">
       <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ResourceEditWindow.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

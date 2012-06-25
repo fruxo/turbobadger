@@ -175,34 +175,6 @@ int TBSelectItemSource::GetNumVisibleItems(const char *filter)
 	return num_visible_items;
 }
 
-// == TBGenericStringItemSource ==================================
-
-Widget *TBGenericStringItemSource::CreateItemWidget(int index)
-{
-	if (Widget *widget = TBSelectItemSource::CreateItemWidget(index))
-	{
-		TBGenericStringItem *item = m_items[index];
-		widget->GetID().Set(item->id);
-		return widget;
-	}
-	return nullptr;
-}
-
-bool TBGenericStringItemSource::AddItem(TBGenericStringItem *item, int index)
-{
-	return m_items.Add(item);
-}
-
-void TBGenericStringItemSource::DeleteItem(int index)
-{
-	m_items.Delete(index);
-}
-
-void TBGenericStringItemSource::DeleteAllItems()
-{
-	m_items.DeleteAll();
-}
-
 // == TBSelectList ==============================================
 
 TBSelectList::TBSelectList()

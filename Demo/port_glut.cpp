@@ -267,7 +267,6 @@ int main(int argc, char** argv)
 
 	// Create the application object for our demo
 	application = new DemoApplication(g_root);
-	//application = new UIEditorApplication(g_root);
 	application->Init();
 
 	glutMainLoop();

@@ -10,5 +10,6 @@ TBMessageWindow.cancel Avbryt
 TBMessageWindow.yes Ja
 TBMessageWindow.no Nej
 new Ny
+save Spara
 close Stäng
 search Sök

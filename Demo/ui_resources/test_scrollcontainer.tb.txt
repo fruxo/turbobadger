@@ -63,6 +63,7 @@ TBLayout
 				connection master-volume
 			TBTextField: text: Horizontal layout:
 			TBLayout
+				id horizontal_layout
 				TBButton
 					text "1 new buttons!"
 					id new buttons
@@ -71,8 +72,13 @@ TBLayout
 					text "100 new buttons!"
 					id new buttons
 					data 100
+				TBButton
+					text "10 new with delay!"
+					id new buttons delayed
+					data 10
 			TBTextField: text: Vertical layout:
 			TBLayout
+				id vertical_layout
 				axis y
 				TBButton
 					text "1 new buttons!"
@@ -82,3 +88,7 @@ TBLayout
 					text "100 new buttons!"
 					id new buttons
 					data 100
+				TBButton
+					text "10 new with delay!"
+					id new buttons delayed
+					data 10

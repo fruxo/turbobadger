@@ -20,7 +20,7 @@ namespace tinkerbell {
 // FIX: gör även en default string source med checkboxar (multiselectable)??
 // Indentera alla items, och ge menyn ett bg skin/underlay ifall någon har ikon!
 // Treeview item, item column, och indent för items utan ikon.. använda samma indent system?
-// FIX: ändring av source måste kunna updatera alla listor.
+// FIX: ändring av source måste kunna updatera alla listor. Ändra separat item updaterar bara den itemen i alla listor.
 
 enum TB_SORT {
 	TB_SORT_NONE,		///< No sorting. Items appear in list order.
@@ -101,25 +101,40 @@ public:
 	void *user_ptr;
 };
 
-class TBGenericStringItemSource : public TBSelectItemSource
+template<class T>
+class TBSelectItemSourceList : public TBSelectItemSource
 {
 public:
-	TBGenericStringItemSource() {}
-	virtual ~TBGenericStringItemSource()				{ DeleteAllItems(); }
+	TBSelectItemSourceList() {}
+	virtual ~TBSelectItemSourceList()					{ DeleteAllItems(); }
 	virtual const char *GetItemString(int index)		{ return GetItem(index)->str; }
 	virtual TBSelectItemSource *GetItemSource(int index){ return GetItem(index)->sub_source; }
 	virtual TBID GetItemImage(int index)				{ return GetItem(index)->skin_image; }
 	virtual int GetNumItems()							{ return m_items.GetNumItems(); }
-	virtual Widget *CreateItemWidget(int index);
+	virtual Widget *CreateItemWidget(int index)
+	{
+		if (Widget *widget = TBSelectItemSource::CreateItemWidget(index))
+		{
+			T *item = m_items[index];
+			widget->GetID().Set(item->id);
+			return widget;
+		}
+		return nullptr;
+	}
 
-	bool AddItem(TBGenericStringItem *item, int index);
-	bool AddItem(TBGenericStringItem *item)				{ return AddItem(item, GetNumItems() - 1); }
-	TBGenericStringItem *GetItem(int index)				{ return m_items[index]; }
+	bool AddItem(T *item, int index)	{ return m_items.Add(item, index); }
+	bool AddItem(T *item)				{ return m_items.Add(item); }
+	T *GetItem(int index)				{ return m_items[index]; }
 
-	void DeleteItem(int index);
-	void DeleteAllItems();
+	void DeleteItem(int index)			{ m_items.Delete(index); }
+	void DeleteAllItems()				{ m_items.DeleteAll(); }
 private:
-	TBListOf<TBGenericStringItem> m_items;
+	TBListOf<T> m_items;
+};
+
+class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem>
+{
+public:
 };
 
 class TBSelectList : public Widget
@@ -154,6 +169,8 @@ public:
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
 
+	/** Set the selected state of the item at the given index. If you want
+		to unselect the previously selected item, use SetValue. */
 	void SelectItem(int index, bool selected);
 	Widget *GetItemWidget(int index);
 

@@ -1,0 +1,207 @@
+#include "ResourceEditWindow.h"
+#include "tb_widgets_reader.h"
+#include "tb_message_window.h"
+#include "tb_system.h"
+#include "tb_select.h"
+#include "tb_editfield.h"
+#include "tb_tempbuffer.h"
+#include <stdio.h>
+
+// == ResourceItem ====================================================================================
+
+ResourceItem::ResourceItem(Widget *widget, const char *str)
+	: TBGenericStringItem(str)
+	, m_widget(widget)
+{
+}
+
+// == ResourceEditWindow ==============================================================================
+
+ResourceEditWindow::ResourceEditWindow()
+{
+	// Register as global listener to intercept events in the build container
+	TBGlobalWidgetListener::AddListener(this);
+
+	g_widgets_reader->LoadFile(this, "Demo/ui_resources/resource_edit_window.tb.txt");
+
+	m_build_container = GetWidgetByID(TBIDC("build_container"));
+	m_build_container = m_build_container->GetContentRoot();
+	m_source_edit = TBSafeGetByID(TBEditField, TBIDC("source_edit"));
+
+	m_widget_list = TBSafeGetByID(TBSelectList, "widget_list");
+	m_widget_list->SetSource(&m_widget_list_source);
+
+	SetRect(TBRect(100, 100, 900, 600));
+}
+
+ResourceEditWindow::~ResourceEditWindow()
+{
+	TBGlobalWidgetListener::RemoveListener(this);
+
+	// avoid assert
+	m_widget_list->SetSource(nullptr);
+}
+
+void ResourceEditWindow::Load(const char *resource_file)
+{
+	m_resource_filename.Set(resource_file);
+	SetText(resource_file);
+
+	// Set the text of the source view
+	m_source_edit->SetText("");
+
+	if (TBFile *file = TBFile::Open(m_resource_filename, TBFile::MODE_READ))
+	{
+		TBTempBuffer buffer;
+		if (buffer.Reserve(file->Size()))
+		{
+			uint32 size_read = file->Read(buffer.GetData(), 1, buffer.GetCapacity());
+			m_source_edit->SetText(buffer.GetData(), size_read);
+		}
+		delete file;
+	}
+	else // Error, show message
+	{
+		TBStr text;
+		text.SetFormatted("Could not load file %s", resource_file);
+		if (TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBIDC("")))
+			msg_win->Show("Error loading resource", text);
+	}
+
+	RefreshFromSource();
+}
+
+void ResourceEditWindow::RefreshFromSource()
+{
+	// Clear old widgets
+	while (Widget *child = m_build_container->GetFirstChild())
+	{
+		m_build_container->RemoveChild(child);
+		delete child;
+	}
+
+	// Create new widgets from source
+	TBStr source = m_source_edit->GetText();
+	g_widgets_reader->LoadData(m_build_container, source);
+}
+
+void ResourceEditWindow::UpdateWidgetList(bool immediately)
+{
+	if (!immediately)
+	{
+		TBID id("update_widget_list");
+		if (!GetMessageByID(id))
+			PostMessage(id, nullptr);
+	}
+	else
+	{
+		m_widget_list_source.DeleteAllItems();
+		AddWidgetListItemsRecursive(m_build_container, 0);
+
+		m_widget_list->InvalidateList();
+	}
+}
+
+void ResourceEditWindow::AddWidgetListItemsRecursive(Widget *widget, int depth)
+{
+	if (depth > 0) // Ignore the root
+	{
+		// Add a new ResourceItem for this widget
+		TBStr str;
+		const char *classname = widget->GetClassName();
+		if (!*classname)
+			classname = "<Unknown widget type>";
+		str.SetFormatted("% *s%s", depth - 1, "", classname);
+
+		if (ResourceItem *item = new ResourceItem(widget, str))
+			m_widget_list_source.AddItem(item);
+	}
+
+	for (Widget *child = widget->GetFirstChild(); child; child = child->GetNext())
+		AddWidgetListItemsRecursive(child, depth + 1);
+}
+
+ResourceEditWindow::ITEM_INFO ResourceEditWindow::GetItemFromWidget(Widget *widget)
+{
+	ITEM_INFO item_info = { nullptr, -1 };
+	for (int i = 0; i < m_widget_list_source.GetNumItems(); i++)
+		if (m_widget_list_source.GetItem(i)->GetWidget() == widget)
+		{
+			item_info.index = i;
+			item_info.item = m_widget_list_source.GetItem(i);
+			break;
+		}
+	return item_info;
+}
+
+Widget *ResourceEditWindow::GetSelectedWidget()
+{
+	int index = m_widget_list->GetValue();
+	if (index >= 0 && index < m_widget_list_source.GetNumItems())
+		return m_widget_list_source.GetItem(index)->GetWidget();
+	return nullptr;
+}
+
+bool ResourceEditWindow::OnEvent(const WidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("widget_list_search"))
+	{
+		m_widget_list->SetFilter(ev.target->GetText());
+		return true;
+	}
+	if (ev.type == EVENT_TYPE_CHANGED && ev.target == m_source_edit)
+	{
+		RefreshFromSource();
+		return true;
+	}
+	return TBWindow::OnEvent(ev);
+}
+
+void ResourceEditWindow::OnPaintChildren(const PaintProps &paint_props)
+{
+	TBWindow::OnPaintChildren(paint_props);
+
+	// Paint the selection of the selected widget
+	if (Widget *selected_widget = GetSelectedWidget())
+	{
+		TBRect widget_rect(0, 0, selected_widget->GetRect().w, selected_widget->GetRect().h);
+		selected_widget->ConvertToRoot(widget_rect.x, widget_rect.y);
+		ConvertFromRoot(widget_rect.x, widget_rect.y);
+		g_renderer->DrawRect(widget_rect, TBColor(255, 205, 0));
+	}
+}
+
+void ResourceEditWindow::OnMessageReceived(TBMessage *msg)
+{
+	if (msg->message == TBIDC("update_widget_list"))
+		UpdateWidgetList(true);
+}
+
+bool ResourceEditWindow::OnWidgetInvokeEvent(const WidgetEvent &ev)
+{
+	// Intercept all events to widgets in the build container
+	if (m_build_container->IsParentOf(ev.target))
+	{
+		// Select widget when clicking
+		if (ev.type == EVENT_TYPE_POINTER_DOWN)
+		{
+			ITEM_INFO item_info = GetItemFromWidget(ev.target);
+			if (item_info.item)
+				m_widget_list->SetValue(item_info.index);
+		}
+		return true;
+	}
+	return false;
+}
+
+void ResourceEditWindow::OnWidgetAdded(Widget *widget)
+{
+	if (m_build_container->IsParentOf(widget))
+		UpdateWidgetList(false);
+}
+
+void ResourceEditWindow::OnWidgetRemove(Widget *widget)
+{
+	if (m_build_container->IsParentOf(widget))
+		UpdateWidgetList(false);
+}

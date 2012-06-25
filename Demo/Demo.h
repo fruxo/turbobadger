@@ -38,24 +38,40 @@ public:
 	virtual void OnMessageReceived(TBMessage *msg);
 };
 
-class UIEditorApplication : public Application, public TBMessageHandler, public TBGlobalWidgetListener
+class DemoWindow : public TBWindow
 {
 public:
-	UIEditorApplication(Widget *root) : Application(root) {}
-	~UIEditorApplication();
+	DemoWindow();
+	bool LoadResourceFile(const char *filename);
+	void LoadResourceData(const char *data);
+	void LoadResource(TBNode &node);
+};
 
-	// == Application ===================================================================
-	bool Init();
-	void Process();
-	void RenderFrame(int window_w, int window_h);
+class MainWindow : public DemoWindow, public TBMessageHandler
+{
+public:
+	MainWindow();
+	virtual bool OnEvent(const WidgetEvent &ev);
 
-	// == TBMessageHandler ==============================================================
+	// Implement TBMessageHandler
 	virtual void OnMessageReceived(TBMessage *msg);
+};
 
-	// == TBGlobalWidgetListener ========================================================
-	virtual bool OnWidgetInvokeEvent(const WidgetEvent &ev);
-	virtual void OnWidgetAdded(Widget *widget);
-	virtual void OnWidgetRemove(Widget *widget);
+class MyToolbarWindow : public DemoWindow
+{
+public:
+	MyToolbarWindow(const char *filename);
+	virtual bool OnEvent(const WidgetEvent &ev);
+};
+
+class ScrollContainerWindow : public DemoWindow, public TBMessageHandler
+{
+public:
+	ScrollContainerWindow();
+	virtual bool OnEvent(const WidgetEvent &ev);
+
+	// Implement TBMessageHandler
+	virtual void OnMessageReceived(TBMessage *msg);
 };
 
 #endif // DEMO_H
