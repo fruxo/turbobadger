@@ -110,6 +110,10 @@ bool TBBitmapGL::Init(int width, int height, uint32 *data)
 
 void TBBitmapGL::SetData(uint32 *data)
 {
+	// Flush the batch if it's using this texture (that is about to change)
+	if (batch.vertex_count && g_current_texture == m_texture)
+		batch.Flush();
+
 	BindTexture(m_texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_w, m_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 }
@@ -271,7 +275,8 @@ void TBRendererGL::DrawRect(const TBRect &dst_rect, const TBColor &color)
 	glDisable(GL_TEXTURE_2D);
 
 	TBRect rect = dst_rect.Offset(m_translation_x, m_translation_y);
-	uint32 col32 = VER_COL(color.r, color.g, color.b, color.a);
+	uint32 a = (color.a * m_opacity) / 255;
+	uint32 col32 = VER_COL(color.r, color.g, color.b, a);
 	batch.AddVertex(rect.x + 0.5f, rect.y + 0.5f, 0, 0, col32);
 	batch.AddVertex(rect.x + rect.w - 1 + 0.5f, rect.y + 0.5f, 0, 0, col32);
 	batch.AddVertex(rect.x + rect.w - 1 + 0.5f, rect.y + rect.h - 1 + 0.5f, 0, 0, col32);
@@ -287,8 +292,8 @@ void TBRendererGL::DrawRectFill(const TBRect &dst_rect, const TBColor &color)
 {
 	if (dst_rect.IsEmpty())
 		return;
-
-	DrawTexture(dst_rect, 0, 0, 0, 0, 0, VER_COL(color.r, color.g, color.b, color.a));
+	uint32 a = (color.a * m_opacity) / 255;
+	DrawTexture(dst_rect, 0, 0, 0, 0, 0, VER_COL(color.r, color.g, color.b, a));
 }
 
 TBBitmap *TBRendererGL::CreateBitmap(int width, int height, uint32 *data)
