@@ -16,6 +16,12 @@ TBLinkListOf<WidgetAnimationObject> widget_animations;
 
 #define LERP(src, dst, progress) (src + (dst - src) * progress)
 
+/** Don't use 0.0 for opacity animations since that may break focus code.
+	At the moment a window should appear and start fading in from opacity 0,
+	it would also attempt setting the focus to it, but if opacity is 0 it will
+	think focus should not be set in that window and fail. */
+#define ALMOST_ZERO_OPACITY 0.001f
+
 // == WidgetAnimationObject =============================================================
 
 WidgetAnimationObject::WidgetAnimationObject(Widget *widget)
@@ -143,7 +149,7 @@ bool WidgetsAnimationManager::OnWidgetDying(Widget *widget)
 	if (TBWindow *window = TBSafeCast(TBWindow, widget))
 	{
 		// Fade out dying windows
-		if (AnimationObject *anim = new WidgetAnimationOpacity(window, 1.f, 0.f, true))
+		if (AnimationObject *anim = new WidgetAnimationOpacity(window, 1.f, ALMOST_ZERO_OPACITY, true))
 			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 		handled = true;
 	}
@@ -162,7 +168,7 @@ bool WidgetsAnimationManager::OnWidgetDying(Widget *widget)
 	if (TBDimmer *dimmer = TBSafeCast(TBDimmer, widget))
 	{
 		// Fade out dying dim layers
-		if (AnimationObject *anim = new WidgetAnimationOpacity(dimmer, 1.f, 0.f, true))
+		if (AnimationObject *anim = new WidgetAnimationOpacity(dimmer, 1.f, ALMOST_ZERO_OPACITY, true))
 			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 		handled = true;
 	}
@@ -174,7 +180,7 @@ void WidgetsAnimationManager::OnWidgetAdded(Widget *widget)
 	if (TBWindow *window = TBSafeCast(TBWindow, widget))
 	{
 		// Fade in new windows
-		if (AnimationObject *anim = new WidgetAnimationOpacity(window, 0.f, 1.f, false))
+		if (AnimationObject *anim = new WidgetAnimationOpacity(window, ALMOST_ZERO_OPACITY, 1.f, false))
 			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 	}
 	if (TBMessageWindow *window = TBSafeCast(TBMessageWindow, widget))
@@ -191,7 +197,7 @@ void WidgetsAnimationManager::OnWidgetAdded(Widget *widget)
 	if (TBDimmer *dimmer = TBSafeCast(TBDimmer, widget))
 	{
 		// Fade in dim layer
-		if (AnimationObject *anim = new WidgetAnimationOpacity(dimmer, 0.f, 1.f, false))
+		if (AnimationObject *anim = new WidgetAnimationOpacity(dimmer, ALMOST_ZERO_OPACITY, 1.f, false))
 			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 	}
 }
