@@ -271,13 +271,23 @@ bool TBWidgetsReader::CreateWidget(Widget *target, TBNode *node, WIDGET_Z add_ch
 		return false;
 
 	// Read generic properties
+
 	new_widget->SetRect(target->GetContentRoot()->GetPaddingRect());
+
 	SetIDFromNode(new_widget->m_id, node->GetNode("id"));
+
 	SetIDFromNode(new_widget->m_group_id, node->GetNode("group_id"));
-	new_widget->SetValue(node->GetValueInt("value", 0));
+
+	if (wc->sync_type == TBValue::TYPE_FLOAT)
+		new_widget->SetValueDouble(node->GetValueFloat("value", 0));
+	else
+		new_widget->SetValue(node->GetValueInt("value", 0));
+
 	new_widget->m_data = node->GetValueInt("data", 0);
+
 	if (const char *text = GetTranslatableString(node, "text"))
 		new_widget->SetText(text);
+
 	if (const char *connection = node->GetValueString("connection", nullptr))
 	{
 		// If we already have a widget value with this name, just connect to it and the widget will
