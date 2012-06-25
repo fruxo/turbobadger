@@ -29,6 +29,8 @@ public:
 public:
 	TBValue v1; ///< Use for anything
 	TBValue v2; ///< Use for anything
+	TBID id1;	///< Use for anything
+	TBID id2;	///< Use for anything
 };
 
 /** TBMessageLink should never be created or subclassed anywhere except in TBMessage.
