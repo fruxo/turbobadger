@@ -150,6 +150,8 @@ public:
 	}
 	virtual void OnToken(const char *name, TBValue &value)
 	{
+		if (!m_target_node)
+			return;
 		if (TBNode *n = TBNode::Create(name))
 		{
 			n->m_value.TakeOver(value);
@@ -158,12 +160,14 @@ public:
 	}
 	virtual void Enter()
 	{
-		m_target_node = m_target_node->GetLastChild();
+		if (m_target_node)
+			m_target_node = m_target_node->GetLastChild();
 	}
 	virtual void Leave()
 	{
 		assert(m_target_node != m_root_node);
-		m_target_node = m_target_node->m_parent;
+		if (m_target_node)
+			m_target_node = m_target_node->m_parent;
 	}
 private:
 	TBNode *m_root_node;
