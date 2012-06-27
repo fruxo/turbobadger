@@ -451,7 +451,7 @@ void TBScrollBar::UpdateHandle()
 	// Calculate the mover size and position
 	bool horizontal = m_axis == AXIS_X;
 	int available_pixels = horizontal ? m_rect.w : m_rect.h;
-	int available_thickness_pixels = horizontal ? m_rect.h : m_rect.w;
+	int min_thickness_pixels = MIN(m_rect.h, m_rect.w);
 
 	int visible_pixels = available_pixels;
 
@@ -460,8 +460,9 @@ void TBScrollBar::UpdateHandle()
 		double visible_proportion = m_visible / (m_visible + m_max - m_min);
 		visible_pixels = (int)(visible_proportion * available_pixels);
 
-		// Limit the size of the indicator to the slider thickness
-		visible_pixels = MAX(visible_pixels, available_thickness_pixels);
+		// Limit the size of the indicator to the slider thickness so that it doesn't
+		// become too tiny when the visible proportion is very small.
+		visible_pixels = MAX(visible_pixels, min_thickness_pixels);
 
 		m_to_pixel_factor = (double)(available_pixels - visible_pixels) / (m_max - m_min)/*+ 0.5*/;
 	}
@@ -482,6 +483,11 @@ void TBScrollBar::UpdateHandle()
 		rect.Set(0, pixel_pos, m_rect.w, visible_pixels);
 
 	m_handle.SetRect(rect);
+}
+
+void TBScrollBar::OnResized(int old_w, int old_h)
+{
+	UpdateHandle();
 }
 
 // == TBSlider ============================================
@@ -557,8 +563,6 @@ bool TBSlider::OnEvent(const WidgetEvent &ev)
 		}
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_POINTER_MOVE && ev.target == this)
-		return true;
 	else if (ev.type == EVENT_TYPE_WHEEL)
 	{
 		double old_val = m_value;
@@ -591,7 +595,6 @@ void TBSlider::UpdateHandle()
 	// Calculate the handle position
 	bool horizontal = m_axis == AXIS_X;
 	int available_pixels = horizontal ? m_rect.w : m_rect.h;
-	int available_thickness_pixels = horizontal ? m_rect.h : m_rect.w;
 
 	TBRect rect;
 	if (m_max - m_min > 0)

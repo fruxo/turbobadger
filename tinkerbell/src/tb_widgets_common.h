@@ -295,6 +295,7 @@ public:
 	virtual int GetValue() { return (int) GetValueDouble(); }
 
 	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual void OnResized(int old_w, int old_h);
 protected:
 	Widget m_handle;
 	AXIS m_axis;
