@@ -23,3 +23,12 @@ TBLayout: position: left top, axis: y
 		TBCheckBox: value: 1
 		TBCheckBox: state: disabled
 		TBCheckBox: state: disabled, value: 1
+	TBTextField: text: "TBClickLabel with radio & check"
+	TBClickLabel: text: Some text to click
+		TBCheckBox
+	TBClickLabel: text: Some text to click
+		TBRadioButton
+	TBClickLabel: text: Some text to click, state: disabled
+		TBCheckBox
+	TBClickLabel: text: Some text to click, state: disabled
+		TBRadioButton
