@@ -2,10 +2,11 @@ WindowInfo
 	title Tinkerbell demo
 	position 10 100
 TBLayout: axis: y
-	TBLayout
-		TBButton
-			text Close with dim & alert
-			id TBWindow.close
+	TBButton
+		text Close with dim & alert
+		id TBWindow.close
+		TBSkinImage
+			skin Icon16
 	TBButton: text: "Layout", id: "test-layout"
 	TBButton: text: "Flat skin", id: "test-flat-skin"
 	TBButton: text: "TBWidgetValue connections", id: "test-connections"

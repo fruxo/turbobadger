@@ -13,7 +13,9 @@ TBLayout: axis: y, distribution: available
 			gravity left right
 			distribution_position right bottom
 			TBTextField: id: info
-			TBClickLabel: text: Wrap
-				TBCheckBox: value: 1, id: wrap
+			TBButton: id: menu
+				TBSkinImage: skin: arrow.down
+				TBTextField: text: Menu
+				skin TBButton.flat
 	TBEditField: multiline: 1, styling: 1, gravity: all, id: editfield, autofocus: 1
 		text <u>Tinkerbell UI Toolkit!</u>\n\nThings to test:\n • resizing\n • right clicking\n • searching\n • keyboard navigation\n • scrolling\n • mouse wheel & dragging.\n • This is a list item that should wrap in a smart way.\n • Embedded content in textfield, such as this button: <widget TBButton: text: ":)">\n • <color #f44>Red</color>, <color #6f6>Green</color>, <color #aaf>Blue</color>

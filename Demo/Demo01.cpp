@@ -210,12 +210,10 @@ public:
 	{
 		if (ev.type == EVENT_TYPE_CLICK)
 		{
-			TBCheckBox *wrap = TBSafeGetByID(TBCheckBox, "wrap");
 			TBEditField *edit = TBSafeGetByID(TBEditField, "editfield");
-			if (!wrap || !edit)
+			if (!edit)
 				return false;
 
-			edit->SetWrapping(wrap->GetValue() ? true : false);
 			if (ev.target->GetID() == TBIDC("clear"))
 			{
 				edit->SetText("");
@@ -229,6 +227,53 @@ public:
 			else if (ev.target->GetID() == TBIDC("redo"))
 			{
 				edit->GetStyleEdit()->Redo();
+				return true;
+			}
+			else if (ev.target->GetID() == TBIDC("menu"))
+			{
+				static TBGenericStringItemSource source;
+				if (!source.GetNumItems())
+				{
+					source.AddItem(new TBGenericStringItem("Default font", TBIDC("default font")));
+					source.AddItem(new TBGenericStringItem("Large font", TBIDC("large font")));
+					source.AddItem(new TBGenericStringItem("-"));
+					source.AddItem(new TBGenericStringItem("Set CJK", TBIDC("CJK")));
+					source.AddItem(new TBGenericStringItem("-"));
+					source.AddItem(new TBGenericStringItem("Toggle wrapping", TBIDC("toggle wrapping")));
+				}
+
+				TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popup_menu"));
+				menu->Show(&source);
+				return true;
+			}
+			else if (ev.target->GetID() == TBIDC("popup_menu"))
+			{
+				if (ev.ref_id == TBIDC("default font"))
+					edit->SetFontDescription(TBFontDescription());
+				else if (ev.ref_id == TBIDC("large font"))
+				{
+					TBFontDescription fd = edit->GetCalculatedFontDescription();
+					fd.SetIndex(2);
+					fd.SetSize(42);
+					edit->SetFontDescription(fd);
+				}
+				else if (ev.ref_id == TBIDC("CJK"))
+				{
+					TBTempBuffer buf;
+					for (int i = 0, cp = 0x4E00; cp <= 0x9FCC; cp++, i++)
+					{
+						char utf8[8];
+						int len = utf8::encode(cp, utf8);
+						buf.Append(utf8, len);
+						if (i % 64 == 63)
+							buf.Append("\n", 1);
+					}
+					edit->GetStyleEdit()->SetText(buf.GetData(), buf.GetAppendPos());
+				}
+				else if (ev.ref_id == TBIDC("toggle wrapping"))
+				{
+					edit->SetWrapping(!edit->GetWrapping());
+				}
 				return true;
 			}
 		}
