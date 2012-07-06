@@ -165,6 +165,9 @@
     <ClCompile Include="..\ResourceEditWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_space_allocator.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">

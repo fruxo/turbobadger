@@ -9,6 +9,7 @@
 #include "tinkerbell.h"
 #include "tb_hashtable.h"
 #include "tb_list.h"
+#include "tb_linklist.h"
 
 namespace tinkerbell {
 
@@ -42,6 +43,59 @@ public:
 	virtual uint32 *Data() = 0;
 };
 
+/** Allocator of space out of a given available space. */
+class TBSpaceAllocator
+{
+public:
+	/** A chunk of space */
+	class Space : public TBLinkOf<Space>
+	{
+	public:
+		int x, width;
+	};
+
+	TBSpaceAllocator(int available_space)
+		: m_available_space(available_space) { }
+
+	/** Return true if no allocations are currently live using this allocator. */
+	bool IsAllAvailable() const { return !m_used_space_list.HasLinks(); }
+
+	/** Return true if the given width is currently available. */
+	bool HasSpace(int needed_w) { return !!GetSmallestAvailableSpace(needed_w); }
+
+	/** Allocate the given space and return the Space, or nullptr on error. */
+	Space *AllocSpace(int needed_w);
+
+	/** Free the given space so it is available for new allocations. */
+	void FreeSpace(Space *space);
+private:
+	Space *GetSmallestAvailableSpace(int needed_w);
+	int m_available_space;
+	TBLinkListAutoDeleteOf<Space> m_free_space_list;
+	TBLinkListAutoDeleteOf<Space> m_used_space_list;
+};
+
+/** Allocates space for TBBitmapFragment in a row (used in TBBitmapFragmentMap). */
+class TBFragmentSpaceAllocator : public TBSpaceAllocator
+{
+public:
+	TBFragmentSpaceAllocator(int y, int width, int height)
+		: TBSpaceAllocator(width), y(y), height(height) {}
+
+	int y, height;
+};
+
+/** Specify when the bitmap should be validated when calling TBBitmapFragmentMap::GetBitmap. */
+enum TB_VALIDATE_TYPE {
+
+	/** Always validate the bitmap (The bitmap is updated if needed) */
+	TB_VALIDATE_ALWAYS,
+
+	/** Only validate if the bitmap does not yet exist (Make sure there is
+		a valid bitmap pointer, but the data is not necessarily updated) */
+	TB_VALIDATE_FIRST_TIME
+};
+
 /** TBBitmapFragmentMap is used to pack multiple bitmaps into a single TBBitmap.
 	When initialized (in a size suitable for a TBBitmap) is also creates a software buffer
 	that will make up the TBBitmap when all fragments have been added. */
@@ -57,24 +111,25 @@ public:
 
 	/** Create a new fragment with the given size and data in this map.
 		Returns nullptr if there is not enough room in this map or on any other fail. */
-	TBBitmapFragment *CreateNewFragment(int frag_w, int frag_h, uint32 *frag_data, bool add_border);
+	TBBitmapFragment *CreateNewFragment(int frag_w, int frag_h, int data_stride, uint32 *frag_data, bool add_border);
 
-	/** Return the bitmap for this map. If the data is not not valid (up to date),
-		it will be updated before returning. */
-	TBBitmap *GetBitmap();
+	/** Free up the space used by the given fragment, so that other fragments can take its place. */
+	void FreeFragmentSpace(TBBitmapFragment *frag);
+
+	/** Return the bitmap for this map.
+		By default, the bitmap is validated if needed before returning (See TB_VALIDATE_TYPE) */
+	TBBitmap *GetBitmap(TB_VALIDATE_TYPE validate_type = TB_VALIDATE_ALWAYS);
 private:
 	friend class TBBitmapFragmentManager;
 	bool ValidateBitmap();
 	void DeleteBitmap();
-	void CopyData(TBBitmapFragment *frag, uint32 *frag_data, int border);
-	struct ROW {
-		int y, height, used_width;
-	};
-	TBListAutoDeleteOf<ROW> rows;
+	void CopyData(TBBitmapFragment *frag, int data_stride, uint32 *frag_data, int border);
+	TBListAutoDeleteOf<TBFragmentSpaceAllocator> rows;
 	int m_bitmap_w, m_bitmap_h;
 	uint32 *m_bitmap_data;
 	TBBitmap *m_bitmap;
 	bool m_need_update;
+	int m_allocated_pixels;
 };
 
 /** TBBitmapFragment represents a sub part of a TBBitmap.
@@ -83,12 +138,21 @@ private:
 class TBBitmapFragment
 {
 public:
+	/** Return the width of the bitmap fragment. */
 	int Width() { return m_rect.w; }
+
+	/** Return the height of the bitmap fragment. */
 	int Height() { return m_rect.h; }
-	TBBitmap *GetBitmap() { return m_map->GetBitmap(); }
+
+	/** Return the bitmap for this fragment.
+		By default, the bitmap is validated if needed before returning (See TB_VALIDATE_TYPE) */
+	TBBitmap *GetBitmap(TB_VALIDATE_TYPE validate_type = TB_VALIDATE_ALWAYS) { return m_map->GetBitmap(validate_type); }
 public:
 	TBBitmapFragmentMap *m_map;
 	TBRect m_rect;
+	TBFragmentSpaceAllocator *m_row;
+	TBFragmentSpaceAllocator::Space *m_space;
+	TBID m_id;
 };
 
 /** TBBitmapFragmentManager manages loading bitmaps of arbitrary size,
@@ -100,6 +164,7 @@ public:
 class TBBitmapFragmentManager
 {
 public:
+	TBBitmapFragmentManager();
 	~TBBitmapFragmentManager();
 
 	/** Get the fragment with the given image filename. If it's not already loaded,
@@ -115,9 +180,17 @@ public:
 		@param dedicated_map if true, it will get a dedicated map.
 		@param data_w the width of the data.
 		@param data_h the height of the data.
+		@param data_stride the number of pixels in a row of the input data.
 		@param data pointer to the data in BGRA32 format.
-		@param add_border if true, a 1px border will be added if needed so stretching won't get filtering artifacts. */
-	TBBitmapFragment *CreateNewFragment(const TBID &id, bool dedicated_map, int data_w, int data_h, uint32 *data, bool add_border);
+		@param add_border if true, a 1px border will be added if needed so
+		       stretching won't get filtering artifacts. */
+	TBBitmapFragment *CreateNewFragment(const TBID &id, bool dedicated_map,
+										int data_w, int data_h, int data_stride,
+										uint32 *data, bool add_border);
+
+	/** Delete the given fragment and free the space it used in its map,
+		so that other fragments can take its place. */
+	void FreeFragment(TBBitmapFragment *frag);
 
 	/** Clear all loaded bitmaps and all created bitmap fragments and maps.
 		After this call, do not keep any pointers to any TBBitmapFragment created
@@ -135,6 +208,15 @@ public:
 
 	/** Get number of fragment maps that is currently used. */
 	int GetNumMaps() const { return m_fragment_maps.GetNumItems(); }
+
+	/** Set the number of maps (TBBitmaps) this manager should be allowed to create.
+		If a new fragment can't fit into any existing bitmap and the limit is reached,
+		the fragment creation will fail. Set to 0 for unlimited (default). */
+	void SetNumMapsLimit(int num_maps_limit);
+
+	/** Get the amount (in percent) of space that is currently occupied by all maps
+		in this fragment manager. */
+	int GetUseRatio() const;
 #ifdef _DEBUG
 	/** Render the maps on screen, to analyze fragment positioning. */
 	void Debug();
@@ -142,6 +224,7 @@ public:
 private:
 	TBListOf<TBBitmapFragmentMap> m_fragment_maps;
 	TBHashTableOf<TBBitmapFragment> m_fragments;
+	int m_num_maps_limit;
 };
 
 }; // namespace tinkerbell

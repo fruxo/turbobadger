@@ -55,11 +55,10 @@ public:
 	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap);
 	virtual void DrawRect(const TBRect &dst_rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color);
+	virtual void FlushBitmapFragment(TBBitmapFragment *bitmap_fragment);
 
 	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data);
 public:
-	void DrawTexture(const TBRect &dst_rect, float u, float v, float uu, float vv, GLuint texture);
-	void DrawTexture(const TBRect &dst_rect, float u, float v, float uu, float vv, GLuint texture, uint32 color);
 	uint8 m_opacity;
 	TBRect m_screen_rect;
 	TBRect m_clip_rect;

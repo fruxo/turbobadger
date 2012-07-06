@@ -45,9 +45,9 @@ class TBFontMetrics
 {
 public:
 	TBFontMetrics() : ascent(0), descent(0), height(0) {}
-	int16 ascent;			///< Ascent. See TBFontFace::GetAscent()
-	int16 descent;			///< Descent. See TBFontFace::GetDescent()
-	int16 height;			///< Height. See TBFontFace::GetHeight()
+	int16 ascent;	///< Ascent. See TBFontFace::GetAscent()
+	int16 descent;	///< Descent. See TBFontFace::GetDescent()
+	int16 height;	///< Height. See TBFontFace::GetHeight()
 };
 
 /** TBFontRenderer renders glyphs from a font file. */
@@ -69,9 +69,10 @@ public:
 /** TBFontGlyph holds glyph metrics and bitmap fragment.
 	There's one of theese for all rendered (both successful
 	and missing) glyphs in TBFontFace. */
-class TBFontGlyph
+class TBFontGlyph : public TBLinkOf<TBFontGlyph>
 {
 public:
+	UCS4 cp;
 	TBGlyphMetrics metrics;		///< The glyph metrics.
 	TBBitmapFragment *frag;		///< The bitmap fragment, or nullptr if missing.
 	bool has_rgb;				///< if true, drawing should ignore text color.
@@ -108,7 +109,7 @@ public:
 	~TBFontFace();
 
 	/** Render all glyphs needed to display the string. */
-	bool RenderGlyphs(const char *glyph_str);
+	bool RenderGlyphs(const char *glyph_str, int glyph_str_len = TB_ALL_TO_TERMINATION);
 
 	/** Get the vertical distance (positive) from the horizontal baseline to the highest ‘character’ coordinate
 		in a font face. */
@@ -144,6 +145,7 @@ private:
 	TBFontGlyph *GetGlyph(int cp, bool create_if_needed);
 	TBBitmapFragmentManager m_frag_manager;
 	TBHashTableOf<TBFontGlyph> m_glyphs;
+	TBLinkListAutoDeleteOf<TBFontGlyph> m_all_glyphs;
 	TBFontRenderer *m_font_renderer;
 	TBFontMetrics m_metrics;
 	TBFontEffect m_effect;

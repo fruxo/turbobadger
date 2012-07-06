@@ -128,6 +128,12 @@ TBFontGlyphData *TBFontEffect::Render(TBGlyphMetrics *metrics, const TBFontGlyph
 TBFontFace::TBFontFace(TBFontRenderer *renderer, int size)
 	: m_font_renderer(renderer)
 {
+	// Only use one map for the font face. The glyph cache will start forgetting
+	// glyphs that haven't been used for a while if the map gets full.
+	// NOTE: Enabling this requires handling in RenderGlyphs (forgetting old glyphs
+	//       until the new one fit).
+	//m_frag_manager.SetNumMapsLimit(1);
+
 	g_renderer->AddListener(this);
 	if (m_font_renderer)
 		m_metrics = m_font_renderer->GetMetrics();
@@ -146,55 +152,92 @@ TBFontFace::~TBFontFace()
 	g_renderer->RemoveListener(this);
 }
 
-bool TBFontFace::RenderGlyphs(const char *glyph_str)
+bool TBFontFace::RenderGlyphs(const char *glyph_str, int glyph_str_len)
 {
 	if (!m_font_renderer)
 		return true; // This is the test font
 
-	int i = 0, len = strlen(glyph_str);
+	if (glyph_str_len == TB_ALL_TO_TERMINATION)
+		glyph_str_len = strlen(glyph_str);
+
+	int i = 0;
 	TBFontGlyphData glyph_data;
 	TBTempBuffer data32;
 
 	TB_IF_DEBUG(int num_rendered = 0);
 
-	while (glyph_str[i])
+	while (glyph_str[i] && i < glyph_str_len)
 	{
-		UCS4 cp = utf8::decode_next(glyph_str, &i, len);
+		UCS4 cp = utf8::decode_next(glyph_str, &i, glyph_str_len);
 		if (GetGlyph(cp, false))
 			continue;
 
-		// FIX: OOM etc below
+		// If we've used up more than 80% of the first fragment map, forget the
+		// least recently used glyph so we free up space for new glyphs.
+		// If this happens a lot (F.ex using large fonts, or using a very high glyph count),
+		// this will lead to fragmentation of the free space, and it's fully possible that
+		// the new glyph may end up in a new map.
+		// Debug: Use this instead, to test glyph cache more easily (only keep 30 glyphs in cache)
+		//        if (m_frag_manager.GetNumMaps() > 1 || m_all_glyphs.CountLinks() > 30)
+		if (m_frag_manager.GetNumMaps() > 1 || m_frag_manager.GetUseRatio() > 80)
+		{
+			// Find the least recently used rendered glyph
+			TBFontGlyph *oldest_glyph = nullptr;
+			for (oldest_glyph = m_all_glyphs.GetFirst(); oldest_glyph && !oldest_glyph->frag; oldest_glyph = oldest_glyph->GetNext())
+				;
+			if (oldest_glyph)
+			{
+				g_renderer->FlushBitmapFragment(oldest_glyph->frag);
+				m_frag_manager.FreeFragment(oldest_glyph->frag);
+				m_glyphs.Remove(oldest_glyph->cp);
+				m_all_glyphs.Delete(oldest_glyph);
+			}
+		}
+
+		// Create the new glyph
 		TBFontGlyph *glyph = new TBFontGlyph;
+		if (!glyph)
+			return false;
+		glyph->cp = cp;
 		glyph->has_rgb = false;
 		glyph->frag = nullptr;
-		m_glyphs.Add(cp, glyph);
+		if (!m_glyphs.Add(cp, glyph))
+		{
+			delete glyph;
+			return false;
+		}
+		m_all_glyphs.AddLast(glyph);
 
 		m_font_renderer->GetGlyphMetrics(&glyph->metrics, cp);
 
+		// Render the new glyph
 		if (m_font_renderer->RenderGlyph(&glyph_data, cp))
 		{
 			TBFontEffect effect;
 			TBFontGlyphData *effect_glyph_data = effect.Render(&glyph->metrics, &glyph_data);
 			TBFontGlyphData *result_glyph_data = effect_glyph_data ? effect_glyph_data : &glyph_data;
 
-			if (data32.Reserve(result_glyph_data->w * result_glyph_data->h * sizeof(uint32)))
+			// The glyph data may be in uint8 format, which we have to convert since we always
+			// create fragments (and TBBitmap) in 32bit format.
+			uint32 *glyph_dsta_src = result_glyph_data->data32;
+			if (!glyph_dsta_src && result_glyph_data->data8)
 			{
-				uint32 *dst = (uint32 *) data32.GetData();
-				if (result_glyph_data->data8)
+				if (data32.Reserve(result_glyph_data->w * result_glyph_data->h * sizeof(uint32)))
 				{
+					glyph_dsta_src = (uint32 *) data32.GetData();
 					for (int y = 0; y < result_glyph_data->h; y++)
 						for (int x = 0; x < result_glyph_data->w; x++)
-							dst[x + y * result_glyph_data->w] = TBColor(255, 255, 255, result_glyph_data->data8[x + y * result_glyph_data->stride]);
+							glyph_dsta_src[x + y * result_glyph_data->w] = TBColor(255, 255, 255, result_glyph_data->data8[x + y * result_glyph_data->stride]);
 				}
-				else if (result_glyph_data->data32)
-				{
-					for (int y = 0; y < result_glyph_data->h; y++)
-						for (int x = 0; x < result_glyph_data->w; x++)
-							dst[x + y * result_glyph_data->w] = result_glyph_data->data32[x + y * result_glyph_data->stride];
-				}
+			}
 
+			// Finally, the glyph data is ready and we can create a bitmap fragment.
+			if (glyph_dsta_src)
+			{
 				glyph->has_rgb = result_glyph_data->rgb;
-				glyph->frag = m_frag_manager.CreateNewFragment(cp, false, result_glyph_data->w, result_glyph_data->h, dst, false);
+				glyph->frag = m_frag_manager.CreateNewFragment(cp, false,
+									result_glyph_data->w, result_glyph_data->h, result_glyph_data->stride,
+									glyph_dsta_src, false);
 				TB_IF_DEBUG(num_rendered++);
 			}
 
@@ -215,7 +258,12 @@ bool TBFontFace::RenderGlyphs(const char *glyph_str)
 TBFontGlyph *TBFontFace::GetGlyph(int cp, bool create_if_needed)
 {
 	if (TBFontGlyph *glyph = m_glyphs.Get(cp))
+	{
+		// Move the glyph to the end of m_all_glyphs so we maintain LRU (oldest first)
+		m_all_glyphs.Remove(glyph);
+		m_all_glyphs.AddLast(glyph);
 		return glyph;
+	}
 	if (create_if_needed)
 	{
 		char utf8[9];
@@ -262,8 +310,6 @@ int TBFontFace::GetStringWidth(const char *str, int len)
 	int i = 0;
 	while (str[i] && i < len)
 	{
-// Should not render the glyph if it does not exist. Only measure it!
-// but it's good if the rendering it batched before the getbitmap needs to flush it to the bitmap.
 		UCS4 cp = utf8::decode_next(str, &i, len);
 		if (cp == 0xFFFF)
 			continue;

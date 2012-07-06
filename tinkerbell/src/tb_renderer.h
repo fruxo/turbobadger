@@ -89,6 +89,10 @@ public:
 	/** Draw a filled rectangle. */
 	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color) = 0;
 
+	/** Make sure the given bitmap fragment is flushed from any batching, because it may
+		be changed or deleted after this call. */
+	virtual void FlushBitmapFragment(TBBitmapFragment *bitmap_fragment) = 0;
+
 	/** Create a new TBBitmap from the given data (in BGRA32 format).
 		Width and height must be a power of two.
 		Return nullptr if fail. */
