@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <string.h>
 
 namespace tinkerbell {
 
@@ -57,6 +58,11 @@ bool TBTempBuffer::Append(const char *data, int size)
 	memcpy(m_data + m_append_pos, data, size);
 	m_append_pos += size;
 	return true;
+}
+
+bool TBTempBuffer::AppendString(const char *str)
+{
+	return Append(str, strlen(str));
 }
 
 }; // namespace tinkerbell

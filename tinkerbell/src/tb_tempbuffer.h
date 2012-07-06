@@ -34,6 +34,12 @@ public:
 		Returns false on OOM. */
 	bool Append(const char *data, int size);
 
+	/** Append a null terminated string (without the null termination)
+		at the end of the buffer and increase the append position with
+		the same amount.
+		Returns false on OOM. */
+	bool AppendString(const char *str);
+
 	/** Set the position (in bytes) in the buffer where Append should write. */
 	void SetAppendPos(int append_pos);
 
