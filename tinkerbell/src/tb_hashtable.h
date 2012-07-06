@@ -34,6 +34,12 @@ public:
 		Returns false if out of memory. */
 	bool Add(uint32 key, void *content);
 
+	/** Remove the content with the given key. */
+	void *Remove(uint32 key);
+
+	/** Delete the content with the given key. */
+	void Delete(uint32 key);
+
 	/** Rehash the table so use the given number of buckets.
 		Returns false if out of memory. */
 	bool Rehash(uint32 num_buckets);

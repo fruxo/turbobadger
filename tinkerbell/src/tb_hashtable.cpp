@@ -5,12 +5,14 @@
 
 #include "tb_hashtable.h"
 #include "tb_system.h"
+#include "tb_tempbuffer.h"
 
 namespace tinkerbell {
 
 //FIX: reduce memory (block allocation of ITEM)
 //FIX: should shrink when deleting single items (but not when adding items!)
 //FIX: should grow when about 70% full instead of 100%
+//FIX: Don't use % as long as we use a hash function that doesn't need primes. We use power of two sizes!
 
 // == TBHashTable =======================================================================
 
@@ -132,11 +134,43 @@ bool TBHashTable::Add(uint32 key, void *content)
 	return false;
 }
 
+void *TBHashTable::Remove(uint32 key)
+{
+	if (!m_num_buckets)
+		return nullptr;
+	uint32 bucket = key % m_num_buckets;
+	ITEM *item = m_buckets[bucket];
+	ITEM *prev_item = nullptr;
+	while (item)
+	{
+		if (item->key == key)
+		{
+			if (prev_item)
+				prev_item->next = item->next;
+			else
+				m_buckets[bucket] = item->next;
+			void *content = item->content;
+			delete item;
+			return content;
+		}
+		prev_item = item;
+		item = item->next;
+	}
+	assert(!"This hash table didn't contain the given key!");
+	return nullptr;
+}
+
+void TBHashTable::Delete(uint32 key)
+{
+	DeleteContent(Remove(key));
+}
+
 #ifdef _DEBUG
 
 void TBHashTable::Debug()
 {
-	TBStr line("Hash table: ");
+	TBTempBuffer line;
+	line.AppendString("Hash table: ");
 	int total_count = 0;
 	for (uint32 i = 0; i < m_num_buckets; i++)
 	{
@@ -147,13 +181,15 @@ void TBHashTable::Debug()
 			count++;
 			item = item->next;
 		}
+		///fortfarande slö. ta bort tbstr
 		TBStr tmp; tmp.SetFormatted("%d ", count);
-		line.Append(tmp);
+		line.AppendString(tmp);
 		total_count += count;
 	}
 	TBStr tmp; tmp.SetFormatted(" (total: %d of %d buckets)\n", total_count, m_num_buckets);
-	line.Append(tmp);
-	TBDebugOut(line);
+	line.AppendString(tmp);
+	line.Append("", 1); // Append null termination
+	TBDebugOut(line.GetData());
 }
 
 #endif // _DEBUG
