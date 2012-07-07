@@ -43,29 +43,38 @@ TBLayout
 					image back
 				TBButton
 					image forward
+			TBTextField: text: "TBEditField:"
 			TBLayout
 				TBEditField
-					text Hi!
-				TBEditField
-					text Spaghetti and Marshmallows!
+					text Hello world!
 				TBEditField
 					type password
-					text fgdfgdfgsg
-			TBSlider
-			TBSlider
-				min 100
-				max 200
-				value 150
-			TBSlider
-				axis y
-				min 0
-				max 100
-				connection master-volume
+					text pwd goes here
+				TBEditField
+					text In this field, multiple lines are enabled.
+					multiline 1
+			TBTextField: text: "TBSlider:"
+			TBLayout
+				TBSlider
+				TBSlider
+					min 100
+					max 200
+					value 150
+				TBSlider
+					axis y
+					min 0
+					max 100
+					connection master-volume
+			TBTextField: text: "TBScrollbar:"
+			TBLayout
+				TBScrollBar
+				TBScrollBar
+					axis y
 			TBTextField: text: Horizontal layout:
 			TBLayout
 				id horizontal_layout
 				TBButton
-					text "1 new buttons!"
+					text "1 new button"
 					id new buttons
 					data 1
 				TBButton
@@ -81,7 +90,7 @@ TBLayout
 				id vertical_layout
 				axis y
 				TBButton
-					text "1 new buttons!"
+					text "1 new button"
 					id new buttons
 					data 1
 				TBButton

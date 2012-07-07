@@ -15,6 +15,9 @@ TBLayout
 			TBButton
 				text @save
 				state disabled
+			TBButton
+				text Test
+				state disabled
 		TBEditField
 			placeholder @search
 			id widget_list_search
@@ -22,10 +25,10 @@ TBLayout
 			id widget_list
 	TBLayout
 		distribution available
-		TBScrollContainer
-			id build_container
-			gravity all
 		TBEditField
 			id source_edit
 			multiline 1
+			gravity all
+		TBScrollContainer
+			id build_container
 			gravity all

@@ -75,9 +75,14 @@ Font system
 There is font implementations for freetype and stb_truetype.h, and a bitmap font
 system (tbbf - "tinker bell bitmap font") that is very simple to use and supports
 any range or characters, glow & shadow. You can choose any of theese or add your own.
+It possible to use multiple backends, so you can f.ex use tbbf for some bitmap fonts,
+and a freetype backend for other fonts.
 
 The implementation API render glyph by glyph, but if it's requested to externalize
 the entire string measuring & drawing, support for that shouldn't be hard to add.
+
+If no font implementation is choosen (or if using font index 0), a test dummy font
+is used which renders squares.
 
 System integration
 ------------------

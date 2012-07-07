@@ -98,7 +98,7 @@ void DemoWindow::LoadResource(TBNode &node)
 	EnsureFocus();
 }
 
-void DemoOutput(const char *format, ...)
+void DemoWindow::Output(const char *format, ...)
 {
 	if (!format)
 		return;
@@ -114,6 +114,32 @@ void DemoOutput(const char *format, ...)
 		edit->GetStyleEdit()->AppendText(buf, len, true);
 		edit->GetStyleEdit()->ScrollIfNeeded();
 	}
+}
+
+bool DemoWindow::OnEvent(const WidgetEvent &ev)
+{
+	// FIX: Let a special debug output window be a TBGlobalWidgetListener and listen to all events
+	// Now we only know about events that are not handled.
+	if (ev.type == EVENT_TYPE_CHANGED)
+	{
+		// Output the new value and text
+		TBStr text;
+		if (ev.target->GetText(text) && text.Length() > 24)
+			sprintf(text.CStr() + 20, "...");
+		Output("Changed to: %.2f (\"%s\")\n", ev.target->GetValueDouble(), text.CStr());
+	}
+	else if (ev.type == EVENT_TYPE_CLICK)
+	{
+		// Output the id if it's a target with a id.
+		if (ev.target->GetID())
+		{
+			TBStr text;
+			if (ev.target->GetText(text) && text.Length() > 24)
+				sprintf(text.CStr() + 20, "...");
+			Output("Click with id: %u\n", (uint32)ev.target->GetID());
+		}
+	}
+	return TBWindow::OnEvent(ev);
 }
 
 class TestItemSource : public TBGenericStringItemSource
@@ -237,7 +263,7 @@ public:
 					source.AddItem(new TBGenericStringItem("Default font", TBIDC("default font")));
 					source.AddItem(new TBGenericStringItem("Large font", TBIDC("large font")));
 					source.AddItem(new TBGenericStringItem("-"));
-					source.AddItem(new TBGenericStringItem("Set CJK", TBIDC("CJK")));
+					source.AddItem(new TBGenericStringItem("Glyph cache stresstest (CJK)", TBIDC("CJK")));
 					source.AddItem(new TBGenericStringItem("-"));
 					source.AddItem(new TBGenericStringItem("Toggle wrapping", TBIDC("toggle wrapping")));
 				}
@@ -568,14 +594,6 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 			m_parent->AddChild(res_edit_win);
 			return true;
 		}
-	}
-	else if (ev.type == EVENT_TYPE_CHANGED)
-	{
-		// Output the new value and text
-		TBStr text;
-		if (ev.target->GetText(text) && text.Length() > 24)
-			sprintf(text.CStr() + 20, "...");
-		DemoOutput("Changed to: %.2f (\"%s\")\n", ev.target->GetValueDouble(), text.CStr());
 	}
 	return DemoWindow::OnEvent(ev);
 }
