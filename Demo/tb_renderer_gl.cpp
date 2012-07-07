@@ -293,9 +293,12 @@ void TBRendererGL::DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TB
 void TBRendererGL::DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmapFragment *bitmap_fragment)
 {
 	if (TBBitmap *bitmap = bitmap_fragment->GetBitmap(TB_VALIDATE_FIRST_TIME))
+	{
+		uint32 a = (color.a * m_opacity) / 255;
 		batch.AddQuad(	dst_rect.Offset(m_translation_x, m_translation_y),
 						src_rect.Offset(bitmap_fragment->m_rect.x, bitmap_fragment->m_rect.y),
-						VER_COL(color.r, color.g, color.b, color.a), bitmap, bitmap_fragment);
+						VER_COL(color.r, color.g, color.b, a), bitmap, bitmap_fragment);
+	}
 }
 
 void TBRendererGL::DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmap *bitmap)
