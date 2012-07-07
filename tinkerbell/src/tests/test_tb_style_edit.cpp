@@ -195,6 +195,20 @@ TB_TEST_GROUP(tb_editfield)
 		TB_VERIFY_STR(edit->GetText(), "ONE\r\n\r\n");
 	}
 
+	TB_TEST(multiline_overflow_1)
+	{
+		// Make sure we use the test dummy font (index 0), so we're not dependant on
+		// the available fonts & font backend in this test.
+		TBFontDescription fd;
+		const int font_size = 48;
+		fd.SetSize(font_size);
+		edit->SetFontDescription(fd);
+
+		// Test that a long line that overflow but has no allowed break position doesn't wrap.
+		edit->SetText("this_is_a_long_line_that_should_not_wrap\n"
+						"this_is_a_long_line_that_should_not_wrap", TB_CARET_POS_END);
+		TB_VERIFY(sedit->GetContentHeight() == font_size * 2);
+	}
 }
 
 #endif // TB_UNIT_TESTING

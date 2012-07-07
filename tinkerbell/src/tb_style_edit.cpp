@@ -93,6 +93,8 @@ static bool is_never_break_before(const char *str, int ofs)
 {
 	switch (str[ofs])
 	{
+	case '\n':
+	case '\r':
 	case ' ':
 	case '-':
 	case '.':
