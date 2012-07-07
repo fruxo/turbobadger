@@ -269,7 +269,7 @@ TBFontGlyph *TBFontFace::GetGlyph(int cp, bool create_if_needed)
 		char utf8[9];
 		int len = utf8::encode(cp, utf8);
 		utf8[len] = 0;
-		RenderGlyphs(utf8);
+		RenderGlyphs(utf8, len);
 		return GetGlyph(cp, false);
 	}
 	return nullptr;
