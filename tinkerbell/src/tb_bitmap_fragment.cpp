@@ -226,7 +226,11 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 		{
 			// This is the best row so far, if we fit
 			if (needed_h <= row->height && row->HasSpace(needed_w))
+			{
 				best_row = row;
+				if (needed_h == row->height)
+					break; // We can't find a smaller line, so we're done
+			}
 		}
 	}
 	// Return if we're full
