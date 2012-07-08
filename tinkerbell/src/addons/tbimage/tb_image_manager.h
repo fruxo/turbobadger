@@ -14,6 +14,8 @@
 
 namespace tinkerbell {
 
+class TBImageManager;
+
 /** TBImageRep is the internal contents of a TBImage. Owned by reference counting from TBImage. */
 
 class TBImageRep
