@@ -32,3 +32,8 @@ elements
 		expand 7
 		content-ofs-x 1
 		content-ofs-y 1
+	ImageFrame
+		bitmap image_frame.png
+		cut 18
+		expand 12
+		padding 6

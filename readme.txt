@@ -16,8 +16,8 @@ It has no dependency on stl, RTTI or exceptions. Compiling without these feature
 makes footprint very small. Utility classes (such as string, lists, hash table,
 etc.) are quite minimal for the basic needs of tinkerbell itself.
 
-Image loading and font system can be used if wanted, or you can make it use
-whatever systems you have for this already.
+See integration.txt for details about integrating image loading, renderer,
+font system etc.
 
 What features does it have
 --------------------------
@@ -25,7 +25,8 @@ What features does it have
   Tinkerbell core:
 
   -Widgets (many common standard widgets)
-  -Text editing widget (With clipboard, undo/redo, styling functionality, embedded content...)
+  -Text editing widget (With clipboard, undo/redo, styling functionality,
+   embedded content (for read only text flow)...)
   -Extendable skin system with automatic runtime atlas creation.
   -Automatic widget layout (No need to specify widget dimensions by pixels)
   -Text based UI resource format (No need to write C++ to create UI)
@@ -42,6 +43,12 @@ What features does it have
   -Support 32/64bit architectures and tested on Windows/Linux/Mac/Android/iOS
   -Uses constexpr by default for all ID comparisions on compilers that support it.
   -Unicode support (UTF8)
+  -Multiple font systems can be used (Implementations of TBBF, freetype and stbf provided)
+  -Addon system for enabling more stuff just by linking additional files.
+
+  Tinkerbell addons:
+
+  -Image manager & Image widget
 
 What features does it NOT have
 -------------------------------

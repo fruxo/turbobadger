@@ -8,6 +8,7 @@
 #include "tb_widgets_reader.h"
 #include "tb_language.h"
 #include "tb_font_renderer.h"
+#include "tb_addon.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <stdarg.h>
@@ -40,11 +41,12 @@ bool init_tinkerbell(TBRenderer *renderer, const char *lng_file)
 	g_font_manager = new TBFontManager();
 	g_tb_skin = new TBSkin();
 	g_widgets_reader = TBWidgetsReader::Create();
-	return true;
+	return TBInitAddons();
 }
 
 void shutdown_tinkerbell()
 {
+	TBShutdownAddons();
 	delete g_widgets_reader;
 	delete g_tb_skin;
 	delete g_font_manager;

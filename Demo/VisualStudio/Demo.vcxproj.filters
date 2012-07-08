@@ -31,6 +31,12 @@
     <Filter Include="Source Files\utf8">
       <UniqueIdentifier>{213d430b-c0ad-4ca8-a167-480311d3ccb7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\addons">
+      <UniqueIdentifier>{b4bad18c-8f64-40a3-b236-353e3f3f2781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\addons\tbimage">
+      <UniqueIdentifier>{ca769757-9203-4513-b38d-593d3730316a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Demo01.cpp">
@@ -168,6 +174,15 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_space_allocator.cpp">
       <Filter>Source Files\tinkerbell\tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_addon.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.cpp">
+      <Filter>Source Files\addons\tbimage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.cpp">
+      <Filter>Source Files\addons\tbimage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -288,6 +303,15 @@
     </ClInclude>
     <ClInclude Include="..\ResourceEditWindow.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_addon.h">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.h">
+      <Filter>Source Files\addons\tbimage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.h">
+      <Filter>Source Files\addons\tbimage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

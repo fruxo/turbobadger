@@ -157,7 +157,9 @@ protected:
 	TBTextField m_textfield;
 };
 
-/** TBSkinImage is a widget only showing a skin, constrained in size to its skin. */
+/** TBSkinImage is a widget showing a skin element, constrained in size to its skin.
+	If you need to load and show images dynamically (i.e. not always loaded as the skin),
+	you can use TBImageWidget. */
 
 class TBSkinImage : public Widget
 {

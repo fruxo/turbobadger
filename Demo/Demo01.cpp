@@ -12,6 +12,7 @@
 #include "parser/TBNodeTree.h"
 #include "tb_tempbuffer.h"
 #include "tb_font_renderer.h"
+#include "addons/tbimage/tb_image_manager.h"
 #include "utf8/utf8.h"
 
 TBGenericStringItemSource position_toggle_source;
@@ -582,6 +583,11 @@ bool MainWindow::OnEvent(const WidgetEvent &ev)
 			new MyToolbarWindow("Demo/ui_resources/radio_checkbox.tb.txt");
 			return true;
 		}
+		else if (ev.target->GetID() == TBIDC("test-image"))
+		{
+			new MyToolbarWindow("Demo/ui_resources/test_image_widget.tb.txt");
+			return true;
+		}
 		else if (ev.target->GetID() == TBIDC("test-scroll-container"))
 		{
 			new ScrollContainerWindow();
@@ -729,14 +735,20 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 	// Render
 	g_renderer->BeginPaint(window_w, window_h);
 	m_root->InvokePaint(Widget::PaintProps());
+
 #ifdef _DEBUG
 	// Enable to debug skin bitmap fragments
 	//g_tb_skin->Debug();
+
 	// Enable to debug font glyph fragments (the font of the hovered widget)
 	//g_font_manager->GetFontFace(Widget::hovered_widget ?
 	//							Widget::hovered_widget->GetCalculatedFontDescription() :
 	//							g_font_manager->GetDefaultFontDescription())->Debug();
+
+	// Enable to debug image manager fragments (if addons/tbimage/* is used)
+	//g_image_manager->Debug();
 #endif
+
 	g_renderer->EndPaint();
 
 	frame_counter++;
