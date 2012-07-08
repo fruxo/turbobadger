@@ -167,6 +167,11 @@ public:
 	TBBitmapFragmentManager();
 	~TBBitmapFragmentManager();
 
+	/** Set to true if a 1px border should be added to new fragments so stretched
+		drawing won't get filtering artifacts at the edges (default is disabled). */
+	void SetAddBorder(bool add_border) { m_add_border = add_border; }
+	bool GetAddBorder() const { return m_add_border; }
+
 	/** Get the fragment with the given image filename. If it's not already loaded,
 		it will be loaded into a new fragment with the filename as id.
 		returns nullptr on fail. */
@@ -181,12 +186,10 @@ public:
 		@param data_w the width of the data.
 		@param data_h the height of the data.
 		@param data_stride the number of pixels in a row of the input data.
-		@param data pointer to the data in BGRA32 format.
-		@param add_border if true, a 1px border will be added if needed so
-		       stretching won't get filtering artifacts. */
+		@param data pointer to the data in BGRA32 format. */
 	TBBitmapFragment *CreateNewFragment(const TBID &id, bool dedicated_map,
 										int data_w, int data_h, int data_stride,
-										uint32 *data, bool add_border);
+										uint32 *data);
 
 	/** Delete the given fragment and free the space it used in its map,
 		so that other fragments can take its place. */
@@ -225,6 +228,7 @@ private:
 	TBListOf<TBBitmapFragmentMap> m_fragment_maps;
 	TBHashTableOf<TBBitmapFragment> m_fragments;
 	int m_num_maps_limit;
+	bool m_add_border;
 };
 
 }; // namespace tinkerbell

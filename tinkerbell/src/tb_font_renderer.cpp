@@ -237,7 +237,7 @@ bool TBFontFace::RenderGlyphs(const char *glyph_str, int glyph_str_len)
 				glyph->has_rgb = result_glyph_data->rgb;
 				glyph->frag = m_frag_manager.CreateNewFragment(cp, false,
 									result_glyph_data->w, result_glyph_data->h, result_glyph_data->stride,
-									glyph_dsta_src, false);
+									glyph_dsta_src);
 				TB_IF_DEBUG(num_rendered++);
 			}
 

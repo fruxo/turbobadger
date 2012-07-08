@@ -32,6 +32,9 @@ TBSkin::TBSkin()
 	assert(FilenameToPath("foo.txt").Equals("./"));
 	assert(FilenameToPath("Path/subpath/foo.txt").Equals("Path/subpath/"));
 	g_renderer->AddListener(this);
+
+	// Avoid filtering artifacts at edges when we draw fragments stretched.
+	m_frag_manager.SetAddBorder(true);
 }
 
 bool TBSkin::Load(const char *skin_file, const char *override_skin_file)

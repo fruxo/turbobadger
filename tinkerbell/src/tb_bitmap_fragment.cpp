@@ -270,6 +270,19 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 	if (!frag)
 		return;
 	assert(frag->m_map == this);
+
+#ifdef _DEBUG
+	// Debug code to clear the area in debug builds so it's easier to
+	// see & debug the allocation & deallocation of fragments in maps.
+	if (uint32 *data32 = new uint32[frag->m_space->width * frag->m_row->height])
+	{
+		memset(data32, 255, sizeof(uint32) * frag->m_space->width * frag->m_row->height);
+		CopyData(frag, frag->m_space->width, data32, false);
+		m_need_update = true;
+		delete [] data32;
+	}
+#endif // _DEBUG
+
 	m_allocated_pixels -= frag->m_space->width * frag->m_row->height;
 	frag->m_row->FreeSpace(frag->m_space);
 }
@@ -337,6 +350,7 @@ void TBBitmapFragmentMap::DeleteBitmap()
 
 TBBitmapFragmentManager::TBBitmapFragmentManager()
 	: m_num_maps_limit(0)
+	, m_add_border(false)
 {
 }
 
@@ -362,14 +376,14 @@ TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filen
 		return nullptr;
 	}
 
-	frag = CreateNewFragment(id, dedicated_map, img->Width(), img->Height(), img->Width(), img->Data(), true);
+	frag = CreateNewFragment(id, dedicated_map, img->Width(), img->Height(), img->Width(), img->Data());
 	delete img;
 	return frag;
 }
 
 TBBitmapFragment *TBBitmapFragmentManager::CreateNewFragment(const TBID &id, bool dedicated_map,
 															 int data_w, int data_h, int data_stride,
-															 uint32 *data, bool add_border)
+															 uint32 *data)
 {
 	assert(!GetFragment(id));
 
@@ -382,7 +396,7 @@ TBBitmapFragment *TBBitmapFragmentManager::CreateNewFragment(const TBID &id, boo
 	{
 		for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
 		{
-			if (frag = m_fragment_maps[i]->CreateNewFragment(data_w, data_h, data_stride, data, add_border))
+			if (frag = m_fragment_maps[i]->CreateNewFragment(data_w, data_h, data_stride, data, m_add_border))
 				break;
 		}
 	}
@@ -401,7 +415,7 @@ TBBitmapFragment *TBBitmapFragmentManager::CreateNewFragment(const TBID &id, boo
 		if (fm && fm->Init(po2w, po2h))
 		{
 			m_fragment_maps.Add(fm);
-			frag = fm->CreateNewFragment(data_w, data_h, data_stride, data, add_border);
+			frag = fm->CreateNewFragment(data_w, data_h, data_stride, data, m_add_border);
 		}
 		else
 			delete fm;
@@ -420,8 +434,13 @@ void TBBitmapFragmentManager::FreeFragment(TBBitmapFragment *frag)
 {
 	if (frag)
 	{
+		TBBitmapFragmentMap *map = frag->m_map;
 		frag->m_map->FreeFragmentSpace(frag);
 		m_fragments.Delete(frag->m_id);
+
+		// If the map is now empty, delete it.
+		if (map->m_allocated_pixels == 0)
+			m_fragment_maps.Delete(m_fragment_maps.Find(map));
 	}
 }
 
@@ -471,6 +490,8 @@ int TBBitmapFragmentManager::GetUseRatio() const
 #ifdef _DEBUG
 void TBBitmapFragmentManager::Debug()
 {
+	float old_opacity = g_renderer->GetOpacity();
+	g_renderer->SetOpacity(0.9f);
 	int x = 0;
 	for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
 	{
@@ -479,6 +500,7 @@ void TBBitmapFragmentManager::Debug()
 			g_renderer->DrawBitmap(TBRect(x, 0, fm->m_bitmap_w, fm->m_bitmap_h), TBRect(0, 0, fm->m_bitmap_w, fm->m_bitmap_h), bitmap);
 		x += fm->m_bitmap_w + 5;
 	}
+	g_renderer->SetOpacity(old_opacity);
 }
 #endif // _DEBUG
 
