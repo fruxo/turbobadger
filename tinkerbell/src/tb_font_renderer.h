@@ -143,12 +143,14 @@ public:
 	virtual void OnContextRestored();
 private:
 	TBFontGlyph *GetGlyph(int cp, bool create_if_needed);
+	TBFontGlyph *CreateGlyph(UCS4 cp);
 	TBBitmapFragmentManager m_frag_manager;
 	TBHashTableOf<TBFontGlyph> m_glyphs;
 	TBLinkListAutoDeleteOf<TBFontGlyph> m_all_glyphs;
 	TBFontRenderer *m_font_renderer;
 	TBFontMetrics m_metrics;
 	TBFontEffect m_effect;
+	TBTempBuffer m_temp_buffer;
 };
 
 /** TBFontInfo provides information about a font file associated with a font index. */
