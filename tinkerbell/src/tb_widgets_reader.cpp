@@ -41,6 +41,8 @@ TB_WIDGET_FACTORY(TBEditField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
 	widget->SetStyling(info->node->GetValueInt("styling", 0) ? true : false);
 	widget->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
 	widget->SetWrapping(info->node->GetValueInt("wrap", widget->GetWrapping()) ? true : false);
+	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt_to_content", widget->GetAdaptToContentSize()) ? true : false);
+	widget->SetVirtualWidth(info->node->GetValueInt("virtual_width", widget->GetVirtualWidth()));
 	if (const char *text = info->reader->GetTranslatableString(info->node, "placeholder"))
 		widget->SetPlaceholderText(text);
 	if (const char *type = info->node->GetValueString("type", nullptr))
@@ -110,6 +112,8 @@ TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 TB_WIDGET_FACTORY(TBScrollContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
 	widget->SetGravity(WIDGET_GRAVITY_ALL);
+	widget->SetAdaptContentSize(info->node->GetValueInt("adapt_content", widget->GetAdaptContentSize()) ? true : false);
+	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt_to_content", widget->GetAdaptToContentSize()) ? true : false);
 }
 
 TB_WIDGET_FACTORY(TBTabContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)

@@ -81,8 +81,7 @@ void ResourceEditWindow::RefreshFromSource()
 	}
 
 	// Create new widgets from source
-	TBStr source = m_source_edit->GetText();
-	g_widgets_reader->LoadData(m_build_container, source);
+	g_widgets_reader->LoadData(m_build_container, m_source_edit->GetText());
 }
 
 void ResourceEditWindow::UpdateWidgetList(bool immediately)
@@ -149,9 +148,23 @@ bool ResourceEditWindow::OnEvent(const WidgetEvent &ev)
 		m_widget_list->SetFilter(ev.target->GetText());
 		return true;
 	}
-	if (ev.type == EVENT_TYPE_CHANGED && ev.target == m_source_edit)
+	else if (ev.type == EVENT_TYPE_CHANGED && ev.target == m_source_edit)
 	{
 		RefreshFromSource();
+		return true;
+	}
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("test"))
+	{
+		// Create a window containing the current layout, resize and center it.
+		if (TBWindow *win = new TBWindow())
+		{
+			win->SetText("Test window");
+			g_widgets_reader->LoadData(win->GetContentRoot(), m_source_edit->GetText());
+			win->ResizeToFitContent();
+			win->SetPosition(TBPoint((m_parent->m_rect.w - win->m_rect.w) / 2,
+									(m_parent->m_rect.h - win->m_rect.h) / 2));
+			m_parent->AddChild(win);
+		}
 		return true;
 	}
 	return TBWindow::OnEvent(ev);

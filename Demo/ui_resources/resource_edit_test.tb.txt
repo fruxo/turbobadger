@@ -14,3 +14,7 @@ TBLayout
 	TBEditField
 		multiline 1
 		readonly 1
+	TBEditField
+		text Hello world\nHello world
+		adapt_to_content 1
+		multiline 1

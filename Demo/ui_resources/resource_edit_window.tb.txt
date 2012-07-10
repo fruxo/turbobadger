@@ -17,7 +17,7 @@ TBLayout
 				state disabled
 			TBButton
 				text Test
-				state disabled
+				id test
 		TBEditField
 			placeholder @search
 			id widget_list_search

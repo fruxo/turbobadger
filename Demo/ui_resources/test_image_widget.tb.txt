@@ -2,13 +2,10 @@ WindowInfo
 	title TBImageWidget
 	size 350 500
 TBScrollContainer
+	adapt_content 1
 	TBLayout
 		axis y
-		TBTextField: text: "Some images shown by TBImageWidget."
-		TBTextField: text: "This test requires linkage with files in"
-		TBTextField: text: "addons/tbimage/*"
-		TBTextField: text: "Images are unloaded when all references"
-		TBTextField: text: "are removed (this window is closed)."
+		TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt_to_content: 1, text: "Some images shown by TBImageWidget. This test requires linkage with files in addons/tbimage/*\nImages are unloaded when all references are removed (this window is closed)."
 		TBImageWidget: filename: "Demo/images/image (1).png", skin: ImageFrame
 		TBImageWidget: filename: "Demo/images/image (2).png", skin: ImageFrame
 		TBImageWidget: filename: "Demo/images/image (3).png", skin: ImageFrame

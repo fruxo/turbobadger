@@ -15,12 +15,12 @@ namespace tinkerbell {
 /** EDIT_TYPE - Theese types does not restrict input (may change in the future).
 	They are just hints for virtual keyboard, so it can show special keys. */
 enum EDIT_TYPE {
-	EDIT_TYPE_TEXT,				///< Any text allowed
-	EDIT_TYPE_PASSWORD,			///< Any text allowed
-	EDIT_TYPE_EMAIL,			///< Any text allowed
-	EDIT_TYPE_PHONE,			///< Any text allowed
-	EDIT_TYPE_URL,				///< Any text allowed
-	EDIT_TYPE_NUMBER			///< Any text allowed
+	EDIT_TYPE_TEXT,
+	EDIT_TYPE_PASSWORD,
+	EDIT_TYPE_EMAIL,
+	EDIT_TYPE_PHONE,
+	EDIT_TYPE_URL,
+	EDIT_TYPE_NUMBER
 };
 
 /** The default content factory for embedded content in TBEditField with styling enabled.
@@ -90,19 +90,44 @@ public:
 	void SetStyling(bool styling);
 	bool GetStyling() const { return m_style_edit.packed.styling_on; }
 
+	/** Set if read only mode should be enabled. Default is disabled.
+		In read only mode, editing is disabled and caret is hidden.
+		The user is still able to focus, select and copy text. */
 	void SetReadOnly(bool readonly);
 	bool GetReadOnly() const { return m_style_edit.packed.read_only; }
 
+	/** Set to true if the text should wrap if multi line is enabled (See SetMultiline). */
 	void SetWrapping(bool wrapping);
 	bool GetWrapping() const { return m_style_edit.packed.wrapping; }
 
+	/** Set to true if the preferred size of this editfield should adapt to the
+		size of the content (disabled by default).
+		If wrapping is enabled, the result is partly dependant on the virtual
+		width (See SetVirtualWidth). */
+	void SetAdaptToContentSize(bool adapt);
+	bool GetAdaptToContentSize() const { return m_adapt_to_content_size; }
+
+	/** The virtual width is only used if the size is adapting to content size
+		(See SetAdaptToContentSize) and wrapping is enabled.
+		The virtual width will be used to layout the text and see which resulting
+		width and height it takes up. The width that is actually used depends on
+		the content. It is also up to the the layouter to decide if the size
+		should be respected or not. The default is 250. */
+	void SetVirtualWidth(int virtual_width);
+	int GetVirtualWidth() const { return m_virtual_width; }
+
+	/** Get the TBStyleEdit object that contains more functions and settings. */
 	TBStyleEdit *GetStyleEdit() { return &m_style_edit; }
 
+	/** Set the edit type that is a hint for virtual keyboards about what the
+		content should be. */
 	void SetEditType(EDIT_TYPE type);
 	EDIT_TYPE GetEditType() { return m_edit_type; }
 
 	/** Set which alignment the text should have if the space
-		given when painting is larger than the text. */
+		given when painting is larger than the text.
+		This changes the default for new blocks, as wel as the currently selected blocks or the block
+		of the current caret position if nothing is selected. */
 	void SetTextAlign(TB_TEXT_ALIGN align) { m_style_edit.SetAlign(align); }
 	TB_TEXT_ALIGN GetTextAlign() { return m_style_edit.align; }
 
@@ -142,13 +167,15 @@ private:
 	TBEditFieldScrollRoot m_root;
 	TBEditFieldContentFactory m_content_factory;
 	TBStyleEdit m_style_edit;
+	bool m_adapt_to_content_size;
+	int m_virtual_width;
+	void UpdateScrollbarVisibility(bool multiline);
 
 	// == TBStyleEditListener =======================
 	virtual void OnChange();
 	virtual bool OnEnter();
 	virtual void Invalidate(const TBRect &rect);
 	virtual void DrawString(int32 x, int32 y, TBFontFace *font, const TBColor &color, const char *str, int32 len);
-	virtual void DrawBackground(const TBRect &rect, TBBlock *block);
 	virtual void DrawRect(const TBRect &rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color);
 	virtual void DrawTextSelectionBg(const TBRect &rect);

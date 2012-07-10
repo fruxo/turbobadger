@@ -196,6 +196,7 @@ TBSelectList::TBSelectList()
 	m_layout.SetLayoutSize(LAYOUT_SIZE_AVAILABLE);
 	m_container.GetContentRoot()->AddChild(&m_layout);
 	m_container.SetScrollMode(SCROLL_MODE_Y_AUTO);
+	m_container.SetAdaptContentSize(true);
 }
 
 TBSelectList::~TBSelectList()

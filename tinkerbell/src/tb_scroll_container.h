@@ -61,6 +61,11 @@ public:
 	void SetAdaptToContentSize(bool adapt) { m_adapt_to_content_size = adapt; }
 	bool GetAdaptToContentSize() { return m_adapt_to_content_size; }
 
+	/** Set to true if the content should adapt to the available size of this container
+		when it's larger than the preferred size. */
+	void SetAdaptContentSize(bool adapt) { m_adapt_content_size = adapt; }
+	bool GetAdaptContentSize() { return m_adapt_content_size; }
+
 	void SetScrollMode(SCROLL_MODE mode);
 	SCROLL_MODE GetScrollMode() { return m_mode; }
 
@@ -83,6 +88,7 @@ protected:
 	TBScrollBar m_scrollbar_y;
 	TBScrollContainerRoot m_root;
 	bool m_adapt_to_content_size;
+	bool m_adapt_content_size;
 	bool m_layout_is_invalid;
 	SCROLL_MODE m_mode;
 	void ValidateLayout();

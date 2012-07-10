@@ -30,7 +30,6 @@ public:
 	virtual bool OnEnter() { return false; };
 	virtual void Invalidate(const TBRect &rect) = 0;
 	virtual void DrawString(int32 x, int32 y, TBFontFace *font, const TBColor &color, const char *str, int32 len = TB_ALL_TO_TERMINATION) = 0;
-	virtual void DrawBackground(const TBRect &rect, TBBlock *block) = 0;
 	virtual void DrawRect(const TBRect &rect, const TBColor &color) = 0;
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color) = 0;
 	virtual void DrawTextSelectionBg(const TBRect &rect) = 0;
@@ -192,7 +191,7 @@ public:
 
 	/** Update the size of this block. If propagate_height is true, all following blocks will be
 		moved if the height changed. */
-	void SetSize(int32 new_w, int32 new_h, bool propagate_height);
+	void SetSize(int32 old_w, int32 new_w, int32 new_h, bool propagate_height);
 
 	TBTextFragment *FindFragment(int32 ofs, bool prefer_first = false) const;
 	TBTextFragment *FindFragment(int32 x, int32 y) const;
@@ -211,6 +210,7 @@ public:
 	int32 ypos;
 	int16 height;
 	int8 align;
+	int line_width_max;
 
 	TBStr str;
 	int32 str_len;
@@ -317,9 +317,9 @@ public:
 
 	void Paint(const TBRect &rect, const TBFontDescription &font_desc, const TBColor &text_color);
 	bool KeyDown(char ascii, uint16 function, uint32 modifierkeys);
-	void MouseDown(const TBPoint &point, int button, int clicks, uint32 modifierkeys);
-	void MouseUp(const TBPoint &point, int button, uint32 modifierkeys);
-	void MouseMove(const TBPoint &point);
+	bool MouseDown(const TBPoint &point, int button, int clicks, uint32 modifierkeys);
+	bool MouseUp(const TBPoint &point, int button, uint32 modifierkeys);
+	bool MouseMove(const TBPoint &point);
 	void Focus(bool focus);
 
 	void Clear(bool init_new = true);
@@ -329,10 +329,13 @@ public:
 	bool GetText(TBStr &text);
 	bool IsEmpty() const;
 
+	/** Set the default text alignment and all currently selected blocks,
+		or the block of the current caret position if nothing is selected. */
 	void SetAlign(TB_TEXT_ALIGN align);
 	void SetMultiline(bool multiline = true);
 	void SetStyling(bool styling = true);
 	void SetReadOnly(bool readonly = true);
+	void SetSelection(bool selection = true);
 	void SetPassword(bool password = true);
 	void SetWrapping(bool wrapping = true);
 
@@ -362,10 +365,10 @@ public:
 
 	void ScrollIfNeeded(bool x = true, bool y = true);
 	void SetScrollPos(int32 x, int32 y);
-	void SetLayoutSize(int32 width, int32 height);
+	void SetLayoutSize(int32 width, int32 height, bool is_virtual_reformat);
 	void Reformat(bool update_fragments);
 
-	int32 GetContentWidth() const;
+	int32 GetContentWidth();
 	int32 GetContentHeight() const;
 
 	int32 GetOverflowX() const { return MAX(content_width - layout_width, 0); }
@@ -401,13 +404,22 @@ public:
 		uint32 multiline_on : 1;
 		uint32 styling_on : 1;
 		uint32 read_only : 1;
+		uint32 selection_on : 1;
 		uint32 show_whitespace : 1;
 		uint32 password_on : 1;
 		uint32 wrapping : 1;
 		uint32 win_style_br : 1;
+		uint32 calculate_content_width_needed : 1;	///< If content_width needs to be updated next GetContentWidth-
+		uint32 lock_scrollbars_counter : 5;			///< Incremental counter for if UpdateScrollbar should be probhited.
 	} packed;
 	uint32 packed_init;
 	};
+
+	/** Call BeginLockScrollbars & EndLockScrollbars around a scope which does lots of changes,
+		to prevent UpdateScrollbar from happening for each block (May cause recalculation of
+		content_width by iterating through all blocks) */
+	void BeginLockScrollbars();
+	void EndLockScrollbars();
 
 	/** Return true if changing layout_width and layout_height requires relayouting. */
 	bool GetSizeAffectsLayout() const;

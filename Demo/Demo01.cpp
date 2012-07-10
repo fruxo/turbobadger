@@ -267,6 +267,10 @@ public:
 					source.AddItem(new TBGenericStringItem("Glyph cache stresstest (CJK)", TBIDC("CJK")));
 					source.AddItem(new TBGenericStringItem("-"));
 					source.AddItem(new TBGenericStringItem("Toggle wrapping", TBIDC("toggle wrapping")));
+					source.AddItem(new TBGenericStringItem("-"));
+					source.AddItem(new TBGenericStringItem("Align left", TBIDC("align left")));
+					source.AddItem(new TBGenericStringItem("Align center", TBIDC("align center")));
+					source.AddItem(new TBGenericStringItem("Align right", TBIDC("align right")));
 				}
 
 				TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popup_menu"));
@@ -298,9 +302,13 @@ public:
 					edit->GetStyleEdit()->SetText(buf.GetData(), buf.GetAppendPos());
 				}
 				else if (ev.ref_id == TBIDC("toggle wrapping"))
-				{
 					edit->SetWrapping(!edit->GetWrapping());
-				}
+				else if (ev.ref_id == TBIDC("align left"))
+					edit->SetTextAlign(TB_TEXT_ALIGN_LEFT);
+				else if (ev.ref_id == TBIDC("align center"))
+					edit->SetTextAlign(TB_TEXT_ALIGN_CENTER);
+				else if (ev.ref_id == TBIDC("align right"))
+					edit->SetTextAlign(TB_TEXT_ALIGN_RIGHT);
 				return true;
 			}
 		}
