@@ -254,15 +254,15 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	else
 		PaintElement(dst_rect, element);
 
-	// Paint all child element with exact match
+	// Paint all child elements that matches the state (or should be painted for all states)
 	if (element->m_child_elements.HasStateElements())
 	{
-		for(int i = 0; i < NUM_SKIN_STATES; i++)
+		const TBSkinElementState *state_element = element->m_child_elements.GetFirstElement();
+		while (state_element)
 		{
-			uint32 mask = 1 << i;
-			if (state & mask)
-				if (TBSkinElementState *child_state = element->m_child_elements.GetStateElementExactMatch(state & mask))
-					PaintSkin(dst_rect, child_state->element_id, state & mask);
+			if ((state_element->state & state) || state_element->state == SKIN_STATE_ALL)
+				PaintSkin(dst_rect, state_element->element_id, state_element->state & state);
+			state_element = state_element->GetNext();
 		}
 	}
 
@@ -278,16 +278,13 @@ void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, ui
 	// Avoid potential endless recursion in evil skins
 	element->is_painting = true;
 
-	// Paint all overlay element with exact match
-	if (element->m_overlay_elements.HasStateElements())
+	// Paint all overlay elements that matches the state (or should be painted for all states)
+	const TBSkinElementState *state_element = element->m_overlay_elements.GetFirstElement();
+	while (state_element)
 	{
-		for(int i = 0; i < NUM_SKIN_STATES; i++)
-		{
-			uint32 mask = 1 << i;
-			if (state & mask)
-				if (TBSkinElementState *child_state = element->m_overlay_elements.GetStateElementExactMatch(state & mask))
-					PaintSkin(dst_rect, child_state->element_id, state & mask);
-		}
+		if ((state_element->state & state) || state_element->state == SKIN_STATE_ALL)
+			PaintSkin(dst_rect, state_element->element_id, state_element->state & state);
+		state_element = state_element->GetNext();
 	}
 
 	element->is_painting = false;
@@ -423,7 +420,7 @@ TBSkinElementStateList::~TBSkinElementStateList()
 	}
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state)
+TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state) const
 {
 	if (!state)
 		return nullptr;
@@ -431,9 +428,9 @@ TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state)
 	if (TBSkinElementState *element_state = GetStateElementExactMatch(state))
 		return element_state;
 	// No exact state match. Get a state with a partly match
-	for(int i = 0; i < NUM_SKIN_STATES; i++)
+	for (int i = 1; i < NUM_SKIN_STATES; i++)
 	{
-		uint32 mask = 1 << i;
+		uint32 mask = 1 << (i - 1);
 		if (state & mask)
 			if (TBSkinElementState *element_state = GetStateElementExactMatch(state & mask))
 				return element_state;
@@ -441,7 +438,7 @@ TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state)
 	return nullptr;
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(uint32 state)
+TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(uint32 state) const
 {
 	TBSkinElementState *state_element = m_state_elements.GetFirst();
 	while (state_element)
@@ -471,6 +468,7 @@ void TBSkinElementStateList::Load(TBNode *n)
 		if (TBNode *state_node = element_node->GetNode("state"))
 		{
 			const char *state_str = state_node->GetValue().GetString();
+			if (strstr(state_str, "all"))		state->state |= SKIN_STATE_ALL;
 			if (strstr(state_str, "disabled"))	state->state |= SKIN_STATE_DISABLED;
 			if (strstr(state_str, "focused"))	state->state |= SKIN_STATE_FOCUSED;
 			if (strstr(state_str, "pressed"))	state->state |= SKIN_STATE_PRESSED;

@@ -32,6 +32,7 @@ enum SKIN_STATE {
 	SKIN_STATE_HOVERED		= 16
 };
 #define NUM_SKIN_STATES 6
+#define SKIN_STATE_ALL 0xffffffff
 
 /** Type of painting that should be done for a TBSkinElement. */
 enum SKIN_ELEMENT_TYPE {
@@ -57,10 +58,11 @@ class TBSkinElementStateList
 public:
 	~TBSkinElementStateList();
 
-	TBSkinElementState *GetStateElement(uint32 state);
-	TBSkinElementState *GetStateElementExactMatch(uint32 state);
+	TBSkinElementState *GetStateElement(uint32 state) const;
+	TBSkinElementState *GetStateElementExactMatch(uint32 state) const;
 
 	bool HasStateElements() const { return m_state_elements.HasLinks(); }
+	const TBSkinElementState *GetFirstElement() const { return m_state_elements.GetFirst(); }
 
 	void Load(TBNode *n);
 private:
@@ -155,14 +157,17 @@ public:
 		 check for a partial match and paint that *instead* of the base skin.
 
 		Child elements:
-		-It will paint *all* child elements with a exact matching state.
+		-It will paint *all* child elements that match the current state ("all" can be specified
+		 as state so it will always be painted). The elements are painted in the order they are
+		 specified in the skin.
 
 		Special elements:
 		-There's some special generic skin elements used by Widget (see Widget::SetSkinBg)
 
 		Overlay elements:
 		-Overlay elements are painted separately, from PaintSkinOverlay (when all sibling
-		 widgets has been painted).
+		 widgets has been painted). As with child elements, all overlay elements that match
+		 the current state will be painted in the order they are specified in the skin.
 
 		Return the skin element used (after following override elements or override skins),
 		or nullptr if no skin element was found matching the skin_id. */
