@@ -33,6 +33,13 @@ void AnimationManager::Update()
 	TBLinkListOf<AnimationObject>::Iterator iter = animating_objects.IterateForward();
 	while (AnimationObject *obj = iter.GetAndStep())
 	{
+		// Adjust the start time if it's the first update time for this object.
+		if (obj->adjust_start_time)
+		{
+			obj->animation_start_time = time_now;
+			obj->adjust_start_time = false;
+		}
+
 		// Calculate current progress
 		float progress = (float)(time_now - obj->animation_start_time) / (float)obj->animation_duration;
 		progress = MIN(progress, 1.0f);
@@ -72,11 +79,11 @@ bool AnimationManager::HasAnimationsRunning()
 	return animating_objects.HasLinks();
 }
 
-// FIX: Optionally (default for tb widget animations), it should start timing the next update so the start isn't lost!
-void AnimationManager::StartAnimation(AnimationObject *obj, ANIMATION_CURVE animation_curve, double animation_duration)
+void AnimationManager::StartAnimation(AnimationObject *obj, ANIMATION_CURVE animation_curve, double animation_duration, ANIMATION_TIME animation_time)
 {
 	if (obj->IsAnimating())
 		AbortAnimation(obj);
+	obj->adjust_start_time = (animation_time == ANIMATION_TIME_FIRST_UPDATE ? true : false);
 	obj->animation_start_time = TBSystem::GetTimeMS();
 	obj->animation_duration = MAX(animation_duration, 1);
 	obj->animation_curve = animation_curve;

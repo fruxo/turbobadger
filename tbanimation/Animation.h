@@ -10,11 +10,34 @@
 
 namespace tinkerbell {
 
+/** Defines how the animation progress value is interpolated. */
 enum ANIMATION_CURVE {
 	ANIMATION_CURVE_LINEAR,		///< Linear
 	ANIMATION_CURVE_SLOW_DOWN,	///< Fast start, slow end
 	ANIMATION_CURVE_SPEED_UP,	///< Slow start, fast end
 	ANIMATION_CURVE_BEZIER		///< Slow start, slow end
+};
+
+/** Defines what the animation duration time is relative to. */
+enum ANIMATION_TIME {
+
+	/** The start time begins when the animation start in AnimationManager::StartAnimation. */
+	ANIMATION_TIME_IMMEDIATELY,
+
+	/** The animation start in StartAnimation just as with ANIMATION_TIME_IMMEDIATELY,
+		but the start time is adjusted to when the animations Update is about to be called
+		the first time since it was started.
+
+		Using this is most often preferable since starting a animation is often accompanied
+		with some extra work that might eat up a considerable time of the total duration (and
+		chop of the beginning of it).
+
+		F.ex: Creating a window and starting its appearance animation. During initialization
+		of the window, you might initiate loading of additional resources. When that is done
+		and you finally end up updating animations, most of the animation time might already
+		have passed. If the animation start time is adjusted to the first update, the whole
+		animation will run from 0.0 - 1.0 smoothly when the initialization is done. */
+	ANIMATION_TIME_FIRST_UPDATE
 };
 
 #define ANIMATION_DEFAULT_CURVE			ANIMATION_CURVE_SLOW_DOWN
@@ -28,6 +51,7 @@ public:
 	ANIMATION_CURVE animation_curve;
 	double animation_start_time;
 	double animation_duration;
+	bool adjust_start_time;
 public:
 	bool IsAnimating() { return linklist ? true : false; }
 
@@ -59,7 +83,8 @@ public:
 	static bool HasAnimationsRunning();
 	static void StartAnimation(AnimationObject *obj,
 								ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
-								double animation_duration = ANIMATION_DEFAULT_DURATION);
+								double animation_duration = ANIMATION_DEFAULT_DURATION,
+								ANIMATION_TIME animation_time = ANIMATION_TIME_FIRST_UPDATE);
 	static void AbortAnimation(AnimationObject *obj);
 };
 
