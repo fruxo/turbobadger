@@ -217,7 +217,7 @@ const char *TBWidgetsReader::GetTranslatableString(TBNode *node, const char *req
 	return nullptr;
 }
 
-bool TBWidgetsReader::LoadFile(Widget *target, const char *filename)
+bool TBWidgetsReader::LoadFile(TBWidget *target, const char *filename)
 {
 	TBNode node;
 	if (!node.ReadFile(filename))
@@ -226,7 +226,7 @@ bool TBWidgetsReader::LoadFile(Widget *target, const char *filename)
 	return true;
 }
 
-bool TBWidgetsReader::LoadData(Widget *target, const char *data)
+bool TBWidgetsReader::LoadData(TBWidget *target, const char *data)
 {
 	TBNode node;
 	node.ReadData(data);
@@ -234,7 +234,7 @@ bool TBWidgetsReader::LoadData(Widget *target, const char *data)
 	return true;
 }
 
-bool TBWidgetsReader::LoadData(Widget *target, const char *data, int data_len)
+bool TBWidgetsReader::LoadData(TBWidget *target, const char *data, int data_len)
 {
 	TBNode node;
 	node.ReadData(data, data_len);
@@ -242,7 +242,7 @@ bool TBWidgetsReader::LoadData(Widget *target, const char *data, int data_len)
 	return true;
 }
 
-void TBWidgetsReader::LoadNodeTree(Widget *target, TBNode *node)
+void TBWidgetsReader::LoadNodeTree(TBWidget *target, TBNode *node)
 {
 	// Iterate through all nodes and create widgets
 	for (TBNode *n = node->GetFirstChild(); n; n = n->GetNext())
@@ -259,7 +259,7 @@ void SetIDFromNode(TBID &id, TBNode *node)
 		id.Set(node->GetValue().GetInt());
 }
 
-bool TBWidgetsReader::CreateWidget(Widget *target, TBNode *node, WIDGET_Z add_child_z)
+bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_child_z)
 {
 	CREATE_INFO info = { this, target->GetContentRoot(), node };
 
@@ -270,7 +270,7 @@ bool TBWidgetsReader::CreateWidget(Widget *target, TBNode *node, WIDGET_Z add_ch
 			break;
 
 	// Create the widget
-	Widget *new_widget = wc ? wc->Create(&info) : nullptr;
+	TBWidget *new_widget = wc ? wc->Create(&info) : nullptr;
 	if (!new_widget)
 		return false;
 

@@ -14,7 +14,7 @@
 namespace tinkerbell {
 
 class TBWindow;
-class Widget;
+class TBWidget;
 class TBFontFace;
 
 // == Generic widget stuff =================================================
@@ -31,7 +31,7 @@ enum EVENT_TYPE {
 
 		It is invoked on a widget after POINTER_UP if the pointer is still inside
 		its hit area. It can also be invoked by keyboard on some clickable widgets
-		(see Widget::SetClickByKey).
+		(see TBWidget::SetClickByKey).
 
 		If panning of scrollable widgets start while the pointer is down, CLICK
 		won't be invoked when releasing the pointer (since that should stop panning). */
@@ -72,7 +72,7 @@ enum SPECIAL_KEY
 class TBWidgetEvent
 {
 public:
-	Widget *target;		///< The widget that invoked the event
+	TBWidget *target;		///< The widget that invoked the event
 	EVENT_TYPE type;	///< Which type of event
 	int target_x;		///< X position in target widget. Set for all pointer events, click and wheel.
 	int target_y;		///< Y position in target widget. Set for all pointer events, click and wheel.
@@ -103,7 +103,7 @@ public:
 										type == EVENT_TYPE_KEY_UP; }
 };
 
-/** Widget state types (may be combined).
+/** TBWidget state types (may be combined).
 	NOTE: This should exactly match SKIN_STATE in tb_skin.h! */
 enum WIDGET_STATE_ {
 	WIDGET_STATE_NONE			= 0,
@@ -133,7 +133,7 @@ enum AXIS {
 	AXIS_Y, ///< Vertical layout
 };
 
-/** PreferredSize contains size preferences for a Widget.
+/** PreferredSize contains size preferences for a TBWidget.
 	This is what decides how layout in TBLayout will be. */
 
 class PreferredSize
@@ -168,7 +168,7 @@ enum WIDGET_FOCUS_REASON {
 	WIDGET_FOCUS_REASON_UNKNOWN		///< Set focus by anything else.
 };
 
-/** Hit status return value for Widget::GetHitStatus */
+/** Hit status return value for TBWidget::GetHitStatus */
 enum WIDGET_HIT_STATUS {
 	WIDGET_HIT_STATUS_NO_HIT = 0,			///< The widget was not hit
 	WIDGET_HIT_STATUS_HIT,					///< The widget was hit, any child may be hit too.
@@ -189,16 +189,16 @@ enum WIDGET_HIT_STATUS {
 /** Call GetWidgetByID on root and cast. Will return nullptr if the widget is of the wrong type, or if it was not found.  */
 #define TBSafeGetByIDInRoot(root, classname, id) (static_cast<classname *>(root->GetWidgetByID(id, #classname)))
 
-/** The base Widget class.
+/** The base TBWidget class.
 	Make a subclass to implement UI controls.
 	Each widget has a background skin (no skin specified by default) which will be used to
 	calculate the default size preferences and padding around the preferred content size. */
 
-class Widget : public TBLinkOf<Widget>
+class TBWidget : public TBLinkOf<TBWidget>
 {
 public:
-	Widget();
-	virtual ~Widget();
+	TBWidget();
+	virtual ~TBWidget();
 
 	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
 		The skin may expand outside this rect to draw f.ex shadows. */
@@ -244,7 +244,7 @@ public:
 	TBID &GetGroupID() { return m_group_id; }
 
 	/** Get this widget or any child widget with a matching id, or nullptr if none is found. */
-	Widget *GetWidgetByID(const TBID &id, const char *classname = nullptr);
+	TBWidget *GetWidgetByID(const TBID &id, const char *classname = nullptr);
 
 	/** Enable or disable the given state(s). The state affects which skin state is used when drawing.
 		Some states are set automatically on interaction. See GetAutoState(). */
@@ -280,10 +280,10 @@ public:
 
 	/** Add the child to this widget. The child widget will automatically be deleted when
 		this widget is deleted. (If the child isn't removed again with RemoveChild.) */
-	void AddChild(Widget *child, WIDGET_Z z = WIDGET_Z_TOP, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
+	void AddChild(TBWidget *child, WIDGET_Z z = WIDGET_Z_TOP, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
 	/** Remove child from this widget without deleting it. */
-	void RemoveChild(Widget *child, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
+	void RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
 	/** Sets the z-order of this widget related to its siblings. When a widget is added with AddChild, it will be
 		placed at the top in the parent (Above previously added widget). SetZ can be used to change the order. */
@@ -347,19 +347,19 @@ public:
 
 	/** Returns the child widget that contains the coordinate or nullptr if no one does. If include_children
 		is true, the search will recurse into the childrens children. */
-	Widget *GetWidgetAt(int x, int y, bool include_children) const;
+	TBWidget *GetWidgetAt(int x, int y, bool include_children) const;
 
-	Widget *GetNextDeep() const;
-	Widget *GetPrevDeep() const;
-	inline Widget *GetFirstChild() const { return m_children.GetFirst(); }
-	inline Widget *GetLastChild() const { return m_children.GetLast(); }
+	TBWidget *GetNextDeep() const;
+	TBWidget *GetPrevDeep() const;
+	inline TBWidget *GetFirstChild() const { return m_children.GetFirst(); }
+	inline TBWidget *GetLastChild() const { return m_children.GetLast(); }
 
 	/** Return true if this widget is the same or a parent of other_widget. */
-	bool IsParentOf(Widget *other_widget) const;
+	bool IsParentOf(TBWidget *other_widget) const;
 
 	/** Return true if this widget is the same as other_widget or if other_widget
 		events are going through this widget (See GetEventDestination()) */
-	bool IsEventDestinationFor(Widget *other_widget) const;
+	bool IsEventDestinationFor(TBWidget *other_widget) const;
 
 	// == Callbacks ==============================================
 
@@ -420,10 +420,10 @@ public:
 	virtual void OnCaptureChanged(bool captured) {}
 
 	/** Called when a child widget has been added to this widget (before calling OnAdded on child). */
-	virtual void OnChildAdded(Widget *child) {}
+	virtual void OnChildAdded(TBWidget *child) {}
 
 	/** Called when a child widget is about to be removed from this widget (before calling OnRemove on child). */
-	virtual void OnChildRemove(Widget *child) {}
+	virtual void OnChildRemove(TBWidget *child) {}
 
 	/** Called when this widget has been added to a parent (after calling OnChildAdded on parent). */
 	virtual void OnAdded() {}
@@ -446,16 +446,16 @@ public:
 
 	/** Get this widget or a child widget that should be root for other children. This is useful
 		for widgets having multiple children by default, to specify which one that should get the children. */
-	virtual Widget *GetContentRoot() { return this; }
+	virtual TBWidget *GetContentRoot() { return this; }
 
 	/** Get this widget or a parent widget that is the absolute root parent. */
-	Widget *GetParentRoot();
+	TBWidget *GetParentRoot();
 
 	/** Get the widget or closest parent widget that is a TBWindow. */
 	TBWindow *GetParentWindow();
 
 	/** Get the widget that should receive the events this widget invoke. By default the parent. */
-	virtual Widget *GetEventDestination() { return m_parent; }
+	virtual TBWidget *GetEventDestination() { return m_parent; }
 
 	/** Return translation the children should have. Any scrolling of child widgets
 		should be done with this method, by returning the wanted translation.
@@ -517,7 +517,7 @@ public:
 	/** Unconnect, if this widget is connected to a TBWidgetValue. */
 	void Unconnect() { m_connection.Unconnect(); }
 
-	/** Get the classname of this Widget.
+	/** Get the classname of this TBWidget.
 		Note: When you subclass a widget, use the WIDGET_SUBCLASS macro
 		instead of overriding this function, and IsOfType manually. */
 	virtual const char *GetClassName() const { return ""; }
@@ -602,7 +602,7 @@ public:
 
 	/** A widget that receive a EVENT_TYPE_POINTER_DOWN event, will stay "captured" until EVENT_TYPE_POINTER_UP
 		is received. While captured, all EVENT_TYPE_POINTER_MOVE are sent to it. This method can force release the capture,
-		which may happen f.ex if the Widget is removed while captured. */
+		which may happen f.ex if the TBWidget is removed while captured. */
 	void ReleaseCapture();
 
 	/** Make x and y (relative to this widget) relative to the upper left corner of the root widget. */
@@ -628,15 +628,15 @@ public:
 		by GetCalculatedFontDescription) */
 	TBFontFace *GetFont() const;
 public:
-	TBLinkListOf<Widget> m_children;///< List of child widgets
-	Widget *m_parent;				///< The parent of this widget
+	TBLinkListOf<TBWidget> m_children;///< List of child widgets
+	TBWidget *m_parent;				///< The parent of this widget
 	TBRect m_rect;					///< The rectangle of this widget, relative to the parent. See SetRect.
 	uint32 m_state;					///< The widget state (excluding any auto states)
 	float m_opacity;				///< Opacity 0-1. See SetOpacity.
 	TBID m_skin_bg;					///< ID for the background skin (0 for no skin).
 	TBID m_id;						///< ID for GetWidgetByID and others.
 	TBID m_group_id;				///< ID for button groups (such as TBRadioButton)
-	TBWidgetValueConnection m_connection; ///< Widget value connection
+	TBWidgetValueConnection m_connection; ///< TBWidget value connection
 	uint32 m_data;					///< Additional generic data (depends on widget). Initially 0.
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
 	TBFontDescription m_font_desc;	///< The font description.
@@ -651,10 +651,10 @@ public:
 		uint16 m_packed_init;
 	};
 
-	// Widget related globals
-	static Widget *hovered_widget;		///< The currently hovered widget, or nullptr.
-	static Widget *captured_widget;		///< The currently captured widget, or nullptr.
-	static Widget *focused_widget;		///< The currently focused widget, or nullptr.
+	// TBWidget related globals
+	static TBWidget *hovered_widget;		///< The currently hovered widget, or nullptr.
+	static TBWidget *captured_widget;		///< The currently captured widget, or nullptr.
+	static TBWidget *focused_widget;		///< The currently focused widget, or nullptr.
 	static int pointer_down_widget_x;	///< Pointer x position on down event, relative to the captured widget.
 	static int pointer_down_widget_y;	///< Pointer y position on down event, relative to the captured widget.
 	static int pointer_move_widget_x;	///< Pointer x position on last pointer event, relative to the captured widget (if any) or hovered widget.
@@ -663,8 +663,8 @@ public:
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 private:
-	void SetHoveredWidget(Widget *widget);
-	void SetCapturedWidget(Widget *widget);
+	void SetHoveredWidget(TBWidget *widget);
+	void SetCapturedWidget(TBWidget *widget);
 	void HandlePanningOnMove(int x, int y);
 };
 

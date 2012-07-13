@@ -26,10 +26,10 @@ public:
 // FIX: Use TBStyleEdit if wanted, to support rich text
 	TBWidgetString();
 
-	void Paint(Widget *widget, const TBRect &rect, const TBColor &color);
+	void Paint(TBWidget *widget, const TBRect &rect, const TBColor &color);
 
-	int GetWidth(Widget *widget);
-	int GetHeight(Widget *widget);
+	int GetWidth(TBWidget *widget);
+	int GetHeight(TBWidget *widget);
 
 	bool SetText(const char *text) { return m_text.Set(text); }
 	bool GetText(TBStr &text) const { return text.Set(m_text); }
@@ -45,18 +45,18 @@ public:
 
 /** TBTextField is a one line text field that is not editable. */
 
-class TBTextField : public Widget
+class TBTextField : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBTextField", Widget);
+	WIDGET_SUBCLASS("TBTextField", TBWidget);
 
 	TBTextField();
 
 	/** Set the text of the text field. */
 	virtual bool SetText(const char *text);
 	virtual bool GetText(TBStr &text) { return m_text.GetText(text); }
-	using Widget::GetText; ///< Make all versions in base class available.
+	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	/** Set which alignment the text should have if the space
 		given when painting is larger than the text. */
@@ -80,11 +80,11 @@ protected:
 	Has a text field in its internal layout by default. Other widgets can be added
 	under GetContentRoot(). */
 
-class TBButton : public Widget, protected TBMessageHandler
+class TBButton : public TBWidget, protected TBMessageHandler
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBButton", Widget);
+	WIDGET_SUBCLASS("TBButton", TBWidget);
 
 	TBButton();
 	~TBButton();
@@ -105,7 +105,7 @@ public:
 	/** Set the text of the button. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
-	using Widget::GetText; ///< Make all versions in base class available.
+	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	virtual void SetValue(int value) { SetState(WIDGET_STATE_PRESSED, value ? true : false); }
 	virtual int GetValue() { return GetState(WIDGET_STATE_PRESSED); }
@@ -115,7 +115,7 @@ public:
 	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
 	virtual PreferredSize GetPreferredContentSize() { return m_layout.GetPreferredSize(); }
 
-	virtual Widget *GetContentRoot() { return &m_layout; }
+	virtual TBWidget *GetContentRoot() { return &m_layout; }
 
 	// == TBMessageHandler ==============================================================
 	virtual void OnMessageReceived(TBMessage *msg);
@@ -129,11 +129,11 @@ protected:
 	text field will be redirected to another child widget (that you add) to it.
 	Typically useful for creating check boxes, radio buttons with labels. */
 
-class TBClickLabel : public Widget
+class TBClickLabel : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBClickLabel", Widget);
+	WIDGET_SUBCLASS("TBClickLabel", TBWidget);
 
 	TBClickLabel();
 	~TBClickLabel();
@@ -145,11 +145,11 @@ public:
 	/** Set the text of the label. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
-	using Widget::GetText; ///< Make all versions in base class available.
+	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	virtual PreferredSize GetPreferredContentSize() { return m_layout.GetPreferredSize(); }
 
-	virtual Widget *GetContentRoot() { return &m_layout; }
+	virtual TBWidget *GetContentRoot() { return &m_layout; }
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
@@ -161,11 +161,11 @@ protected:
 	If you need to load and show images dynamically (i.e. not always loaded as the skin),
 	you can use TBImageWidget. */
 
-class TBSkinImage : public Widget
+class TBSkinImage : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSkinImage", Widget);
+	WIDGET_SUBCLASS("TBSkinImage", TBWidget);
 
 	TBSkinImage() {}
 	TBSkinImage(TBID skin_bg) { SetSkinBg(skin_bg); }
@@ -175,11 +175,11 @@ public:
 
 /** TBSeparator is a widget only showing a skin.
 	It is disabled by default. */
-class TBSeparator : public Widget
+class TBSeparator : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSeparator", Widget);
+	WIDGET_SUBCLASS("TBSeparator", TBWidget);
 
 // FIX: Should take base skin, and add .x or .y depending on parent AXIS!
 	TBSeparator() { SetState(WIDGET_STATE_DISABLED, true); }
@@ -187,11 +187,11 @@ public:
 
 /** TBProgressSpinner is a animation that is running while its value is 1.
 	Typically used to indicate that the application is working. */
-class TBProgressSpinner : public Widget, protected TBMessageHandler
+class TBProgressSpinner : public TBWidget, protected TBMessageHandler
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBProgressSpinner", Widget);
+	WIDGET_SUBCLASS("TBProgressSpinner", TBWidget);
 
 	TBProgressSpinner();
 
@@ -220,11 +220,11 @@ protected:
 };
 
 /** TBRadioCheckBox has shared functionality for TBCheckBox and TBRadioButton. */
-class TBRadioCheckBox : public Widget
+class TBRadioCheckBox : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBRadioCheckBox", Widget);
+	WIDGET_SUBCLASS("TBRadioCheckBox", TBWidget);
 
 	TBRadioCheckBox();
 
@@ -234,7 +234,7 @@ public:
 	virtual PreferredSize GetPreferredSize();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
-	void ToggleGroup(Widget *root, Widget *toggled);
+	void ToggleGroup(TBWidget *root, TBWidget *toggled);
 	int m_value;
 };
 
@@ -263,11 +263,11 @@ public:
 
 /** TBScrollBar is a scroll bar in the given axis. */
 
-class TBScrollBar : public Widget
+class TBScrollBar : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBScrollBar", Widget);
+	WIDGET_SUBCLASS("TBScrollBar", TBWidget);
 
 	TBScrollBar();
 	~TBScrollBar();
@@ -299,7 +299,7 @@ public:
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);
 protected:
-	Widget m_handle;
+	TBWidget m_handle;
 	AXIS m_axis;
 	double m_value;
 	double m_min, m_max, m_visible;
@@ -311,11 +311,11 @@ protected:
 
 // FIX: Add a "track value" showing as a line within the track (to be used for buffering etc).
 // FIX: Also add a auto track that keeps it up to date with value (default).
-class TBSlider : public Widget
+class TBSlider : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSlider", Widget);
+	WIDGET_SUBCLASS("TBSlider", TBWidget);
 
 	TBSlider();
 	~TBSlider();
@@ -343,7 +343,7 @@ public:
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);
 protected:
-	Widget m_handle;
+	TBWidget m_handle;
 	AXIS m_axis;
 	double m_value;
 	double m_min, m_max;
@@ -351,22 +351,22 @@ protected:
 	void UpdateHandle();
 };
 
-/** TBContainer is just a Widget with border and padding (using skin "TBContainer") */
-class TBContainer : public Widget
+/** TBContainer is just a TBWidget with border and padding (using skin "TBContainer") */
+class TBContainer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBContainer", Widget);
+	WIDGET_SUBCLASS("TBContainer", TBWidget);
 
 	TBContainer();
 };
 
 /** TBMover is moving its parent widget when dragged. */
-class TBMover : public Widget
+class TBMover : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBMover", Widget);
+	WIDGET_SUBCLASS("TBMover", TBWidget);
 
 	TBMover();
 
@@ -374,22 +374,22 @@ public:
 };
 
 /** TBResizer is a lower right corner resize grip. It will resize its parent widget. */
-class TBResizer : public Widget
+class TBResizer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBResizer", Widget);
+	WIDGET_SUBCLASS("TBResizer", TBWidget);
 
 	TBResizer();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 /** TBDimmer dim widgets in the background and block input. */
-class TBDimmer : public Widget
+class TBDimmer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBDimmer", Widget);
+	WIDGET_SUBCLASS("TBDimmer", TBWidget);
 
 	TBDimmer();
 

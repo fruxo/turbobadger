@@ -259,7 +259,7 @@ void TBEditField::OnFocusChanged(bool focused)
 void TBEditField::OnResized(int old_w, int old_h)
 {
 	// Make the scrollbars move
-	Widget::OnResized(old_w, old_h);
+	TBWidget::OnResized(old_w, old_h);
 
 	TBRect visible_rect = GetVisibleRect();
 	m_style_edit.SetLayoutSize(visible_rect.w, visible_rect.h, false);
@@ -362,7 +362,7 @@ bool TBEditField::OnEnter()
 
 void TBEditField::Invalidate(const TBRect &rect)
 {
-	Widget::Invalidate();
+	TBWidget::Invalidate();
 }
 
 void TBEditField::DrawString(int32 x, int32 y, TBFontFace *font, const TBColor &color, const char *str, int32 len)
@@ -398,7 +398,7 @@ void TBEditField::DrawCaret(const TBRect &rect)
 
 void TBEditField::Scroll(int32 dx, int32 dy)
 {
-	Widget::Invalidate();
+	TBWidget::Invalidate();
 	m_scrollbar_x.SetValue(m_style_edit.scroll_x);
 	m_scrollbar_y.SetValue(m_style_edit.scroll_y);
 }
@@ -434,7 +434,7 @@ void TBEditFieldScrollRoot::OnPaintChildren(const PaintProps &paint_props)
 		return;
 	// Clip children
 	TBRect old_clip_rect = g_renderer->SetClipRect(TBRect(0, 0, m_rect.w, m_rect.h), true);
-	Widget::OnPaintChildren(paint_props);
+	TBWidget::OnPaintChildren(paint_props);
 	g_renderer->SetClipRect(old_clip_rect, false);
 }
 
@@ -448,7 +448,7 @@ void TBEditFieldScrollRoot::GetChildTranslation(int &x, int &y) const
 WIDGET_HIT_STATUS TBEditFieldScrollRoot::GetHitStatus(int x, int y)
 {
 	// Return no hit on this widget, but maybe on any of the children.
-	if (Widget::GetHitStatus(x, y) && GetWidgetAt(x, y, false))
+	if (TBWidget::GetHitStatus(x, y) && GetWidgetAt(x, y, false))
 		return WIDGET_HIT_STATUS_HIT;
 	return WIDGET_HIT_STATUS_NO_HIT;
 }
@@ -458,7 +458,7 @@ WIDGET_HIT_STATUS TBEditFieldScrollRoot::GetHitStatus(int x, int y)
 class TBTextFragmentContentWidget : public TBTextFragmentContent
 {
 public:
-	TBTextFragmentContentWidget(Widget *parent, Widget *widget);
+	TBTextFragmentContentWidget(TBWidget *parent, TBWidget *widget);
 	virtual ~TBTextFragmentContentWidget();
 
 	virtual void UpdatePos(int x, int y);
@@ -466,10 +466,10 @@ public:
 	virtual int32 GetHeight(TBFontFace *font, TBTextFragment *fragment);
 	virtual int32 GetBaseline(TBFontFace *font, TBTextFragment *fragment);
 private:
-	Widget *m_widget;
+	TBWidget *m_widget;
 };
 
-TBTextFragmentContentWidget::TBTextFragmentContentWidget(Widget *parent, Widget *widget)
+TBTextFragmentContentWidget::TBTextFragmentContentWidget(TBWidget *parent, TBWidget *widget)
 	: m_widget(widget)
 {
 	parent->GetContentRoot()->AddChild(widget);
@@ -515,7 +515,7 @@ TBTextFragmentContent *TBEditFieldContentFactory::CreateFragmentContent(const ch
 	{
 		// Create a wrapper for the generated widget.
 		// Its size will adapt to the content.
-		if (Widget *widget = new Widget())
+		if (TBWidget *widget = new TBWidget())
 		{
 			g_widgets_reader->LoadData(widget, text + 8, text_len - 9);
 

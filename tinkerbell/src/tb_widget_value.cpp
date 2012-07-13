@@ -10,7 +10,7 @@ namespace tinkerbell {
 
 // == TBWidgetValueConnection ===========================================================
 
-void TBWidgetValueConnection::Connect(TBWidgetValue *value, Widget *widget)
+void TBWidgetValueConnection::Connect(TBWidgetValue *value, TBWidget *widget)
 {
 	Unconnect();
 	m_widget = widget;
@@ -27,7 +27,7 @@ void TBWidgetValueConnection::Unconnect()
 	m_widget = nullptr;
 }
 
-void TBWidgetValueConnection::SyncFromWidget(Widget *source_widget)
+void TBWidgetValueConnection::SyncFromWidget(TBWidget *source_widget)
 {
 	if (m_value)
 		m_value->SetFromWidget(source_widget);
@@ -48,7 +48,7 @@ TBWidgetValue::~TBWidgetValue()
 		m_connections.GetFirst()->Unconnect();
 }
 
-void TBWidgetValue::SetFromWidget(Widget *source_widget)
+void TBWidgetValue::SetFromWidget(TBWidget *source_widget)
 {
 	if (m_syncing)
 		return; // We ended up here because syncing is in progress.
@@ -77,7 +77,7 @@ void TBWidgetValue::SetFromWidget(Widget *source_widget)
 	SyncToWidgets(source_widget);
 }
 
-bool TBWidgetValue::SyncToWidgets(Widget *exclude_widget)
+bool TBWidgetValue::SyncToWidgets(TBWidget *exclude_widget)
 {
 	// FIX: Assign group to each value. Currently we only have one global group.
 	g_value_group.InvokeOnValueChanged(this);
@@ -92,7 +92,7 @@ bool TBWidgetValue::SyncToWidgets(Widget *exclude_widget)
 	return !fail;
 }
 
-bool TBWidgetValue::SyncToWidget(Widget *dst_widget)
+bool TBWidgetValue::SyncToWidget(TBWidget *dst_widget)
 {
 	if (m_syncing)
 		return true; // We ended up here because syncing is in progress.

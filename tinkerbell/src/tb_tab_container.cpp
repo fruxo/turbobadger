@@ -10,16 +10,16 @@ namespace tinkerbell {
 
 // == TBTabLayout =======================================================================
 
-int TBTabLayout::GetIndexFromChild(Widget *child)
+int TBTabLayout::GetIndexFromChild(TBWidget *child)
 {
 	int index = 0;
-	for (Widget *tmp = GetFirstChild(); tmp; tmp = tmp->GetNext(), index++)
+	for (TBWidget *tmp = GetFirstChild(); tmp; tmp = tmp->GetNext(), index++)
 		if (tmp == child)
 			return index;
 	return -1;
 }
 
-void TBTabLayout::OnChildAdded(Widget *child)
+void TBTabLayout::OnChildAdded(TBWidget *child)
 {
 	if (TBButton *button = TBSafeCast(TBButton, child))
 	{
@@ -75,8 +75,8 @@ void TBTabContainer::SetCurrentPage(int index)
 
 	// Update the pages visibility and tabs pressed value.
 	index = 0;
-	Widget *page = m_content_root.GetFirstChild();
-	Widget *tab = m_tab_layout.GetFirstChild();
+	TBWidget *page = m_content_root.GetFirstChild();
+	TBWidget *tab = m_tab_layout.GetFirstChild();
 	for (   ; page && tab; page = page->GetNext(), tab = tab->GetNext(), index++)
 	{
 		bool active = index == m_current_page;

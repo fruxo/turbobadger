@@ -66,7 +66,7 @@ enum LAYOUT_OVERFLOW {
 
 /** TBLayout layouts its children along the given axis.
 
-	Each widgets size depend on its preferred size (See Widget::GetPreferredSize),
+	Each widgets size depend on its preferred size (See TBWidget::GetPreferredSize),
 	gravity, and the specified layout settings (See SetLayoutSize, SetLayoutPosition
 	SetLayoutOverflow, SetLayoutDistribution, SetLayoutDistributionPosition), and
 	the available size.
@@ -74,11 +74,11 @@ enum LAYOUT_OVERFLOW {
 	Each widget is also separated by the specified spacing (See SetSpacing).
 */
 
-class TBLayout : public Widget
+class TBLayout : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBLayout", Widget);
+	WIDGET_SUBCLASS("TBLayout", TBWidget);
 
 	TBLayout(AXIS axis = AXIS_X);
 
@@ -151,8 +151,8 @@ protected:
 	void ValidateLayout(PreferredSize *calculate_ps = nullptr);
 	bool QualifyForExpansion(WIDGET_GRAVITY gravity);
 	int GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, int available_height);
-	Widget *GetFirstInLayoutOrder();
-	Widget *GetNextInLayoutOrder(Widget *child);
+	TBWidget *GetFirstInLayoutOrder();
+	TBWidget *GetNextInLayoutOrder(TBWidget *child);
 };
 
 };

@@ -146,10 +146,10 @@ bool DemoWindow::OnEvent(const TBWidgetEvent &ev)
 class TestItemSource : public TBGenericStringItemSource
 {
 public:
-	virtual Widget *CreateItemWidget(int index);
+	virtual TBWidget *CreateItemWidget(int index);
 };
 
-Widget *TestItemSource::CreateItemWidget(int index)
+TBWidget *TestItemSource::CreateItemWidget(int index)
 {
 	if (TBLayout *layout = new TBLayout)
 	{
@@ -221,9 +221,9 @@ public:
 
 		if (TBEditField *edit = TBSafeGetByID(TBEditField, "editfield"))
 		{
-			if (Widget *undo = GetWidgetByID("undo"))
+			if (TBWidget *undo = GetWidgetByID("undo"))
 				undo->SetState(WIDGET_STATE_DISABLED, !edit->GetStyleEdit()->CanUndo());
-			if (Widget *redo = GetWidgetByID("redo"))
+			if (TBWidget *redo = GetWidgetByID("redo"))
 				redo->SetState(WIDGET_STATE_DISABLED, !edit->GetStyleEdit()->CanRedo());
 			if (TBTextField *info = TBSafeGetByID(TBTextField, "info"))
 			{
@@ -370,7 +370,7 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 		axis = axis == AXIS_X ? AXIS_Y : AXIS_X;
 		if (TBTabContainer *tc = TBSafeGetByID(TBTabContainer, "tabcontainer"))
 		{
-			for (Widget *child = tc->GetTabLayout()->GetFirstChild(); child; child = child->GetNext())
+			for (TBWidget *child = tc->GetTabLayout()->GetFirstChild(); child; child = child->GetNext())
 			{
 				if (TBButton *button = TBSafeCast(TBButton, child))
 					button->SetAxis(axis);
@@ -475,7 +475,7 @@ void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
 {
 	if (msg->message == TBIDC("new button") && msg->data)
 	{
-		if (Widget *target = GetWidgetByID(msg->data->id1))
+		if (TBWidget *target = GetWidgetByID(msg->data->id1))
 		{
 			TBStr str;
 			str.SetFormatted("Remove %d", msg->data->v1.GetInt());
@@ -742,15 +742,15 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 {
 	// Render
 	g_renderer->BeginPaint(window_w, window_h);
-	m_root->InvokePaint(Widget::PaintProps());
+	m_root->InvokePaint(TBWidget::PaintProps());
 
 #ifdef _DEBUG
 	// Enable to debug skin bitmap fragments
 	//g_tb_skin->Debug();
 
 	// Enable to debug font glyph fragments (the font of the hovered widget)
-	//g_font_manager->GetFontFace(Widget::hovered_widget ?
-	//							Widget::hovered_widget->GetCalculatedFontDescription() :
+	//g_font_manager->GetFontFace(TBWidget::hovered_widget ?
+	//							TBWidget::hovered_widget->GetCalculatedFontDescription() :
 	//							g_font_manager->GetDefaultFontDescription())->Debug();
 
 	// Enable to debug image manager fragments (if addons/tbimage/* is used)

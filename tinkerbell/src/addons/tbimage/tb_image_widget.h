@@ -15,11 +15,11 @@ namespace tinkerbell {
 	constrained in size to its skin.
 	If you need to show a image from the skin, you can use TBSkinImage. */
 
-class TBImageWidget : public Widget
+class TBImageWidget : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBImageWidget", Widget);
+	WIDGET_SUBCLASS("TBImageWidget", TBWidget);
 
 	TBImageWidget() {}
 

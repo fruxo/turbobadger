@@ -16,17 +16,17 @@ TBWidgetString::TBWidgetString()
 {
 }
 
-int TBWidgetString::GetWidth(Widget *widget)
+int TBWidgetString::GetWidth(TBWidget *widget)
 {
 	return widget->GetFont()->GetStringWidth(m_text);
 }
 
-int TBWidgetString::GetHeight(Widget *widget)
+int TBWidgetString::GetHeight(TBWidget *widget)
 {
 	return widget->GetFont()->GetHeight();
 }
 
-void TBWidgetString::Paint(Widget *widget, const TBRect &rect, const TBColor &color)
+void TBWidgetString::Paint(TBWidget *widget, const TBRect &rect, const TBColor &color)
 {
 	TBFontFace *font = widget->GetFont();
 	int string_w = GetWidth(widget);
@@ -174,7 +174,7 @@ void TBButton::OnMessageReceived(TBMessage *msg)
 WIDGET_HIT_STATUS TBButton::GetHitStatus(int x, int y)
 {
 	// Never hit any of the children to the button. We always want to the button itself.
-	return Widget::GetHitStatus(x, y) ? WIDGET_HIT_STATUS_HIT_NO_CHILDREN : WIDGET_HIT_STATUS_NO_HIT;
+	return TBWidget::GetHitStatus(x, y) ? WIDGET_HIT_STATUS_HIT_NO_CHILDREN : WIDGET_HIT_STATUS_NO_HIT;
 }
 
 // == TBClickLabel ==========================================================================================
@@ -199,7 +199,7 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 	// if we only have the textfield.
 	if (m_layout.m_children.GetFirst() == m_layout.m_children.GetLast())
 		return false;
-	Widget *click_target = (m_layout.GetFirstChild() == &m_textfield ? m_layout.GetLastChild() : m_layout.GetFirstChild());
+	TBWidget *click_target = (m_layout.GetFirstChild() == &m_textfield ? m_layout.GetLastChild() : m_layout.GetFirstChild());
 	// Invoke the event on it, as if it was invoked on the target itself.
 	if (click_target && ev.target == &m_textfield)
 	{
@@ -214,7 +214,7 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 
 PreferredSize TBSkinImage::GetPreferredSize()
 {
-	PreferredSize ps = Widget::GetPreferredSize();
+	PreferredSize ps = TBWidget::GetPreferredSize();
 	// FIX: Make it stretched proportionally if shrunk.
 	ps.max_w = ps.pref_w;
 	ps.max_h = ps.pref_h;
@@ -290,11 +290,11 @@ TBRadioCheckBox::TBRadioCheckBox()
 	SetClickByKey(true);
 }
 
-void TBRadioCheckBox::ToggleGroup(Widget *root, Widget *toggled)
+void TBRadioCheckBox::ToggleGroup(TBWidget *root, TBWidget *toggled)
 {
 	if (root != toggled && root->m_group_id == toggled->m_group_id)
 		root->SetValue(0);
-	for (Widget *child = root->GetFirstChild(); child; child = child->GetNext())
+	for (TBWidget *child = root->GetFirstChild(); child; child = child->GetNext())
 		ToggleGroup(child, toggled);
 }
 
@@ -314,7 +314,7 @@ void TBRadioCheckBox::SetValue(int value)
 		return;
 	// Toggle all other widgets in the same group. First get a root widget
 	// for the search.
-	Widget *group = this;
+	TBWidget *group = this;
 	while (group && !group->GetIsGroupRoot())
 		group = group->m_parent;
 	if (group)
@@ -325,7 +325,7 @@ void TBRadioCheckBox::SetValue(int value)
 
 PreferredSize TBRadioCheckBox::GetPreferredSize()
 {
-	PreferredSize ps = Widget::GetPreferredSize();
+	PreferredSize ps = TBWidget::GetPreferredSize();
 	ps.min_w = ps.max_w = ps.pref_w;
 	ps.min_h = ps.max_h = ps.pref_h;
 	return ps;

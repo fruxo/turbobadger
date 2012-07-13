@@ -104,7 +104,7 @@ void TBLayout::InvalidateLayout(INVALIDATE_LAYOUT il)
 {
 	m_packed.layout_is_invalid = 1;
 	// Continue invalidating parents (depending on il)
-	Widget::InvalidateLayout(il);
+	TBWidget::InvalidateLayout(il);
 }
 
 PreferredSize RotPreferredSize(const PreferredSize ps, AXIS axis)
@@ -170,12 +170,12 @@ int TBLayout::GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, i
 	return height;
 }
 
-Widget *TBLayout::GetFirstInLayoutOrder()
+TBWidget *TBLayout::GetFirstInLayoutOrder()
 {
 	return m_packed.mode_reverse_order ? GetLastChild() : GetFirstChild();
 }
 
-Widget *TBLayout::GetNextInLayoutOrder(Widget *child)
+TBWidget *TBLayout::GetNextInLayoutOrder(TBWidget *child)
 {
 	return m_packed.mode_reverse_order ? child->GetPrev() : child->GetNext();
 }
@@ -224,7 +224,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	bool last_child_is_collapsed = false;
 	int last_added_spacing = 0;
 
-	for (Widget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
+	for (TBWidget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
 	{
 		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
 		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(), m_axis);
@@ -303,7 +303,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 
 	// Layout
 	int used_space = 0;
-	for (Widget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
+	for (TBWidget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
 	{
 		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
 		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(), m_axis);
@@ -424,7 +424,7 @@ void TBLayout::OnPaintChildren(const PaintProps &paint_props)
 	}
 
 	// Paint children
-	Widget::OnPaintChildren(paint_props);
+	TBWidget::OnPaintChildren(paint_props);
 
 	// Paint fadeout image over the overflowed edges
 	// to the indicate to used that it's overflowed.

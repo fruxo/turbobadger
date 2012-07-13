@@ -62,7 +62,7 @@ public:
 	/** Create the item representation widget(s). By default, it will create
 		a TBTextField for string-only items, and other types for items that
 		also has image or submenu. */
-	virtual Widget *CreateItemWidget(int index);
+	virtual TBWidget *CreateItemWidget(int index);
 
 	/** Get the number of items */
 	virtual int GetNumItems() = 0;
@@ -111,9 +111,9 @@ public:
 	virtual TBSelectItemSource *GetItemSource(int index){ return GetItem(index)->sub_source; }
 	virtual TBID GetItemImage(int index)				{ return GetItem(index)->skin_image; }
 	virtual int GetNumItems()							{ return m_items.GetNumItems(); }
-	virtual Widget *CreateItemWidget(int index)
+	virtual TBWidget *CreateItemWidget(int index)
 	{
-		if (Widget *widget = TBSelectItemSource::CreateItemWidget(index))
+		if (TBWidget *widget = TBSelectItemSource::CreateItemWidget(index))
 		{
 			T *item = m_items[index];
 			widget->GetID().Set(item->id);
@@ -137,11 +137,11 @@ class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringI
 public:
 };
 
-class TBSelectList : public Widget
+class TBSelectList : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSelectList", Widget);
+	WIDGET_SUBCLASS("TBSelectList", TBWidget);
 
 	TBSelectList();
 	~TBSelectList();
@@ -172,7 +172,7 @@ public:
 	/** Set the selected state of the item at the given index. If you want
 		to unselect the previously selected item, use SetValue. */
 	void SelectItem(int index, bool selected);
-	Widget *GetItemWidget(int index);
+	TBWidget *GetItemWidget(int index);
 
 	/** Scroll to the current selected item. The scroll may be delayed until
 		the items has been layouted if the layout is currently invalid. */
@@ -233,20 +233,20 @@ public:
 	// For safe typecasting
 	WIDGET_SUBCLASS("TBMenuWindow", TBWindow);
 
-	TBMenuWindow(Widget *target, TBID id);
+	TBMenuWindow(TBWidget *target, TBID id);
 
 	bool Show(TBSelectItemSource *source, int initial_value = -1, const TBPoint *pos_in_root = nullptr, TB_ALIGN align = TB_ALIGN_BOTTOM);
 	TBRect GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align);
 
 	TBSelectList *GetList() { return m_select_list; }
 
-	virtual Widget *GetEventDestination() { return Get(); }
+	virtual TBWidget *GetEventDestination() { return Get(); }
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 private:
-	virtual void OnWidgetFocusChanged(Widget *widget, bool focused);
+	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused);
 	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev);
-	virtual void OnWidgetDelete(Widget *widget);
+	virtual void OnWidgetDelete(TBWidget *widget);
 	TBSelectList *m_select_list;
 };
 
@@ -257,11 +257,11 @@ private:
 	FIX: Should also be possible to set a list of strings that will be
 		shown instead of numbers.
 */
-class TBInlineSelect : public Widget
+class TBInlineSelect : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBInlineSelect", Widget);
+	WIDGET_SUBCLASS("TBInlineSelect", TBWidget);
 
 	TBInlineSelect();
 	~TBInlineSelect();

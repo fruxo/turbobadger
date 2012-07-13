@@ -13,11 +13,11 @@
 
 namespace tinkerbell {
 
-class Widget;
+class TBWidget;
 class TBWidgetValue;
 class TBValueGroup;
 
-/** TBWidgetValueConnection maintains a connection between Widget and TBWidgetValue. */
+/** TBWidgetValueConnection maintains a connection between TBWidget and TBWidgetValue. */
 
 class TBWidgetValueConnection : public TBLinkOf<TBWidgetValueConnection>
 {
@@ -26,18 +26,18 @@ public:
 	~TBWidgetValueConnection() { Unconnect(); }
 
 	/** Connect the value and widget. */
-	void Connect(TBWidgetValue *value, Widget *m_widget);
+	void Connect(TBWidgetValue *value, TBWidget *m_widget);
 
 	/** Unconnect the value and widget if it is connected. */
 	void Unconnect();
 
 	/** Synchronize the value of the widget to the TBWidgetValue and all other
 		connected widgets. */
-	void SyncFromWidget(Widget *source_widget);
+	void SyncFromWidget(TBWidget *source_widget);
 private:
 	friend class TBWidgetValue;
 	TBWidgetValue *m_value;
-	Widget *m_widget;
+	TBWidget *m_widget;
 };
 
 /** TBWidgetValue stores a TBValue that will be synchronized with all widgets connected to it.
@@ -46,8 +46,8 @@ private:
 	It will synchronize with widgets when any of the connected widgets change and trig the
 	EVENT_TYPE_CHANGED event, and when the value is changed with any of the setters here.
 
-	The synchronization with widgets is done through the generic Widget setters/getters,
-	Widget::SetValue/GetValue/SetValueDouble/GetValueDouble/GetText/SetText.
+	The synchronization with widgets is done through the generic TBWidget setters/getters,
+	TBWidget::SetValue/GetValue/SetValueDouble/GetValueDouble/GetText/SetText.
 
 	The type that is synchronized is determined by the TBValue::TYPE specified in the
 	constructor.
@@ -71,7 +71,7 @@ public:
 	void SetDouble(double value);
 
 	/** Set the value from the given widget. Using the current format type.*/
-	void SetFromWidget(Widget *source_widget);
+	void SetFromWidget(TBWidget *source_widget);
 
 	/** Get value as integer. */
 	int GetInt() { return m_value.GetInt(); }
@@ -98,8 +98,8 @@ private:
 	TBLinkListOf<TBWidgetValueConnection> m_connections;
 	bool m_syncing;
 
-	bool SyncToWidget(Widget *dst_widget);
-	bool SyncToWidgets(Widget *exclude_widget);
+	bool SyncToWidget(TBWidget *dst_widget);
+	bool SyncToWidgets(TBWidget *exclude_widget);
 };
 
 /** Listener that will be notified when any of the values in a TBValueGroup is changed. */

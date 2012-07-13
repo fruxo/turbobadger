@@ -131,7 +131,7 @@ bool TBSelectItemSource::Filter(int index, const char *filter)
 	return false;
 }
 
-Widget *TBSelectItemSource::CreateItemWidget(int index)
+TBWidget *TBSelectItemSource::CreateItemWidget(int index)
 {
 // FIX: Flytta till TBGenericStringItemSource endå?
 	const char *string = GetItemString(index);
@@ -247,7 +247,7 @@ void TBSelectList::ValidateList()
 	// FIX: Could delete and create only the changed items (faster filter change)
 
 	// Remove old items
-	while (Widget *child = m_layout.GetContentRoot()->GetFirstChild())
+	while (TBWidget *child = m_layout.GetContentRoot()->GetFirstChild())
 	{
 		child->m_parent->RemoveChild(child);
 		delete child;
@@ -277,7 +277,7 @@ void TBSelectList::ValidateList()
 	for (int i = 0; i < num_sorted_items; i++)
 	{
 		int item_index = sorted_index[i];
-		if (Widget *widget = m_source->CreateItemWidget(item_index))
+		if (TBWidget *widget = m_source->CreateItemWidget(item_index))
 		{
 			// Use item data as widget to index lookup
 			widget->m_data = item_index;
@@ -301,22 +301,22 @@ void TBSelectList::SetValue(int value)
 	ScrollToSelectedItem();
 
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
-	if (Widget *widget = GetItemWidget(m_value))
+	if (TBWidget *widget = GetItemWidget(m_value))
 		ev.ref_id = widget->m_id;
 	InvokeEvent(ev);
 }
 
 void TBSelectList::SelectItem(int index, bool selected)
 {
-	if (Widget *widget = GetItemWidget(index))
+	if (TBWidget *widget = GetItemWidget(index))
 		widget->SetState(WIDGET_STATE_SELECTED, selected);
 }
 
-Widget *TBSelectList::GetItemWidget(int index)
+TBWidget *TBSelectList::GetItemWidget(int index)
 {
 	if (index == -1)
 		return nullptr;
-	for (Widget *tmp = m_layout.GetContentRoot()->GetFirstChild(); tmp; tmp = tmp->GetNext())
+	for (TBWidget *tmp = m_layout.GetContentRoot()->GetFirstChild(); tmp; tmp = tmp->GetNext())
 		if (tmp->m_data == index)
 			return tmp;
 	return nullptr;
@@ -330,7 +330,7 @@ void TBSelectList::ScrollToSelectedItem()
 		return;
 	}
 	m_scroll_to_current = false;
-	if (Widget *widget = GetItemWidget(m_value))
+	if (TBWidget *widget = GetItemWidget(m_value))
 		m_container.ScrollIntoView(widget->GetRect());
 	else
 		m_container.ScrollTo(0, 0);
@@ -380,7 +380,7 @@ bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 
 			// Invoke the click event on the target list
 			TBWidgetEvent ev(EVENT_TYPE_CLICK, 0, 0);
-			if (Widget *widget = GetItemWidget(m_value))
+			if (TBWidget *widget = GetItemWidget(m_value))
 				ev.ref_id = widget->m_id;
 			target_list->InvokeEvent(ev);
 		}
@@ -388,8 +388,8 @@ bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN && m_source && m_layout.GetContentRoot()->GetFirstChild())
 	{
-		Widget *item_root = m_layout.GetContentRoot();
-		Widget *current = GetItemWidget(m_value);
+		TBWidget *item_root = m_layout.GetContentRoot();
+		TBWidget *current = GetItemWidget(m_value);
 // FIX: Hoppa över disabled, spacers etc. Kanske kan användamig utav focus koden?
 //      also do that from the keyboardhandling in dropdown (when it's not open!)
 		if (ev.special_key == TB_KEY_HOME)
@@ -494,7 +494,7 @@ bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)
 
 // == TBMenuWindow ==========================================
 
-TBMenuWindow::TBMenuWindow(Widget *target, TBID id)
+TBMenuWindow::TBMenuWindow(TBWidget *target, TBID id)
 	: TBWidgetSafePointer(target)
 	, m_select_list(nullptr)
 {
@@ -522,15 +522,15 @@ bool TBMenuWindow::Show(TBSelectItemSource *source, int initial_value, const TBP
 	// Calculate and set a good size for the dropdown window
 	SetRect(GetAlignedRect(pos_in_root, align));
 
-	Widget *root = Get()->GetParentRoot();
+	TBWidget *root = Get()->GetParentRoot();
 	root->AddChild(this);
 	return true;
 }
 
 TBRect TBMenuWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
 {
-	Widget *target = Get();
-	Widget *root = Get()->GetParentRoot();
+	TBWidget *target = Get();
+	TBWidget *root = Get()->GetParentRoot();
 	PreferredSize ps = GetPreferredSize();
 
 	TBRect target_rect;
@@ -598,7 +598,7 @@ bool TBMenuWindow::OnEvent(const TBWidgetEvent &ev)
 	return TBWindow::OnEvent(ev);
 }
 
-void TBMenuWindow::OnWidgetFocusChanged(Widget *widget, bool focused)
+void TBMenuWindow::OnWidgetFocusChanged(TBWidget *widget, bool focused)
 {
 	Close();
 }
@@ -611,7 +611,7 @@ bool TBMenuWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 	return false;
 }
 
-void TBMenuWindow::OnWidgetDelete(Widget *widget)
+void TBMenuWindow::OnWidgetDelete(TBWidget *widget)
 {
 	TBWidgetSafePointer::OnWidgetDelete(widget);
 	// If the target widget is deleted, close!

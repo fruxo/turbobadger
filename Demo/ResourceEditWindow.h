@@ -12,10 +12,10 @@ using namespace tinkerbell;
 class ResourceItem : public TBGenericStringItem
 {
 public:
-	ResourceItem(Widget *widget, const char *str);
-	Widget *GetWidget() { return m_widget; }
+	ResourceItem(TBWidget *widget, const char *str);
+	TBWidget *GetWidget() { return m_widget; }
 private:
-	Widget *m_widget;
+	TBWidget *m_widget;
 };
 
 class ResourceEditWindow : public TBWindow, public TBMessageHandler, public TBGlobalWidgetListener
@@ -33,8 +33,8 @@ public:
 		ResourceItem *item;
 		int index;
 	};
-	ITEM_INFO GetItemFromWidget(Widget *widget);
-	Widget *GetSelectedWidget();
+	ITEM_INFO GetItemFromWidget(TBWidget *widget);
+	TBWidget *GetSelectedWidget();
 
 	void Load(const char *resource_file);
 	void RefreshFromSource();
@@ -48,15 +48,15 @@ public:
 
 	// == TBGlobalWidgetListener ========================================================
 	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev);
-	virtual void OnWidgetAdded(Widget *widget);
-	virtual void OnWidgetRemove(Widget *widget);
+	virtual void OnWidgetAdded(TBWidget *widget);
+	virtual void OnWidgetRemove(TBWidget *widget);
 private:
 	TBSelectList *m_widget_list;
 	TBSelectItemSourceList<ResourceItem> m_widget_list_source;
-	Widget *m_build_container;
+	TBWidget *m_build_container;
 	TBEditField *m_source_edit;
 	TBStr m_resource_filename;
-	void AddWidgetListItemsRecursive(Widget *widget, int depth);
+	void AddWidgetListItemsRecursive(TBWidget *widget, int depth);
 };
 
 #endif // ResourceEditWindow_H

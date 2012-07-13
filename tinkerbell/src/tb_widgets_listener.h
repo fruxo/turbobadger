@@ -12,7 +12,7 @@
 
 namespace tinkerbell {
 
-class Widget;
+class TBWidget;
 
 /** TBGlobalWidgetListener listens to some callbacks from all widgets in tinkerbell.
 	You can set as many TBGlobalWidgetListener you want, by using AddListener.
@@ -28,7 +28,7 @@ public:
 	static void RemoveListener(TBGlobalWidgetListener *listener);
 
 	/** Called when widget is being deleted (in its destructor, so virtual functions are already gone). */
-	virtual void OnWidgetDelete(Widget *widget) {}
+	virtual void OnWidgetDelete(TBWidget *widget) {}
 
 	/** This is called when the widget request to be deleted.
 		Return true if you want the widget to not die immediately, f.ex. to fade it out before it
@@ -37,28 +37,28 @@ public:
 		Remember that the widget may still be deleted prematurely for many other reasons (f.ex if its parent is
 		deleted or several listeners respond true and take on the task to delete it at some point). You can
 		use TBWidgetSafePointer to safely handle that. */
-	virtual bool OnWidgetDying(Widget *widget) { return false; }
+	virtual bool OnWidgetDying(TBWidget *widget) { return false; }
 
 	/** Called when widget has been added to a parent, after its parents OnChildAdded. */
-	virtual void OnWidgetAdded(Widget *widget) {}
+	virtual void OnWidgetAdded(TBWidget *widget) {}
 
 	/** Called when widget is about to be removed from a parent, after its parents OnChildRemove. */
-	virtual void OnWidgetRemove(Widget *widget) {}
+	virtual void OnWidgetRemove(TBWidget *widget) {}
 
 	/** Called when widget focus has changed on a widget. */
-	virtual void OnWidgetFocusChanged(Widget *widget, bool focused) {}
+	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused) {}
 
 	/** Called when a event is about to be invoked on a widget. This make it possible
 		to intercept a events before they are handled, and block it (by returning true).
 		Note, if returning true, other global listeners will still also be notified. */
 	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev) { return false; }
 private:
-	friend class Widget;
-	static void InvokeWidgetDelete(Widget *widget);
-	static bool InvokeWidgetDying(Widget *widget);
-	static void InvokeWidgetAdded(Widget *widget);
-	static void InvokeWidgetRemove(Widget *widget);
-	static void InvokeWidgetFocusChanged(Widget *widget, bool focused);
+	friend class TBWidget;
+	static void InvokeWidgetDelete(TBWidget *widget);
+	static bool InvokeWidgetDying(TBWidget *widget);
+	static void InvokeWidgetAdded(TBWidget *widget);
+	static void InvokeWidgetRemove(TBWidget *widget);
+	static void InvokeWidgetFocusChanged(TBWidget *widget, bool focused);
 	static bool InvokeWidgetInvokeEvent(const TBWidgetEvent &ev);
 };
 
@@ -76,18 +76,18 @@ class TBWidgetSafePointer : private TBGlobalWidgetListener
 {
 public:
 	TBWidgetSafePointer() : m_widget(nullptr)				{ }
-	TBWidgetSafePointer(Widget *widget) : m_widget(nullptr)	{ Set(widget); }
+	TBWidgetSafePointer(TBWidget *widget) : m_widget(nullptr)	{ Set(widget); }
 	~TBWidgetSafePointer()									{ Set(nullptr); }
 
-	virtual void OnWidgetDelete(Widget *widget)				{ if (widget == m_widget) Set(nullptr); }
+	virtual void OnWidgetDelete(TBWidget *widget)				{ if (widget == m_widget) Set(nullptr); }
 
 	/** Set the widget pointer that should be nulled if deleted. */
-	void Set(Widget *widget);
+	void Set(TBWidget *widget);
 
 	/** Return the widget, or nullptr if it has been deleted. */
-	Widget *Get() { return m_widget; }
+	TBWidget *Get() { return m_widget; }
 private:
-	Widget *m_widget;
+	TBWidget *m_widget;
 };
 
 }; // namespace tinkerbell

@@ -19,18 +19,18 @@ public:
 	WIDGET_SUBCLASS("TBTabLayout", TBLayout);
 
 	/** Get the index (in the list of children) of the given child, or -1 if not found. */
-	int GetIndexFromChild(Widget *child);
+	int GetIndexFromChild(TBWidget *child);
 
-	virtual void OnChildAdded(Widget *child);
+	virtual void OnChildAdded(TBWidget *child);
 };
 
 /** TBTabContainer - A container with tabs for multiple pages. */
 
-class TBTabContainer : public Widget
+class TBTabContainer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBTabContainer", Widget);
+	WIDGET_SUBCLASS("TBTabContainer", TBWidget);
 
 	TBTabContainer();
 	~TBTabContainer();
@@ -49,12 +49,12 @@ public:
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnProcess();
 
-	virtual Widget *GetContentRoot() { return &m_content_root; }
+	virtual TBWidget *GetContentRoot() { return &m_content_root; }
 	TBLayout *GetTabLayout() { return &m_tab_layout; }
 protected:
 	TBLayout m_root_layout;
 	TBTabLayout m_tab_layout;
-	Widget m_content_root;
+	TBWidget m_content_root;
 	bool m_need_page_update;
 	int m_current_page;
 };

@@ -16,16 +16,16 @@ namespace tinkerbell {
 class WidgetAnimationObject : public AnimationObject, public TBLinkOf<WidgetAnimationObject>
 {
 public:
-	WidgetAnimationObject(Widget *widget);
+	WidgetAnimationObject(TBWidget *widget);
 	virtual ~WidgetAnimationObject();
 public:
-	Widget *m_widget;
+	TBWidget *m_widget;
 };
 
 class WidgetAnimationOpacity : public WidgetAnimationObject
 {
 public:
-	WidgetAnimationOpacity(Widget *widget, float src_opacity, float dst_opacity, bool die);
+	WidgetAnimationOpacity(TBWidget *widget, float src_opacity, float dst_opacity, bool die);
 	virtual void OnAnimationStart();
 	virtual void OnAnimationUpdate(float progress);
 	virtual void OnAnimationStop(bool aborted);
@@ -38,7 +38,7 @@ private:
 class WidgetAnimationRect : public WidgetAnimationObject
 {
 public:
-	WidgetAnimationRect(Widget *widget, const TBRect &src_rect, const TBRect &dst_rect);
+	WidgetAnimationRect(TBWidget *widget, const TBRect &src_rect, const TBRect &dst_rect);
 	virtual void OnAnimationStart();
 	virtual void OnAnimationUpdate(float progress);
 	virtual void OnAnimationStop(bool aborted);
@@ -56,10 +56,10 @@ public:
 	static bool HasAnimationsRunning();
 
 	// == TBGlobalWidgetListener ==================
-	virtual void OnWidgetDelete(Widget *widget);
-	virtual bool OnWidgetDying(Widget *widget);
-	virtual void OnWidgetAdded(Widget *widget);
-	virtual void OnWidgetRemove(Widget *widget);
+	virtual void OnWidgetDelete(TBWidget *widget);
+	virtual bool OnWidgetDying(TBWidget *widget);
+	virtual void OnWidgetAdded(TBWidget *widget);
+	virtual void OnWidgetRemove(TBWidget *widget);
 };
 
 }; // namespace tinkerbell

@@ -23,18 +23,18 @@ enum WINDOW_SETTINGS_ {
 };
 typedef uint16 WINDOW_SETTINGS;
 
-/** TBWindow is a Widget that provides some window-like features.
+/** TBWindow is a TBWidget that provides some window-like features.
 
 	It can have a titlebar, be movable, resizable etc.
 
 	It will activate and deactivate other windows on click (which will restore
 	focus to the last focused child widget). */
 
-class TBWindow : public Widget
+class TBWindow : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBWindow", Widget);
+	WIDGET_SUBCLASS("TBWindow", TBWidget);
 
 	TBWindow();
 	~TBWindow();
@@ -59,9 +59,9 @@ public:
 	bool EnsureFocus();
 
 	/** Set the widget that should be focused when this window is activated next time.
-		This should not be used to change focus. Call Widget::SetFocus to focus, which
+		This should not be used to change focus. Call TBWidget::SetFocus to focus, which
 		will call this method if the window is inactive! */
-	void SetLastFocus(Widget *last_focus) { m_last_focus.Set(last_focus); }
+	void SetLastFocus(TBWidget *last_focus) { m_last_focus.Set(last_focus); }
 
 	/** Set settings for how this window should look and behave. */
 	void SetSettings(WINDOW_SETTINGS settings);
@@ -81,7 +81,7 @@ public:
 	/** Set the window title. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
-	using Widget::GetText; ///< Make all versions in base class available.
+	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	/** Get the height of the title bar (or 0 if the WINDOW_SETTINGS say this window
 		shouldn't have any title bar) */
@@ -93,7 +93,7 @@ public:
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnAdded();
 	virtual void OnRemove();
-	virtual void OnChildAdded(Widget *child);
+	virtual void OnChildAdded(TBWidget *child);
 	virtual void OnResized(int old_w, int old_h);
 protected:
 	TBMover m_mover;

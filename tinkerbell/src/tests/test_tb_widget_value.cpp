@@ -16,7 +16,7 @@ using namespace tinkerbell;
 TB_TEST_GROUP(tb_widget_value_text)
 {
 	TBWidgetValue widget_val(TBIDC("test value text"));
-	Widget *a, *b, *c;
+	TBWidget *a, *b, *c;
 
 	TB_TEST(Init)
 	{

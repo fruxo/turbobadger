@@ -13,23 +13,23 @@ using namespace tinkerbell;
 class Application
 {
 public:
-	Application(Widget *root) : m_root(root) {}
+	Application(TBWidget *root) : m_root(root) {}
 	virtual ~Application() {}
 
 	static Application *GetApp();
-	Widget *GetRoot() { return m_root; }
+	TBWidget *GetRoot() { return m_root; }
 
 	virtual bool Init() = 0;
 	virtual void Process() = 0;
 	virtual void RenderFrame(int window_w, int window_h) = 0;
 protected:
-	Widget *m_root;
+	TBWidget *m_root;
 };
 
 class DemoApplication : public Application, public TBMessageHandler
 {
 public:
-	DemoApplication(Widget *root) : Application(root) {}
+	DemoApplication(TBWidget *root) : Application(root) {}
 	~DemoApplication();
 	bool Init();
 	void Process();

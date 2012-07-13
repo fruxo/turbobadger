@@ -9,7 +9,7 @@
 
 // == ResourceItem ====================================================================================
 
-ResourceItem::ResourceItem(Widget *widget, const char *str)
+ResourceItem::ResourceItem(TBWidget *widget, const char *str)
 	: TBGenericStringItem(str)
 	, m_widget(widget)
 {
@@ -74,7 +74,7 @@ void ResourceEditWindow::Load(const char *resource_file)
 void ResourceEditWindow::RefreshFromSource()
 {
 	// Clear old widgets
-	while (Widget *child = m_build_container->GetFirstChild())
+	while (TBWidget *child = m_build_container->GetFirstChild())
 	{
 		m_build_container->RemoveChild(child);
 		delete child;
@@ -101,7 +101,7 @@ void ResourceEditWindow::UpdateWidgetList(bool immediately)
 	}
 }
 
-void ResourceEditWindow::AddWidgetListItemsRecursive(Widget *widget, int depth)
+void ResourceEditWindow::AddWidgetListItemsRecursive(TBWidget *widget, int depth)
 {
 	if (depth > 0) // Ignore the root
 	{
@@ -116,11 +116,11 @@ void ResourceEditWindow::AddWidgetListItemsRecursive(Widget *widget, int depth)
 			m_widget_list_source.AddItem(item);
 	}
 
-	for (Widget *child = widget->GetFirstChild(); child; child = child->GetNext())
+	for (TBWidget *child = widget->GetFirstChild(); child; child = child->GetNext())
 		AddWidgetListItemsRecursive(child, depth + 1);
 }
 
-ResourceEditWindow::ITEM_INFO ResourceEditWindow::GetItemFromWidget(Widget *widget)
+ResourceEditWindow::ITEM_INFO ResourceEditWindow::GetItemFromWidget(TBWidget *widget)
 {
 	ITEM_INFO item_info = { nullptr, -1 };
 	for (int i = 0; i < m_widget_list_source.GetNumItems(); i++)
@@ -133,7 +133,7 @@ ResourceEditWindow::ITEM_INFO ResourceEditWindow::GetItemFromWidget(Widget *widg
 	return item_info;
 }
 
-Widget *ResourceEditWindow::GetSelectedWidget()
+TBWidget *ResourceEditWindow::GetSelectedWidget()
 {
 	int index = m_widget_list->GetValue();
 	if (index >= 0 && index < m_widget_list_source.GetNumItems())
@@ -175,7 +175,7 @@ void ResourceEditWindow::OnPaintChildren(const PaintProps &paint_props)
 	TBWindow::OnPaintChildren(paint_props);
 
 	// Paint the selection of the selected widget
-	if (Widget *selected_widget = GetSelectedWidget())
+	if (TBWidget *selected_widget = GetSelectedWidget())
 	{
 		TBRect widget_rect(0, 0, selected_widget->GetRect().w, selected_widget->GetRect().h);
 		selected_widget->ConvertToRoot(widget_rect.x, widget_rect.y);
@@ -207,13 +207,13 @@ bool ResourceEditWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 	return false;
 }
 
-void ResourceEditWindow::OnWidgetAdded(Widget *widget)
+void ResourceEditWindow::OnWidgetAdded(TBWidget *widget)
 {
 	if (m_build_container->IsParentOf(widget))
 		UpdateWidgetList(false);
 }
 
-void ResourceEditWindow::OnWidgetRemove(Widget *widget)
+void ResourceEditWindow::OnWidgetRemove(TBWidget *widget)
 {
 	if (m_build_container->IsParentOf(widget))
 		UpdateWidgetList(false);

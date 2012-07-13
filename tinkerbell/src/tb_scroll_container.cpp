@@ -65,7 +65,7 @@ TBScrollBarVisibility TBScrollBarVisibility::Solve(SCROLL_MODE mode, int content
 void TBScrollContainerRoot::OnPaintChildren(const PaintProps &paint_props)
 {
 	TBRect old_clip_rect = g_renderer->SetClipRect(TBRect(0, 0, m_rect.w, m_rect.h), true);
-	Widget::OnPaintChildren(paint_props);
+	TBWidget::OnPaintChildren(paint_props);
 	g_renderer->SetClipRect(old_clip_rect, false);
 }
 
@@ -175,7 +175,7 @@ PreferredSize TBScrollContainer::GetPreferredContentSize()
 	ps.min_w = ps.min_h = 50;
 	if (m_adapt_to_content_size)
 	{
-		if (Widget *content_child = m_root.GetFirstChild())
+		if (TBWidget *content_child = m_root.GetFirstChild())
 		{
 			ps = content_child->GetPreferredSize();
 			int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
@@ -222,7 +222,7 @@ void TBScrollContainer::ValidateLayout()
 		return;
 	m_layout_is_invalid = false;
 
-	if (Widget *content_child = m_root.GetFirstChild())
+	if (TBWidget *content_child = m_root.GetFirstChild())
 	{
 		PreferredSize ps = content_child->GetPreferredSize();
 
@@ -258,7 +258,7 @@ void TBScrollContainer::ValidateLayout()
 
 void TBScrollContainer::OnResized(int old_w, int old_h)
 {
-	Widget::OnResized(old_w, old_h);
+	TBWidget::OnResized(old_w, old_h);
 	InvalidateLayout(INVALIDATE_LAYOUT_TARGET_ONLY);
 	ValidateLayout();
 }

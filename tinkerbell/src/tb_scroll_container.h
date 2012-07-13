@@ -19,7 +19,7 @@ enum SCROLL_MODE {
 
 /** TBScrollContainerRoot - Internal for TBScrollContainer */
 
-class TBScrollContainerRoot : public Widget
+class TBScrollContainerRoot : public TBWidget
 {
 private: // May only be used by TBScrollContainer.
 	friend class TBScrollContainer;
@@ -46,12 +46,12 @@ public:
 
 /** TBScrollContainer - A container with scrollbars that can scroll its children. */
 
-class TBScrollContainer : public Widget
+class TBScrollContainer : public TBWidget
 {
 friend class TBScrollContainerRoot;
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBScrollContainer", Widget);
+	WIDGET_SUBCLASS("TBScrollContainer", TBWidget);
 
 	TBScrollContainer();
 	~TBScrollContainer();
@@ -82,7 +82,7 @@ public:
 	virtual void OnProcess();
 	virtual void OnResized(int old_w, int old_h);
 
-	virtual Widget *GetContentRoot() { return &m_root; }
+	virtual TBWidget *GetContentRoot() { return &m_root; }
 protected:
 	TBScrollBar m_scrollbar_x;
 	TBScrollBar m_scrollbar_y;

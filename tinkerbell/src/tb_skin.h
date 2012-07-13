@@ -162,7 +162,7 @@ public:
 		 specified in the skin.
 
 		Special elements:
-		-There's some special generic skin elements used by Widget (see Widget::SetSkinBg)
+		-There's some special generic skin elements used by TBWidget (see TBWidget::SetSkinBg)
 
 		Overlay elements:
 		-Overlay elements are painted separately, from PaintSkinOverlay (when all sibling

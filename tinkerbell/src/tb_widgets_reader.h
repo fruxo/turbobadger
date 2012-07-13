@@ -12,12 +12,12 @@
 namespace tinkerbell {
 
 class TBWidgetsReader;
-class Widget;
+class TBWidget;
 class TBNode;
 
 struct CREATE_INFO {
 	TBWidgetsReader *reader;
-	Widget *target;
+	TBWidget *target;
 	TBNode *node;
 };
 
@@ -28,7 +28,7 @@ public:
 	TBWidgetFactory(const char *name, TBValue::TYPE sync_type, WIDGET_Z add_child_z);
 
 	/** Create and return the new widget or nullptr on out of memory. */
-	virtual Widget *Create(CREATE_INFO *info) = 0;
+	virtual TBWidget *Create(CREATE_INFO *info) = 0;
 
 	void Register();
 public:
@@ -39,7 +39,7 @@ public:
 };
 
 /** This macro creates a new TBWidgetFactory for the given class name (that should
-	inherit Widget). It register it so it can be used to create widgets from
+	inherit TBWidget). It register it so it can be used to create widgets from
 	TBWidgetsReader.
 
 	classname - The name of the class.
@@ -68,7 +68,7 @@ public:
 	public: \
 		classname##WidgetFactory() \
 			: TBWidgetFactory(#classname, sync_type, add_child_z) { Register(); } \
-		virtual Widget *Create(CREATE_INFO *info) \
+		virtual TBWidget *Create(CREATE_INFO *info) \
 		{ \
 			classname *widget = new classname(); \
 			if (widget) \
@@ -89,18 +89,18 @@ public:
 	Each factory may have its own set of properties, but a set of generic
 	properties is always supported on all widgets. Those are:
 
-	Resource name:		Widget property:		Values:
+	Resource name:		TBWidget property:		Values:
 
-	id					Widget::m_id			TBID (string or int)
-	group_id			Widget::m_group_id		TBID (string or int)
-	value				Widget::SetValue		integer
-	data				Widget::m_data			integer
-	text				Widget::SetText			string (translatable using @string)
-	connection			Widget::Connect			string
-	gravity				Widget::SetGravity		string (combination of left, top, right, bottom, or all)
-	state				Widget::SetState		string (disabled)
-	skin				Widget::SetSkinBg		TBID (string or int)
-	autofocus			The Widget will be focused automatically the first time its TBWindow is activated.
+	id					TBWidget::m_id			TBID (string or int)
+	group_id			TBWidget::m_group_id	TBID (string or int)
+	value				TBWidget::SetValue		integer
+	data				TBWidget::m_data		integer
+	text				TBWidget::SetText		string (translatable using @string)
+	connection			TBWidget::Connect		string
+	gravity				TBWidget::SetGravity	string (combination of left, top, right, bottom, or all)
+	state				TBWidget::SetState		string (disabled)
+	skin				TBWidget::SetSkinBg		TBID (string or int)
+	autofocus			The TBWidget will be focused automatically the first time its TBWindow is activated.
 */
 class TBWidgetsReader
 {
@@ -118,13 +118,13 @@ public:
 		is preceded with a @, it will be looked up from the global TBLanguage. */
 	const char *GetTranslatableString(TBNode *node, const char *request);
 
-	bool LoadFile(Widget *target, const char *filename);
-	bool LoadData(Widget *target, const char *data);
-	bool LoadData(Widget *target, const char *data, int data_len);
-	void LoadNodeTree(Widget *target, TBNode *node);
+	bool LoadFile(TBWidget *target, const char *filename);
+	bool LoadData(TBWidget *target, const char *data);
+	bool LoadData(TBWidget *target, const char *data, int data_len);
+	void LoadNodeTree(TBWidget *target, TBNode *node);
 private:
 	bool Init();
-	bool CreateWidget(Widget *target, TBNode *node, WIDGET_Z add_child_z);
+	bool CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_child_z);
 	TBLinkListOf<TBWidgetFactory> factories;
 };
 

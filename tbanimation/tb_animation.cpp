@@ -24,7 +24,7 @@ TBLinkListOf<WidgetAnimationObject> widget_animations;
 
 // == WidgetAnimationObject =============================================================
 
-WidgetAnimationObject::WidgetAnimationObject(Widget *widget)
+WidgetAnimationObject::WidgetAnimationObject(TBWidget *widget)
 	: m_widget(widget)
 {
 	widget_animations.AddLast(this);
@@ -37,7 +37,7 @@ WidgetAnimationObject::~WidgetAnimationObject()
 
 // == WidgetAnimationOpacity ============================================================
 
-WidgetAnimationOpacity::WidgetAnimationOpacity(Widget *widget, float src_opacity, float dst_opacity, bool die)
+WidgetAnimationOpacity::WidgetAnimationOpacity(TBWidget *widget, float src_opacity, float dst_opacity, bool die)
 	: WidgetAnimationObject(widget)
 	, m_src_opacity(src_opacity)
 	, m_dst_opacity(dst_opacity)
@@ -73,7 +73,7 @@ void WidgetAnimationOpacity::OnAnimationStop(bool aborted)
 
 // == WidgetAnimationRect ===============================================================
 
-WidgetAnimationRect::WidgetAnimationRect(Widget *widget, const TBRect &src_rect, const TBRect &dst_rect)
+WidgetAnimationRect::WidgetAnimationRect(TBWidget *widget, const TBRect &src_rect, const TBRect &dst_rect)
 	: WidgetAnimationObject(widget)
 	, m_src_rect(src_rect)
 	, m_dst_rect(dst_rect)
@@ -128,7 +128,7 @@ bool WidgetsAnimationManager::HasAnimationsRunning()
 	return AnimationManager::HasAnimationsRunning();
 }
 
-void WidgetsAnimationManager::OnWidgetDelete(Widget *widget)
+void WidgetsAnimationManager::OnWidgetDelete(TBWidget *widget)
 {
 	// Kill and delete all animations running for the widget being deleted.
 	TBLinkListOf<WidgetAnimationObject>::Iterator iter = widget_animations.IterateForward();
@@ -143,7 +143,7 @@ void WidgetsAnimationManager::OnWidgetDelete(Widget *widget)
 	}
 }
 
-bool WidgetsAnimationManager::OnWidgetDying(Widget *widget)
+bool WidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 {
 	bool handled = false;
 	if (TBWindow *window = TBSafeCast(TBWindow, widget))
@@ -175,7 +175,7 @@ bool WidgetsAnimationManager::OnWidgetDying(Widget *widget)
 	return handled;
 }
 
-void WidgetsAnimationManager::OnWidgetAdded(Widget *widget)
+void WidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
 {
 	if (TBWindow *window = TBSafeCast(TBWindow, widget))
 	{
@@ -202,7 +202,7 @@ void WidgetsAnimationManager::OnWidgetAdded(Widget *widget)
 	}
 }
 
-void WidgetsAnimationManager::OnWidgetRemove(Widget *widget)
+void WidgetsAnimationManager::OnWidgetRemove(TBWidget *widget)
 {
 }
 

@@ -21,14 +21,14 @@ void TBGlobalWidgetListener::RemoveListener(TBGlobalWidgetListener *listener)
 	listeners.Remove(listener);
 }
 
-void TBGlobalWidgetListener::InvokeWidgetDelete(Widget *widget)
+void TBGlobalWidgetListener::InvokeWidgetDelete(TBWidget *widget)
 {
 	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
 	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
 		listener->OnWidgetDelete(widget);
 }
 
-bool TBGlobalWidgetListener::InvokeWidgetDying(Widget *widget)
+bool TBGlobalWidgetListener::InvokeWidgetDying(TBWidget *widget)
 {
 	bool handled = false;
 	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
@@ -37,21 +37,21 @@ bool TBGlobalWidgetListener::InvokeWidgetDying(Widget *widget)
 	return handled;
 }
 
-void TBGlobalWidgetListener::InvokeWidgetAdded(Widget *widget)
+void TBGlobalWidgetListener::InvokeWidgetAdded(TBWidget *widget)
 {
 	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
 	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
 		listener->OnWidgetAdded(widget);
 }
 
-void TBGlobalWidgetListener::InvokeWidgetRemove(Widget *widget)
+void TBGlobalWidgetListener::InvokeWidgetRemove(TBWidget *widget)
 {
 	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
 	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
 		listener->OnWidgetRemove(widget);
 }
 
-void TBGlobalWidgetListener::InvokeWidgetFocusChanged(Widget *widget, bool focused)
+void TBGlobalWidgetListener::InvokeWidgetFocusChanged(TBWidget *widget, bool focused)
 {
 	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
 	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
@@ -69,7 +69,7 @@ bool TBGlobalWidgetListener::InvokeWidgetInvokeEvent(const TBWidgetEvent &ev)
 
 // == TBWidgetSafePointer ===================================================================================
 
-void TBWidgetSafePointer::Set(Widget *widget)
+void TBWidgetSafePointer::Set(TBWidget *widget)
 {
 	if (!m_widget && widget)
 		TBGlobalWidgetListener::AddListener(this);

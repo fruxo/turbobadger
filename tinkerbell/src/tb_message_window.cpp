@@ -13,7 +13,7 @@ namespace tinkerbell {
 
 // == TBMessageWindow =======================================================================================
 
-TBMessageWindow::TBMessageWindow(Widget *target, TBID id)
+TBMessageWindow::TBMessageWindow(TBWidget *target, TBID id)
 	: TBWidgetSafePointer(target)
 {
 	m_id.Set(id);
@@ -21,7 +21,7 @@ TBMessageWindow::TBMessageWindow(Widget *target, TBID id)
 
 TBMessageWindow::~TBMessageWindow()
 {
-	if (Widget *dimmer = m_dimmer.Get())
+	if (TBWidget *dimmer = m_dimmer.Get())
 	{
 		dimmer->m_parent->RemoveChild(dimmer);
 		delete dimmer;
@@ -30,7 +30,7 @@ TBMessageWindow::~TBMessageWindow()
 
 bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWindowSettings *settings)
 {
-	Widget *target = Get();
+	TBWidget *target = Get();
 	if (!target)
 		return false;
 
@@ -38,7 +38,7 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 	if (!settings)
 		settings = &default_settings;
 
-	Widget *root = target->GetParentRoot();
+	TBWidget *root = target->GetParentRoot();
 
 	const char *source =	"TBLayout: axis: y, distribution: available\n"
 							"	TBLayout: distribution: available, size: available\n"
@@ -132,11 +132,11 @@ bool TBMessageWindow::OnEvent(const TBWidgetEvent &ev)
 
 void TBMessageWindow::OnDie()
 {
-	if (Widget *dimmer = m_dimmer.Get())
+	if (TBWidget *dimmer = m_dimmer.Get())
 		dimmer->Die();
 }
 
-void TBMessageWindow::OnWidgetDelete(Widget *widget)
+void TBMessageWindow::OnWidgetDelete(TBWidget *widget)
 {
 	TBWidgetSafePointer::OnWidgetDelete(widget);
 	// If the target widget is deleted, close!

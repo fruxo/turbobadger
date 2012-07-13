@@ -44,18 +44,18 @@ public:
 	// For safe typecasting
 	WIDGET_SUBCLASS("TBMessageWindow", TBWindow);
 
-	TBMessageWindow(Widget *target, TBID id);
+	TBMessageWindow(TBWidget *target, TBID id);
 	virtual ~TBMessageWindow();
 
 	bool Show(const char *title, const char *message, TBMessageWindowSettings *settings = nullptr);
 
-	virtual Widget *GetEventDestination() { return Get(); }
+	virtual TBWidget *GetEventDestination() { return Get(); }
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnDie();
 private:
 	void AddButton(TBID id, bool focused);
-	virtual void OnWidgetDelete(Widget *widget);
+	virtual void OnWidgetDelete(TBWidget *widget);
 	TBWidgetSafePointer m_dimmer;
 };
 

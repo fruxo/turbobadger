@@ -17,7 +17,7 @@
 
 using namespace tinkerbell;
 
-Widget *g_root = nullptr;
+TBWidget *g_root = nullptr;
 
 Application *application = nullptr;
 /*static */Application *Application::GetApp() { return application; }
@@ -117,11 +117,11 @@ void Mouse(int button, int state, int x, int y)
 	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
 	{
 		g_root->InvokePointerMove(x, y, GlutModToTBMod());
-		if (Widget::hovered_widget)
+		if (TBWidget::hovered_widget)
 		{
-			Widget::hovered_widget->ConvertFromRoot(x, y);
+			TBWidget::hovered_widget->ConvertFromRoot(x, y);
 			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, GlutModToTBMod());
-			Widget::hovered_widget->InvokeEvent(ev);
+			TBWidget::hovered_widget->InvokeEvent(ev);
 		}
 	}
 }
@@ -189,7 +189,7 @@ void ResizeFunc(int w, int h)
 	g_root->SetRect(TBRect(0, 0, window_w, window_h));
 }
 
-class RootWidget : public Widget
+class RootWidget : public TBWidget
 {
 public:
 	virtual void OnInvalid()

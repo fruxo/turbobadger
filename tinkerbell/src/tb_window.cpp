@@ -70,7 +70,7 @@ bool TBWindow::IsActive()
 TBWindow *TBWindow::GetTopMostOtherWindow(bool only_activable_windows)
 {
 	TBWindow *other_window = nullptr;
-	Widget *sibling = m_parent->GetLastChild();
+	TBWidget *sibling = m_parent->GetLastChild();
 	while (sibling && !other_window)
 	{
 		if (sibling != this)
@@ -114,7 +114,7 @@ bool TBWindow::EnsureFocus()
 	if (!success)
 	{
 		// Search for a child widget that accepts focus
-		Widget *child = GetFirstChild();
+		TBWidget *child = GetFirstChild();
 		while (child && IsParentOf(child))
 		{
 			if (child->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN))
@@ -185,7 +185,7 @@ int TBWindow::GetTitleHeight()
 
 TBRect TBWindow::GetPaddingRect()
 {
-	TBRect padding_rect = Widget::GetPaddingRect();
+	TBRect padding_rect = TBWidget::GetPaddingRect();
 	int title_height = GetTitleHeight();
 	padding_rect.y += title_height;
 	padding_rect.h -= title_height;
@@ -238,7 +238,7 @@ void TBWindow::OnRemove()
 		active_window->Activate();
 }
 
-void TBWindow::OnChildAdded(Widget *child)
+void TBWindow::OnChildAdded(TBWidget *child)
 {
 	m_resizer.SetZ(WIDGET_Z_TOP);
 }
@@ -246,7 +246,7 @@ void TBWindow::OnChildAdded(Widget *child)
 void TBWindow::OnResized(int old_w, int old_h)
 {
 	// Apply gravity on children
-	Widget::OnResized(old_w, old_h);
+	TBWidget::OnResized(old_w, old_h);
 	// Manually move our own decoration children
 	// FIX: Put a layout in the TBMover so we can add things there nicely.
 	int title_height = GetTitleHeight();

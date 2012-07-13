@@ -13,11 +13,11 @@ More details is found in the method definitions.
 Input
 -----
 
-You need to create a "root widget" for your UI widgets. A Widget that act
+You need to create a "root widget" for your UI widgets. A TBWidget that act
 as receiver for input, painting etc, and is parent to your other widgets.
 Tinkerbell will handle input capture, focus, etc. automatically.
 
-List of input triggers (root is your root Widget):
+List of input triggers (root is your root TBWidget):
 
 	root->InvokePointer[Down/Up/Move] - Mouse or touch input.
 	root->InvokeWheel                 - Mouse wheel input
@@ -36,7 +36,7 @@ Before painting the root widget (and all its children), you need to prepare
 the renderer to set up the correct matrix etc.
 
 	g_renderer->BeginPaint(window_width, window_height);
-	root->InvokePaint(Widget::PaintProps())
+	root->InvokePaint(TBWidget::PaintProps())
 	g_renderer->EndPaint();
 
 Message handling

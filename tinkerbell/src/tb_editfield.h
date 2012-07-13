@@ -50,7 +50,7 @@ public:
 /** TBEditFieldScrollRoot - Internal for TBEditField.
 	Acts as a scrollable container for any widget created as embedded content. */
 
-class TBEditFieldScrollRoot : public Widget
+class TBEditFieldScrollRoot : public TBWidget
 {
 private: // May only be used by TBEditField.
 	friend class TBEditField;
@@ -69,11 +69,11 @@ public:
 	if enabled by SetStyling(true). Disabled by default.
 */
 
-class TBEditField : public Widget, private TBStyleEditListener, public TBMessageHandler
+class TBEditField : public TBWidget, private TBStyleEditListener, public TBMessageHandler
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBEditField", Widget);
+	WIDGET_SUBCLASS("TBEditField", TBWidget);
 
 	TBEditField();
 	~TBEditField();
@@ -133,7 +133,7 @@ public:
 
 	virtual bool SetText(const char *text) { return m_style_edit.SetText(text, TB_CARET_POS_BEGINNING); }
 	virtual bool GetText(TBStr &text) { return m_style_edit.GetText(text); }
-	using Widget::GetText; ///< Make all versions in base class available.
+	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	/** Set the text and also specify if the caret should be positioned at the beginning
 		or end of the text. */
@@ -154,7 +154,7 @@ public:
 	virtual void OnFontChanged();
 	virtual void OnFocusChanged(bool focused);
 	virtual void OnResized(int old_w, int old_h);
-	virtual Widget *GetContentRoot() { return &m_root; }
+	virtual TBWidget *GetContentRoot() { return &m_root; }
 
 	virtual PreferredSize GetPreferredContentSize();
 
