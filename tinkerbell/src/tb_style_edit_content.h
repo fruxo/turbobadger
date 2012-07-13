@@ -11,7 +11,6 @@
 namespace tinkerbell {
 
 class TBTextFragment;
-class PPaintInfo;
 
 /** Content for a non-text TBTextFragment. */
 
@@ -37,10 +36,10 @@ public:
 
 /** A horizontal line for TBStyleEdit. */
 
-class PHorizontalLineContent : public TBTextFragmentContent
+class TBTextFragmentContentHR : public TBTextFragmentContent
 {
 public:
-	PHorizontalLineContent(int32 width_in_percent, int32 height, const TBColor &color);
+	TBTextFragmentContentHR(int32 width_in_percent, int32 height, const TBColor &color);
 
 	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
 	virtual int32 GetWidth(TBFontFace *font, TBTextFragment *fragment);

@@ -30,7 +30,7 @@ int TBTextFragmentContentFactory::GetContent(const char *text)
 TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const char *text, int text_len)
 {
 	if (strncmp(text, "<hr>", text_len) == 0)
-		return new PHorizontalLineContent(100, 2, TBColor(255, 255, 255, 64));
+		return new TBTextFragmentContentHR(100, 2, TBColor(255, 255, 255, 64));
 	else if (strncmp(text, "<u>", text_len) == 0)
 		return new TBTextFragmentContentUnderline();
 	else if (strncmp(text, "<color ", MIN(text_len, 7)) == 0)
@@ -46,14 +46,14 @@ TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const
 
 // == PHorizontalLineContent ================================================================================
 
-PHorizontalLineContent::PHorizontalLineContent(int32 width_in_percent, int32 height, const TBColor &color)
+TBTextFragmentContentHR::TBTextFragmentContentHR(int32 width_in_percent, int32 height, const TBColor &color)
 	: width_in_percent(width_in_percent)
 	, height(height)
 	, color(color)
 {
 }
 
-void PHorizontalLineContent::Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props)
+void TBTextFragmentContentHR::Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props)
 {
 	int x = translate_x + fragment->xpos;
 	int y = translate_y + fragment->ypos;
@@ -65,9 +65,9 @@ void PHorizontalLineContent::Paint(TBTextFragment *fragment, int32 translate_x, 
 	listener->DrawRectFill(TBRect(x, y, w, height), color);
 }
 
-int32 PHorizontalLineContent::GetWidth(TBFontFace *font, TBTextFragment *fragment) { return MAX(fragment->block->styledit->layout_width, 0); }
+int32 TBTextFragmentContentHR::GetWidth(TBFontFace *font, TBTextFragment *fragment) { return MAX(fragment->block->styledit->layout_width, 0); }
 
-int32 PHorizontalLineContent::GetHeight(TBFontFace *font, TBTextFragment *fragment) { return height; }
+int32 TBTextFragmentContentHR::GetHeight(TBFontFace *font, TBTextFragment *fragment) { return height; }
 
 // ============================================================================
 
