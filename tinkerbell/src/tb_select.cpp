@@ -52,7 +52,7 @@ class TBSimpleLayoutItemWidget : public TBLayout
 public:
 	TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const char *str);
 	~TBSimpleLayoutItemWidget();
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 private:
 	TBSelectItemSource *m_source;
 	TBTextField m_textfield;
@@ -99,7 +99,7 @@ TBSimpleLayoutItemWidget::~TBSimpleLayoutItemWidget()
 		RemoveChild(&m_image);
 }
 
-bool TBSimpleLayoutItemWidget::OnEvent(const WidgetEvent &ev)
+bool TBSimpleLayoutItemWidget::OnEvent(const TBWidgetEvent &ev)
 {
 	if (m_source && ev.type == EVENT_TYPE_CLICK && ev.target == this && !m_window_pointer.Get())
 	{
@@ -300,7 +300,7 @@ void TBSelectList::SetValue(int value)
 	SelectItem(m_value, true);
 	ScrollToSelectedItem();
 
-	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	if (Widget *widget = GetItemWidget(m_value))
 		ev.ref_id = widget->m_id;
 	InvokeEvent(ev);
@@ -352,7 +352,7 @@ void TBSelectList::OnProcessAfterChildren()
 		ScrollToSelectedItem();
 }
 
-bool TBSelectList::OnEvent(const WidgetEvent &ev)
+bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CLICK && ev.target->m_parent == m_layout.GetContentRoot())
 	{
@@ -379,7 +379,7 @@ bool TBSelectList::OnEvent(const WidgetEvent &ev)
 			}
 
 			// Invoke the click event on the target list
-			WidgetEvent ev(EVENT_TYPE_CLICK, 0, 0);
+			TBWidgetEvent ev(EVENT_TYPE_CLICK, 0, 0);
 			if (Widget *widget = GetItemWidget(m_value))
 				ev.ref_id = widget->m_id;
 			target_list->InvokeEvent(ev);
@@ -459,7 +459,7 @@ void TBSelectDropdown::SetValue(int value)
 	else if (m_value < m_source->GetNumItems())
 		SetText(m_source->GetItemString(m_value));
 
-	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 }
 
@@ -476,7 +476,7 @@ void TBSelectDropdown::OpenWindow()
 	}
 }
 
-bool TBSelectDropdown::OnEvent(const WidgetEvent &ev)
+bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.target == this && ev.type == EVENT_TYPE_CLICK)
 	{
@@ -579,14 +579,14 @@ TBRect TBMenuWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
 	return TBRect(x, y, w, h);
 }
 
-bool TBMenuWindow::OnEvent(const WidgetEvent &ev)
+bool TBMenuWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CLICK && m_select_list == ev.target)
 	{
 		TBWidgetSafePointer this_widget(this);
 
 		// Invoke the click on the target
-		WidgetEvent target_ev(EVENT_TYPE_CLICK);
+		TBWidgetEvent target_ev(EVENT_TYPE_CLICK);
 		target_ev.ref_id = ev.ref_id;
 		InvokeEvent(target_ev);
 
@@ -603,7 +603,7 @@ void TBMenuWindow::OnWidgetFocusChanged(Widget *widget, bool focused)
 	Close();
 }
 
-bool TBMenuWindow::OnWidgetInvokeEvent(const WidgetEvent &ev)
+bool TBMenuWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 {
 	if ((ev.type == EVENT_TYPE_POINTER_DOWN || ev.type == EVENT_TYPE_CONTEXT_MENU) &&
 		!IsEventDestinationFor(ev.target))
@@ -681,7 +681,7 @@ void TBInlineSelect::SetValueInternal(int value, bool update_text)
 		m_editfield.SetText(strval);
 	}
 
-	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 
 	// Warning: Do nothing here since the event might have deleted us.
@@ -693,7 +693,7 @@ void TBInlineSelect::OnSkinChanged()
 	m_layout.SetRect(GetPaddingRect());
 }
 
-bool TBInlineSelect::OnEvent(const WidgetEvent &ev)
+bool TBInlineSelect::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_KEY_DOWN)
 	{

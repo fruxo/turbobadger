@@ -120,7 +120,7 @@ void Mouse(int button, int state, int x, int y)
 		if (Widget::hovered_widget)
 		{
 			Widget::hovered_widget->ConvertFromRoot(x, y);
-			WidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, GlutModToTBMod());
+			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, GlutModToTBMod());
 			Widget::hovered_widget->InvokeEvent(ev);
 		}
 	}

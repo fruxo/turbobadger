@@ -151,7 +151,7 @@ public:
 
 	virtual Widget *GetContentRoot() { return &m_layout; }
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
 	TBLayout m_layout;
 	TBTextField m_textfield;
@@ -232,7 +232,7 @@ public:
 	virtual int GetValue() { return m_value; }
 
 	virtual PreferredSize GetPreferredSize();
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
 	void ToggleGroup(Widget *root, Widget *toggled);
 	int m_value;
@@ -296,7 +296,7 @@ public:
 	virtual void SetValue(int value) { SetValueDouble(value); }
 	virtual int GetValue() { return (int) GetValueDouble(); }
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);
 protected:
 	Widget m_handle;
@@ -340,7 +340,7 @@ public:
 	virtual void SetValue(int value) { SetValueDouble(value); }
 	virtual int GetValue() { return (int) GetValueDouble(); }
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);
 protected:
 	Widget m_handle;
@@ -370,7 +370,7 @@ public:
 
 	TBMover();
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 /** TBResizer is a lower right corner resize grip. It will resize its parent widget. */
@@ -381,7 +381,7 @@ public:
 	WIDGET_SUBCLASS("TBResizer", Widget);
 
 	TBResizer();
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 /** TBDimmer dim widgets in the background and block input. */

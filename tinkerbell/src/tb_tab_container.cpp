@@ -94,7 +94,7 @@ void TBTabContainer::SetAlignment(TB_ALIGN align)
 	m_tab_layout.SetLayoutPosition(reverse ? LAYOUT_POSITION_RIGHT_BOTTOM : LAYOUT_POSITION_LEFT_TOP);
 }
 
-bool TBTabContainer::OnEvent(const WidgetEvent &ev)
+bool TBTabContainer::OnEvent(const TBWidgetEvent &ev)
 {
 	if ((ev.type == EVENT_TYPE_CLICK || ev.type == EVENT_TYPE_POINTER_DOWN) &&
 		ev.target->GetID() == TBIDC("tab"))

@@ -69,7 +69,7 @@ enum SPECIAL_KEY
 	TB_KEY_F7, TB_KEY_F8, TB_KEY_F9, TB_KEY_F10, TB_KEY_F11, TB_KEY_F12
 };
 
-class WidgetEvent
+class TBWidgetEvent
 {
 public:
 	Widget *target;		///< The widget that invoked the event
@@ -84,10 +84,10 @@ public:
 	MODIFIER_KEYS modifierkeys;
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 
-	WidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta(0), count(1),
+	TBWidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta(0), count(1),
 												key(0), special_key(0), modifierkeys(0) {}
 
-	WidgetEvent(EVENT_TYPE type, int x, int y, MODIFIER_KEYS modifierkeys = 0) :
+	TBWidgetEvent(EVENT_TYPE type, int x, int y, MODIFIER_KEYS modifierkeys = 0) :
 												target(nullptr), type(type), target_x(x), target_y(y), delta(0),
 												count(1), key(0), special_key(0), modifierkeys(modifierkeys) {}
 
@@ -366,7 +366,7 @@ public:
 	/** Callback for handling events.
 		Return true if the event is handled and should not
 		continue to be handled by any parent widgets. */
-	virtual bool OnEvent(const WidgetEvent &ev) { return false; }
+	virtual bool OnEvent(const TBWidgetEvent &ev) { return false; }
 
 	/** Callback for doing anything that might be needed before paint.
 		F.ex Updating invalid layout, formatting text etc. */
@@ -589,7 +589,7 @@ public:
 
 		Note: Remember that this widgets may be deleted after this call! So if you really must do something after
 		this call and are not sure what the event will cause, use TBWidgetSafePointer to detect self deletion. */
-	bool InvokeEvent(WidgetEvent &ev);
+	bool InvokeEvent(TBWidgetEvent &ev);
 
 	void InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys);
 	void InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys);

@@ -130,7 +130,7 @@ void TBEditField::SetEditType(EDIT_TYPE type)
 	m_style_edit.SetPassword(type == EDIT_TYPE_PASSWORD);
 }
 
-bool TBEditField::OnEvent(const WidgetEvent &ev)
+bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target == &m_scrollbar_x)
 	{
@@ -351,7 +351,7 @@ void TBEditField::OnChange()
 
 	//FIX: some of theese in tinkerbell doesn't check if the widget is removed afterwards!
 	//     it's not unlikely that it might result in the widget to be removed.
-	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 }
 

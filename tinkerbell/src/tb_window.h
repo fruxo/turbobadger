@@ -90,7 +90,7 @@ public:
 	virtual TBRect GetPaddingRect();
 	virtual PreferredSize GetPreferredSize();
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnAdded();
 	virtual void OnRemove();
 	virtual void OnChildAdded(Widget *child);

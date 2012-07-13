@@ -211,7 +211,7 @@ PreferredSize TBWindow::GetPreferredSize()
 	return ps;
 }
 
-bool TBWindow::OnEvent(const WidgetEvent &ev)
+bool TBWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.target == &m_close_button)
 	{

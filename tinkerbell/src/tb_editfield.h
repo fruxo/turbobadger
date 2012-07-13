@@ -148,7 +148,7 @@ public:
 	virtual bool SetPlaceholderText(const char *text) { return m_placeholder.SetText(text); }
 	virtual bool GetPlaceholderText(TBStr &text) { return m_placeholder.GetText(text); }
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnPaint(const PaintProps &paint_props);
 	virtual void OnAdded();
 	virtual void OnFontChanged();

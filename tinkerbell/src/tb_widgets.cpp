@@ -681,7 +681,7 @@ void Widget::InvokePaint(const PaintProps &parent_paint_props)
 	g_renderer->SetOpacity(old_opacity);
 }
 
-bool Widget::InvokeEvent(WidgetEvent &ev)
+bool Widget::InvokeEvent(TBWidgetEvent &ev)
 {
 	ev.target = this;
 
@@ -755,7 +755,7 @@ void Widget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modi
 		captured_widget->ConvertFromRoot(x, y);
 		pointer_move_widget_x = pointer_down_widget_x = x;
 		pointer_move_widget_y = pointer_down_widget_y = y;
-		WidgetEvent ev(EVENT_TYPE_POINTER_DOWN, x, y, modifierkeys);
+		TBWidgetEvent ev(EVENT_TYPE_POINTER_DOWN, x, y, modifierkeys);
 		ev.count = click_count;
 		captured_widget->InvokeEvent(ev);
 	}
@@ -770,8 +770,8 @@ void Widget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys)
 	if (captured_widget)
 	{
 		captured_widget->ConvertFromRoot(x, y);
-		WidgetEvent ev_up(EVENT_TYPE_POINTER_UP, x, y, modifierkeys);
-		WidgetEvent ev_click(EVENT_TYPE_CLICK, x, y, modifierkeys);
+		TBWidgetEvent ev_up(EVENT_TYPE_POINTER_UP, x, y, modifierkeys);
+		TBWidgetEvent ev_click(EVENT_TYPE_CLICK, x, y, modifierkeys);
 		captured_widget->InvokeEvent(ev_up);
 		if (!is_panning && captured_widget && captured_widget->GetHitStatus(x, y))
 			captured_widget->InvokeEvent(ev_click);
@@ -790,7 +790,7 @@ void Widget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys)
 		pointer_move_widget_x = x;
 		pointer_move_widget_y = y;
 
-		WidgetEvent ev(EVENT_TYPE_POINTER_MOVE, x, y, modifierkeys);
+		TBWidgetEvent ev(EVENT_TYPE_POINTER_MOVE, x, y, modifierkeys);
 		if (target->InvokeEvent(ev))
 			return;
 
@@ -841,7 +841,7 @@ void Widget::InvokeWheel(int x, int y, int delta, MODIFIER_KEYS modifierkeys)
 		target->ConvertFromRoot(x, y);
 		pointer_move_widget_x = x;
 		pointer_move_widget_y = y;
-		WidgetEvent ev(EVENT_TYPE_WHEEL, x, y, modifierkeys);
+		TBWidgetEvent ev(EVENT_TYPE_WHEEL, x, y, modifierkeys);
 		ev.delta = delta;
 		target->InvokeEvent(ev);
 	}
@@ -876,7 +876,7 @@ void Widget::InvokeKey(int key, int special_key, MODIFIER_KEYS modifierkeys, boo
 			// Invoke the click event
 			if (!down)
 			{
-				WidgetEvent ev(EVENT_TYPE_CLICK, m_rect.w / 2, m_rect.h / 2);
+				TBWidgetEvent ev(EVENT_TYPE_CLICK, m_rect.w / 2, m_rect.h / 2);
 				focused_widget->InvokeEvent(ev);
 			}
 			handled = true;
@@ -884,7 +884,7 @@ void Widget::InvokeKey(int key, int special_key, MODIFIER_KEYS modifierkeys, boo
 		else
 		{
 			// Invoke the key event on the focused widget
-			WidgetEvent ev(down ? EVENT_TYPE_KEY_DOWN : EVENT_TYPE_KEY_UP);
+			TBWidgetEvent ev(down ? EVENT_TYPE_KEY_DOWN : EVENT_TYPE_KEY_UP);
 			ev.key = key;
 			ev.special_key = special_key;
 			ev.modifierkeys = modifierkeys;

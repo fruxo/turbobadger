@@ -40,14 +40,14 @@ public:
 	void RefreshFromSource();
 
 	// == TBWindow ======================================================================
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnPaintChildren(const PaintProps &paint_props);
 
 	// == TBMessageHandler ==============================================================
 	virtual void OnMessageReceived(TBMessage *msg);
 
 	// == TBGlobalWidgetListener ========================================================
-	virtual bool OnWidgetInvokeEvent(const WidgetEvent &ev);
+	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev);
 	virtual void OnWidgetAdded(Widget *widget);
 	virtual void OnWidgetRemove(Widget *widget);
 private:

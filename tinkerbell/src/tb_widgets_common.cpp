@@ -163,7 +163,7 @@ void TBButton::OnMessageReceived(TBMessage *msg)
 		assert(captured_widget == this);
 		if (!is_panning && GetHitStatus(pointer_move_widget_x, pointer_move_widget_y))
 		{
-			WidgetEvent ev(EVENT_TYPE_CLICK, pointer_move_widget_x, pointer_move_widget_y, 0);
+			TBWidgetEvent ev(EVENT_TYPE_CLICK, pointer_move_widget_x, pointer_move_widget_y, 0);
 			captured_widget->InvokeEvent(ev);
 		}
 		if (auto_click_repeat_delay)
@@ -193,7 +193,7 @@ TBClickLabel::~TBClickLabel()
 	RemoveChild(&m_layout);
 }
 
-bool TBClickLabel::OnEvent(const WidgetEvent &ev)
+bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 {
 	// Get a widget from the layout that isn't the textfield, or just bail out
 	// if we only have the textfield.
@@ -204,7 +204,7 @@ bool TBClickLabel::OnEvent(const WidgetEvent &ev)
 	if (click_target && ev.target == &m_textfield)
 	{
 		click_target->SetState(WIDGET_STATE_PRESSED, (m_textfield.GetAutoState() & WIDGET_STATE_PRESSED) ? true : false);
-		WidgetEvent target_ev(ev.type, ev.target_x - click_target->m_rect.x, ev.target_y - click_target->m_rect.y);
+		TBWidgetEvent target_ev(ev.type, ev.target_x - click_target->m_rect.x, ev.target_y - click_target->m_rect.y);
 		return click_target->InvokeEvent(target_ev);
 	}
 	return false;
@@ -307,7 +307,7 @@ void TBRadioCheckBox::SetValue(int value)
 	SetState(WIDGET_STATE_SELECTED, value ? true : false);
 
 	Invalidate();
-	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 
 	if (!value || !m_group_id)
@@ -331,7 +331,7 @@ PreferredSize TBRadioCheckBox::GetPreferredSize()
 	return ps;
 }
 
-bool TBRadioCheckBox::OnEvent(const WidgetEvent &ev)
+bool TBRadioCheckBox::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.target == this && ev.type == EVENT_TYPE_CLICK)
 	{
@@ -412,11 +412,11 @@ void TBScrollBar::SetValueDouble(double value)
 	m_value = value;
 
 	UpdateHandle();
-	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 }
 
-bool TBScrollBar::OnEvent(const WidgetEvent &ev)
+bool TBScrollBar::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_POINTER_MOVE && captured_widget == &m_handle)
 	{
@@ -546,11 +546,11 @@ void TBSlider::SetValueDouble(double value)
 	m_value = value;
 
 	UpdateHandle();
-	WidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 }
 
-bool TBSlider::OnEvent(const WidgetEvent &ev)
+bool TBSlider::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_POINTER_MOVE && captured_widget == &m_handle)
 	{
@@ -637,7 +637,7 @@ TBMover::TBMover()
 	m_skin_bg.Set("TBMover");
 }
 
-bool TBMover::OnEvent(const WidgetEvent &ev)
+bool TBMover::OnEvent(const TBWidgetEvent &ev)
 {
 	if (!m_parent)
 		return false;
@@ -665,7 +665,7 @@ TBResizer::TBResizer()
 	m_skin_bg.Set("TBResizer");
 }
 
-bool TBResizer::OnEvent(const WidgetEvent &ev)
+bool TBResizer::OnEvent(const TBWidgetEvent &ev)
 {
 	if (!m_parent)
 		return false;

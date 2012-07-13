@@ -385,7 +385,7 @@ PreferredSize TBLayout::GetPreferredContentSize()
 	return ps;
 }
 
-bool TBLayout::OnEvent(const WidgetEvent &ev)
+bool TBLayout::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_WHEEL)
 	{

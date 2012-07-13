@@ -47,14 +47,14 @@ public:
 	void LoadResource(TBNode &node);
 	void Output(const char *format, ...);
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 class MainWindow : public DemoWindow, public TBMessageHandler
 {
 public:
 	MainWindow();
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 
 	// Implement TBMessageHandler
 	virtual void OnMessageReceived(TBMessage *msg);
@@ -64,14 +64,14 @@ class MyToolbarWindow : public DemoWindow
 {
 public:
 	MyToolbarWindow(const char *filename);
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 class ScrollContainerWindow : public DemoWindow, public TBMessageHandler
 {
 public:
 	ScrollContainerWindow();
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 
 	// Implement TBMessageHandler
 	virtual void OnMessageReceived(TBMessage *msg);

@@ -141,7 +141,7 @@ Widget *ResourceEditWindow::GetSelectedWidget()
 	return nullptr;
 }
 
-bool ResourceEditWindow::OnEvent(const WidgetEvent &ev)
+bool ResourceEditWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("widget_list_search"))
 	{
@@ -190,7 +190,7 @@ void ResourceEditWindow::OnMessageReceived(TBMessage *msg)
 		UpdateWidgetList(true);
 }
 
-bool ResourceEditWindow::OnWidgetInvokeEvent(const WidgetEvent &ev)
+bool ResourceEditWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 {
 	// Intercept all events to widgets in the build container
 	if (m_build_container->IsParentOf(ev.target))

@@ -58,7 +58,7 @@ void TBGlobalWidgetListener::InvokeWidgetFocusChanged(Widget *widget, bool focus
 		listener->OnWidgetFocusChanged(widget, focused);
 }
 
-bool TBGlobalWidgetListener::InvokeWidgetInvokeEvent(const WidgetEvent &ev)
+bool TBGlobalWidgetListener::InvokeWidgetInvokeEvent(const TBWidgetEvent &ev)
 {
 	bool handled = false;
 	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();

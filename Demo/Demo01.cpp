@@ -117,7 +117,7 @@ void DemoWindow::Output(const char *format, ...)
 	}
 }
 
-bool DemoWindow::OnEvent(const WidgetEvent &ev)
+bool DemoWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	// FIX: Let a special debug output window be a TBGlobalWidgetListener and listen to all events
 	// Now we only know about events that are not handled.
@@ -194,7 +194,7 @@ public:
 			select->GetScrollContainer()->SetScrollMode(scrollmode);
 		}
 	}
-	virtual bool OnEvent(const WidgetEvent &ev)
+	virtual bool OnEvent(const TBWidgetEvent &ev)
 	{
 		if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("filter"))
 		{
@@ -233,7 +233,7 @@ public:
 			}
 		}
 	}
-	virtual bool OnEvent(const WidgetEvent &ev)
+	virtual bool OnEvent(const TBWidgetEvent &ev)
 	{
 		if (ev.type == EVENT_TYPE_CLICK)
 		{
@@ -326,7 +326,7 @@ MyToolbarWindow::MyToolbarWindow(const char *filename)
 		select->SetSource(&position_toggle_source);
 }
 
-bool MyToolbarWindow::OnEvent(const WidgetEvent &ev)
+bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("select position"))
 	{
@@ -411,7 +411,7 @@ ScrollContainerWindow::ScrollContainerWindow()
 		select->SetSource(&name_source);
 }
 
-bool ScrollContainerWindow::OnEvent(const WidgetEvent &ev)
+bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CLICK)
 	{
@@ -509,7 +509,7 @@ void MainWindow::OnMessageReceived(TBMessage *msg)
 	}
 }
 
-bool MainWindow::OnEvent(const WidgetEvent &ev)
+bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CLICK)
 	{

@@ -46,7 +46,7 @@ public:
 	/** Set which page should be selected and visible. */
 	void SetCurrentPage(int index);
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnProcess();
 
 	virtual Widget *GetContentRoot() { return &m_content_root; }

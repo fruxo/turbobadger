@@ -111,14 +111,14 @@ void TBMessageWindow::AddButton(TBID id, bool focused)
 	}
 }
 
-bool TBMessageWindow::OnEvent(const WidgetEvent &ev)
+bool TBMessageWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CLICK && ev.target->IsOfType("TBButton"))
 	{
 		TBWidgetSafePointer this_widget(this);
 
 		// Invoke the click on the target
-		WidgetEvent target_ev(EVENT_TYPE_CLICK);
+		TBWidgetEvent target_ev(EVENT_TYPE_CLICK);
 		target_ev.ref_id = ev.target->m_id;
 		InvokeEvent(target_ev);
 

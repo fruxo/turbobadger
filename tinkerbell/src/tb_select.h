@@ -184,7 +184,7 @@ public:
 	virtual void OnSkinChanged();
 	virtual void OnProcess();
 	virtual void OnProcessAfterChildren();
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
 	TBScrollContainer m_container;
 	TBLayout m_layout;
@@ -216,7 +216,7 @@ public:
 	/** Open the window if the model has items. */
 	void OpenWindow();
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
 	TBSelectItemSource *m_source;
 	TBSkinImage m_arrow;
@@ -242,10 +242,10 @@ public:
 
 	virtual Widget *GetEventDestination() { return Get(); }
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 private:
 	virtual void OnWidgetFocusChanged(Widget *widget, bool focused);
-	virtual bool OnWidgetInvokeEvent(const WidgetEvent &ev);
+	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev);
 	virtual void OnWidgetDelete(Widget *widget);
 	TBSelectList *m_select_list;
 };
@@ -278,7 +278,7 @@ public:
 	virtual int GetValue() { return m_value; }
 
 	virtual void OnSkinChanged();
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
 	TBButton m_buttons[2];
 	TBLayout m_layout;

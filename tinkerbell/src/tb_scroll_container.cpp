@@ -195,7 +195,7 @@ PreferredSize TBScrollContainer::GetPreferredContentSize()
 	return ps;
 }
 
-bool TBScrollContainer::OnEvent(const WidgetEvent &ev)
+bool TBScrollContainer::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && (ev.target == &m_scrollbar_x || ev.target == &m_scrollbar_y))
 	{

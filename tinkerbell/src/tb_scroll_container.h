@@ -78,7 +78,7 @@ public:
 
 	virtual PreferredSize GetPreferredContentSize();
 
-	virtual bool OnEvent(const WidgetEvent &ev);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnProcess();
 	virtual void OnResized(int old_w, int old_h);
 
