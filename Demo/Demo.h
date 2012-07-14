@@ -60,6 +60,14 @@ public:
 	virtual void OnMessageReceived(TBMessage *msg);
 };
 
+class AnimationsWindow : public DemoWindow
+{
+public:
+	AnimationsWindow();
+	void Animate();
+	virtual bool OnEvent(const TBWidgetEvent &ev);
+};
+
 class MyToolbarWindow : public DemoWindow
 {
 public:

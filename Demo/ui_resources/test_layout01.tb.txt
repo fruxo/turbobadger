@@ -7,6 +7,11 @@ TBLayout
 		TBSelectDropdown
 			text Select position
 			id select position
+			items
+				item: text: "LAYOUT_POSITION_CENTER"
+				item: text: "LAYOUT_POSITION_LEFT_TOP"
+				item: text: "LAYOUT_POSITION_RIGHT_BOTTOM"
+				item: text: "LAYOUT_POSITION_GRAVITY"
 		TBButton
 			text Toggle axis
 			id toggle axis

@@ -15,7 +15,6 @@
 #include "addons/tbimage/tb_image_manager.h"
 #include "utf8/utf8.h"
 
-TBGenericStringItemSource position_toggle_source;
 TBGenericStringItemSource name_source;
 TBGenericStringItemSource popup_menu_source;
 
@@ -321,9 +320,6 @@ public:
 MyToolbarWindow::MyToolbarWindow(const char *filename)
 {
 	LoadResourceFile(filename);
-
-	if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "select position"))
-		select->SetSource(&position_toggle_source);
 }
 
 bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
@@ -487,6 +483,48 @@ void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
 	}
 }
 
+// == AnimationsWindow ========================================================
+
+AnimationsWindow::AnimationsWindow()
+{
+	LoadResourceFile("Demo/ui_resources/test_animations.tb.txt");
+	Animate();
+}
+
+void AnimationsWindow::Animate()
+{
+	// Abort any still unfinished animations.
+	WidgetsAnimationManager::AbortAnimations(this);
+
+	ANIMATION_CURVE curve = ANIMATION_CURVE_SLOW_DOWN;
+	double duration = 500;
+	bool fade = true;
+
+	if (TBSelectList *curve_select = TBSafeGetByID(TBSelectList, "curve"))
+		curve = static_cast<ANIMATION_CURVE>(curve_select->GetValue());
+	if (TBInlineSelect *duration_select = TBSafeGetByID(TBInlineSelect, "duration"))
+		duration = duration_select->GetValueDouble();
+	if (TBCheckBox *fade_check = TBSafeGetByID(TBCheckBox, "fade"))
+		fade = fade_check->GetValue() ? true : false;
+
+	// Start move animation
+	if (AnimationObject *anim = new WidgetAnimationRect(this, m_rect.Offset(-m_rect.x - m_rect.w, 0), m_rect))
+		AnimationManager::StartAnimation(anim, curve, duration);
+	// Start fade animation
+	if (fade)
+	{
+		if (AnimationObject *anim = new WidgetAnimationOpacity(this, ALMOST_ZERO_OPACITY, 1, false))
+			AnimationManager::StartAnimation(anim, curve, duration);
+	}
+}
+
+bool AnimationsWindow::OnEvent(const TBWidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("Animate!"))
+		Animate();
+	return DemoWindow::OnEvent(ev);
+}
+
 // == MainWindow ==============================================================
 
 MainWindow::MainWindow()
@@ -596,6 +634,11 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 			new MyToolbarWindow("Demo/ui_resources/test_image_widget.tb.txt");
 			return true;
 		}
+		else if (ev.target->GetID() == TBIDC("test-animations"))
+		{
+			new AnimationsWindow();
+			return true;
+		}
 		else if (ev.target->GetID() == TBIDC("test-scroll-container"))
 		{
 			new ScrollContainerWindow();
@@ -644,10 +687,11 @@ bool DemoApplication::Init()
 	// Run unit tests
 	int num_failed_tests = TBRunTests();
 
-	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_CENTER"));
-	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_LEFT_TOP"));
-	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_RIGHT_BOTTOM"));
-	position_toggle_source.AddItem(new TBGenericStringItem("LAYOUT_POSITION_GRAVITY"));
+	// TBSelectList and TBSelectDropdown widgets have a default item source that are fed with any items
+	// specified in the resource files. But it is also possible to set any source which can save memory
+	// and improve performance. Then you don't have to populate each instance with its own set of items,
+	// for widgets that occur many times in a UI, always with the same items.
+	// Here we prepare the name source, that is used in a few places.
 	int i = 0;
 	while (boy_names[i])
 		advanced_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
@@ -659,11 +703,7 @@ bool DemoApplication::Init()
 		name_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
 	name_source.SetSort(TB_SORT_ASCENDING);
 
-// FIX: separator, shortcuts, disabled, icon, submenus!
-// FIX: Also positioning of multiple menus.. Upper-right combos from point.
-// behöver detta i stringitem implementationen för att enkelt kunna göra menyer, även om det är ett extra onödigt steg
-// SKAPAR TEXTFIELD om det bara är text. finns ikon skapar den layout med flera saker i. Är det check, skapas layout med check osv.
-
+	// Prepare a source with submenus (with eternal recursion) so we can test sub menu support.
 	popup_menu_source.AddItem(new TBGenericStringItem("Option 1", TBIDC("opt 1")));
 	popup_menu_source.AddItem(new TBGenericStringItem("Option 2", TBIDC("opt 2")));
 	popup_menu_source.AddItem(new TBGenericStringItem("-"));

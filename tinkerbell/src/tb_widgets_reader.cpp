@@ -43,7 +43,7 @@ TB_WIDGET_FACTORY(TBEditField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
 	widget->SetWrapping(info->node->GetValueInt("wrap", widget->GetWrapping()) ? true : false);
 	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt_to_content", widget->GetAdaptToContentSize()) ? true : false);
 	widget->SetVirtualWidth(info->node->GetValueInt("virtual_width", widget->GetVirtualWidth()));
-	if (const char *text = info->reader->GetTranslatableString(info->node, "placeholder"))
+	if (const char *text = info->reader->GetTranslatableString(info->node, "placeholder", nullptr))
 		widget->SetPlaceholderText(text);
 	if (const char *type = info->node->GetValueString("type", nullptr))
 	{
@@ -149,11 +149,48 @@ TB_WIDGET_FACTORY(TBSlider, TBValue::TYPE_FLOAT, WIDGET_Z_TOP)
 	widget->SetLimits(min, max);
 }
 
+void ReadItems(TBWidgetsReader *reader, TBNode *node, TBGenericStringItemSource *target_source)
+{
+	// If there is a items node, loop through all its children and add
+	// items to the target item source.
+	if (TBNode *items = node->GetNode("items"))
+	{
+		for (TBNode *n = items->GetFirstChild(); n; n = n->GetNext())
+		{
+			if (strcmp(n->GetName(), "item") != 0)
+				continue;
+
+			const char *item_str = reader->GetTranslatableString(n, "text", "");
+			TBID item_id;
+			if (TBNode *n_id = n->GetNode("id"))
+				reader->SetIDFromNode(item_id, n_id);
+
+			TBGenericStringItem *item = new TBGenericStringItem(item_str, item_id);
+			if (!item || !target_source->AddItem(item))
+			{
+				// Out of memory
+				delete item;
+				break;
+			}
+		}
+	}
+}
+
+TB_WIDGET_FACTORY(TBSelectList, TBValue::TYPE_INT, WIDGET_Z_TOP)
+{
+	// Read items (if there is any) into the default source
+	ReadItems(info->reader, info->node, widget->GetDefaultSource());
+}
+
+TB_WIDGET_FACTORY(TBSelectDropdown, TBValue::TYPE_INT, WIDGET_Z_TOP)
+{
+	// Read items (if there is any) into the default source
+	ReadItems(info->reader, info->node, widget->GetDefaultSource());
+}
+
 TB_WIDGET_FACTORY(TBCheckBox, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBRadioButton, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBTextField, TBValue::TYPE_STRING, WIDGET_Z_TOP) {}
-TB_WIDGET_FACTORY(TBSelectDropdown, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
-TB_WIDGET_FACTORY(TBSelectList, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBSkinImage, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBSeparator, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBProgressSpinner, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
@@ -205,7 +242,7 @@ TBWidgetsReader::~TBWidgetsReader()
 {
 }
 
-const char *TBWidgetsReader::GetTranslatableString(TBNode *node, const char *request)
+const char *TBWidgetsReader::GetTranslatableString(TBNode *node, const char *request, const char *def)
 {
 	if (const char *string = node->GetValueString(request, nullptr))
 	{
@@ -214,7 +251,7 @@ const char *TBWidgetsReader::GetTranslatableString(TBNode *node, const char *req
 			string = g_tb_lng->GetString(string + 1);
 		return string;
 	}
-	return nullptr;
+	return def;
 }
 
 bool TBWidgetsReader::LoadFile(TBWidget *target, const char *filename)
@@ -249,7 +286,7 @@ void TBWidgetsReader::LoadNodeTree(TBWidget *target, TBNode *node)
 		CreateWidget(target, n, WIDGET_Z_TOP);
 }
 
-void SetIDFromNode(TBID &id, TBNode *node)
+void TBWidgetsReader::SetIDFromNode(TBID &id, TBNode *node)
 {
 	if (!node)
 		return;
@@ -276,6 +313,9 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	// Read generic properties
 
+	// FIX: Would be better to NOT do this if we're adding to a layouter anyway. 
+	// otherwise we're causing unnecessary reformat of text and layout.
+	// We should also support setting pixel rects?
 	new_widget->SetRect(target->GetContentRoot()->GetPaddingRect());
 
 	SetIDFromNode(new_widget->m_id, node->GetNode("id"));
@@ -289,7 +329,7 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	new_widget->m_data = node->GetValueInt("data", 0);
 
-	if (const char *text = GetTranslatableString(node, "text"))
+	if (const char *text = GetTranslatableString(node, "text", nullptr))
 		new_widget->SetText(text);
 
 	if (const char *connection = node->GetValueString("connection", nullptr))

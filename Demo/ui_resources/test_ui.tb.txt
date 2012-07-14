@@ -13,6 +13,7 @@ TBLayout: axis: y
 	TBButton: text: "Radiobutton & Checkbox", id: "test-radio-check"
 	TBButton: text: "ScrollContainer & misc.", id: "test-scroll-container"
 	TBButton: text: "TBImage", id: "test-image"
+	TBButton: text: "Animations", id: "test-animations"
 	TBButton: text: "ResourceEditWindow", id: "test-resource-edit"
 	TBTextField: text: "Graphics tests:"
 	TBButton

@@ -115,8 +115,12 @@ public:
 	void RemoveFactory(TBWidgetFactory *wf) { factories.Remove(wf); }
 
 	/** Return a string with the given request from node. If the string
-		is preceded with a @, it will be looked up from the global TBLanguage. */
-	const char *GetTranslatableString(TBNode *node, const char *request);
+		is preceded with a @, it will be looked up from the global TBLanguage.
+		If the value is not specified, it returns the default value (def). */
+	const char *GetTranslatableString(TBNode *node, const char *request, const char *def);
+
+	/** Set the id from the given node. */
+	void SetIDFromNode(TBID &id, TBNode *node);
 
 	bool LoadFile(TBWidget *target, const char *filename);
 	bool LoadData(TBWidget *target, const char *data);

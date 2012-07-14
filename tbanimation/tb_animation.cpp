@@ -16,12 +16,6 @@ TBLinkListOf<WidgetAnimationObject> widget_animations;
 
 #define LERP(src, dst, progress) (src + (dst - src) * progress)
 
-/** Don't use 0.0 for opacity animations since that may break focus code.
-	At the moment a window should appear and start fading in from opacity 0,
-	it would also attempt setting the focus to it, but if opacity is 0 it will
-	think focus should not be set in that window and fail. */
-#define ALMOST_ZERO_OPACITY 0.001f
-
 // == WidgetAnimationObject =============================================================
 
 WidgetAnimationObject::WidgetAnimationObject(TBWidget *widget)
@@ -66,7 +60,7 @@ void WidgetAnimationOpacity::OnAnimationStop(bool aborted)
 		if (the_widget.Get())
 			delete the_widget.Get();
 	}
-	else if (!aborted)
+	else
 		m_widget->SetOpacity(m_dst_opacity);
 	delete this;
 }
@@ -97,8 +91,7 @@ void WidgetAnimationRect::OnAnimationUpdate(float progress)
 
 void WidgetAnimationRect::OnAnimationStop(bool aborted)
 {
-	if (!aborted) // If we're aborted, it may be because the widget is being deleted
-		m_widget->SetRect(m_dst_rect);
+	m_widget->SetRect(m_dst_rect);
 	delete this;
 }
 
@@ -128,9 +121,8 @@ bool WidgetsAnimationManager::HasAnimationsRunning()
 	return AnimationManager::HasAnimationsRunning();
 }
 
-void WidgetsAnimationManager::OnWidgetDelete(TBWidget *widget)
+void WidgetsAnimationManager::AbortAnimations(TBWidget *widget)
 {
-	// Kill and delete all animations running for the widget being deleted.
 	TBLinkListOf<WidgetAnimationObject>::Iterator iter = widget_animations.IterateForward();
 	while (WidgetAnimationObject *wao = iter.GetAndStep())
 	{
@@ -141,6 +133,12 @@ void WidgetsAnimationManager::OnWidgetDelete(TBWidget *widget)
 			AnimationManager::AbortAnimation(wao);
 		}
 	}
+}
+
+void WidgetsAnimationManager::OnWidgetDelete(TBWidget *widget)
+{
+	// Kill and delete all animations running for the widget being deleted.
+	AbortAnimations(widget);
 }
 
 bool WidgetsAnimationManager::OnWidgetDying(TBWidget *widget)

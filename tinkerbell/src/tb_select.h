@@ -149,12 +149,21 @@ public:
 	/** Set the source which should provide the items for this select.
 		This source needs to live longer than this widget. */
 	void SetSource(TBSelectItemSource *source);
-	TBSelectItemSource *GetSource() { return m_source; }
+	TBSelectItemSource *GetSource() const { return m_source; }
+
+	/** Get the default item source for this widget. This source can be used to add
+		items of type TBGenericStringItem to this widget.
+		It is the item source that is fed from resource files.
+
+		If you need to add other types of items, or if you want to share item sources
+		between several TBSelectDropDown/TBSelectList widgets, use SetSource using a
+		external item source. */
+	TBGenericStringItemSource *GetDefaultSource() { return &m_default_source; }
 
 	/** Set filter string so only matching items will be showed.
 		Set nullptr or empty string to remove filter and show all items. */
 	void SetFilter(const char *filter);
-	const char *GetFilter() { return m_filter; }
+	const char *GetFilter() const { return m_filter; }
 
 	/** Make the list update its items to reflect the items from the
 		in the current source. The update will take place next time
@@ -188,6 +197,7 @@ public:
 protected:
 	TBScrollContainer m_container;
 	TBLayout m_layout;
+	TBGenericStringItemSource m_default_source;
 	TBSelectItemSource *m_source;
 	int m_value;
 	TBStr m_filter;
@@ -205,9 +215,20 @@ public:
 	~TBSelectDropdown();
 
 	/** Set the source which should provide the items for this select.
-		This source needs to live longer than this widget. */
+		This source needs to live longer than this widget.
+		By default, the source is set to a TBGenericStringItemSource
+		(See GetDefaultSource). */
 	void SetSource(TBSelectItemSource *source);
-	TBSelectItemSource *GetSource() { return m_source; }
+	TBSelectItemSource *GetSource() const { return m_source; }
+
+	/** Get the default item source for this widget. This source can be used to add
+		items of type TBGenericStringItem to this widget.
+		It is the item source that is fed from resource files.
+
+		If you need to add other types of items, or if you want to share item sources
+		between several TBSelectDropDown/TBSelectList widgets, use SetSource using a
+		external item source. */
+	TBGenericStringItemSource *GetDefaultSource() { return &m_default_source; }
 
 	/** Set the selected item. */
 	virtual void SetValue(int value);
@@ -218,6 +239,7 @@ public:
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
+	TBGenericStringItemSource m_default_source;
 	TBSelectItemSource *m_source;
 	TBSkinImage m_arrow;
 	int m_value;

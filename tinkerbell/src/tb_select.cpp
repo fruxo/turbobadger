@@ -183,6 +183,7 @@ TBSelectList::TBSelectList()
 	, m_list_is_invalid(false)
 	, m_scroll_to_current(false)
 {
+	SetSource(&m_default_source);
 	SetIsFocusable(true);
 	m_skin_bg.Set("TBSelectList");
 	m_container.SetGravity(WIDGET_GRAVITY_ALL);
@@ -423,6 +424,7 @@ TBSelectDropdown::TBSelectDropdown()
 	: m_source(nullptr)
 	, m_value(-1)
 {
+	SetSource(&m_default_source);
 	m_skin_bg.Set("TBSelectDropdown");
 	m_arrow.SetSkinBg("TBSelectDropdown.arrow");
 	GetContentRoot()->AddChild(&m_arrow);
