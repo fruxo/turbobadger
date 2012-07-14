@@ -1971,6 +1971,7 @@ void TBUndoRedoStack::Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse)
 	applying = true;
 	if (e->insert == reverse)
 	{
+		styledit->selection.SelectNothing();
 		styledit->caret.SetGlobalOfs(e->gofs, false);
 		assert(TBTextOfs(styledit->caret.pos).GetGlobalOfs(styledit) == e->gofs);
 
@@ -1983,8 +1984,12 @@ void TBUndoRedoStack::Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse)
 	}
 	else
 	{
+		styledit->selection.SelectNothing();
 		styledit->caret.SetGlobalOfs(e->gofs, false);
 		styledit->InsertText(e->text);
+		int text_len = e->text.Length();
+		if (text_len > 1)
+			styledit->selection.Select(e->gofs, e->gofs + text_len);
 	}
 	applying = false;
 }
