@@ -261,7 +261,8 @@ public:
 				if (!source.GetNumItems())
 				{
 					source.AddItem(new TBGenericStringItem("Default font", TBIDC("default font")));
-					source.AddItem(new TBGenericStringItem("Large font", TBIDC("large font")));
+					source.AddItem(new TBGenericStringItem("Default font (larger)", TBIDC("large font")));
+					source.AddItem(new TBGenericStringItem("RGB font", TBIDC("rgb font")));
 					source.AddItem(new TBGenericStringItem("-"));
 					source.AddItem(new TBGenericStringItem("Glyph cache stresstest (CJK)", TBIDC("CJK")));
 					source.AddItem(new TBGenericStringItem("-"));
@@ -281,6 +282,12 @@ public:
 				if (ev.ref_id == TBIDC("default font"))
 					edit->SetFontDescription(TBFontDescription());
 				else if (ev.ref_id == TBIDC("large font"))
+				{
+					TBFontDescription fd = g_font_manager->GetDefaultFontDescription();
+					fd.SetSize(28);
+					edit->SetFontDescription(fd);
+				}
+				else if (ev.ref_id == TBIDC("rgb font"))
 				{
 					TBFontDescription fd = edit->GetCalculatedFontDescription();
 					fd.SetIndex(2);
