@@ -160,6 +160,7 @@ void TBWidget::SetAutoFocusState(bool on)
 
 void TBWidget::SetOpacity(float opacity)
 {
+	opacity = CLAMP(opacity, 0, 1);
 	if (m_opacity == opacity)
 		return;
 	m_opacity = opacity;
@@ -1014,7 +1015,7 @@ void TBWidget::InvokeFontChanged()
 
 	// Recurse to children that inherit the font
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
-		if (child->m_font_desc.GetID() == 0)
+		if (child->m_font_desc.GetFontFaceID() == 0)
 			child->InvokeFontChanged();
 }
 
@@ -1023,7 +1024,7 @@ TBFontDescription TBWidget::GetCalculatedFontDescription() const
 	const TBWidget *tmp = this;
 	while (tmp)
 	{
-		if (tmp->m_font_desc.GetID() != 0)
+		if (tmp->m_font_desc.GetFontFaceID() != 0)
 			return tmp->m_font_desc;
 		tmp = tmp->m_parent;
 	}

@@ -262,7 +262,9 @@ public:
 				{
 					source.AddItem(new TBGenericStringItem("Default font", TBIDC("default font")));
 					source.AddItem(new TBGenericStringItem("Default font (larger)", TBIDC("large font")));
-					source.AddItem(new TBGenericStringItem("RGB font", TBIDC("rgb font")));
+					source.AddItem(new TBGenericStringItem("RGB font (Neon)", TBIDC("rgb font Neon")));
+					source.AddItem(new TBGenericStringItem("RGB font (Orangutang)", TBIDC("rgb font Orangutang")));
+					source.AddItem(new TBGenericStringItem("RGB font (Orange)", TBIDC("rgb font Orange")));
 					source.AddItem(new TBGenericStringItem("-"));
 					source.AddItem(new TBGenericStringItem("Glyph cache stresstest (CJK)", TBIDC("CJK")));
 					source.AddItem(new TBGenericStringItem("-"));
@@ -287,11 +289,25 @@ public:
 					fd.SetSize(28);
 					edit->SetFontDescription(fd);
 				}
-				else if (ev.ref_id == TBIDC("rgb font"))
+				else if (ev.ref_id == TBIDC("rgb font Neon"))
 				{
 					TBFontDescription fd = edit->GetCalculatedFontDescription();
-					fd.SetIndex(2);
+					fd.SetID(TBIDC("Neon"));
 					fd.SetSize(42);
+					edit->SetFontDescription(fd);
+				}
+				else if (ev.ref_id == TBIDC("rgb font Orangutang"))
+				{
+					TBFontDescription fd = edit->GetCalculatedFontDescription();
+					fd.SetID(TBIDC("Orangutang"));
+					fd.SetSize(48);
+					edit->SetFontDescription(fd);
+				}
+				else if (ev.ref_id == TBIDC("rgb font Orange"))
+				{
+					TBFontDescription fd = edit->GetCalculatedFontDescription();
+					fd.SetID(TBIDC("Orange"));
+					fd.SetSize(30);
 					edit->SetFontDescription(fd);
 				}
 				else if (ev.ref_id == TBIDC("CJK"))
@@ -521,7 +537,7 @@ void AnimationsWindow::Animate()
 	if (fade)
 	{
 		if (AnimationObject *anim = new WidgetAnimationOpacity(this, ALMOST_ZERO_OPACITY, 1, false))
-			AnimationManager::StartAnimation(anim, curve, duration);
+			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_SLOW_DOWN, duration);
 	}
 }
 

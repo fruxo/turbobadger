@@ -153,21 +153,26 @@ private:
 	TBTempBuffer m_temp_buffer;
 };
 
-/** TBFontInfo provides information about a font file associated with a font index. */
+/** TBFontInfo provides information about a font file associated with a font id. */
 class TBFontInfo
 {
 public:
-	/** Get the filename. */
+	/** Get the font filename. */
 	const char *GetFilename() const { return m_filename; }
 
-	/** Return the index that can be used to create this from a
-		TBFontDescription (See TBFontDescription::SetIndex) */
-	uint32 GetIndex() const { return m_index; }
+	/** Get the font name. */
+	const char *GetName() const { return m_name; }
+
+	/** Get the font ID that can be used to create this font from a
+		TBFontDescription (See TBFontDescription::SetID) */
+	TBID GetID() const { return m_id; }
+
 private:
 	friend class TBFontManager;
-	TBFontInfo(const char *filename, uint32 index) : m_filename(filename), m_index(index) {}
+	TBFontInfo(const char *filename, const char *name) : m_filename(filename), m_name(name), m_id(name) {}
 	TBStr m_filename;
-	uint32 m_index;
+	TBStr m_name;
+	TBID m_id;
 };
 
 /** TBFontManager creates and owns font faces (TBFontFace) which are looked up from
@@ -177,10 +182,10 @@ private:
 	and then created CreateFontFace. Otherwise when asking for a font and it doesn't
 	exist, it will use the default font.
 
-	Font index 0 is always populated with a dummy font, that draws squares. This font
-	is generally not used for other things than testing or when there is no font backend
-	implemented yet. Since there is always at least the test font, no nullptr checks are
-	needed.
+	Font ID 0 is always populated with a dummy font that draws squares. This font is
+	generally not used for other things than unit testing or as fallback when there is
+	no font backend implemented yet. Since there is always at least the test font, no
+	nullptr checks are needed.
 */
 class TBFontManager
 {
@@ -194,14 +199,14 @@ public:
 	void RemoveRenderer(TBFontRenderer *renderer) { m_font_renderers.Remove(renderer); }
 
 	/** Add TBFontInfo for the given font filename, so it can be loaded and identified
-		using the font index in a TBFontDescription. */
-	TBFontInfo *AddFontInfo(const char *filename);
+		using the font id in a TBFontDescription. */
+	TBFontInfo *AddFontInfo(const char *filename, const char *name);
 
-	/** Get TBFontInfo for the given font index. */
-	TBFontInfo *GetFontInfo(uint32 index);
+	/** Get TBFontInfo for the given font id, or nullptr if there is no match. */
+	TBFontInfo *GetFontInfo(TBID id) const;
 
 	/** Return true if there is a font loaded that match the given font description. */
-	bool HasFontFace(const TBFontDescription &font_desc);
+	bool HasFontFace(const TBFontDescription &font_desc) const;
 
 	/** Get a loaded font matching the description, or the default font if there is no exact match.
 		If there is not even any default font loaded, it will return the test dummy font (rendering
@@ -218,7 +223,7 @@ public:
 	void SetDefaultFontDescription(const TBFontDescription &font_desc) { m_default_font_desc = font_desc; }
 	TBFontDescription GetDefaultFontDescription() const { return m_default_font_desc; }
 private:
-	TBListAutoDeleteOf<TBFontInfo> m_font_info;
+	TBHashTableAutoDeleteOf<TBFontInfo> m_font_info;
 	TBHashTableAutoDeleteOf<TBFontFace> m_fonts;
 	TBLinkListAutoDeleteOf<TBFontRenderer> m_font_renderers;
 	TBFontDescription m_default_font_desc;

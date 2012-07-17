@@ -197,7 +197,7 @@ TB_TEST_GROUP(tb_editfield)
 
 	TB_TEST(multiline_overflow_1)
 	{
-		// Make sure we use the test dummy font (index 0), so we're not dependant on
+		// Make sure we use the test dummy font (ID 0), so we're not dependant on
 		// the available fonts & font backend in this test.
 		TBFontDescription fd;
 		const int font_size = 48;

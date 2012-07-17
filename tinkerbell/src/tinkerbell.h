@@ -213,11 +213,26 @@ public:
 class TBFontDescription
 {
 public:
-	/** Set the index of the font to use.
-		This index maps to the index of TBFontInfo, which is managed from
-		TBFontManager::AddFontInfo, TBFontManager::GetFontInfo. */
-	void SetIndex(uint32 index)											{ m_packed.index = MIN(index, 0x8000); }
-	uint32 GetIndex() const												{ return m_packed.index; }
+	/** Set the font ID of the font to use.
+		This ID maps to the font names in TBFontInfo, which is managed from
+		TBFontManager::AddFontInfo, TBFontManager::GetFontInfo.
+
+		Example:
+		If a font was added to the font manager with the name "Vera", you can
+		do font_description.SetID(TBIDC("Vera")).
+		*/
+	void SetID(const TBID &id)											{ m_id = id; }
+
+	/** Get the TBID for the font name (See SetID). */
+	TBID GetID() const { return m_id; }
+
+	/** Get the TBID for the TBFontFace that matches this font description.
+		This is a ID combining both the font file, and variation (such as size and style),
+		and should be used to identify a certain font face.
+
+		If this is 0, the font description is unspecified. For a widget, that means that the font
+		should be inherited from the parent widget. */
+	TBID GetFontFaceID() const { return m_id + m_packed_init; }
 
 	void SetSize(uint32 size)											{ m_packed.size = MIN(size, 0x8000); }
 	uint32 GetSize() const												{ return m_packed.size; }
@@ -231,18 +246,14 @@ public:
 	//bool GetItalic() const											{ return m_packed.italic; }
 
 	TBFontDescription() : m_packed_init(0) {}
-	TBFontDescription(const TBFontDescription &src)						{ m_packed_init = src.m_packed_init; }
-	const TBFontDescription& operator = (const TBFontDescription &src)	{ m_packed_init = src.m_packed_init; return *this; }
-	bool operator == (const TBFontDescription &fd) const { return m_packed_init == fd.m_packed_init; }
+	TBFontDescription(const TBFontDescription &src)						{ m_packed_init = src.m_packed_init; m_id = src.m_id; }
+	const TBFontDescription& operator = (const TBFontDescription &src)	{ m_packed_init = src.m_packed_init; m_id = src.m_id; return *this; }
+	bool operator == (const TBFontDescription &fd) const { return m_packed_init == fd.m_packed_init && m_id == fd.m_id; }
 	bool operator != (const TBFontDescription &fd) const { return !(*this == fd); }
-
-	/** Get the TBID for this font description. If this is 0, it means the font description
-		is unspecified and should be inherited. */
-	TBID GetID() const { return TBID(m_packed_init); }
 private:
+	TBID m_id;
 	union {
 		struct {
-			uint32 index : 15;
 			uint32 size : 15;
 			uint32 italic : 1;
 			uint32 bold : 1;

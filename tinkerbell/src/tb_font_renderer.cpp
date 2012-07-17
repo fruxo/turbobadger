@@ -10,8 +10,6 @@
 
 namespace tinkerbell {
 
-#define TEST_FONT_DUMMY_NAME "-test-font-dummy-"
-
 // ================================================================================================
 
 static void blurGlyph(unsigned char* src, int srcw, int srch, int srcStride, unsigned char* dst, int dstw, int dsth, int dstStride, float* temp, float* kernel, int kernelRadius)
@@ -341,8 +339,8 @@ void TBFontFace::OnContextRestored()
 
 TBFontManager::TBFontManager()
 {
-	// Add the test dummy font at index 0
-	AddFontInfo(TEST_FONT_DUMMY_NAME);
+	// Add the test dummy font with empty name (Equals to ID 0)
+	AddFontInfo("-test-font-dummy-", "");
 	m_test_font_desc.SetSize(16);
 	CreateFontFace(m_test_font_desc);
 
@@ -354,48 +352,49 @@ TBFontManager::~TBFontManager()
 {
 }
 
-TBFontInfo *TBFontManager::AddFontInfo(const char *filename)
+TBFontInfo *TBFontManager::AddFontInfo(const char *filename, const char *name)
 {
-	TBFontInfo *fi = nullptr;
-	if (m_font_info.GrowIfNeeded() && (fi = new TBFontInfo(filename, m_font_info.GetNumItems())))
-		m_font_info.Add(fi);
-	return fi;
-}
-
-TBFontInfo *TBFontManager::GetFontInfo(uint32 index)
-{
-	if (index < (uint32)m_font_info.GetNumItems())
-		return m_font_info.Get(index);
+	if (TBFontInfo *fi = new TBFontInfo(filename, name))
+	{
+		if (m_font_info.Add(fi->GetID(), fi))
+			return fi;
+		delete fi;
+	}
 	return nullptr;
 }
 
-bool TBFontManager::HasFontFace(const TBFontDescription &font_desc)
+TBFontInfo *TBFontManager::GetFontInfo(TBID id) const
 {
-	return m_fonts.Get(font_desc.GetID()) ? true : false;
+	return m_font_info.Get(id);
+}
+
+bool TBFontManager::HasFontFace(const TBFontDescription &font_desc) const
+{
+	return m_fonts.Get(font_desc.GetFontFaceID()) ? true : false;
 }
 
 TBFontFace *TBFontManager::GetFontFace(const TBFontDescription &font_desc)
 {
-	if (TBFontFace *font = m_fonts.Get(font_desc.GetID()))
+	if (TBFontFace *font = m_fonts.Get(font_desc.GetFontFaceID()))
 		return font;
-	if (TBFontFace *font = m_fonts.Get(GetDefaultFontDescription().GetID()))
+	if (TBFontFace *font = m_fonts.Get(GetDefaultFontDescription().GetFontFaceID()))
 		return font;
-	return m_fonts.Get(m_test_font_desc.GetID());
+	return m_fonts.Get(m_test_font_desc.GetFontFaceID());
 }
 
 TBFontFace *TBFontManager::CreateFontFace(const TBFontDescription &font_desc)
 {
 	assert(!HasFontFace(font_desc)); // There is already a font added with this description!
 
-	TBFontInfo *fi = GetFontInfo(font_desc.GetIndex());
+	TBFontInfo *fi = GetFontInfo(font_desc.GetID());
 	if (!fi)
 		return nullptr;
 
-	if (strcmp(fi->GetFilename(), TEST_FONT_DUMMY_NAME) == 0)
+	if (fi->GetID() == 0) // Is this the test dummy font
 	{
 		if (TBFontFace *font = new TBFontFace(nullptr, font_desc.GetSize()))
 		{
-			if (m_fonts.Add(font_desc.GetID(), font))
+			if (m_fonts.Add(font_desc.GetFontFaceID(), font))
 				return font;
 			delete font;
 		}
@@ -407,7 +406,7 @@ TBFontFace *TBFontManager::CreateFontFace(const TBFontDescription &font_desc)
 	{
 		if (TBFontFace *font = fr->Create(fi->GetFilename(), (int)font_desc.GetSize()))
 		{
-			if (m_fonts.Add(font_desc.GetID(), font))
+			if (m_fonts.Add(font_desc.GetFontFaceID(), font))
 				return font;
 			delete font;
 		}

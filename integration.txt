@@ -81,16 +81,25 @@ and a freetype backend for other fonts.
 The implementation API render glyph by glyph, but if it's requested to externalize
 the entire string measuring & drawing, support for that shouldn't be hard to add.
 
-If no font implementation is choosen (or if using font index 0), a test dummy font
+If no font implementation is choosen (or if using font ID 0), a test dummy font
 is used which renders squares.
 
 System integration
 ------------------
 
-TBImageLoader - FIX: write something here. (+TDImage)
+Here are some additional API's that needs implementations:
 
-TBSystem - Needs to be implemented for timers & some settings.
+TBImageLoader
+API for loading images. There's a implementation available using STBI. Note: STBI
+should only be used to load your well known resources and nothing from the net,
+since the library doesn't handle corrupt files safely which might be a security
+issue.
 
-TBClipboard - Needs to be implemented for clipboard support.
+TBSystem
+Needs to be implemented for timers & some settings.
 
-TBFile - Needs to be implemented for file loading.
+TBClipboard
+Needs to be implemented for clipboard support.
+
+TBFile
+Needs to be implemented for file loading.

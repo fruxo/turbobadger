@@ -236,13 +236,15 @@ int main(int argc, char** argv)
 
 	// Add a font to the font manager.
 	// If you use the freetype or stb backend, you can add true type files
-	// TBFontInfo *font_info = g_font_manager->AddFontInfo("vera.ttf");
-	TBFontInfo *font_info = g_font_manager->AddFontInfo("tinkerbell/default_font/segoe_white_with_shadow.tb.txt");
-	TBFontInfo *font_info2 = g_font_manager->AddFontInfo("tinkerbell/default_font/neon.tb.txt");
+	//g_font_manager->AddFontInfo("vera.ttf", "Vera");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/neon.tb.txt", "Neon");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/orangutang.tb.txt", "Orangutang");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/orange.tb.txt", "Orange");
 
-	// Set the default font description for widgets to the index of the font info we just added
+	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;
-	fd.SetIndex(font_info->GetIndex());
+	fd.SetID(TBIDC("Segoe"));
 	fd.SetSize(14);
 	g_font_manager->SetDefaultFontDescription(fd);
 
