@@ -10,12 +10,16 @@ TBTabContainer
 			TBSkinImage: skin: Icon16
 		TBButton: text: "Debug"
 	TBLayout: axis: y
-		TBInlineSelect
+		TBTextField: text: "Tab alignment:"
 		TBLayout
-			TBRadioButton: group_id: set_align, id: set_align, data: 0
-			TBRadioButton: group_id: set_align, id: set_align, data: 1, value: 1
-			TBRadioButton: group_id: set_align, id: set_align, data: 2
-			TBRadioButton: group_id: set_align, id: set_align, data: 3
+			TBClickLabel: text: Left
+				TBRadioButton: group_id: set_align, id: set_align, data: 0
+			TBClickLabel: text: Up
+				TBRadioButton: group_id: set_align, id: set_align, data: 1, value: 1
+			TBClickLabel: text: Right
+				TBRadioButton: group_id: set_align, id: set_align, data: 2
+			TBClickLabel: text: Bottom
+				TBRadioButton: group_id: set_align, id: set_align, data: 3
 		TBButton
 			text Toggle tab axis
 			id toggle_tab_axis

@@ -28,6 +28,7 @@ What features does it have
   -Text editing widget (With clipboard, undo/redo, styling functionality,
    embedded content (for read only text flow)...)
   -Extendable skin system with automatic runtime atlas creation.
+   Conditions (simple selectors), overrides, overlays, children etc.
   -Automatic widget layout (No need to specify widget dimensions by pixels)
   -Text based UI resource format (No need to write C++ to create UI)
   -Keyboard friendly (tab focus etc.)
@@ -45,6 +46,7 @@ What features does it have
   -Unicode support (UTF8)
   -Multiple font systems can be used (Implementations of TBBF, freetype and stbf provided)
   -Addon system for enabling more stuff just by linking additional files.
+  -Animation system.
 
   Tinkerbell addons:
 

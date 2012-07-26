@@ -8,6 +8,7 @@
 #include "tb_widgets_listener.h"
 #include "tb_renderer.h"
 #include "tb_widgets_common.h"
+#include "tb_widget_skin_condition_context.h"
 #include "tb_system.h"
 #include "tb_font_renderer.h"
 #include <assert.h>
@@ -26,12 +27,16 @@ bool TBWidget::is_panning = false;
 bool TBWidget::update_widget_states = true;
 bool TBWidget::show_focus_state = false;
 
+// == TBWidget::PaintProps ==============================================================
+
 TBWidget::PaintProps::PaintProps()
 {
 	// Set the default properties, used for the root widgets
 	// calling InvokePaint. The base values for all inheritance.
 	text_color = g_tb_skin->GetDefaultTextColor();
 }
+
+// == TBWidget ==========================================================================
 
 TBWidget::TBWidget()
 	: m_parent(nullptr)
@@ -468,19 +473,23 @@ void TBWidget::OnPaintChildren(const PaintProps &paint_props)
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
 	{
 		if (clip_rect.Intersects(child->m_rect))
-			g_tb_skin->PaintSkinOverlay(child->m_rect, child->GetSkinBgElement(), child->GetAutoState());
+		{
+			TBWidgetSkinConditionContext context(child);
+			g_tb_skin->PaintSkinOverlay(child->m_rect, child->GetSkinBgElement(), child->GetAutoState(), context);
+		}
 	}
 
 	// Draw generic focus skin if the focused widget is one of the children, and the skin
 	// doesn't have a skin state for focus which would already be painted.
 	if (focused_widget && focused_widget->m_parent == this)
 	{
+		TBWidgetSkinConditionContext context(focused_widget);
 		TBSkinElement *skin_element = focused_widget->GetSkinBgElement();
-		if (!skin_element || !skin_element->HasState(SKIN_STATE_FOCUSED))
+		if (!skin_element || !skin_element->HasState(SKIN_STATE_FOCUSED, context))
 		{
 			uint32 state = focused_widget->GetAutoState();
 			if (state & SKIN_STATE_FOCUSED)
-				g_tb_skin->PaintSkin(focused_widget->m_rect, TBIDC("generic_focus"), state);
+				g_tb_skin->PaintSkin(focused_widget->m_rect, TBIDC("generic_focus"), state, context);
 		}
 	}
 
@@ -656,7 +665,8 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 
 	// Paint background skin
 	TBRect local_rect(0, 0, m_rect.w, m_rect.h);
-	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, state);
+	TBWidgetSkinConditionContext context(this);
+	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, state, context);
 	assert(!!used_element == !!skin_element);
 
 	TB_IF_GFX_DEBUG(g_renderer->DrawRectDebug(local_rect, 255, 255, 255, 50));
@@ -764,10 +774,6 @@ void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 
 void TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys)
 {
-////ha ej button? ha ett contectmenu event ist'llet (kan vara longclick och keyboardmenyknappen)
-///men gör man program vill man ha mittenknappen också!
-//även back, forward events från musen
-//ha radius (för finger?) måste kunna leta rätt på närliggande/mest överlappande vy
 	if (captured_widget)
 	{
 		captured_widget->ConvertFromRoot(x, y);

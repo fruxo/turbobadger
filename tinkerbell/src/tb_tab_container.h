@@ -36,12 +36,14 @@ public:
 	~TBTabContainer();
 
 	/** Set along which axis the content should layouted.
-		Use SetAlignment instead for more choice! */
-	void SetAxis(AXIS axis);
-	AXIS GetAxis() const { return m_root_layout.GetAxis(); }
+		Use SetAlignment instead for more choice! Also, calling
+		SetAxis directly does not update the current alignment. */
+	virtual void SetAxis(AXIS axis);
+	virtual AXIS GetAxis() const { return m_root_layout.GetAxis(); }
 
 	/** Set alignment of the tabs. */
 	void SetAlignment(TB_ALIGN align);
+	TB_ALIGN GetAlignment() const { return m_align; }
 
 	/** Set which page should be selected and visible. */
 	void SetCurrentPage(int index);
@@ -57,6 +59,7 @@ protected:
 	TBWidget m_content_root;
 	bool m_need_page_update;
 	int m_current_page;
+	TB_ALIGN m_align;
 };
 
 };

@@ -5,8 +5,6 @@ TBLayout: axis: y
 	TBButton
 		text Close with dim & alert
 		id TBWindow.close
-		TBSkinImage
-			skin Icon16
 	TBButton: text: "Layout", id: "test-layout"
 	TBButton: text: "Flat skin", id: "test-flat-skin"
 	TBButton: text: "TBWidgetValue connections", id: "test-connections"
@@ -14,6 +12,7 @@ TBLayout: axis: y
 	TBButton: text: "ScrollContainer & misc.", id: "test-scroll-container"
 	TBButton: text: "TBImage", id: "test-image"
 	TBButton: text: "Animations", id: "test-animations"
+	TBButton: text: "Skin conditions", id: "test-skin-conditions"
 	TBButton: text: "ResourceEditWindow", id: "test-resource-edit"
 	TBTextField: text: "Graphics tests:"
 	TBButton

@@ -26,6 +26,8 @@ elements
 		overlay
 			element generic_focus_r8
 				state focused
+			element Star
+				condition: target: ancestors, property: skin, value: "Starry buttons"
 	SpecialButton.pressed
 		bitmap special_button_pressed.png
 		cut 17
@@ -41,3 +43,21 @@ elements
 		bitmap image_frame.png
 		cut 25
 		expand 15
+	Star
+		bitmap star_gray.png
+		type Image
+		img-position-x 0
+		img-position-y 0
+		img-ofs-x -8
+		img-ofs-y -12
+		overrides
+			element Star.active
+				condition: target: this, property: "window active"
+				condition: target: parent, property: hover
+	Star.active
+		bitmap star_gold.png
+		type Image
+		img-position-x 0
+		img-position-y 0
+		img-ofs-x -10
+		img-ofs-y -14

@@ -12,6 +12,8 @@
 
 namespace tinkerbell {
 
+// == Util functions ==========================================================
+
 TBStr FilenameToPath(const char *filename)
 {
 	const char *filename_start = filename;
@@ -21,6 +23,74 @@ TBStr FilenameToPath(const char *filename)
 	if (filename_start == filename) // Filename contained no path
 		return "./";
 	return TBStr(filename_start, filename - filename_start);
+}
+
+uint32 StringToState(const char *state_str)
+{
+	uint32 state = 0;
+	if (strstr(state_str, "all"))		state |= SKIN_STATE_ALL;
+	if (strstr(state_str, "disabled"))	state |= SKIN_STATE_DISABLED;
+	if (strstr(state_str, "focused"))	state |= SKIN_STATE_FOCUSED;
+	if (strstr(state_str, "pressed"))	state |= SKIN_STATE_PRESSED;
+	if (strstr(state_str, "selected"))	state |= SKIN_STATE_SELECTED;
+	if (strstr(state_str, "hovered"))	state |= SKIN_STATE_HOVERED;
+	return state;
+}
+
+TBSkinCondition::TARGET StringToTarget(const char *target_str)
+{
+	TBSkinCondition::TARGET target = TBSkinCondition::TARGET_THIS;
+	if (strcmp(target_str, "this") == 0)
+		target = TBSkinCondition::TARGET_THIS;
+	else if (strcmp(target_str, "parent") == 0)
+		target = TBSkinCondition::TARGET_PARENT;
+	else if (strcmp(target_str, "ancestors") == 0)
+		target = TBSkinCondition::TARGET_ANCESTORS;
+	else
+		TBDebugOut("Skin error: Unknown target in condition!\n");
+	return target;
+}
+
+TBSkinCondition::PROPERTY StringToProperty(const char *prop_str)
+{
+	TBSkinCondition::PROPERTY prop = TBSkinCondition::PROPERTY_SKIN;
+	if (strcmp(prop_str, "skin") == 0)
+		prop = TBSkinCondition::PROPERTY_SKIN;
+	else if (strcmp(prop_str, "window active") == 0)
+		prop = TBSkinCondition::PROPERTY_WINDOW_ACTIVE;
+	else if (strcmp(prop_str, "axis") == 0)
+		prop = TBSkinCondition::PROPERTY_AXIS;
+	else if (strcmp(prop_str, "align") == 0)
+		prop = TBSkinCondition::PROPERTY_ALIGN;
+	else if (strcmp(prop_str, "id") == 0)
+		prop = TBSkinCondition::PROPERTY_ID;
+	else if (strcmp(prop_str, "state") == 0)
+		prop = TBSkinCondition::PROPERTY_STATE;
+	else if (strcmp(prop_str, "hover") == 0)
+		prop = TBSkinCondition::PROPERTY_HOVER;
+	else if (strcmp(prop_str, "capture") == 0)
+		prop = TBSkinCondition::PROPERTY_CAPTURE;
+	else if (strcmp(prop_str, "focus") == 0)
+		prop = TBSkinCondition::PROPERTY_FOCUS;
+	else
+		TBDebugOut("Skin error: Unknown property in condition!\n");
+	return prop;
+}
+
+// == TBSkinCondition =======================================================
+
+TBSkinCondition::TBSkinCondition(TARGET target, PROPERTY prop, const TBID &value, TEST test)
+	: m_target(target)
+	, m_prop(prop)
+	, m_value(value)
+	, m_test(test)
+{
+}
+
+bool TBSkinCondition::GetCondition(TBSkinConditionContext &context) const
+{
+	bool equal = context.GetCondition(m_target, m_prop, m_value);
+	return equal == (m_test == TEST_EQUAL);
 }
 
 // == TBSkin ================================================================
@@ -118,6 +188,10 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			e->spacing = n->GetValueInt("spacing", SKIN_DEFAULT_SPACING);
 			e->content_ofs_x = n->GetValueInt("content-ofs-x", 0);
 			e->content_ofs_y = n->GetValueInt("content-ofs-y", 0);
+			e->img_position_x = n->GetValueInt("img-position-x", 50);
+			e->img_position_y = n->GetValueInt("img-position-y", 50);
+			e->img_ofs_x = n->GetValueInt("img-ofs-x", 0);
+			e->img_ofs_y = n->GetValueInt("img-ofs-y", 0);
 			e->opacity = n->GetValueFloat("opacity", 1.f);
 
 			if (const char *color = n->GetValueString("text-color", nullptr))
@@ -231,12 +305,12 @@ TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id) const
 	return m_elements.Get(skin_id);
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state, TBSkinConditionContext &context)
 {
-	return PaintSkin(dst_rect, GetSkinElement(skin_id), state);
+	return PaintSkin(dst_rect, GetSkinElement(skin_id), state, context);
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return nullptr;
@@ -248,9 +322,9 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	TBSkinElement *return_element = element;
 
 	// If there's any override for this state, paint it. Otherwise paint the standard skin element.
-	TBSkinElementState *override_state = element->m_override_elements.GetStateElement(state);
+	TBSkinElementState *override_state = element->m_override_elements.GetStateElement(state, context);
 	if (override_state)
-		return_element = PaintSkin(dst_rect, override_state->element_id, state);
+		return_element = PaintSkin(dst_rect, override_state->element_id, state, context);
 	else
 		PaintElement(dst_rect, element);
 
@@ -260,8 +334,8 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 		const TBSkinElementState *state_element = element->m_child_elements.GetFirstElement();
 		while (state_element)
 		{
-			if ((state_element->state & state) || state_element->state == SKIN_STATE_ALL)
-				PaintSkin(dst_rect, state_element->element_id, state_element->state & state);
+			if (state_element->IsMatch(state, context))
+				PaintSkin(dst_rect, state_element->element_id, state_element->state & state, context);
 			state_element = state_element->GetNext();
 		}
 	}
@@ -270,7 +344,7 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	return return_element;
 }
 
-void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state)
+void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return;
@@ -282,8 +356,8 @@ void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, ui
 	const TBSkinElementState *state_element = element->m_overlay_elements.GetFirstElement();
 	while (state_element)
 	{
-		if ((state_element->state & state) || state_element->state == SKIN_STATE_ALL)
-			PaintSkin(dst_rect, state_element->element_id, state_element->state & state);
+		if (state_element->IsMatch(state, context))
+			PaintSkin(dst_rect, state_element->element_id, state_element->state & state, context);
 		state_element = state_element->GetNext();
 	}
 
@@ -307,8 +381,8 @@ void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element)
 void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
 {
 	TBRect src_rect(0, 0, element->bitmap->Width(), element->bitmap->Height());
-	TBRect rect(dst_rect.x + (dst_rect.w - src_rect.w) / 2,
-				dst_rect.y + (dst_rect.h - src_rect.h) / 2,
+	TBRect rect(dst_rect.x + element->img_ofs_x + (dst_rect.w - src_rect.w) * element->img_position_x / 100,
+				dst_rect.y + element->img_ofs_y + (dst_rect.h - src_rect.h) * element->img_position_y / 100,
 				src_rect.w, src_rect.h);
 	g_renderer->DrawBitmap(rect, src_rect, element->bitmap);
 }
@@ -401,12 +475,39 @@ TBSkinElement::TBSkinElement()
 	, max_width(SKIN_VALUE_NOT_SPECIFIED), max_height(SKIN_VALUE_NOT_SPECIFIED)
 	, spacing(SKIN_DEFAULT_SPACING)
 	, content_ofs_x(0), content_ofs_y(0)
+	, img_position_x(50), img_position_y(50), img_ofs_x(0), img_ofs_y(0)
 	, opacity(1.f)
 {
 }
 
 TBSkinElement::~TBSkinElement()
 {
+}
+
+// == TBSkinElementState ====================================================
+
+bool TBSkinElementState::IsMatch(uint32 state, TBSkinConditionContext &context) const
+{
+	if (((state & this->state) || this->state == SKIN_STATE_ALL))
+	{
+		for (TBSkinCondition *condition = conditions.GetFirst(); condition; condition = condition->GetNext())
+			if (!condition->GetCondition(context))
+				return false;
+		return true;
+	}
+	return false;
+}
+
+bool TBSkinElementState::IsExactMatch(uint32 state, TBSkinConditionContext &context) const
+{
+	if (state == this->state || this->state == SKIN_STATE_ALL)
+	{
+		for (TBSkinCondition *condition = conditions.GetFirst(); condition; condition = condition->GetNext())
+			if (!condition->GetCondition(context))
+				return false;
+		return true;
+	}
+	return false;
 }
 
 // == TBSkinElement =========================================================
@@ -420,30 +521,28 @@ TBSkinElementStateList::~TBSkinElementStateList()
 	}
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state) const
+TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state, TBSkinConditionContext &context) const
 {
-	if (!state)
-		return nullptr;
 	// First try to get a state element with a exact match to the current state
-	if (TBSkinElementState *element_state = GetStateElementExactMatch(state))
+	if (TBSkinElementState *element_state = GetStateElementExactMatch(state, context))
 		return element_state;
-	// No exact state match. Get a state with a partly match
-	for (int i = 1; i < NUM_SKIN_STATES; i++)
+	// No exact state match. Get a state with a partly match if there is one.
+	TBSkinElementState *state_element = m_state_elements.GetFirst();
+	while (state_element)
 	{
-		uint32 mask = 1 << (i - 1);
-		if (state & mask)
-			if (TBSkinElementState *element_state = GetStateElementExactMatch(state & mask))
-				return element_state;
+		if (state_element->IsMatch(state, context))
+			return state_element;
+		state_element = state_element->GetNext();
 	}
 	return nullptr;
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(uint32 state) const
+TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context) const
 {
 	TBSkinElementState *state_element = m_state_elements.GetFirst();
 	while (state_element)
 	{
-		if (state_element->state == state)
+		if (state_element->IsExactMatch(state, context))
 			return state_element;
 		state_element = state_element->GetNext();
 	}
@@ -455,6 +554,7 @@ void TBSkinElementStateList::Load(TBNode *n)
 	if (!n)
 		return;
 
+	// For each node, create a new state element.
 	TBNode *element_node = n->GetFirstChild();
 	while (element_node)
 	{
@@ -462,20 +562,39 @@ void TBSkinElementStateList::Load(TBNode *n)
 		if (!state)
 			return;
 
-		state->state = 0;
+		// By default, a state element applies to all combinations of states
+		state->state = SKIN_STATE_ALL;
 		state->element_id.Set(element_node->GetValue().GetString());
 
-		if (TBNode *state_node = element_node->GetNode("state"))
+		// Loop through all nodes, read state and create all found conditions.
+		for (TBNode *condition_node = element_node->GetFirstChild(); condition_node; condition_node = condition_node->GetNext())
 		{
-			const char *state_str = state_node->GetValue().GetString();
-			if (strstr(state_str, "all"))		state->state |= SKIN_STATE_ALL;
-			if (strstr(state_str, "disabled"))	state->state |= SKIN_STATE_DISABLED;
-			if (strstr(state_str, "focused"))	state->state |= SKIN_STATE_FOCUSED;
-			if (strstr(state_str, "pressed"))	state->state |= SKIN_STATE_PRESSED;
-			if (strstr(state_str, "selected"))	state->state |= SKIN_STATE_SELECTED;
-			if (strstr(state_str, "hovered"))	state->state |= SKIN_STATE_HOVERED;
+			if (strcmp(condition_node->GetName(), "state") == 0)
+				state->state = StringToState(condition_node->GetValue().GetString());
+			else if (strcmp(condition_node->GetName(), "condition") == 0)
+			{
+				TBSkinCondition::TARGET target = StringToTarget(condition_node->GetValueString("target", ""));
+				TBSkinCondition::PROPERTY prop = StringToProperty(condition_node->GetValueString("property", ""));
+				TBID value;
+				if (TBNode *value_n = condition_node->GetNode("value"))
+				{
+					// Set the it to number or string. If it's a state, we must first convert the
+					// state string to the uint32 state combo.
+					if (prop == TBSkinCondition::PROPERTY_STATE)
+						value.Set(StringToState(value_n->GetValue().GetString()));
+					else if (value_n->GetValue().IsString())
+						value.Set(value_n->GetValue().GetString());
+					else
+						value.Set(value_n->GetValue().GetInt());
+				}
+
+				TBSkinCondition::TEST test = TBSkinCondition::TEST_EQUAL;
+				if (TBSkinCondition *condition = new TBSkinCondition(target, prop, value, test))
+					state->conditions.AddLast(condition);
+			}
 		}
 
+		// State is reado to add
 		m_state_elements.AddLast(state);
 		element_node = element_node->GetNext();
 	}

@@ -9,6 +9,7 @@
 #include "tb_language.h"
 #include "tb_style_edit_content.h"
 #include "tb_widgets_reader.h"
+#include "tb_widget_skin_condition_context.h"
 #include "tb_font_renderer.h"
 
 namespace tinkerbell {
@@ -382,12 +383,14 @@ void TBEditField::DrawRectFill(const TBRect &rect, const TBColor &color)
 
 void TBEditField::DrawTextSelectionBg(const TBRect &rect)
 {
-	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState());
+	TBWidgetSkinConditionContext context(this);
+	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState(), context);
 }
 
 void TBEditField::DrawContentSelectionFg(const TBRect &rect)
 {
-	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState());
+	TBWidgetSkinConditionContext context(this);
+	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState(), context);
 }
 
 void TBEditField::DrawCaret(const TBRect &rect)

@@ -15,10 +15,12 @@
 namespace tinkerbell {
 
 class TBNode;
+class TBSkinConditionContext;
 
 /** Used for some values in TBSkinElement if they has not been specified in the skin. */
 #define SKIN_VALUE_NOT_SPECIFIED -1
 
+/** Default spacing for layout. */
 #define SKIN_DEFAULT_SPACING 5
 
 /** Skin state types (may be combined).
@@ -40,15 +42,75 @@ enum SKIN_ELEMENT_TYPE {
 	SKIN_ELEMENT_TYPE_STRETCH_IMAGE,
 	SKIN_ELEMENT_TYPE_TILE,
 	SKIN_ELEMENT_TYPE_IMAGE
-	//centerimage
 };
+
+/** TBSkinCondition checks if a condition is true for a given TBSkinConditionContext.
+	This is used to apply different state elements depending on what is currently
+	painting the skin. */
+
+class TBSkinCondition : public TBLinkOf<TBSkinCondition>
+{
+public:
+	/** Defines which target(s) relative to the context that should be tested for the condition. */
+	enum TARGET {
+		TARGET_THIS,			///< The object painting the skin.
+		TARGET_PARENT,			///< The parent of the object painting the skin.
+		TARGET_ANCESTORS		///< All ancestors of the object painting the skin.
+	};
+
+	/** Defines which property in the context that should be checked. */
+	enum PROPERTY {
+		PROPERTY_SKIN,				///< The background skin id.
+		PROPERTY_WINDOW_ACTIVE,		///< The window is active (no value required).
+		PROPERTY_AXIS,				///< The axis of the content (x or y)
+		PROPERTY_ALIGN,				///< The alignment.
+		PROPERTY_ID,				///< The id.
+		PROPERTY_STATE,				///< The state is set.
+		PROPERTY_HOVER,				///< Focus is on the target or any child (no value required).
+		PROPERTY_CAPTURE,			///< Capture is on the target or any child (no value required).
+		PROPERTY_FOCUS,				///< Focus is on the target or any child (no value required).
+	};
+
+	/** Defines if the condition tested should be equal or not for the condition to be true. */
+	enum TEST {
+		TEST_EQUAL,		///< Value should be equal for condition to be true.
+		TEST_NOT_EQUAL	///< Value should not be equal for condition to be true.
+	};
+
+	TBSkinCondition(TARGET target, PROPERTY prop, const TBID &value, TEST test);
+
+	/** Return true if the condition is true for the given context. */
+	bool GetCondition(TBSkinConditionContext &context) const;
+private:
+	TARGET m_target;
+	PROPERTY m_prop;
+	TBID m_value;
+	TEST m_test;
+};
+
+/** TBSkinConditionContext checks if a condition is true. It is passed to skin painting functions
+	so different state elements can be applied depending on the current situation of the context.
+	F.ex a widget may change appearance if it's under a parent with a certain skin. */
+
+class TBSkinConditionContext
+{
+public:
+	/** Return true if the given target and property equals the given value. */
+	virtual bool GetCondition(TBSkinCondition::TARGET target, TBSkinCondition::PROPERTY prop, const TBID &value) = 0;
+};
+
+/** TBSkinElementState has a skin element id that should be used if its state and condition
+	matches that which is being painted.
+*/
 
 class TBSkinElementState : public TBLinkOf<TBSkinElementState>
 {
 public:
-	//float opacity;
+	bool IsMatch(uint32 state, TBSkinConditionContext &context) const;
+	bool IsExactMatch(uint32 state, TBSkinConditionContext &context) const;
 	TBID element_id;
 	uint32 state;
+	TBLinkListOf<TBSkinCondition> conditions;
 };
 
 /** List of state elements in a TBSkinElement. */
@@ -58,8 +120,8 @@ class TBSkinElementStateList
 public:
 	~TBSkinElementStateList();
 
-	TBSkinElementState *GetStateElement(uint32 state) const;
-	TBSkinElementState *GetStateElementExactMatch(uint32 state) const;
+	TBSkinElementState *GetStateElement(uint32 state, TBSkinConditionContext &context) const;
+	TBSkinElementState *GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context) const;
 
 	bool HasStateElements() const { return m_state_elements.HasLinks(); }
 	const TBSkinElementState *GetFirstElement() const { return m_state_elements.GetFirst(); }
@@ -98,6 +160,10 @@ public:
 	int8 spacing;		///< Spacing used on layout. SKIN_DEFAULT_SPACING by default.
 	int8 content_ofs_x;	///< X offset of the content in the widget.
 	int8 content_ofs_y;	///< Y offset of the content in the widget.
+	int8 img_position_x;///< Horizontal position for type image. 0-100 (left to right).
+	int8 img_position_y;///< Vertical position for type image. 0-100 (top to bottom).
+	int8 img_ofs_x;		///< X offset for type image. Relative to the x position (img_position_x)
+	int8 img_ofs_y;		///< Y offset for type image. Relative to the y position (img_position_y)
 	float opacity;		///< Opacity that should be used for the whole widget (0.f-1.f).
 	TBColor text_color;
 
@@ -112,9 +178,10 @@ public:
 
 	/** Check if there's a exact or partial match for the given state in either
 		override, child or overlay element list. */
-	bool HasState(uint32 state) { return	m_override_elements.GetStateElement(state) ||
-											m_child_elements.GetStateElement(state) ||
-											m_overlay_elements.GetStateElement(state); }
+	bool HasState(uint32 state, TBSkinConditionContext &context)
+								{ return	m_override_elements.GetStateElement(state, context) ||
+											m_child_elements.GetStateElement(state, context) ||
+											m_overlay_elements.GetStateElement(state, context); }
 };
 
 /** TBSkin contains a list of TBSkinElement. */
@@ -171,14 +238,14 @@ public:
 
 		Return the skin element used (after following override elements or override skins),
 		or nullptr if no skin element was found matching the skin_id. */
-	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state);
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state, TBSkinConditionContext &context);
 
 	/** Paint the skin at dst_rect. Just like the PaintSkin above, but takes a specific
 		skin element instead of looking it up from the id. */
-	TBSkinElement *PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state);
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context);
 
 	/** Paint the overlay elements for the given skin element and state. */
-	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state);
+	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context);
 
 #ifdef _DEBUG
 	/** Render the skin bitmaps on screen, to analyze fragment positioning. */

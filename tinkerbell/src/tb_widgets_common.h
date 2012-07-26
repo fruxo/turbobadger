@@ -90,8 +90,8 @@ public:
 	~TBButton();
 
 	/** Set along which axis the content should layouted (If the button has more content than the text) */
-	void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
-	AXIS GetAxis() const { return m_layout.GetAxis(); }
+	virtual void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
+	virtual AXIS GetAxis() const { return m_layout.GetAxis(); }
 
 	/** Set if the text field should be allowed to squeeze below its
 		preferred size. If squeezable it may shrink to width 0. */
@@ -139,8 +139,8 @@ public:
 	~TBClickLabel();
 
 	/** Set along which axis the content should layouted (If the label has more content than the text) */
-	void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
-	AXIS GetAxis() const { return m_layout.GetAxis(); }
+	virtual void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
+	virtual AXIS GetAxis() const { return m_layout.GetAxis(); }
 
 	/** Set the text of the label. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
@@ -273,8 +273,8 @@ public:
 	~TBScrollBar();
 
 	/** Set along which axis the scrollbar should scroll */
-	void SetAxis(AXIS axis);
-	AXIS GetAxis() const { return m_axis; }
+	virtual void SetAxis(AXIS axis);
+	virtual AXIS GetAxis() const { return m_axis; }
 
 	/** Set the min, max limits for the scrollbar.
 		The visible parameter is how much of the range that is visible.
@@ -321,8 +321,8 @@ public:
 	~TBSlider();
 
 	/** Set along which axis the scrollbar should scroll */
-	void SetAxis(AXIS axis);
-	AXIS GetAxis() const { return m_axis; }
+	virtual void SetAxis(AXIS axis);
+	virtual AXIS GetAxis() const { return m_axis; }
 
 	/** Set the min, max limits for the slider. */
 	void SetLimits(double min, double max);

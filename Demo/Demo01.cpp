@@ -667,6 +667,11 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 			new ScrollContainerWindow();
 			return true;
 		}
+		else if (ev.target->GetID() == TBIDC("test-skin-conditions"))
+		{
+			new MyToolbarWindow("Demo/ui_resources/test_skin_conditions.tb.txt");
+			return true;
+		}
 		else if (ev.target->GetID() == TBIDC("test-resource-edit"))
 		{
 			ResourceEditWindow *res_edit_win = new ResourceEditWindow();

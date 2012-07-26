@@ -36,6 +36,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_widgets_common.cpp \
       tinkerbell/src/tb_widgets_reader.cpp \
       tinkerbell/src/tb_widget_value.cpp \
+      tinkerbell/src/tb_widget_skin_condition_context.cpp \
       tinkerbell/src/tb_window.cpp \
       tinkerbell/src/tb_message_window.cpp \
       tinkerbell/src/tb_addon.cpp \

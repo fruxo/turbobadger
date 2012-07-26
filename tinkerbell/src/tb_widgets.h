@@ -482,6 +482,10 @@ public:
 
 	// == Setter shared for many types of widgets ============
 
+	/** Set along which axis the content should be layouted. */
+	virtual void SetAxis(AXIS axis) {}
+	virtual AXIS GetAxis() const { return AXIS_X; }
+
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
 	virtual void SetValue(int value) {}

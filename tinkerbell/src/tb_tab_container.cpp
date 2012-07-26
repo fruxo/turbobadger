@@ -34,6 +34,7 @@ void TBTabLayout::OnChildAdded(TBWidget *child)
 TBTabContainer::TBTabContainer()
 	: m_need_page_update(true)
 	, m_current_page(0)
+	, m_align(TB_ALIGN_TOP)
 {
 	AddChild(&m_root_layout);
 	// Put the tab layout on top of the content in Z order so their skin can make
@@ -92,6 +93,7 @@ void TBTabContainer::SetAlignment(TB_ALIGN align)
 	SetAxis(horizontal ? AXIS_Y : AXIS_X);
 	m_root_layout.SetLayoutOrder(reverse ? LAYOUT_ORDER_TOP_TO_BOTTOM : LAYOUT_ORDER_BOTTOM_TO_TOP);
 	m_tab_layout.SetLayoutPosition(reverse ? LAYOUT_POSITION_RIGHT_BOTTOM : LAYOUT_POSITION_LEFT_TOP);
+	m_align = align;
 }
 
 bool TBTabContainer::OnEvent(const TBWidgetEvent &ev)

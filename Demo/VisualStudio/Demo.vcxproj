@@ -118,6 +118,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_common.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_listener.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widgets_reader.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_widget_skin_condition_context.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_widget_value.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\tb_test.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_common.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_listener.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widgets_reader.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_widget_skin_condition_context.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_widget_value.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tests\tb_test.h" />
