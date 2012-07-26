@@ -186,6 +186,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_widget_skin_condition_context.cpp">
       <Filter>Source Files\tinkerbell</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_tempbuffer.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">

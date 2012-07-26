@@ -31,7 +31,7 @@ TBHashTable::~TBHashTable()
 void TBHashTable::RemoveAll(bool delete_content)
 {
 #ifdef _DEBUG
-	Debug();
+	//Debug();
 #endif
 	for (uint32 i = 0; i < m_num_buckets; i++)
 	{
@@ -181,14 +181,12 @@ void TBHashTable::Debug()
 			count++;
 			item = item->next;
 		}
-		///fortfarande slö. ta bort tbstr
 		TBStr tmp; tmp.SetFormatted("%d ", count);
 		line.AppendString(tmp);
 		total_count += count;
 	}
 	TBStr tmp; tmp.SetFormatted(" (total: %d of %d buckets)\n", total_count, m_num_buckets);
 	line.AppendString(tmp);
-	line.Append("", 1); // Append null termination
 	TBDebugOut(line.GetData());
 }
 

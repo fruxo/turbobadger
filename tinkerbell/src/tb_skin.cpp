@@ -5,6 +5,7 @@
 
 #include "tb_skin.h"
 #include "tb_system.h"
+#include "tb_tempbuffer.h"
 #include "parser/TBNodeTree.h"
 #include <string.h>
 #include <assert.h>
@@ -13,17 +14,6 @@
 namespace tinkerbell {
 
 // == Util functions ==========================================================
-
-TBStr FilenameToPath(const char *filename)
-{
-	const char *filename_start = filename;
-	while (const char *next = strpbrk(filename, "\\/"))
-		filename = next + 1;
-
-	if (filename_start == filename) // Filename contained no path
-		return "./";
-	return TBStr(filename_start, filename - filename_start);
-}
 
 uint32 StringToState(const char *state_str)
 {
@@ -99,8 +89,6 @@ TBSkin::TBSkin()
 	: m_parent_skin(nullptr)
 	, m_override_skin(nullptr)
 {
-	assert(FilenameToPath("foo.txt").Equals("./"));
-	assert(FilenameToPath("Path/subpath/foo.txt").Equals("Path/subpath/"));
 	g_renderer->AddListener(this);
 
 	// Avoid filtering artifacts at edges when we draw fragments stretched.
@@ -124,7 +112,9 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 	if (!node.ReadFile(skin_file))
 		return false;
 
-	TBStr skin_path = FilenameToPath(skin_file);
+	TBTempBuffer skin_path;
+	if (!skin_path.AppendPath(skin_file))
+		return false;
 
 	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
 		m_default_text_color.SetFromString(color, strlen(color));
@@ -153,7 +143,7 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			const char *bitmap = n->GetValueString("bitmap", nullptr);
 			if (bitmap)
 			{
-				e->bitmap_file.Append(skin_path);
+				e->bitmap_file.Append(skin_path.GetData());
 				e->bitmap_file.Append(bitmap);
 			}
 

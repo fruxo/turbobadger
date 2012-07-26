@@ -62,7 +62,41 @@ bool TBTempBuffer::Append(const char *data, int size)
 
 bool TBTempBuffer::AppendString(const char *str)
 {
-	return Append(str, strlen(str));
+	// Add 1 to include the null termination in the data.
+	if (Append(str, strlen(str) + 1))
+	{
+		// Now remove the null termination from the append position
+		// again, so another call will append to the same string (instead of
+		// after the null termination of the first string)
+		m_append_pos--;
+		return true;
+	}
+	return false;
+}
+
+bool TBTempBuffer::AppendPath(const char *full_path_and_filename)
+{
+	const char *str_start = full_path_and_filename;
+	while (const char *next = strpbrk(full_path_and_filename, "\\/"))
+		full_path_and_filename = next + 1;
+
+	if (str_start == full_path_and_filename) // Filename contained no path
+	{
+		str_start = "./";
+		full_path_and_filename = str_start + 2;
+	}
+
+	int len = full_path_and_filename - str_start;
+	if (Reserve(len + 1))
+	{
+		// Add the string, and nulltermination.
+		Append(str_start, len);
+		Append("", 1);
+		// Remove null termination from append pos again (see details in AppendString).
+		m_append_pos--;
+		return true;
+	}
+	return false;
 }
 
 }; // namespace tinkerbell

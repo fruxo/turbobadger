@@ -34,11 +34,17 @@ public:
 		Returns false on OOM. */
 	bool Append(const char *data, int size);
 
-	/** Append a null terminated string (without the null termination)
-		at the end of the buffer and increase the append position with
-		the same amount.
+	/** Append a null terminated string (including the null termination)
+		at the end of the buffer. The append position will be increased
+		with the length of the text (excluding the null termination) so
+		multiple calls will produce a concatenated null terminated string.
 		Returns false on OOM. */
 	bool AppendString(const char *str);
+
+	/** Append a path without the ending filename.
+		The buffer will be null terminated and the append position will be
+		increased with the length of the path (excluding the null termination). */
+	bool AppendPath(const char *full_path_and_filename);
 
 	/** Set the position (in bytes) in the buffer where Append should write. */
 	void SetAppendPos(int append_pos);

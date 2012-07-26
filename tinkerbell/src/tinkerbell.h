@@ -119,12 +119,10 @@ public:
 /** TBStr is a simple string class.
 	It's a compact wrapper for a char array, and doesn't do any storage magic to
 	avoid buffer copying or remember its length. It is intended as "final storage"
-	of strings.
+	of strings since it's buffer is compact.
 
-	Passing strings around in tinkerbell should preferably be done using "const char *str".
-
-	Serious work on strings are better done using TBTempBuffer and then set on a TBStr for
-	final storage.
+	Serious work on strings is better done using TBTempBuffer and then set on a TBStr for
+	final storage (since TBTempBuffer is optimized for speed rather than being compact).
 
 	It is guaranteed to have a valid pointer at all times. If uninitialized, emptied or on
 	out of memory, its storage will be a empty ("") const string.

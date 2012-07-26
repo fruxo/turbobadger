@@ -125,6 +125,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_space_allocator.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_style_edit.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_tempbuffer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_test.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_widget_value.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tinkerbell.cpp" />
