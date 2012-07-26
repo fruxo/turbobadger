@@ -288,6 +288,13 @@ int main(int argc, char** argv)
 #include <mmsystem.h>
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+	// Set the current path to the directory of the app so we find assets also when visual studio start it.
+	char modname[MAX_PATH];
+	GetModuleFileName(NULL, modname, MAX_PATH);
+	TBTempBuffer buf;
+	buf.AppendPath(modname);
+	SetCurrentDirectory(buf.GetData());
+
 	char *argv[2] = { "", 0 };
 	// Crank up windows timer resolution (it's awfully low res normally). Note: This affects battery time!
 	timeBeginPeriod(1);
