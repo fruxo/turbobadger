@@ -127,6 +127,11 @@ bool TBMessageWindow::OnEvent(const TBWidgetEvent &ev)
 			Close();
 		return true;
 	}
+	else if (ev.type == EVENT_TYPE_KEY_DOWN && ev.special_key == TB_KEY_ESC)
+	{
+		m_close_button.InvokeEvent(TBWidgetEvent(EVENT_TYPE_CLICK));
+		return true;
+	}
 	return TBWindow::OnEvent(ev);
 }
 
