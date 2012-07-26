@@ -139,6 +139,13 @@ bool DemoWindow::OnEvent(const TBWidgetEvent &ev)
 			Output("Click with id: %u\n", (uint32)ev.target->GetID());
 		}
 	}
+	else if (ev.type == EVENT_TYPE_KEY_DOWN && ev.special_key == TB_KEY_ESC)
+	{
+		// We could call Die() to fade away and die, but click the close button instead.
+		// That way the window has a chance of intercepting the close and f.ex ask if it really should be closed.
+		m_close_button.InvokeEvent(TBWidgetEvent(EVENT_TYPE_CLICK));
+		return true;
+	}
 	return TBWindow::OnEvent(ev);
 }
 
