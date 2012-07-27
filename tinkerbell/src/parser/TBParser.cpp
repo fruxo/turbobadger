@@ -196,9 +196,9 @@ void Parser::OnLine(char *line, ParserTarget *target)
 /** Check if buf is pointing at a end quote. It may need to iterate
 	buf backwards toward buf_start to check if any preceding backslashes
 	make it a escaped quote (which should not be the end quote) */
-bool IsEndQuote(const char *buf_start, const char *buf)
+bool IsEndQuote(const char *buf_start, const char *buf, const char quote_type)
 {
-	if (*buf != '\"')
+	if (*buf != quote_type)
 		return false;
 	int num_backslashes = 0;
 	while (buf_start < buf && *(buf-- - 1) == '\\')
@@ -241,16 +241,17 @@ void Parser::ConsumeValue(TBValue &dst_value, char *&line)
 {
 	// Find value (As quoted string, or as auto)
 	char *value = line;
-	if (*line == '\"')
+	if (*line == '\"' || *line == '\'')
 	{
+		const char quote_type = *line;
 		// Consume starting quote
 		line++;
 		value++;
 		// Find ending quote or end
-		while (!IsEndQuote(value, line) && *line != 0)
+		while (!IsEndQuote(value, line, quote_type) && *line != 0)
 			line++;
 		// Terminate away the quote
-		if (*line == '\"')
+		if (*line == quote_type)
 			*line++ = 0;
 
 		// consume any whitespace
