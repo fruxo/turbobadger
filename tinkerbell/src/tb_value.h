@@ -13,6 +13,13 @@ namespace tinkerbell {
 
 class TBValue;
 
+/** Return true if the given string starts with a number. */
+bool is_number(const char *str);
+
+/** Return true if the given number string is a float number.
+	Should only be called when you've verified it's a number with is_number(). */
+bool is_number_float(const char *str);
+
 /** TBValueArray is a array of TBValue */
 class TBValueArray
 {

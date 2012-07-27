@@ -175,6 +175,10 @@ void Parser::OnLine(char *line, ParserTarget *target)
 		{
 			token_len--;
 			token[token_len] = 0;
+
+			// Check if the first argument is not a child but the value for this token
+			if (is_number(line) || *line == '[' || *line == '\"' || *line == '\'')
+				ConsumeValue(value, line);
 		}
 		else if (token[token_len])
 		{
@@ -224,49 +228,53 @@ void Parser::OnCompactLine(char *line, ParserTarget *target)
 			line++;
 
 		TBValue v;
-
-		// Find value (As quoted string, or as auto)
-		char *value = line;
-		if (*line == '\"')
-		{
-			// Consume starting quote
-			line++;
-			value++;
-			// Find ending quote or end
-			while (!IsEndQuote(value, line) && *line != 0)
-				line++;
-			// Terminate away the quote
-			if (*line == '\"')
-				*line++ = 0;
-
-			// consume any whitespace
-			while (*line == ' ')
-				line++;
-			// consume any comma
-			if (*line == ',')
-				line++;
-
-			UnescapeString(value);
-			v.SetString(value, TBValue::SET_AS_STATIC);
-		}
-		else
-		{
-			// Find next comma or end
-			while (*line != ',' && *line != 0)
-				line++;
-			// Terminate away the comma
-			if (*line == ',')
-				*line++ = 0;
-
-			UnescapeString(value);
-			v.SetFromStringAuto(value, TBValue::SET_AS_STATIC);
-		}
+		ConsumeValue(v, line);
 
 		// Ready
 		target->OnToken(token, v);
 	}
 
 	target->Leave();
+}
+
+void Parser::ConsumeValue(TBValue &dst_value, char *&line)
+{
+	// Find value (As quoted string, or as auto)
+	char *value = line;
+	if (*line == '\"')
+	{
+		// Consume starting quote
+		line++;
+		value++;
+		// Find ending quote or end
+		while (!IsEndQuote(value, line) && *line != 0)
+			line++;
+		// Terminate away the quote
+		if (*line == '\"')
+			*line++ = 0;
+
+		// consume any whitespace
+		while (*line == ' ')
+			line++;
+		// consume any comma
+		if (*line == ',')
+			line++;
+
+		UnescapeString(value);
+		dst_value.SetString(value, TBValue::SET_AS_STATIC);
+	}
+	else
+	{
+		// Find next comma or end
+		while (*line != ',' && *line != 0)
+			line++;
+		// Terminate away the comma
+		if (*line == ',')
+			*line++ = 0;
+
+		UnescapeString(value);
+		dst_value.SetFromStringAuto(value, TBValue::SET_AS_STATIC);
+	}
 }
 
 }; // namespace tinkerbell

@@ -43,6 +43,7 @@ private:
 	int current_line_nr;
 	void OnLine(char *line, ParserTarget *target);
 	void OnCompactLine(char *line, ParserTarget *target);
+	void ConsumeValue(TBValue &dst_value, char *&line);
 };
 
 }; // namespace tinkerbell
