@@ -39,6 +39,7 @@ enum SKIN_STATE {
 /** Type of painting that should be done for a TBSkinElement. */
 enum SKIN_ELEMENT_TYPE {
 	SKIN_ELEMENT_TYPE_STRETCH_BOX,
+	SKIN_ELEMENT_TYPE_STRETCH_BORDER,
 	SKIN_ELEMENT_TYPE_STRETCH_IMAGE,
 	SKIN_ELEMENT_TYPE_TILE,
 	SKIN_ELEMENT_TYPE_IMAGE
@@ -287,7 +288,7 @@ private:
 	void PaintElementImage(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementTile(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element);
-	void PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element);
+	void PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center);
 };
 
 }; // namespace tinkerbell

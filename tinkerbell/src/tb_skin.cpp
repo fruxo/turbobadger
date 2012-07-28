@@ -197,6 +197,8 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 				e->type = SKIN_ELEMENT_TYPE_STRETCH_IMAGE;
 			else if (strcmp(type, "Tile") == 0)
 				e->type = SKIN_ELEMENT_TYPE_TILE;
+			else if (strcmp(type, "StretchBorder") == 0)
+				e->type = SKIN_ELEMENT_TYPE_STRETCH_BORDER;
 			else
 				e->type = SKIN_ELEMENT_TYPE_STRETCH_BOX;
 
@@ -392,8 +394,10 @@ void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element)
 		PaintElementTile(dst_rect, element);
 	else if (element->type == SKIN_ELEMENT_TYPE_STRETCH_IMAGE || element->cut == 0)
 		PaintElementStretchImage(dst_rect, element);
+	else if (element->type == SKIN_ELEMENT_TYPE_STRETCH_BORDER)
+		PaintElementStretchBox(dst_rect, element, false);
 	else
-		PaintElementStretchBox(dst_rect, element);
+		PaintElementStretchBox(dst_rect, element, true);
 }
 
 void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
@@ -418,7 +422,7 @@ void TBSkin::PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *ele
 	g_renderer->DrawBitmap(rect, TBRect(0, 0, element->bitmap->Width(), element->bitmap->Height()), element->bitmap);
 }
 
-void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element)
+void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center)
 {
 	if (dst_rect.IsEmpty())
 		return;
@@ -454,7 +458,7 @@ void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *eleme
 	}
 
 	// Center
-	if (rect.w > dst_cut_w * 2 && rect.h > dst_cut_h * 2)
+	if (fill_center && rect.w > dst_cut_w * 2 && rect.h > dst_cut_h * 2)
 		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h, rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2), TBRect(cut, cut, bw - cut * 2, bh - cut * 2), element->bitmap);
 }
 

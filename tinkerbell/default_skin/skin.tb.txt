@@ -124,6 +124,7 @@ elements
 
 	TBContainer
 		bitmap container.png
+		type StretchBorder
 		cut 12
 		expand 6
 		padding 10
