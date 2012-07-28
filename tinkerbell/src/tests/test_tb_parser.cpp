@@ -1,0 +1,127 @@
+// ================================================================================
+// == This file is a part of Tinkerbell UI Toolkit. (C) 2011-2012, Emil Segerås ==
+// ==                   See tinkerbell.h for more information.                   ==
+// ================================================================================
+
+#include "tb_test.h"
+#include "parser/TBNodeTree.h"
+
+#ifdef TB_UNIT_TESTING
+
+using namespace tinkerbell;
+
+TB_TEST_GROUP(tb_parser)
+{
+	TBNode node;
+	TB_TEST(Init)
+	{
+		TB_VERIFY(node.ReadFile(TB_TEST_FILE("test_tb_parser.tb.txt")));
+	}
+
+	TB_TEST(strings)
+	{
+		TB_VERIFY_STR(node.GetValueString("strings>string1", ""), "A string");
+		TB_VERIFY_STR(node.GetValueString("strings>string2", ""), "\"A string\"");
+		TB_VERIFY_STR(node.GetValueString("strings>string3", ""), "\'A string\'");
+		TB_VERIFY_STR(node.GetValueString("strings>string4", ""), "\"\'A string\'\"");
+		TB_VERIFY_STR(node.GetValueString("strings>string5", ""), "Foo\nBar");
+	}
+
+	TB_TEST(strings_compact)
+	{
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string1", ""), "");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string2", ""), "A string");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string3", ""), "A string");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string4", ""), "'A string'");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string5", ""), "\"A string\"");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string6", ""), "\"A string\"");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string7", ""), "\\");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string8", ""), "\"");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string9", ""), "\\\\\\\\");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string10", ""), "\\\\\"");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string11", ""), "\"\"\'\'");
+	}
+
+	TB_TEST(numbers_compact)
+	{
+		TB_VERIFY(node.GetValueInt("numbers_compact>integer", 0) == -10);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float", 0), 1.0);
+	}
+
+	TB_TEST(compact_with_children)
+	{
+		TB_VERIFY_STR(node.GetValueString("compact_with_children>string", ""), "A string");
+		TB_VERIFY_STR(node.GetValueString("compact_with_children>string>child1", ""), "Child 1");
+		TB_VERIFY_STR(node.GetValueString("compact_with_children>string>child2", ""), "Child 2");
+
+		TB_VERIFY(node.GetValueInt("compact_with_children>integer", 0) == -10);
+		TB_VERIFY(node.GetValueInt("compact_with_children>integer>child1", 0) == 1);
+		TB_VERIFY(node.GetValueInt("compact_with_children>integer>child2", 0) == 2);
+
+		TB_VERIFY_FLOAT(node.GetValueFloat("compact_with_children>float", 0), 1);
+		TB_VERIFY_FLOAT(node.GetValueFloat("compact_with_children>float>child1", 0), 1);
+		TB_VERIFY_FLOAT(node.GetValueFloat("compact_with_children>float>child2", 0), 2);
+	}
+
+	TB_TEST(compact_no_value)
+	{
+		TB_VERIFY_STR(node.GetValueString("compact_no_value>string", ""), "A string");
+		TB_VERIFY(node.GetValueInt("compact_no_value>int", 0) == 42);
+		TB_VERIFY_FLOAT(node.GetValueFloat("compact_no_value>float", 0), 3.14);
+		TB_VERIFY_STR(node.GetValueString("compact_no_value>subgroup>string1", ""), "A string, with \"comma\"");
+		TB_VERIFY_STR(node.GetValueString("compact_no_value>subgroup>string2", ""), "'Another string'");
+		TB_VERIFY_STR(node.GetValueString("compact_no_value>subgroup>string3", ""), "And another string");
+	}
+
+	TB_TEST(arrays_numbers)
+	{
+		TBNode *arr_n = node.GetNode("arrays>numbers");
+		TB_VERIFY(arr_n);
+		TB_VERIFY(arr_n->GetValue().GetArrayLength() == 5);
+		TBValueArray *arr = arr_n->GetValue().GetArray();
+		TB_VERIFY(arr->GetValue(0)->GetInt() == 1);
+		TB_VERIFY(arr->GetValue(1)->GetInt() == 2);
+		TB_VERIFY_FLOAT(arr->GetValue(2)->GetFloat(), 0.5);
+		TB_VERIFY_FLOAT(arr->GetValue(3)->GetFloat(), 1.0E-8);
+		TB_VERIFY(arr->GetValue(4)->GetInt() == 1000000000);
+	}
+
+//FIX: Not supported yet
+//	TB_TEST(arrays_strings)
+//	{
+//		TBNode *arr_n = node.GetNode("arrays>strings");
+//		TB_VERIFY(arr_n);
+//		TB_VERIFY(arr_n->GetValue().GetArrayLength() == 5);
+//		TBValueArray *arr = arr_n->GetValue().GetArray();
+//		TB_VERIFY_STR(arr->GetValue(0)->GetString(), "Foo");
+//		TB_VERIFY_STR(arr->GetValue(1)->GetString(), "'Foo'");
+//		TB_VERIFY_STR(arr->GetValue(2)->GetString(), "Foo");
+//		TB_VERIFY_STR(arr->GetValue(3)->GetString(), "\"Foo\"");
+//		TB_VERIFY_STR(arr->GetValue(4)->GetString(), "Foo 'bar'");
+//	}
+//
+//	TB_TEST(arrays_mixed)
+//	{
+//		TBNode *arr_n = node.GetNode("arrays>mixed");
+//		TB_VERIFY(arr_n);
+//		TB_VERIFY(arr_n->GetValue().GetArrayLength() == 4);
+//		TBValueArray *arr = arr_n->GetValue().GetArray();
+//		TB_VERIFY_STR(arr->GetValue(0)->GetString(), "Foo");
+//		TB_VERIFY(arr->GetValue(1)->GetInt() == 2);
+//		TB_VERIFY_STR(arr->GetValue(2)->GetString(), "bar");
+//		TB_VERIFY(arr->GetValue(3)->GetFloat() == 4.0f);
+//	}
+
+	TB_TEST(strings_multiline)
+	{
+		TB_VERIFY_STR(node.GetValueString("strings_multiline>string1", ""), "Line 1\nLine 2\nLine 3");
+		TB_VERIFY_STR(node.GetValueString("strings_multiline>string2", ""), "abc");
+		TB_VERIFY_STR(node.GetValueString("strings_multiline>string3", ""), "AB");
+		TB_VERIFY_STR(node.GetValueString("strings_multiline>string4", ""), "Line 1\nLine 2\nLine 3\n");
+		TB_VERIFY_STR(node.GetValueString("strings_multiline>subgroup>first", ""), "Foo");
+		TB_VERIFY_STR(node.GetValueString("strings_multiline>subgroup>second", ""), "AB");
+		TB_VERIFY_STR(node.GetValueString("strings_multiline>string5", ""), "The last string");
+	}
+}
+
+#endif // TB_UNIT_TESTING

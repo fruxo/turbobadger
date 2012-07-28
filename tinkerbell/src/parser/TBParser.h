@@ -7,6 +7,7 @@
 #define TBParser_H
 
 #include "tb_value.h"
+#include "tb_tempbuffer.h"
 
 namespace tinkerbell {
 
@@ -41,8 +42,13 @@ public:
 private:
 	int current_indent;
 	int current_line_nr;
+	TBStr multi_line_token;
+	TBTempBuffer multi_line_value;
+	int multi_line_sub_level;
+	bool pending_multiline;
 	void OnLine(char *line, ParserTarget *target);
 	void OnCompactLine(char *line, ParserTarget *target);
+	void OnMultiline(char *line, ParserTarget *target);
 	void ConsumeValue(TBValue &dst_value, char *&line);
 };
 

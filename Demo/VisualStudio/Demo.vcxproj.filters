@@ -189,6 +189,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_tempbuffer.cpp">
       <Filter>Source Files\tinkerbell\tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_parser.cpp">
+      <Filter>Source Files\tinkerbell\tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
