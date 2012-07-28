@@ -18,4 +18,15 @@ TBLayout: axis: y, distribution: available
 				TBTextField: text: Menu
 				skin TBButton.flat
 	TBEditField: multiline: 1, styling: 1, gravity: all, id: editfield, autofocus: 1
-		text <u>Tinkerbell UI Toolkit!</u>\n\nThings to test:\n • resizing\n • right clicking\n • searching\n • keyboard navigation\n • scrolling\n • mouse wheel & dragging.\n • This is a list item that should wrap in a smart way.\n • Embedded content in textfield, such as this button: <widget TBButton: text: ":)">\n • <color #f44>Red</color>, <color #6f6>Green</color>, <color #aaf>Blue</color>
+		text: "Tinkerbell UI Toolkit\n\n" \
+				"<color #0794f8>Test zone</color>\n" \
+				"The menu to the left spawns some examples of what tinkerbell can do.\n\n" \
+				"The code in Demo/* is more like a developers test zone than organized tutorial-like samples. " \
+				"This would be good to fix of course (help is welcome! ;)\n\n" \
+				"<color #0794f8>Some things to try out</color>\n" \
+				" • All layouts provide panning of content automatically when squashed below the minimal size, so try resizing windows and pan.\n" \
+				" • Lines starting with a bullet sequence (like this one) should wrap in a smart way.\n" \
+				" • <u>Underline</u>, <color #f44>Red</color>, <color #6f6>Green</color>, <color #aaf>Blue</color>\n\n" \
+				"<color #0794f8>Good to know</color>\n" \
+				" • The text component you're reading in handles styling and embedded content (such as this widget: <widget TBButton: text: ':)'>), but does not handle editing of those fully. Undo/Redo should work fine, but caret movement and position updates doesn't.\n" \
+				" • All resources are UTF-8."

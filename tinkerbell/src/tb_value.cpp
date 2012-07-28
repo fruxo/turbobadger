@@ -19,14 +19,14 @@ namespace tinkerbell {
 
 // == Helper functions ============================
 
-bool p_is_number(const char *str)
+bool is_number(const char *str)
 {
-	if (*str == '-')
+	if (*str == '-' || *str == '.')
 		str++;
 	return *str >= '0' && *str <= '9';
 }
 
-bool p_is_number_float(const char *str)
+bool is_number_float(const char *str)
 {
 	while (*str) if (*str++ == '.') return true;
 	return false;
@@ -215,7 +215,7 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 {
 	if (!str)
 		SetNull();
-	else if (p_is_number(str))
+	else if (is_number(str))
 	{
 		// If the number has spaces, we'll assume a list of numbers (example: "10 -4 3.5")
 		if (strstr(str, " "))
@@ -238,7 +238,7 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 				SetArray(arr, SET_TAKE_OWNERSHIP);
 			}
 		}
-		else if (p_is_number_float(str))
+		else if (is_number_float(str))
 			SetFloat((float)atof(str));
 		else
 			SetInt(atoi(str));

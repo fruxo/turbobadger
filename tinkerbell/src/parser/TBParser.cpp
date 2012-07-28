@@ -9,6 +9,65 @@
 
 namespace tinkerbell {
 
+// == Util functions ====================================================================
+
+void UnescapeString(char *str)
+{
+	char *dst = str, *src = str;
+	while (*src)
+	{
+		if (*src == '\\')
+		{
+			bool code_found = true;
+			if (src[1] == 'n')
+				*dst = '\n';
+			else if (src[1] == 'r')
+				*dst = '\r';
+			else if (src[1] == 't')
+				*dst = '\t';
+			else if (src[1] == '\"')
+				*dst = '\"';
+			else if (src[1] == '\'')
+				*dst = '\'';
+			else if (src[1] == '\\')
+				*dst = '\\';
+			else
+				code_found = false;
+			if (code_found)
+			{
+				src += 2;
+				dst++;
+				continue;
+			}
+		}
+		*dst = *src;
+		dst++;
+		src++;
+	}
+	*dst = 0;
+}
+
+bool is_white_space(const char *str)
+{
+	switch (*str)
+	{
+	case ' ':
+	case '\t':
+		return true;
+	default:
+		return false;
+	}
+}
+
+bool is_pending_multiline(const char *str)
+{
+	while (is_white_space(str))
+		str++;
+	return str[0] == '\\' && str[1] == 0;
+}
+
+// == Parser ============================================================================
+
 Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 {
 	TBTempBuffer line, work;
@@ -17,6 +76,8 @@ Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 
 	current_indent = 0;
 	current_line_nr = 1;
+	pending_multiline = false;
+	multi_line_sub_level = 0;
 
 	while (int read_len = stream->GetMoreData((char *)work.GetData(), work.GetCapacity()))
 	{
@@ -83,47 +144,16 @@ Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 	return STATUS_OK;
 }
 
-void UnescapeString(char *str)
-{
-	char *dst = str, *src = str;
-	while (*src)
-	{
-		if (*src == '\\')
-		{
-			bool code_found = true;
-			if (src[1] == 'n')
-				*dst = '\n';
-			else if (src[1] == 'r')
-				*dst = '\r';
-			else if (src[1] == 't')
-				*dst = '\t';
-			else if (src[1] == '\"')
-				*dst = '\"';
-			else if (src[1] == '\'')
-				*dst = '\'';
-			else if (src[1] == '\\')
-				*dst = '\\';
-			else
-				code_found = false;
-			if (code_found)
-			{
-				src += 2;
-				dst++;
-				continue;
-			}
-		}
-		*dst = *src;
-		dst++;
-		src++;
-	}
-	*dst = 0;
-}
-
 void Parser::OnLine(char *line, ParserTarget *target)
 {
 	if (*line == '#')
 	{
 		target->OnComment(line + 1);
+		return;
+	}
+	if (pending_multiline)
+	{
+		OnMultiline(line, target);
 		return;
 	}
 
@@ -161,11 +191,11 @@ void Parser::OnLine(char *line, ParserTarget *target)
 	{
 		char *token = line;
 		// Read line while consuming it and copy over to token buf
-		while (*line != ' ' && *line != 0)
+		while (!is_white_space(line) && *line != 0)
 			line++;
 		int token_len = line - token;
 		// Consume any white space after the token
-		while (*line == ' ')
+		while (is_white_space(line))
 			line++;
 
 		bool is_compact_line = token_len && token[token_len - 1] == ':';
@@ -175,6 +205,19 @@ void Parser::OnLine(char *line, ParserTarget *target)
 		{
 			token_len--;
 			token[token_len] = 0;
+
+			// Check if the first argument is not a child but the value for this token
+			if (is_number(line) || *line == '[' || *line == '\"' || *line == '\'' || *line == '@')
+			{
+				ConsumeValue(value, line);
+
+				if (pending_multiline)
+				{
+					// The value wrapped to the next line, so we should remember the token and continue.
+					multi_line_token.Set(token);
+					return;
+				}
+			}
 		}
 		else if (token[token_len])
 		{
@@ -192,9 +235,9 @@ void Parser::OnLine(char *line, ParserTarget *target)
 /** Check if buf is pointing at a end quote. It may need to iterate
 	buf backwards toward buf_start to check if any preceding backslashes
 	make it a escaped quote (which should not be the end quote) */
-bool IsEndQuote(const char *buf_start, const char *buf)
+bool IsEndQuote(const char *buf_start, const char *buf, const char quote_type)
 {
-	if (*buf != '\"')
+	if (*buf != quote_type)
 		return false;
 	int num_backslashes = 0;
 	while (buf_start < buf && *(buf-- - 1) == '\\')
@@ -208,7 +251,7 @@ void Parser::OnCompactLine(char *line, ParserTarget *target)
 	while (*line)
 	{
 		// consume any whitespace
-		while (*line == ' ')
+		while (is_white_space(line))
 			line++;
 
 		// Find token
@@ -220,46 +263,19 @@ void Parser::OnCompactLine(char *line, ParserTarget *target)
 		*line++ = 0;
 
 		// consume any whitespace
-		while (*line == ' ')
+		while (is_white_space(line))
 			line++;
 
 		TBValue v;
+		ConsumeValue(v, line);
 
-		// Find value (As quoted string, or as auto)
-		char *value = line;
-		if (*line == '\"')
+		if (pending_multiline)
 		{
-			// Consume starting quote
-			line++;
-			value++;
-			// Find ending quote or end
-			while (!IsEndQuote(value, line) && *line != 0)
-				line++;
-			// Terminate away the quote
-			if (*line == '\"')
-				*line++ = 0;
-
-			// consume any whitespace
-			while (*line == ' ')
-				line++;
-			// consume any comma
-			if (*line == ',')
-				line++;
-
-			UnescapeString(value);
-			v.SetString(value, TBValue::SET_AS_STATIC);
-		}
-		else
-		{
-			// Find next comma or end
-			while (*line != ',' && *line != 0)
-				line++;
-			// Terminate away the comma
-			if (*line == ',')
-				*line++ = 0;
-
-			UnescapeString(value);
-			v.SetFromStringAuto(value, TBValue::SET_AS_STATIC);
+			// The value wrapped to the next line, so we should remember the token and continue.
+			multi_line_token.Set(token);
+			// Since we need to call target->Leave when the multiline is ready, set multi_line_sub_level.
+			multi_line_sub_level = 1;
+			return;
 		}
 
 		// Ready
@@ -267,6 +283,79 @@ void Parser::OnCompactLine(char *line, ParserTarget *target)
 	}
 
 	target->Leave();
+}
+
+void Parser::OnMultiline(char *line, ParserTarget *target)
+{
+	// consume any whitespace
+	while (is_white_space(line))
+		line++;
+
+	TBValue value;
+	ConsumeValue(value, line);
+
+	if (!pending_multiline)
+	{
+		// Ready with all lines
+		value.SetString(multi_line_value.GetData(), TBValue::SET_AS_STATIC);
+		target->OnToken(multi_line_token, value);
+
+		if (multi_line_sub_level)
+			target->Leave();
+
+		// Reset
+		multi_line_value.SetAppendPos(0);
+		multi_line_sub_level = 0;
+	}
+}
+
+void Parser::ConsumeValue(TBValue &dst_value, char *&line)
+{
+	// Find value (As quoted string, or as auto)
+	char *value = line;
+	if (*line == '\"' || *line == '\'')
+	{
+		const char quote_type = *line;
+		// Consume starting quote
+		line++;
+		value++;
+		// Find ending quote or end
+		while (!IsEndQuote(value, line, quote_type) && *line != 0)
+			line++;
+		// Terminate away the quote
+		if (*line == quote_type)
+			*line++ = 0;
+
+		// consume any whitespace
+		while (is_white_space(line))
+			line++;
+		// consume any comma
+		if (*line == ',')
+			line++;
+
+		UnescapeString(value);
+		dst_value.SetString(value, TBValue::SET_AS_STATIC);
+	}
+	else
+	{
+		// Find next comma or end
+		while (*line != ',' && *line != 0)
+			line++;
+		// Terminate away the comma
+		if (*line == ',')
+			*line++ = 0;
+
+		UnescapeString(value);
+		dst_value.SetFromStringAuto(value, TBValue::SET_AS_STATIC);
+	}
+
+	// Check if we still have pending value data on the following line and set pending_multiline.
+	bool continuing_multiline = pending_multiline;
+	pending_multiline = is_pending_multiline(line);
+
+	// Append the multi line value to the buffer.
+	if (continuing_multiline || pending_multiline)
+		multi_line_value.AppendString(dst_value.GetString());
 }
 
 }; // namespace tinkerbell

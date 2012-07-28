@@ -1,0 +1,64 @@
+
+# Test file for the text node system and its parser
+# Everything is a tree of nodes with a name and value.
+# The values may be strings, numbers or arrays.
+
+# If there is no colon, the entire line will be treated as a value and no quotes is needed around strings.
+# Any quotes will be part of the string.
+strings
+	string1 A string
+	string2 "A string"
+	string3 'A string'
+	string4 "'A string'"
+	string5 Foo\nBar
+
+# If there is a colon (compact mode), there must be quotes around strings.
+# First comes the value (optional)
+# Then comes other child nodes (separated by comma)
+strings_compact
+	string1: this should fail
+	string2: "A string"
+	string3: 'A string'
+	string4: "'A string'"
+	string5: '"A string"'
+	string6: "\"A string\""
+	string7: "\\"
+	string8: "\""
+	string9: "\\\\\\\\"
+	string10: "\\\\\""
+	string11: "\"\"\'\'"
+	string12: @language_string_token
+
+numbers_compact
+	integer: -10
+	float: 1.0
+
+compact_with_children
+	string: "A string", child1: "Child 1", child2: "Child 2"
+	integer: -10, child1: 1, child2: 2
+	float: 1.0, child1: 1.0, child2: 2.0
+
+compact_no_value: string: "A string", int: 42, float: 3.14
+	subgroup: string1: "A string, with \"comma\"", string2: "'Another string'"
+		string3: "And another string"
+
+arrays
+	numbers 1 2 .5 1.0E-8 1000000000
+# Not supported yet
+#	strings: "Foo" "'Foo'" 'Foo' '"Foo"' "Foo 'bar'"
+#	mixed: "foo" 2 "bar" 4.0
+
+# Strings can span over multiple lines by ending with a \
+strings_multiline
+	string1: "Line 1\nLine 2\nLine 3"
+	string2:	"a" \
+				"b" \
+				"c"
+	string3:	'A' \
+				'B'
+	string4:	'Line 1\n' \
+				'Line 2\n'\
+				'Line 3\n'
+	subgroup: first: "Foo", second:	"A" \
+									"B"
+	string5: "The last string"
