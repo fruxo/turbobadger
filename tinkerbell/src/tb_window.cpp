@@ -104,7 +104,7 @@ void TBWindow::Activate()
 bool TBWindow::EnsureFocus()
 {
 	// If we already have focus, we're done.
-	if (focused_widget && IsParentOf(focused_widget))
+	if (focused_widget && IsAncestorOf(focused_widget))
 		return true;
 
 	// Focus last focused widget (if we have one)
@@ -115,7 +115,7 @@ bool TBWindow::EnsureFocus()
 	{
 		// Search for a child widget that accepts focus
 		TBWidget *child = GetFirstChild();
-		while (child && IsParentOf(child))
+		while (child && IsAncestorOf(child))
 		{
 			if (child->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN))
 			{

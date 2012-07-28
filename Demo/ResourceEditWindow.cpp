@@ -193,7 +193,7 @@ void ResourceEditWindow::OnMessageReceived(TBMessage *msg)
 bool ResourceEditWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 {
 	// Intercept all events to widgets in the build container
-	if (m_build_container->IsParentOf(ev.target))
+	if (m_build_container->IsAncestorOf(ev.target))
 	{
 		// Select widget when clicking
 		if (ev.type == EVENT_TYPE_POINTER_DOWN)
@@ -209,12 +209,12 @@ bool ResourceEditWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 
 void ResourceEditWindow::OnWidgetAdded(TBWidget *widget)
 {
-	if (m_build_container->IsParentOf(widget))
+	if (m_build_container->IsAncestorOf(widget))
 		UpdateWidgetList(false);
 }
 
 void ResourceEditWindow::OnWidgetRemove(TBWidget *widget)
 {
-	if (m_build_container->IsParentOf(widget))
+	if (m_build_container->IsAncestorOf(widget))
 		UpdateWidgetList(false);
 }

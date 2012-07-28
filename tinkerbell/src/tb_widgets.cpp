@@ -346,7 +346,7 @@ void TBWidget::MoveFocus(bool forward)
 	{
 		current = forward ? current->GetNextDeep() : current->GetPrevDeep();
 		// Wrap around if we reach the end/beginning
-		if (!current || !root->IsParentOf(current))
+		if (!current || !root->IsAncestorOf(current))
 			current = forward ? root->GetFirstChild() : root->GetLastChild();
 		// Break if we reached the origin again (we're not finding anything else)
 		if (current == origin)
@@ -412,7 +412,7 @@ TBWidget *TBWidget::GetWidgetAt(int x, int y, bool include_children) const
 	return last_match;
 }
 
-bool TBWidget::IsParentOf(TBWidget *other_widget) const
+bool TBWidget::IsAncestorOf(TBWidget *other_widget) const
 {
 	while (other_widget)
 	{

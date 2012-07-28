@@ -354,8 +354,8 @@ public:
 	inline TBWidget *GetFirstChild() const { return m_children.GetFirst(); }
 	inline TBWidget *GetLastChild() const { return m_children.GetLast(); }
 
-	/** Return true if this widget is the same or a parent of other_widget. */
-	bool IsParentOf(TBWidget *other_widget) const;
+	/** Return true if this widget is the same or a ancestor of other_widget. */
+	bool IsAncestorOf(TBWidget *other_widget) const;
 
 	/** Return true if this widget is the same as other_widget or if other_widget
 		events are going through this widget (See GetEventDestination()) */

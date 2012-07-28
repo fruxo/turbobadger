@@ -62,11 +62,11 @@ bool TBWidgetSkinConditionContext::GetCondition(TBWidget *widget, TBSkinConditio
 	case TBSkinCondition::PROPERTY_STATE:
 		return !!(widget->GetAutoState() & value);
 	case TBSkinCondition::PROPERTY_HOVER:
-		return TBWidget::hovered_widget && widget->IsParentOf(TBWidget::hovered_widget);
+		return TBWidget::hovered_widget && widget->IsAncestorOf(TBWidget::hovered_widget);
 	case TBSkinCondition::PROPERTY_CAPTURE:
-		return TBWidget::captured_widget && widget->IsParentOf(TBWidget::captured_widget);
+		return TBWidget::captured_widget && widget->IsAncestorOf(TBWidget::captured_widget);
 	case TBSkinCondition::PROPERTY_FOCUS:
-		return TBWidget::focused_widget && widget->IsParentOf(TBWidget::focused_widget);
+		return TBWidget::focused_widget && widget->IsAncestorOf(TBWidget::focused_widget);
 	}
 	return false;
 }
