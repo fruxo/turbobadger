@@ -40,6 +40,7 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY_STR(node.GetValueString("strings_compact>string9", ""), "\\\\\\\\");
 		TB_VERIFY_STR(node.GetValueString("strings_compact>string10", ""), "\\\\\"");
 		TB_VERIFY_STR(node.GetValueString("strings_compact>string11", ""), "\"\"\'\'");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string12", ""), "@language_string_token");
 	}
 
 	TB_TEST(numbers_compact)

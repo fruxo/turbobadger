@@ -207,7 +207,7 @@ void Parser::OnLine(char *line, ParserTarget *target)
 			token[token_len] = 0;
 
 			// Check if the first argument is not a child but the value for this token
-			if (is_number(line) || *line == '[' || *line == '\"' || *line == '\'')
+			if (is_number(line) || *line == '[' || *line == '\"' || *line == '\'' || *line == '@')
 			{
 				ConsumeValue(value, line);
 

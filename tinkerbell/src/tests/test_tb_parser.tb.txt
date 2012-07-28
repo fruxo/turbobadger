@@ -12,7 +12,7 @@ strings
 	string4 "'A string'"
 	string5 Foo\nBar
 
-# If there is a colon, there must be quotes around strings.
+# If there is a colon (compact mode), there must be quotes around strings.
 # First comes the value (optional)
 # Then comes other child nodes (separated by comma)
 strings_compact
@@ -27,6 +27,7 @@ strings_compact
 	string9: "\\\\\\\\"
 	string10: "\\\\\""
 	string11: "\"\"\'\'"
+	string12: @language_string_token
 
 numbers_compact
 	integer: -10
