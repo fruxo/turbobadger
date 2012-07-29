@@ -131,6 +131,24 @@ void TBEditField::SetEditType(EDIT_TYPE type)
 	m_style_edit.SetPassword(type == EDIT_TYPE_PASSWORD);
 }
 
+bool TBEditField::GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info)
+{
+	if (info.custom_prop == TBIDC("edit_type"))
+	{
+		switch (m_edit_type)
+		{
+		case EDIT_TYPE_TEXT:		return info.value == TBIDC("text");
+		case EDIT_TYPE_SEARCH:		return info.value == TBIDC("search");
+		case EDIT_TYPE_PASSWORD:	return info.value == TBIDC("password");
+		case EDIT_TYPE_EMAIL:		return info.value == TBIDC("email");
+		case EDIT_TYPE_PHONE:		return info.value == TBIDC("phone");
+		case EDIT_TYPE_URL:			return info.value == TBIDC("url");
+		case EDIT_TYPE_NUMBER:		return info.value == TBIDC("number");
+		};
+	}
+	return false;
+}
+
 bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target == &m_scrollbar_x)

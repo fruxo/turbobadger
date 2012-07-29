@@ -20,6 +20,7 @@ TBLayout
 				id test
 		TBEditField
 			placeholder @search
+			type search
 			id widget_list_search
 		TBSelectList
 			id widget_list

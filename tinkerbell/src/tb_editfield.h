@@ -16,6 +16,7 @@ namespace tinkerbell {
 	They are just hints for virtual keyboard, so it can show special keys. */
 enum EDIT_TYPE {
 	EDIT_TYPE_TEXT,
+	EDIT_TYPE_SEARCH,
 	EDIT_TYPE_PASSWORD,
 	EDIT_TYPE_EMAIL,
 	EDIT_TYPE_PHONE,
@@ -123,6 +124,9 @@ public:
 		content should be. */
 	void SetEditType(EDIT_TYPE type);
 	EDIT_TYPE GetEditType() { return m_edit_type; }
+
+	/** Support custom skin condition property "edit_type", matching those of EDIT_TYPE. */
+	virtual bool GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info);
 
 	/** Set which alignment the text should have if the space
 		given when painting is larger than the text.

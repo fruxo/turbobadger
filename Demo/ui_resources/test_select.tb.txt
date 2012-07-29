@@ -8,6 +8,7 @@ TBLayout
 		id filter
 		gravity left right
 		placeholder @search
+		type search
 	TBSelectList
 		id list
 		gravity all

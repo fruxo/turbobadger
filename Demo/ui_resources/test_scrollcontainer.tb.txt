@@ -46,7 +46,10 @@ TBLayout
 			TBTextField: text: "TBEditField:"
 			TBLayout
 				TBEditField
-					text Hello world!
+					text Edit type text
+				TBEditField
+					type search
+					text Edit type search
 				TBEditField
 					type password
 					text pwd goes here

@@ -19,4 +19,4 @@ TBLayout
 			skin TBButton.flat
 		TBButton: text: button 4
 			skin TBButton.flat
-		TBEditField: placeholder: @search
+		TBEditField: placeholder: @search, type: "search"

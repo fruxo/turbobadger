@@ -48,6 +48,7 @@ TB_WIDGET_FACTORY(TBEditField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
 	if (const char *type = info->node->GetValueString("type", nullptr))
 	{
 		if (stristr(type, "text"))			widget->SetEditType(EDIT_TYPE_TEXT);
+		else if (stristr(type, "search"))	widget->SetEditType(EDIT_TYPE_SEARCH);
 		else if (stristr(type, "password"))	widget->SetEditType(EDIT_TYPE_PASSWORD);
 		else if (stristr(type, "email"))	widget->SetEditType(EDIT_TYPE_EMAIL);
 		else if (stristr(type, "phone"))	widget->SetEditType(EDIT_TYPE_PHONE);

@@ -74,11 +74,26 @@ elements
 	TBEditField.selection
 		cut 2
 		bitmap selection.png
+
 	TBEditField
 		bitmap editfield.png
 		cut 12
 		expand 4
 		padding 4
+		strong-overrides
+			element TBEditField.search
+				condition: target: this, property: edit_type, value: "search"
+	TBEditField.search
+		clone TBEditField
+		padding 24 4 4 4
+		min-width 50
+		children
+			element TBEditField.search.icon
+	TBEditField.search.icon
+		bitmap search.png
+		type Image
+		img-position-x 0
+		img-ofs-x 5
 
 	TBWindow
 		bitmap window.png
