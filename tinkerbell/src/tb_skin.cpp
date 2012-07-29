@@ -63,23 +63,24 @@ TBSkinCondition::PROPERTY StringToProperty(const char *prop_str)
 	else if (strcmp(prop_str, "focus") == 0)
 		prop = TBSkinCondition::PROPERTY_FOCUS;
 	else
-		TBDebugOut("Skin error: Unknown property in condition!\n");
+		prop = TBSkinCondition::PROPERTY_CUSTOM;
 	return prop;
 }
 
 // == TBSkinCondition =======================================================
 
-TBSkinCondition::TBSkinCondition(TARGET target, PROPERTY prop, const TBID &value, TEST test)
+TBSkinCondition::TBSkinCondition(TARGET target, PROPERTY prop, const TBID &custom_prop, const TBID &value, TEST test)
 	: m_target(target)
-	, m_prop(prop)
-	, m_value(value)
 	, m_test(test)
 {
+	m_info.prop = prop;
+	m_info.custom_prop = custom_prop;
+	m_info.value = value;
 }
 
 bool TBSkinCondition::GetCondition(TBSkinConditionContext &context) const
 {
-	bool equal = context.GetCondition(m_target, m_prop, m_value);
+	bool equal = context.GetCondition(m_target, m_info);
 	return equal == (m_test == TEST_EQUAL);
 }
 
@@ -201,6 +202,7 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 
 			// Create all state elements
 			e->m_override_elements.Load(n->GetNode("overrides"));
+			e->m_strong_override_elements.Load(n->GetNode("strong-overrides"));
 			e->m_child_elements.Load(n->GetNode("children"));
 			e->m_overlay_elements.Load(n->GetNode("overlay"));
 
@@ -293,6 +295,32 @@ TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id) const
 	}
 
 	return m_elements.Get(skin_id);
+}
+
+TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, uint32 state, TBSkinConditionContext &context) const
+{
+	if (TBSkinElement *skin_element = GetSkinElement(skin_id))
+	{
+		// Avoid eternal recursion when overrides refer to elements referring back.
+		if (skin_element->is_getting)
+			return nullptr;
+		skin_element->is_getting = true;
+
+		// Check if there's any strong overrides for this element with the given state.
+		TBSkinElementState *override_state = skin_element->m_strong_override_elements.GetStateElement(state, context);
+		if (override_state)
+		{
+			if (TBSkinElement *override_element = GetSkinElementStrongOverride(override_state->element_id, state, context))
+			{
+				skin_element->is_getting = false;
+				return override_element;
+			}
+		}
+
+		skin_element->is_getting = false;
+		return skin_element;
+	}
+	return nullptr;
 }
 
 TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state, TBSkinConditionContext &context)
@@ -459,7 +487,8 @@ void TBSkin::OnContextRestored()
 // == TBSkinElement =========================================================
 
 TBSkinElement::TBSkinElement()
-	: bitmap(nullptr), cut(0), expand(0), type(SKIN_ELEMENT_TYPE_STRETCH_BOX), is_painting(false)
+	: bitmap(nullptr), cut(0), expand(0), type(SKIN_ELEMENT_TYPE_STRETCH_BOX)
+	, is_painting(false), is_getting(false)
 	, padding_left(0), padding_top(0), padding_right(0), padding_bottom(0)
 	, min_width(SKIN_VALUE_NOT_SPECIFIED), min_height(SKIN_VALUE_NOT_SPECIFIED)
 	, max_width(SKIN_VALUE_NOT_SPECIFIED), max_height(SKIN_VALUE_NOT_SPECIFIED)
@@ -564,7 +593,13 @@ void TBSkinElementStateList::Load(TBNode *n)
 			else if (strcmp(condition_node->GetName(), "condition") == 0)
 			{
 				TBSkinCondition::TARGET target = StringToTarget(condition_node->GetValueString("target", ""));
-				TBSkinCondition::PROPERTY prop = StringToProperty(condition_node->GetValueString("property", ""));
+
+				const char *prop_str = condition_node->GetValueString("property", "");
+				TBSkinCondition::PROPERTY prop = StringToProperty(prop_str);
+				TBID custom_prop;
+				if (prop == TBSkinCondition::PROPERTY_CUSTOM)
+					custom_prop.Set(prop_str);
+
 				TBID value;
 				if (TBNode *value_n = condition_node->GetNode("value"))
 				{
@@ -579,7 +614,7 @@ void TBSkinElementStateList::Load(TBNode *n)
 				}
 
 				TBSkinCondition::TEST test = TBSkinCondition::TEST_EQUAL;
-				if (TBSkinCondition *condition = new TBSkinCondition(target, prop, value, test))
+				if (TBSkinCondition *condition = new TBSkinCondition(target, prop, custom_prop, value, test))
 					state->conditions.AddLast(condition);
 			}
 		}

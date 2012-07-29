@@ -261,9 +261,11 @@ void TBWidget::SetSkinBg(const TBID &skin_bg)
 	OnSkinChanged();
 }
 
-TBSkinElement *TBWidget::GetSkinBgElement() const
+TBSkinElement *TBWidget::GetSkinBgElement()
 {
-	return g_tb_skin->GetSkinElement(m_skin_bg);
+	TBWidgetSkinConditionContext context(this);
+	uint32 state = GetAutoState();
+	return g_tb_skin->GetSkinElementStrongOverride(m_skin_bg, state, context);
 }
 
 void TBWidget::ScrollByRecursive(int &dx, int &dy)

@@ -69,6 +69,7 @@ public:
 		PROPERTY_HOVER,				///< Focus is on the target or any child (no value required).
 		PROPERTY_CAPTURE,			///< Capture is on the target or any child (no value required).
 		PROPERTY_FOCUS,				///< Focus is on the target or any child (no value required).
+		PROPERTY_CUSTOM				///< It's a property unknown to skin, that the TBSkinConditionContext might know about.
 	};
 
 	/** Defines if the condition tested should be equal or not for the condition to be true. */
@@ -77,14 +78,20 @@ public:
 		TEST_NOT_EQUAL	///< Value should not be equal for condition to be true.
 	};
 
-	TBSkinCondition(TARGET target, PROPERTY prop, const TBID &value, TEST test);
+	/** Stores the information needed for checking a condition. */
+	struct CONDITION_INFO {
+		PROPERTY prop;			///< Which property.
+		TBID custom_prop;		///< Which property (only if prop is PROPERTY_CUSTOM).
+		TBID value;				///< The value to compare.
+	};
+
+	TBSkinCondition(TARGET target, PROPERTY prop, const TBID &custom_prop, const TBID &value, TEST test);
 
 	/** Return true if the condition is true for the given context. */
 	bool GetCondition(TBSkinConditionContext &context) const;
 private:
 	TARGET m_target;
-	PROPERTY m_prop;
-	TBID m_value;
+	CONDITION_INFO m_info;
 	TEST m_test;
 };
 
@@ -96,7 +103,7 @@ class TBSkinConditionContext
 {
 public:
 	/** Return true if the given target and property equals the given value. */
-	virtual bool GetCondition(TBSkinCondition::TARGET target, TBSkinCondition::PROPERTY prop, const TBID &value) = 0;
+	virtual bool GetCondition(TBSkinCondition::TARGET target, const TBSkinCondition::CONDITION_INFO &info) = 0;
 };
 
 /** TBSkinElementState has a skin element id that should be used if its state and condition
@@ -148,7 +155,8 @@ public:
 	uint8 cut;			///< How the bitmap should be sliced using StretchBox
 	int16 expand;		///< How much the skin should expand outside the widgets rect.
 	SKIN_ELEMENT_TYPE type;///< Skin element type
-	bool is_painting;	///< If the skin is being painted
+	bool is_painting;	///< If the skin is being painted (avoiding eternal recursing)
+	bool is_getting;	///< If the skin is being got (avoiding eternal recursion)
 	int8 padding_left;	///< Left padding for any content in the element
 	int8 padding_top;	///< Top padding for any content in the element
 	int8 padding_right;	///< Right padding for any content in the element
@@ -165,10 +173,13 @@ public:
 	int8 img_ofs_x;		///< X offset for type image. Relative to the x position (img_position_x)
 	int8 img_ofs_y;		///< Y offset for type image. Relative to the y position (img_position_y)
 	float opacity;		///< Opacity that should be used for the whole widget (0.f-1.f).
-	TBColor text_color;
+	TBColor text_color;	///< Color of the text in the widget.
 
 	/** List of override elements (See TBSkin::PaintSkin) */
 	TBSkinElementStateList m_override_elements;
+
+	/** List of strong-override elements (See TBSkin::PaintSkin) */
+	TBSkinElementStateList m_strong_override_elements;
 
 	/** List of child elements (See TBSkin::PaintSkin) */
 	TBSkinElementStateList m_child_elements;
@@ -205,10 +216,15 @@ public:
 	bool ReloadBitmaps();
 
 	/** Get the skin element with the given id.
-		It will return a skin element from the override_skin (if set and there
-		is a match).
+		It will return a skin element from the override_skin (if set and there is a match).
 		Returns nullptr if there's no match. */
 	TBSkinElement *GetSkinElement(const TBID &skin_id) const;
+
+	/** Get the skin element with the given id and state.
+		This is like calling GetSkinElement and also following any strong overrides that
+		match the current state (if any). See details about strong overrides in PaintSkin.
+		Returns nullptr if there's no match. */
+	TBSkinElement *GetSkinElementStrongOverride(const TBID &skin_id, uint32 state, TBSkinConditionContext &context) const;
 
 	/** Get the default text color for all skin elements */
 	TBColor GetDefaultTextColor() const { return m_default_text_color; }
@@ -217,6 +233,11 @@ public:
 
 		Override skin:
 		-It will first try with the override_skin (if set).
+
+		Strong override elements:
+		-Strong override elements are like override elements, but they don't only apply
+		 when painting. They also override padding and other things that might affect
+		 the layout of the widget having the skin set.
 
 		Override elements:
 		-If there is a override element with the exact matching state, it will paint

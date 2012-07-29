@@ -310,7 +310,7 @@ public:
 	void SetSkinBg(const TBID &skin_bg);
 
 	/** Return the skin background element, or nullptr. */
-	TBSkinElement *GetSkinBgElement() const;
+	TBSkinElement *GetSkinBgElement();
 
 	/** Set if this widget is a group root. Grouped widgets (such as TBRadioButton) will toggle all other
 		widgets with the same group_id under the nearest parent group root. TBWindow is a group root by default. */
@@ -443,6 +443,11 @@ public:
 		The default implementation checks the visibility, ignored input flag, rectangle,
 		and disabled status. */
 	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
+
+	/** Get if skin condition applies to this widget. This is called when a skin condition has the property
+		PROPERTY_CUSTOM (not a generic one known by skin and the default widget condition context).
+		This can be used to extend the skin conditions support with properties specific to different widgets. */
+	virtual bool GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info) { return false; }
 
 	/** Get this widget or a child widget that should be root for other children. This is useful
 		for widgets having multiple children by default, to specify which one that should get the children. */

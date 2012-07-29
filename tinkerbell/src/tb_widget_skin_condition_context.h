@@ -17,9 +17,9 @@ class TBWidgetSkinConditionContext : public TBSkinConditionContext
 {
 public:
 	TBWidgetSkinConditionContext(TBWidget *widget) : m_widget(widget) {}
-	virtual bool GetCondition(TBSkinCondition::TARGET target, TBSkinCondition::PROPERTY prop, const TBID &value);
+	virtual bool GetCondition(TBSkinCondition::TARGET target, const TBSkinCondition::CONDITION_INFO &info);
 private:
-	bool GetCondition(TBWidget *widget, TBSkinCondition::PROPERTY prop, const TBID &value);
+	bool GetCondition(TBWidget *widget, const TBSkinCondition::CONDITION_INFO &info);
 	TBWidget *m_widget;
 };
 
