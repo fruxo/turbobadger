@@ -604,7 +604,8 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("confirm_close_dialog"));
 			TBMessageWindowSettings settings(TB_MSG_YES_NO, TBIDC("Icon48"));
 			settings.dimmer = true;
-			msg_win->Show("Are you sure?", "Really close the window?", &settings);
+			settings.styling = true;
+			msg_win->Show("Are you sure?", "Really <color #0794f8>close</color> the window?", &settings);
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("confirm_close_dialog"))

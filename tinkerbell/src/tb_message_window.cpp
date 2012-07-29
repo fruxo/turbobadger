@@ -45,13 +45,15 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 							"		TBSkinImage: id: 2\n"
 							"		TBEditField: multiline: 1, readonly: 1, id: 1\n"
 							"	TBLayout: distribution_position: right bottom, id: 3\n";
-	g_widgets_reader->LoadData(GetContentRoot(), source);
+	if (!g_widgets_reader->LoadData(GetContentRoot(), source))
+		return false;
 
 	SetText(title);
 
 	TBSafeGetByID(TBSkinImage, 2)->SetSkinBg(settings->icon_skin);
 
 	TBEditField *editfield = TBSafeGetByID(TBEditField, 1);
+	editfield->SetStyling(settings->styling);
 	editfield->SetText(message);
 	editfield->SetSkinBg("");
 
