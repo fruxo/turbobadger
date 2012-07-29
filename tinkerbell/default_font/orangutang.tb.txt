@@ -2,7 +2,7 @@
 	glyph_str !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~€£¥§•·©«»®¶ÅÄÖÆØåäöæø
 	rgb 1
 	name Orangutang
-size_48
+size 48
 	bitmap orangutang_48.png
 	ascent 51
 	descent 15

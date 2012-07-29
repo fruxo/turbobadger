@@ -2,7 +2,7 @@
 	glyph_str !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~€£¥§•·©«»®¶ÅÄÖÆØåäöæø
 	rgb 1
 	name Neon
-size_42
+size 42
 	bitmap neon_42.png
 	ascent 50
 	descent 16

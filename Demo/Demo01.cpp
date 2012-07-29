@@ -300,21 +300,18 @@ public:
 				{
 					TBFontDescription fd = edit->GetCalculatedFontDescription();
 					fd.SetID(TBIDC("Neon"));
-					fd.SetSize(42);
 					edit->SetFontDescription(fd);
 				}
 				else if (ev.ref_id == TBIDC("rgb font Orangutang"))
 				{
 					TBFontDescription fd = edit->GetCalculatedFontDescription();
 					fd.SetID(TBIDC("Orangutang"));
-					fd.SetSize(48);
 					edit->SetFontDescription(fd);
 				}
 				else if (ev.ref_id == TBIDC("rgb font Orange"))
 				{
 					TBFontDescription fd = edit->GetCalculatedFontDescription();
 					fd.SetID(TBIDC("Orange"));
-					fd.SetSize(30);
 					edit->SetFontDescription(fd);
 				}
 				else if (ev.ref_id == TBIDC("CJK"))
