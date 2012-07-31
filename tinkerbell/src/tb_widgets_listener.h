@@ -85,7 +85,7 @@ public:
 	void Set(TBWidget *widget);
 
 	/** Return the widget, or nullptr if it has been deleted. */
-	TBWidget *Get() { return m_widget; }
+	TBWidget *Get() const { return m_widget; }
 private:
 	TBWidget *m_widget;
 };

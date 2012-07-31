@@ -50,7 +50,7 @@ TBEditField::TBEditField()
 	m_scrollbar_x.SetOpacity(0);
 	m_scrollbar_y.SetOpacity(0);
 
-	m_skin_bg.Set("TBEditField");
+	SetSkinBg("TBEditField", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	m_style_edit.SetListener(this);
 
 	m_root.SetRect(GetVisibleRect());
@@ -127,8 +127,11 @@ void TBEditField::SetWrapping(bool wrapping)
 
 void TBEditField::SetEditType(EDIT_TYPE type)
 {
+	if (m_edit_type == type)
+		return;
 	m_edit_type = type;
 	m_style_edit.SetPassword(type == EDIT_TYPE_PASSWORD);
+	TBWidget::Invalidate();
 }
 
 bool TBEditField::GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info)

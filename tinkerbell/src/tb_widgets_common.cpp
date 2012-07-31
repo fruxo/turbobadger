@@ -71,7 +71,7 @@ void TBWidgetString::Paint(TBWidget *widget, const TBRect &rect, const TBColor &
 TBTextField::TBTextField()
 	: m_squeezable(false)
 {
-	m_skin_bg.Set("TBTextField");
+	SetSkinBg("TBTextField", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 bool TBTextField::SetText(const char *text)
@@ -122,7 +122,7 @@ TBButton::TBButton()
 {
 	SetIsFocusable(true);
 	SetClickByKey(true);
-	m_skin_bg.Set("TBButton");
+	SetSkinBg("TBButton", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	AddChild(&m_layout);
 	// Set the textfield gravity to all, even though it would display the same with default gravity.
 	// This will make the buttons layout expand if there is space available, without forcing the parent
@@ -233,7 +233,7 @@ TBProgressSpinner::TBProgressSpinner()
 	: m_value(0)
 	, m_frame(0)
 {
-	m_skin_bg.Set("TBProgressSpinner");
+	SetSkinBg("TBProgressSpinner", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	m_skin_fg.Set("TBProgressSpinner.fg");
 }
 
@@ -370,13 +370,13 @@ void TBScrollBar::SetAxis(AXIS axis)
 	m_axis = axis;
 	if (axis == AXIS_X)
 	{
-		m_skin_bg.Set("TBScrollBarBgX");
-		m_handle.m_skin_bg.Set("TBScrollBarFgX");
+		SetSkinBg("TBScrollBarBgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg("TBScrollBarFgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	else
 	{
-		m_skin_bg.Set("TBScrollBarBgY");
-		m_handle.m_skin_bg.Set("TBScrollBarFgY");
+		SetSkinBg("TBScrollBarBgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg("TBScrollBarFgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	Invalidate();
 }
@@ -516,13 +516,13 @@ void TBSlider::SetAxis(AXIS axis)
 	m_axis = axis;
 	if (axis == AXIS_X)
 	{
-		m_skin_bg.Set("TBSliderBgX");
-		m_handle.m_skin_bg.Set("TBSliderFgX");
+		SetSkinBg("TBSliderBgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg("TBSliderFgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	else
 	{
-		m_skin_bg.Set("TBSliderBgY");
-		m_handle.m_skin_bg.Set("TBSliderFgY");
+		SetSkinBg("TBSliderBgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg("TBSliderFgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	Invalidate();
 }
@@ -627,14 +627,14 @@ void TBSlider::OnResized(int old_w, int old_h)
 
 TBContainer::TBContainer()
 {
-	m_skin_bg.Set("TBContainer");
+	SetSkinBg("TBContainer", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 // == TBMover =======================================
 
 TBMover::TBMover()
 {
-	m_skin_bg.Set("TBMover");
+	SetSkinBg("TBMover", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 bool TBMover::OnEvent(const TBWidgetEvent &ev)
@@ -662,7 +662,7 @@ bool TBMover::OnEvent(const TBWidgetEvent &ev)
 
 TBResizer::TBResizer()
 {
-	m_skin_bg.Set("TBResizer");
+	SetSkinBg("TBResizer", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 bool TBResizer::OnEvent(const TBWidgetEvent &ev)
@@ -691,7 +691,7 @@ bool TBResizer::OnEvent(const TBWidgetEvent &ev)
 
 TBDimmer::TBDimmer()
 {
-	m_skin_bg.Set("TBDimmer");
+	SetSkinBg("TBDimmer", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	SetGravity(WIDGET_GRAVITY_ALL);
 }
 

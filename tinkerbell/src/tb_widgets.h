@@ -306,8 +306,10 @@ public:
 
 		The skin will be painted according to the current widget state (WIDGET_STATE).
 		If there is no special skin state for WIDGET_STATE_FOCUSED, it will paint the skin
-		element called "generic_focus" (if it exist) after painting all widget children. */
-	void SetSkinBg(const TBID &skin_bg);
+		element called "generic_focus" (if it exist) after painting all widget children.
+
+		It's possible to omit the OnSkinChanged callback using WIDGET_INVOKE_INFO_NO_CALLBACKS. */
+	void SetSkinBg(const TBID &skin_bg, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
 	/** Return the skin background element, or nullptr. */
 	TBSkinElement *GetSkinBgElement();
@@ -407,7 +409,12 @@ public:
 		called Invalidate() */
 	virtual void OnInvalid() {}
 
-	/** Called when the background skin changes by calling SetSkinBg() */
+	/** Called when the background skin changes by calling SetSkinBg(), or when the skin
+		has changed indirectly after a skin condition changes in a way that may affect layout.
+
+		For indirect skin changes, OnSkinChanged is called before validation of layouts is about
+		to happen in InvokeProcess().
+	*/
 	virtual void OnSkinChanged() {}
 
 	/** Called when the font has changed. */
@@ -643,6 +650,8 @@ public:
 	uint32 m_state;					///< The widget state (excluding any auto states)
 	float m_opacity;				///< Opacity 0-1. See SetOpacity.
 	TBID m_skin_bg;					///< ID for the background skin (0 for no skin).
+	TBID m_skin_bg_expected;		///< ID for the background skin after strong override,
+									///< used to indirect skin changes because of condition changes.
 	TBID m_id;						///< ID for GetWidgetByID and others.
 	TBID m_group_id;				///< ID for button groups (such as TBRadioButton)
 	TBWidgetValueConnection m_connection; ///< TBWidget value connection
@@ -672,6 +681,8 @@ public:
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 private:
+	void InvokeSkinUpdatesInternal();
+	void InvokeProcessInternal();
 	void SetHoveredWidget(TBWidget *widget);
 	void SetCapturedWidget(TBWidget *widget);
 	void HandlePanningOnMove(int x, int y);

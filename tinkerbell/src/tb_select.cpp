@@ -43,7 +43,7 @@ tb_sort_cb(_context, _a, _b)
 
 /** TBSimpleLayoutItemWidget is a item containing a layout with the following:
 	-TBSkinImage showing the item image.
-	-TBTextField showint the item string.
+	-TBTextField showing the item string.
 	-TBSkinImage showing the arrow for items with a submenu.
 	It also handles submenu events. */
 
@@ -185,7 +185,7 @@ TBSelectList::TBSelectList()
 {
 	SetSource(&m_default_source);
 	SetIsFocusable(true);
-	m_skin_bg.Set("TBSelectList");
+	SetSkinBg("TBSelectList", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	m_container.SetGravity(WIDGET_GRAVITY_ALL);
 	m_container.SetRect(GetPaddingRect());
 	AddChild(&m_container);
@@ -425,8 +425,8 @@ TBSelectDropdown::TBSelectDropdown()
 	, m_value(-1)
 {
 	SetSource(&m_default_source);
-	m_skin_bg.Set("TBSelectDropdown");
-	m_arrow.SetSkinBg("TBSelectDropdown.arrow");
+	SetSkinBg("TBSelectDropdown", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	m_arrow.SetSkinBg("TBSelectDropdown.arrow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	GetContentRoot()->AddChild(&m_arrow);
 }
 
@@ -501,12 +501,12 @@ TBMenuWindow::TBMenuWindow(TBWidget *target, TBID id)
 	, m_select_list(nullptr)
 {
 	m_id.Set(id);
+	SetSkinBg("TBMenuWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 bool TBMenuWindow::Show(TBSelectItemSource *source, int initial_value, const TBPoint *pos_in_root, TB_ALIGN align)
 {
 	SetSettings(WINDOW_SETTINGS_NONE);
-	m_skin_bg.Set("TBMenuWindow");
 
 	if (m_select_list = new TBSelectList)
 	{

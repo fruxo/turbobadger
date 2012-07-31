@@ -13,7 +13,7 @@ namespace tinkerbell {
 TBWindow::TBWindow()
 	: m_settings(WINDOW_SETTINGS_DEFAULT)
 {
-	m_skin_bg.Set("TBWindow");
+	SetSkinBg("TBWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	AddChild(&m_mover);
 	AddChild(&m_resizer);
 	m_mover.SetSkinBg("TBWindow.mover");

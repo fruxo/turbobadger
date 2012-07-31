@@ -251,14 +251,23 @@ void TBWidget::SetGravity(WIDGET_GRAVITY g)
 	m_gravity = g;
 }
 
-void TBWidget::SetSkinBg(const TBID &skin_bg)
+void TBWidget::SetSkinBg(const TBID &skin_bg, WIDGET_INVOKE_INFO info)
 {
 	if (skin_bg == m_skin_bg)
 		return;
+
+	// Set the skin and m_skin_bg_expected. During InvokeProcess, we will detect
+	// if any widget get a different element due to conditions and strong override.
+	// If that happens, OnSkinChanged will be called and m_skin_bg_expected updated to
+	// match that override.
 	m_skin_bg = skin_bg;
+	m_skin_bg_expected = skin_bg;
+
 	Invalidate();
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
-	OnSkinChanged();
+
+	if (info == WIDGET_INVOKE_INFO_NORMAL)
+		OnSkinChanged();
 }
 
 TBSkinElement *TBWidget::GetSkinBgElement()
@@ -620,10 +629,35 @@ PreferredSize TBWidget::GetPreferredSize()
 
 void TBWidget::InvokeProcess()
 {
+	InvokeSkinUpdatesInternal();
+	InvokeProcessInternal();
+}
+
+void TBWidget::InvokeSkinUpdatesInternal()
+{
+	// Check if the skin we get is different from what we expect. That might happen
+	// if the skin has some strong override dependant a condition that has changed.
+	// If that happens, call OnSkinChanged so the widget can react to that (possibly
+	// invalidating its layout).
+	if (TBSkinElement *skin_elm = GetSkinBgElement())
+	{
+		if (skin_elm->id != m_skin_bg_expected)
+		{
+			OnSkinChanged();
+			m_skin_bg_expected = skin_elm->id;
+		}
+	}
+
+	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
+		child->InvokeSkinUpdatesInternal();
+}
+
+void TBWidget::InvokeProcessInternal()
+{
 	OnProcess();
 
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
-		child->InvokeProcess();
+		child->InvokeProcessInternal();
 
 	OnProcessAfterChildren();
 }
