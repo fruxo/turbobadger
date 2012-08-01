@@ -41,6 +41,10 @@ WidgetAnimationOpacity::WidgetAnimationOpacity(TBWidget *widget, float src_opaci
 
 void WidgetAnimationOpacity::OnAnimationStart()
 {
+	// Make sure we don't stay idle if nothing is scheduled (hack).
+	if (!WidgetsAnimationManager::HasAnimationsRunning())
+		m_widget->Invalidate();
+
 	m_widget->SetOpacity(m_src_opacity);
 }
 
@@ -76,6 +80,10 @@ WidgetAnimationRect::WidgetAnimationRect(TBWidget *widget, const TBRect &src_rec
 
 void WidgetAnimationRect::OnAnimationStart()
 {
+	// Make sure we don't stay idle if nothing is scheduled.
+	if (!WidgetsAnimationManager::HasAnimationsRunning())
+		m_widget->Invalidate();
+
 	m_widget->SetRect(m_src_rect);
 }
 
