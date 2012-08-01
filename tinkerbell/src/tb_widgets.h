@@ -663,6 +663,7 @@ public:
 			uint16 is_group_root : 1;
 			uint16 is_focusable : 1;
 			uint16 click_by_key : 1;
+			uint16 has_key_pressed_state : 1;
 			uint16 ignore_input : 1;
 			uint16 is_dying: 1;
 		} m_packed;

@@ -330,8 +330,17 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 	{
 		// A lot of weird bugs could happen if people mess with focus from OnFocusChanged.
 		// Take some precaution and detect if it change again after OnFocusChanged(false).
-		if (old_focus.Get())
-			old_focus.Get()->OnFocusChanged(false);
+		if (TBWidget *old = old_focus.Get())
+		{
+			// The currently focused widget still has the pressed state set by the emulated click
+			// (By keyboard), so unset it before we unfocus it so it's not stuck in pressed state.
+			if (old->m_packed.has_key_pressed_state)
+			{
+				old->SetState(WIDGET_STATE_PRESSED, false);
+				old->m_packed.has_key_pressed_state = false;
+			}
+			old->OnFocusChanged(false);
+		}
 		if (old_focus.Get())
 			TBGlobalWidgetListener::InvokeWidgetFocusChanged(old_focus.Get(), false);
 		if (focused_widget && focused_widget == this)
@@ -914,7 +923,10 @@ void TBWidget::InvokeKey(int key, int special_key, MODIFIER_KEYS modifierkeys, b
 				check_pressed_state = true;
 
 			if (!had_pressed_state)
+			{
 				focused_widget->SetState(WIDGET_STATE_PRESSED, down);
+				focused_widget->m_packed.has_key_pressed_state = down;
+			}
 
 			// Invoke the click event
 			if (!down)
