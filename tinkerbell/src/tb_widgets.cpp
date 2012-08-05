@@ -714,7 +714,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, state, context);
 	assert(!!used_element == !!skin_element);
 
-	TB_IF_GFX_DEBUG(g_renderer->DrawRectDebug(local_rect, 255, 255, 255, 50));
+	TB_IF_GFX_DEBUG(g_renderer->DrawRect(local_rect, TBColor(255, 255, 255, 50)));
 
 	// Inherit properties from parent if not specified in the used skin for this widget.
 	PaintProps paint_props = parent_paint_props;

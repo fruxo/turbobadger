@@ -372,6 +372,9 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 
 		child->SetRect(RotRect(rect, m_axis));
 	}
+	// If the last child collapsed, we have added spacing that should not be there.
+	if (last_child_is_collapsed)
+		used_space -= last_added_spacing;
 	// Update overflow and overflow scroll
 	m_overflow = MAX(0, used_space - layout_rect.w);
 	SetOverflowScroll(m_overflow_scroll);
@@ -420,7 +423,7 @@ void TBLayout::OnPaintChildren(const PaintProps &paint_props)
 
 		old_clip_rect = g_renderer->SetClipRect(clip_rect, true);
 
-		TB_IF_GFX_DEBUG(g_renderer->DrawRectDebug(padding_rect, 255, 0, 0, 100));
+		TB_IF_GFX_DEBUG(g_renderer->DrawRect(padding_rect, TBColor(255, 0, 0, 100)));
 	}
 
 	// Paint children
