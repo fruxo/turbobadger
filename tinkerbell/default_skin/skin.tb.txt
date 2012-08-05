@@ -44,6 +44,7 @@ elements
 		bitmap button_flat_pressed.png
 		cut 8
 
+	# == TBTabContainer skins - Create strong overrides for the tab buttons four alignments ============
 	TBTabContainer.tablayout_x
 		padding 10 0
 	TBTabContainer.tablayout_y
@@ -51,30 +52,104 @@ elements
 	TBTabContainer.container
 		clone TBContainer
 	TBTabContainer.tab
-		bitmap tab_button_inactive.png
+		strong-overrides
+			element TBTabContainer.tab_top
+				condition: target: ancestors, property: align, value: top
+			element TBTabContainer.tab_bottom
+				condition: target: ancestors, property: align, value: bottom
+			element TBTabContainer.tab_left
+				condition: target: ancestors, property: align, value: left
+			element TBTabContainer.tab_right
+				condition: target: ancestors, property: align, value: right
+	# == Top tab button =============================
+	TBTabContainer.tab_top
+		bitmap tab_button_top_inactive.png
 		cut 12
 		expand 6
 		padding 6 6 6 3
 		min-width 50
 		overrides
-			element TBTabContainer.tab.pressed
+			element TBTabContainer.tab_top.pressed
 				state pressed
 		children
-			element tab_focus
+			element tab_top_focus
 				state focused
-	tab_focus
-		bitmap focus_tabbutton.png
+	tab_top_focus
+		type StretchBorder
+		bitmap focus_tabbutton_top.png
 		cut 12
 		expand 6
-	TBTabContainer.tab.pressed
-		bitmap tab_button_active.png
+	TBTabContainer.tab_top.pressed
+		bitmap tab_button_top_active.png
+		cut 13
+		expand 6
+	# == Bottom tab button =============================
+	TBTabContainer.tab_bottom
+		bitmap tab_button_bottom_inactive.png
+		cut 12
+		expand 6
+		padding 6 3 6 6
+		min-width 50
+		overrides
+			element TBTabContainer.tab_bottom.pressed
+				state pressed
+		children
+			element tab_bottom_focus
+				state focused
+	tab_bottom_focus
+		clone tab_top_focus
+		flip-y 1
+	TBTabContainer.tab_bottom.pressed
+		bitmap tab_button_bottom_active.png
+		cut 13
+		expand 6
+	# == Left tab button =============================
+	TBTabContainer.tab_left
+		bitmap tab_button_left_inactive.png
+		cut 12
+		expand 6
+		padding 6 6 3 6
+		min-width 50
+		overrides
+			element TBTabContainer.tab_left.pressed
+				state pressed
+		children
+			element tab_left_focus
+				state focused
+	tab_left_focus
+		type StretchBorder
+		bitmap focus_tabbutton_left.png
+		cut 12
+		expand 6
+	TBTabContainer.tab_left.pressed
+		bitmap tab_button_left_active.png
+		cut 13
+		expand 6
+	# == Right tab button =============================
+	TBTabContainer.tab_right
+		bitmap tab_button_right_inactive.png
+		cut 12
+		expand 6
+		padding 3 6 6 6
+		min-width 50
+		overrides
+			element TBTabContainer.tab_right.pressed
+				state pressed
+		children
+			element tab_right_focus
+				state focused
+	tab_right_focus
+		clone tab_left_focus
+		flip-x 1
+	TBTabContainer.tab_right.pressed
+		bitmap tab_button_right_active.png
 		cut 13
 		expand 6
 
+	# == TBEditField skin. Create strong overrides for the search type to add magnifier glass icon =====
 	TBEditField.selection
 		cut 2
 		bitmap selection.png
-
 	TBEditField
 		bitmap editfield.png
 		cut 12
@@ -83,6 +158,7 @@ elements
 		strong-overrides
 			element TBEditField.search
 				condition: target: this, property: edit_type, value: "search"
+
 	TBEditField.search
 		clone TBEditField
 		padding 24 4 4 4
@@ -95,6 +171,7 @@ elements
 		img-position-x 0
 		img-ofs-x 5
 
+# == TBWindow skin =================================================================================
 	TBWindow
 		bitmap window.png
 		cut 20
@@ -122,6 +199,7 @@ elements
 		expand 0
 		padding 4
 
+	# == Misc skins ====================================================================================
 	TBContainer
 		bitmap container.png
 		type StretchBorder

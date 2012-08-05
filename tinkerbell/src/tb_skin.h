@@ -174,7 +174,9 @@ public:
 	int8 img_position_y;///< Vertical position for type image. 0-100 (top to bottom).
 	int8 img_ofs_x;		///< X offset for type image. Relative to the x position (img_position_x)
 	int8 img_ofs_y;		///< Y offset for type image. Relative to the y position (img_position_y)
-	float opacity;		///< Opacity that should be used for the whole widget (0.f-1.f).
+	int8 flip_x;		///< The skin is flipped horizontally
+	int8 flip_y;		///< The skin is flipped vertically
+	float opacity;		///< Opacity that should be used for the whole widget (0.f - 1.f).
 	TBColor text_color;	///< Color of the text in the widget.
 
 	/** List of override elements (See TBSkin::PaintSkin) */
@@ -290,6 +292,7 @@ private:
 	void PaintElementTile(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center);
+	TBRect GetFlippedRect(const TBRect &src_rect, TBSkinElement *element);
 };
 
 }; // namespace tinkerbell
