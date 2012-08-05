@@ -201,9 +201,13 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 		return false;
 	TBWidget *click_target = (m_layout.GetFirstChild() == &m_textfield ? m_layout.GetLastChild() : m_layout.GetFirstChild());
 	// Invoke the event on it, as if it was invoked on the target itself.
-	if (click_target && ev.target == &m_textfield)
+	if (click_target && ev.target != click_target)
 	{
-		click_target->SetState(WIDGET_STATE_PRESSED, (m_textfield.GetAutoState() & WIDGET_STATE_PRESSED) ? true : false);
+		// Focus the target if we clicked the label.
+		if (ev.type == EVENT_TYPE_CLICK)
+			click_target->SetFocus(WIDGET_FOCUS_REASON_POINTER);
+
+		click_target->SetState(WIDGET_STATE_PRESSED, (ev.target->GetAutoState() & WIDGET_STATE_PRESSED) ? true : false);
 		TBWidgetEvent target_ev(ev.type, ev.target_x - click_target->m_rect.x, ev.target_y - click_target->m_rect.y);
 		return click_target->InvokeEvent(target_ev);
 	}
