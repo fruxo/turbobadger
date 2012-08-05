@@ -143,7 +143,8 @@ bool DemoWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		// We could call Die() to fade away and die, but click the close button instead.
 		// That way the window has a chance of intercepting the close and f.ex ask if it really should be closed.
-		m_close_button.InvokeEvent(TBWidgetEvent(EVENT_TYPE_CLICK));
+		TBWidgetEvent click_ev(EVENT_TYPE_CLICK);
+		m_close_button.InvokeEvent(click_ev);
 		return true;
 	}
 	return TBWindow::OnEvent(ev);
