@@ -56,6 +56,8 @@ TBSkinCondition::PROPERTY StringToProperty(const char *prop_str)
 		prop = TBSkinCondition::PROPERTY_ID;
 	else if (strcmp(prop_str, "state") == 0)
 		prop = TBSkinCondition::PROPERTY_STATE;
+	else if (strcmp(prop_str, "value") == 0)
+		prop = TBSkinCondition::PROPERTY_VALUE;
 	else if (strcmp(prop_str, "hover") == 0)
 		prop = TBSkinCondition::PROPERTY_HOVER;
 	else if (strcmp(prop_str, "capture") == 0)
@@ -127,6 +129,8 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 		TBNode *n = elements->GetFirstChild();
 		while (n)
 		{
+			// If we have a "clone" node, clone all children from that node
+			// into this node.
 			while (TBNode *clone = n->GetNode("clone"))
 			{
 				n->Remove(clone);
@@ -618,6 +622,12 @@ void TBSkinElementStateList::Load(TBNode *n)
 				}
 
 				TBSkinCondition::TEST test = TBSkinCondition::TEST_EQUAL;
+				if (const char *test_str = condition_node->GetValueString("test", nullptr))
+				{
+					if (strcmp(test_str, "!=") == 0)
+						test = TBSkinCondition::TEST_NOT_EQUAL;
+				}
+
 				if (TBSkinCondition *condition = new TBSkinCondition(target, prop, custom_prop, value, test))
 					state->conditions.AddLast(condition);
 			}

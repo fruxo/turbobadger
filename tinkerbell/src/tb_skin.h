@@ -67,6 +67,7 @@ public:
 		PROPERTY_ALIGN,				///< The alignment.
 		PROPERTY_ID,				///< The id.
 		PROPERTY_STATE,				///< The state is set.
+		PROPERTY_VALUE,				///< The current value (integer).
 		PROPERTY_HOVER,				///< Focus is on the target or any child (no value required).
 		PROPERTY_CAPTURE,			///< Capture is on the target or any child (no value required).
 		PROPERTY_FOCUS,				///< Focus is on the target or any child (no value required).
