@@ -62,3 +62,13 @@ strings_multiline
 	subgroup: first: "Foo", second:	"A" \
 									"B"
 	string5: "The last string"
+
+comments_and_space
+	# Testing indented comments
+	one 1
+
+	# There was a empty line before this line
+	two 2
+	   
+	# There was some dangling space before this line
+	three 3

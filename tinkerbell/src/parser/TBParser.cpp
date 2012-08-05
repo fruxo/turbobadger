@@ -59,6 +59,21 @@ bool is_white_space(const char *str)
 	}
 }
 
+/** Check if the line is a comment or empty space. If it is, consume the leading
+	whitespace from line. */
+bool is_space_or_comment(char *&line)
+{
+	char *tmp = line;
+	while (is_white_space(tmp))
+		tmp++;
+	if (*tmp == '#' || *tmp == 0)
+	{
+		line = tmp;
+		return true;
+	}
+	return false;
+}
+
 bool is_pending_multiline(const char *str)
 {
 	while (is_white_space(str))
@@ -146,9 +161,10 @@ Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 
 void Parser::OnLine(char *line, ParserTarget *target)
 {
-	if (*line == '#')
+	if (is_space_or_comment(line))
 	{
-		target->OnComment(line + 1);
+		if (*line == '#')
+			target->OnComment(line + 1);
 		return;
 	}
 	if (pending_multiline)

@@ -42,7 +42,9 @@ public:
 	/** Remove child node n from this node. */
 	void Remove(TBNode *n) { m_children.Remove(n); n->m_parent = nullptr; }
 
-	/** Create duplicates of all items in source and add them to this node. */
+	/** Create duplicates of all items in source and add them to this node.
+		Note: Nodes does not replace existing nodes with the same name. Cloned nodes
+		are added after any existing nodes. */
 	bool CloneChildren(TBNode *source);
 
 	/** Get a node from the given request or nullptr if no such node was found.

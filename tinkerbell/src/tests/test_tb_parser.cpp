@@ -123,6 +123,13 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY_STR(node.GetValueString("strings_multiline>subgroup>second", ""), "AB");
 		TB_VERIFY_STR(node.GetValueString("strings_multiline>string5", ""), "The last string");
 	}
+
+	TB_TEST(comments_and_space)
+	{
+		TB_VERIFY(node.GetValueInt("comments_and_space>one", 0) == 1);
+		TB_VERIFY(node.GetValueInt("comments_and_space>two", 0) == 2);
+		TB_VERIFY(node.GetValueInt("comments_and_space>three", 0) == 3);
+	}
 }
 
 #endif // TB_UNIT_TESTING
