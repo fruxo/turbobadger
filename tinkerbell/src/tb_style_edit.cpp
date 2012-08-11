@@ -1369,7 +1369,7 @@ void TBStyleEdit::Clear(bool init_new)
 	undoredo.Clear(true, true);
 	selection.SelectNothing();
 
-	if (blocks.GetFirst() && IsEmpty())
+	if (init_new && blocks.GetFirst() && IsEmpty())
 		return;
 
 	for (TBBlock *block = blocks.GetFirst(); block; block = block->GetNext())
