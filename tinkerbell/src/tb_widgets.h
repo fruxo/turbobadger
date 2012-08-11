@@ -487,10 +487,10 @@ public:
 	virtual void ScrollBy(int &dx, int &dy) {}
 
 	/** Scroll this widget and/or any parent widgets by the given delta. */
-	virtual void ScrollByRecursive(int &dx, int &dy);
+	void ScrollByRecursive(int &dx, int &dy);
 
 	/** Make this widget visible by calling ScrollIntoView on all parent widgets */
-	virtual void ScrollIntoViewRecursive();
+	void ScrollIntoViewRecursive();
 
 	// == Setter shared for many types of widgets ============
 
