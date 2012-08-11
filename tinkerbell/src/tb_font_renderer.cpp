@@ -99,6 +99,7 @@ TBFontGlyphData *TBFontEffect::Render(TBGlyphMetrics *metrics, const TBFontGlyph
 			return nullptr;
 		effect_glyph_data->w = src->w + m_blur_radius * 2;
 		effect_glyph_data->h = src->h + m_blur_radius * 2;
+		effect_glyph_data->stride = effect_glyph_data->w;
 		effect_glyph_data->data8 = new unsigned char[effect_glyph_data->w * effect_glyph_data->h];
 
 		// Reserve memory needed for blurring.
@@ -110,7 +111,7 @@ TBFontGlyphData *TBFontEffect::Render(TBGlyphMetrics *metrics, const TBFontGlyph
 		}
 
 		// Blur!
-		blurGlyph(src->data8, src->w, src->h, src->w,
+		blurGlyph(src->data8, src->w, src->h, src->stride,
 					effect_glyph_data->data8, effect_glyph_data->w, effect_glyph_data->h, effect_glyph_data->w,
 					(float *)m_blur_temp.GetData(), m_kernel, m_blur_radius);
 
@@ -124,7 +125,7 @@ TBFontGlyphData *TBFontEffect::Render(TBGlyphMetrics *metrics, const TBFontGlyph
 // ================================================================================================
 
 TBFontFace::TBFontFace(TBFontRenderer *renderer, int size)
-	: m_font_renderer(renderer)
+	: m_font_renderer(renderer), m_bgFont(nullptr), m_bgX(0), m_bgY(0)
 {
 	// Only use one map for the font face. The glyph cache will start forgetting
 	// glyphs that haven't been used for a while if the map gets full.
@@ -148,6 +149,14 @@ TBFontFace::~TBFontFace()
 {
 	delete m_font_renderer;
 	g_renderer->RemoveListener(this);
+}
+
+void TBFontFace::SetBackgroundFont(TBFontFace *font, const TBColor &col, int xofs, int yofs)
+{
+	m_bgFont = font;
+	m_bgX = xofs;
+	m_bgY = yofs;
+	m_bgColor = col;
 }
 
 bool TBFontFace::RenderGlyphs(const char *glyph_str, int glyph_str_len)
@@ -218,8 +227,7 @@ TBFontGlyph *TBFontFace::CreateGlyph(UCS4 cp)
 	// Render the new glyph
 	if (m_font_renderer->RenderGlyph(&glyph_data, cp))
 	{
-		TBFontEffect effect;
-		TBFontGlyphData *effect_glyph_data = effect.Render(&glyph->metrics, &glyph_data);
+		TBFontGlyphData *effect_glyph_data = m_effect.Render(&glyph->metrics, &glyph_data);
 		TBFontGlyphData *result_glyph_data = effect_glyph_data ? effect_glyph_data : &glyph_data;
 
 		// The glyph data may be in uint8 format, which we have to convert since we always
@@ -232,7 +240,14 @@ TBFontGlyph *TBFontFace::CreateGlyph(UCS4 cp)
 				glyph_dsta_src = (uint32 *) m_temp_buffer.GetData();
 				for (int y = 0; y < result_glyph_data->h; y++)
 					for (int x = 0; x < result_glyph_data->w; x++)
+					{
+#ifdef TB_PREMULTIPLIED_ALPHA
+						uint8 opacity = result_glyph_data->data8[x + y * result_glyph_data->stride];
+						glyph_dsta_src[x + y * result_glyph_data->w] = TBColor(opacity, opacity, opacity, opacity);
+#else
 						glyph_dsta_src[x + y * result_glyph_data->w] = TBColor(255, 255, 255, result_glyph_data->data8[x + y * result_glyph_data->stride]);
+#endif
+					}
 			}
 		}
 
@@ -274,6 +289,12 @@ TBFontGlyph *TBFontFace::GetGlyph(int cp, bool create_if_needed)
 
 void TBFontFace::DrawString(int x, int y, const TBColor &color, const char *str, int len)
 {
+	if (m_bgFont)
+		m_bgFont->DrawString(x+m_bgX, y+m_bgY, m_bgColor, str, len);
+
+	if (m_font_renderer)
+		g_renderer->BeginBatchHint(TBRenderer::BATCH_HINT_DRAW_BITMAP_FRAGMENT);
+
 	int i = 0;
 	while (str[i] && i < len)
 	{
@@ -299,6 +320,9 @@ void TBFontFace::DrawString(int x, int y, const TBColor &color, const char *str,
 			x += m_metrics.height / 3 + 1;
 		}
 	}
+
+	if (m_font_renderer)
+		g_renderer->EndBatchHint();
 }
 
 int TBFontFace::GetStringWidth(const char *str, int len)

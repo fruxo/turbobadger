@@ -138,6 +138,10 @@ public:
 	void Debug();
 #endif
 
+	/** Set a background font which will always be rendered behind this one
+	    when calling DrawString. Very usefull to add a shadow effect to a font. */
+	void SetBackgroundFont(TBFontFace *font, const TBColor &col, int xofs, int yofs);
+
 	// Implementing TBRendererListener
 	virtual void OnContextLost();
 	virtual void OnContextRestored();
@@ -151,6 +155,11 @@ private:
 	TBFontMetrics m_metrics;
 	TBFontEffect m_effect;
 	TBTempBuffer m_temp_buffer;
+
+	TBFontFace *m_bgFont;
+	int m_bgX;
+	int m_bgY;
+	TBColor m_bgColor;
 };
 
 /** TBFontInfo provides information about a font file associated with a font id. */

@@ -38,6 +38,10 @@ freely, subject to the following restrictions:
 	when using the pointer. It is normally set only while moving focus by keyboard. */
 //#define TB_ALWAYS_SHOW_EDIT_FOCUS
 
+/** Enable to use premultiplied alpha. Warning: This is not handled everywhere in
+	the default backends, so consider it an experimental and unfinished feature! */
+//#define TB_PREMULTIPLIED_ALPHA
+
 #ifdef TB_GFX_DEBUGGING
 #define TB_IF_GFX_DEBUG(debug) debug
 #else

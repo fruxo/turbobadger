@@ -17,6 +17,36 @@ static FT_Library g_freetype = nullptr;
 
 using namespace tinkerbell;
 
+/** Cache of truetype file data, so it isn't loaded multiple times for each font size */
+
+class FreetypeFace;
+static TBHashTableOf<FreetypeFace> ft_face_cache;
+
+class FreetypeFace
+{
+public:
+	FreetypeFace() : hashID(0), ttf_buffer(nullptr), m_face(0), refCount(1) { }
+	~FreetypeFace()
+	{
+		if (hashID)
+			ft_face_cache.Remove(hashID);
+		FT_Done_Face(m_face);
+		delete [] ttf_buffer;
+	}
+	void Release()
+	{
+		--refCount;
+		if (!refCount)
+			delete this;
+	}
+
+	uint32 hashID;
+	unsigned char *ttf_buffer;
+	FT_Face m_face;
+	unsigned int refCount;
+};
+
+
 /** FreetypeFontRenderer renders fonts using the freetype library. */
 class FreetypeFontRenderer : public TBFontRenderer
 {
@@ -24,22 +54,21 @@ public:
 	FreetypeFontRenderer();
 	~FreetypeFontRenderer();
 
-	bool Load(const char *filename, int size);
-
 	virtual TBFontFace *Create(const char *filename, int size);
 
 	virtual TBFontMetrics GetMetrics();
 	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp);
 private:
-	unsigned char *ttf_buffer;
+	bool Load(FreetypeFace *face, int size);
+	bool Load(const char *filename, int size);
+
 	FT_Size m_size;
-	FT_Face m_face;
+	FreetypeFace *m_face;
 };
 
 FreetypeFontRenderer::FreetypeFontRenderer()
-	: ttf_buffer(nullptr)
-	, m_size(nullptr)
+	: m_size(nullptr)
 	, m_face(nullptr)
 {
 	num_fonts++;
@@ -48,7 +77,8 @@ FreetypeFontRenderer::FreetypeFontRenderer()
 FreetypeFontRenderer::~FreetypeFontRenderer()
 {
 	FT_Done_Size(m_size);
-	FT_Done_Face(m_face);
+	if (m_face)
+		m_face->Release();
 
 	num_fonts--;
 	if (num_fonts == 0 && ft_initialized)
@@ -56,23 +86,22 @@ FreetypeFontRenderer::~FreetypeFontRenderer()
 		FT_Done_FreeType(g_freetype);
 		ft_initialized = false;
 	}
-
-	delete [] ttf_buffer;
 }
 
 TBFontMetrics FreetypeFontRenderer::GetMetrics()
 {
 	TBFontMetrics metrics;
-	metrics.ascent = m_size->metrics.ascender >> 6;
-	metrics.descent = -(m_size->metrics.descender >> 6);
-	metrics.height = m_size->metrics.height >> 6;
+	metrics.ascent = (int16) (m_size->metrics.ascender >> 6);
+	metrics.descent = (int16) -(m_size->metrics.descender >> 6);
+	metrics.height = (int16) (m_size->metrics.height >> 6);
 	return metrics;
 }
 
 bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp)
 {
-	FT_GlyphSlot slot = m_face->glyph;
-	if (FT_Load_Char(m_face, cp, FT_LOAD_RENDER) ||
+	FT_Activate_Size(m_size);
+	FT_GlyphSlot slot = m_face->m_face->glyph;
+	if (FT_Load_Char(m_face->m_face, cp, FT_LOAD_RENDER) ||
 		slot->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
 		return false;
 	data->w = slot->bitmap.width;
@@ -84,12 +113,25 @@ bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp)
 
 void FreetypeFontRenderer::GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp)
 {
-	FT_GlyphSlot slot = m_face->glyph;
-	if (FT_Load_Char(m_face, cp, FT_LOAD_RENDER))
+	FT_Activate_Size(m_size);
+	FT_GlyphSlot slot = m_face->m_face->glyph;
+	if (FT_Load_Char(m_face->m_face, cp, FT_LOAD_RENDER))
 		return;
-	metrics->advance = slot->advance.x >> 6;
+	metrics->advance = (int16) (slot->advance.x >> 6);
 	metrics->x = slot->bitmap_left;
 	metrics->y = - slot->bitmap_top;
+}
+
+bool FreetypeFontRenderer::Load(FreetypeFace *face, int size)
+{
+	// Should not be possible to have a face if freetype is not initialized
+	assert(ft_initialized);
+	m_face = face;
+	if (FT_New_Size(m_face->m_face, &m_size) ||
+		FT_Activate_Size(m_size) ||
+		FT_Set_Pixel_Sizes(m_face->m_face, 0, size))
+		return false;
+	return true;
 }
 
 bool FreetypeFontRenderer::Load(const char *filename, int size)
@@ -99,35 +141,49 @@ bool FreetypeFontRenderer::Load(const char *filename, int size)
 	if (!ft_initialized)
 		return false;
 
+	m_face = new FreetypeFace();
+	if (!m_face)
+		return false;
+
 	TBFile *f = TBFile::Open(filename, TBFile::MODE_READ);
 	if (!f)
 		return false;
 
 	size_t ttf_buf_size = f->Size();
-	ttf_buffer = new unsigned char[ttf_buf_size];
-	if (ttf_buffer)
-		ttf_buf_size = f->Read(ttf_buffer, 1, ttf_buf_size);
+	m_face->ttf_buffer = new unsigned char[ttf_buf_size];
+	if (m_face->ttf_buffer)
+		ttf_buf_size = f->Read(m_face->ttf_buffer, 1, ttf_buf_size);
 	delete f;
 
-	if (!ttf_buffer)
+	if (!m_face->ttf_buffer)
 		return false;
 
-	if (FT_New_Memory_Face(g_freetype, ttf_buffer, ttf_buf_size, 0, &m_face))
+	if (FT_New_Memory_Face(g_freetype, m_face->ttf_buffer, ttf_buf_size, 0, &m_face->m_face))
 		return false;
-	if (FT_New_Size(m_face, &m_size) ||
-		FT_Activate_Size(m_size) ||
-		FT_Set_Pixel_Sizes(m_face, 0, size))
-		return false;
-	return true;
+	return Load(m_face, size);
 }
 
 TBFontFace *FreetypeFontRenderer::Create(const char *filename, int size)
 {
 	if (FreetypeFontRenderer *fr = new FreetypeFontRenderer())
 	{
-		if (fr->Load(filename, size))
+		TBID face_cache_id(filename);
+		FreetypeFace *f = ft_face_cache.Get(face_cache_id);
+		if (f)
+		{
+			++f->refCount;
+			if (fr->Load(f, size))
+				if (TBFontFace *font = new TBFontFace(fr, size))
+					return font;
+		}
+		else if (fr->Load(filename, size))
+		{
+			if (ft_face_cache.Add(face_cache_id, fr->m_face))
+				fr->m_face->hashID = face_cache_id;
 			if (TBFontFace *font = new TBFontFace(fr, size))
 				return font;
+		}
+
 		delete fr;
 	}
 	return nullptr;

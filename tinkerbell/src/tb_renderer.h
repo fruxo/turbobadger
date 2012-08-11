@@ -115,6 +115,23 @@ public:
 	/** Invoke OnContextRestored on all listeners.
 		Call when bitmaps can safely be restored. */
 	void InvokeContextRestored();
+
+	/** Defines the hint given to BeginBatchHint. */
+	enum BATCH_HINT {
+		/** All calls are either DrawBitmap or DrawBitmapColored with the same bitmap
+			fragment. */
+		BATCH_HINT_DRAW_BITMAP_FRAGMENT
+	};
+
+	/** A hint to batching renderers that the following set of draw calls are of the
+		same type so batching might be optimized.
+		The hint defines what operations are allowed between BeginBatchHint
+		until EndBatchHint is called. All other draw operations are invalid.
+		It's not valid to nest calls to BeginBatchHint. */
+	virtual void BeginBatchHint(BATCH_HINT hint) {}
+
+	/** End the hint scope started with BeginBatchHint. */
+	virtual void EndBatchHint() {}
 private:
 	TBLinkListOf<TBRendererListener> m_listeners;
 };
