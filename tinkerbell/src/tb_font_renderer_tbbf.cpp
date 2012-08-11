@@ -5,6 +5,7 @@
 
 #include "tb_font_renderer.h"
 #include "tb_renderer.h"
+#include "tb_tempbuffer.h"
 #include "tb_system.h"
 #include "parser/TBNodeTree.h"
 #include "tb_hashtable.h"
@@ -165,15 +166,14 @@ bool TBBFRenderer::Load(const char *filename, int size)
 	m_rgb = m_node.GetValueInt("info>rgb", 0);
 
 	// Get the path for the bitmap file.
-	int len = strlen(filename);
-	for (int i = len - 1; i > 0 && filename[i] != '/' && filename[i] != '\\'; i--)
-		len = i;
-	TBStr bitmap_filename(filename, len);
+	TBTempBuffer bitmap_filename;
+	if (!bitmap_filename.AppendPath(filename))
+		return false;
 
 	// Append the bitmap filename for the given size.
-	bitmap_filename.Append(size_node->GetValueString("bitmap", ""));
+	bitmap_filename.AppendString(size_node->GetValueString("bitmap", ""));
 
-	m_img = TBImageLoader::CreateFromFile(bitmap_filename);
+	m_img = TBImageLoader::CreateFromFile(bitmap_filename.GetData());
 
 	return FindGlyphs();
 }
