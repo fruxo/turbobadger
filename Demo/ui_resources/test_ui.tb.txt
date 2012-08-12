@@ -1,7 +1,7 @@
 WindowInfo
 	title Tinkerbell demo
 	position 10 100
-TBLayout: axis: y
+TBLayout: axis: y, distribution_position: left top
 	TBButton
 		text Close with dim & alert
 		id TBWindow.close
@@ -13,18 +13,21 @@ TBLayout: axis: y
 	TBButton: text: "TBImage", id: "test-image"
 	TBButton: text: "Animations", id: "test-animations"
 	TBButton: text: "Skin conditions", id: "test-skin-conditions"
+	TBButton: text: "TBToggleContainer", id: "test-toggle-container"
 	TBButton: text: "ResourceEditWindow", id: "test-resource-edit"
-	TBTextField: text: "Graphics tests:"
-	TBButton
-		text Reload skin bitmaps
-		id reload skin bitmaps
-	TBButton
-		text Context lost & restore
-		id test context lost
-	TBTextField: text: "Message tests:"
-	TBButton
-		text Msg!
-		id msg
-	TBButton
-		text Delayed Msg!
-		id delayedmsg
+	TBSection: value: 1, text: "Graphics tests"
+		TBLayout: axis: y
+			TBButton
+				text Reload skin bitmaps
+				id reload skin bitmaps
+			TBButton
+				text Context lost & restore
+				id test context lost
+	TBSection: value: 0, text: "Message tests"
+		TBLayout: axis: y
+			TBButton
+				text Msg!
+				id msg
+			TBButton
+				text Delayed Msg!
+				id delayedmsg

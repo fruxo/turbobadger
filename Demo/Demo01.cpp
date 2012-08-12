@@ -678,6 +678,11 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 			new MyToolbarWindow("Demo/ui_resources/test_skin_conditions.tb.txt");
 			return true;
 		}
+		else if (ev.target->GetID() == TBIDC("test-toggle-container"))
+		{
+			new MyToolbarWindow("Demo/ui_resources/toggle_containers.tb.txt");
+			return true;
+		}
 		else if (ev.target->GetID() == TBIDC("test-resource-edit"))
 		{
 			ResourceEditWindow *res_edit_win = new ResourceEditWindow();

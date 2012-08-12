@@ -44,6 +44,45 @@ elements
 		bitmap button_flat_pressed.png
 		cut 8
 
+	# == TBSection skins ==========================================================================
+	TBSection.layout
+		spacing -1
+	TBSection.container
+		bitmap TBSectionContainer.png
+		type StretchBorder
+		cut 11
+		expand 6
+		padding 10
+	TBSectionHeader
+		bitmap TBSectionHeader.png
+		cut 11
+		expand 5
+		padding 16 2
+		children
+			element TBSectionHeader.icon_0
+				condition: target: this, property: value, value: 0
+				condition: target: this, property: capture, test: !=
+			element TBSectionHeader.icon_1
+				condition: target: this, property: value, value: 1
+				condition: target: this, property: capture, test: !=
+			element TBSectionHeader.icon_pressed
+				condition: target: this, property: capture
+	TBSectionHeader.icon_0
+		bitmap toggle_section_icon_up.png
+		type Image
+		img-position-x 0
+		img-ofs-x 4
+	TBSectionHeader.icon_1
+		bitmap toggle_section_icon_down.png
+		type Image
+		img-position-x 0
+		img-ofs-x 4
+	TBSectionHeader.icon_pressed
+		bitmap toggle_section_icon_middle.png
+		type Image
+		img-position-x 0
+		img-ofs-x 4
+
 	# == TBTabContainer skins - Create strong overrides for the tab buttons four alignments ============
 	TBTabContainer.tablayout_x
 		padding 10 0
@@ -171,7 +210,7 @@ elements
 		img-position-x 0
 		img-ofs-x 5
 
-# == TBWindow skin =================================================================================
+	# == TBWindow skin =================================================================================
 	TBWindow
 		bitmap window.png
 		cut 20

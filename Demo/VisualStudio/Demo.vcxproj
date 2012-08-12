@@ -90,6 +90,7 @@
     <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_toggle_container.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.h" />
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_bitmap_fragment.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_toggle_container.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_font_renderer.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_hash.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_addon.h" />

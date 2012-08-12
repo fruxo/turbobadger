@@ -192,6 +192,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_parser.cpp">
       <Filter>Source Files\tinkerbell\tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_toggle_container.cpp">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -323,6 +326,9 @@
       <Filter>Source Files\addons\tbimage</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_widget_skin_condition_context.h">
+      <Filter>Source Files\tinkerbell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_toggle_container.h">
       <Filter>Source Files\tinkerbell</Filter>
     </ClInclude>
   </ItemGroup>
