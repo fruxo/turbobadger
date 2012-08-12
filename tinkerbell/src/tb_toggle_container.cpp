@@ -25,7 +25,12 @@ bool TBSectionHeader::OnEvent(const TBWidgetEvent &ev)
 	if (ev.target == this && ev.type == EVENT_TYPE_CHANGED && m_parent->m_parent)
 	{
 		if (TBSection *section = TBSafeCast(TBSection, m_parent->m_parent))
+		{
 			section->GetContainer()->SetValue(GetValue());
+
+			// Try to scroll the container into view when expanded
+			section->SetPendingScrollIntoView(GetValue() ? true : false);
+		}
 	}
 	return TBButton::OnEvent(ev);
 }
@@ -35,6 +40,7 @@ bool TBSectionHeader::OnEvent(const TBWidgetEvent &ev)
 TB_WIDGET_FACTORY(TBSection, TBValue::TYPE_INT, WIDGET_Z_TOP) { }
 
 TBSection::TBSection()
+	: m_pending_scroll(false)
 {
 	SetGravity(WIDGET_GRAVITY_LEFT | WIDGET_GRAVITY_RIGHT);
 
@@ -58,6 +64,21 @@ TBSection::~TBSection()
 	m_layout.RemoveChild(&m_toggle_container);
 	m_layout.RemoveChild(&m_header);
 	RemoveChild(&m_layout);
+}
+
+void TBSection::SetValue(int value)
+{
+	m_header.SetValue(value);
+	m_toggle_container.SetValue(value);
+}
+
+void TBSection::OnProcessAfterChildren()
+{
+	if (m_pending_scroll)
+	{
+		m_pending_scroll = false;
+		ScrollIntoViewRecursive();
+	}
 }
 
 // == TBToggleContainer ===================================

@@ -93,19 +93,24 @@ public:
 	TBSectionHeader *GetHeader() { return &m_header; }
 	TBToggleContainer *GetContainer() { return &m_toggle_container; }
 
+	/** Set if the section should be scrolled into view after next layout. */
+	void SetPendingScrollIntoView(bool pending_scroll) { m_pending_scroll = pending_scroll; }
+
 	/** Set the text of the text field. */
 	virtual bool SetText(const char *text) { return m_header.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_header.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
-	virtual void SetValue(int value) { m_header.SetValue(value); m_toggle_container.SetValue(value); }
+	virtual void SetValue(int value);
 	virtual int GetValue() { return m_toggle_container.GetValue(); }
 
 	virtual TBWidget *GetContentRoot() { return m_toggle_container.GetContentRoot(); }
+	virtual void OnProcessAfterChildren();
 private:
 	TBLayout m_layout;
 	TBSectionHeader m_header;
 	TBToggleContainer m_toggle_container;
+	bool m_pending_scroll;
 };
 
 }; // namespace tinkerbell
