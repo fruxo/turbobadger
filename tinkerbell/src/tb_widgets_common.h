@@ -102,6 +102,11 @@ public:
 	void SetAutoRepeat(bool auto_repeat_click) { m_auto_repeat_click = auto_repeat_click; }
 	bool GetAutoRepeat() { return m_auto_repeat_click; }
 
+	/** Set to true if the button should toggle on and off, instead of just fire
+		click events. When it's on, it will have value 1 pressed state. */
+	void SetToggleMode(bool toggle_mode_on) { m_toggle_mode = toggle_mode_on; }
+	bool GetToggleMode() const { return m_toggle_mode; }
+
 	/** Set the text of the button. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
@@ -112,6 +117,7 @@ public:
 
 	virtual void OnCaptureChanged(bool captured);
 	virtual void OnSkinChanged();
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
 	virtual PreferredSize GetPreferredContentSize() { return m_layout.GetPreferredSize(); }
 
@@ -123,6 +129,7 @@ protected:
 	TBLayout m_layout;
 	TBTextField m_textfield;
 	bool m_auto_repeat_click;
+	bool m_toggle_mode;
 };
 
 /** TBClickLabel has a text field in its internal layout by default. Pointer input on the
@@ -246,7 +253,7 @@ public:
 	// For safe typecasting
 	WIDGET_SUBCLASS("TBCheckBox", TBRadioCheckBox);
 
-	TBCheckBox() { 	SetSkinBg("TBCheckBox", WIDGET_INVOKE_INFO_NO_CALLBACKS); }
+	TBCheckBox() { SetSkinBg("TBCheckBox", WIDGET_INVOKE_INFO_NO_CALLBACKS); }
 };
 
 /** TBRadioButton is a button which unselects other radiobuttons of the same

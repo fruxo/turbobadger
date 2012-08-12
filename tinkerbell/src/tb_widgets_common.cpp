@@ -5,6 +5,7 @@
 
 #include "tb_widgets_common.h"
 #include "tb_font_renderer.h"
+#include "tb_widgets_listener.h"
 #include <assert.h>
 
 namespace tinkerbell {
@@ -119,6 +120,7 @@ const int auto_click_repeat_delay = 100;
 
 TBButton::TBButton()
 	: m_auto_repeat_click(false)
+	, m_toggle_mode(false)
 {
 	SetIsFocusable(true);
 	SetClickByKey(true);
@@ -154,6 +156,28 @@ void TBButton::OnCaptureChanged(bool captured)
 void TBButton::OnSkinChanged()
 {
 	m_layout.SetRect(GetPaddingRect());
+}
+
+bool TBButton::OnEvent(const TBWidgetEvent &ev)
+{
+	if (m_toggle_mode && ev.type == EVENT_TYPE_CLICK && ev.target == this)
+	{
+		TBWidgetSafePointer this_widget(this);
+		SetValue(!GetValue());
+
+		if (!this_widget.Get())
+			return true; // We got removed so we actually handled this event.
+
+		// Invoke a changed event.
+		TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+		InvokeEvent(ev);
+
+		if (!this_widget.Get())
+			return true; // We got removed so we actually handled this event.
+
+		// Intentionally don't return true for this event. We want it to continue propagating.
+	}
+	return TBWidget::OnEvent(ev);
 }
 
 void TBButton::OnMessageReceived(TBMessage *msg)
