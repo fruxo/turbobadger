@@ -540,11 +540,20 @@ TBSkinElement::~TBSkinElement()
 {
 }
 
+bool TBSkinElement::HasState(uint32 state, TBSkinConditionContext &context)
+{
+	return	m_override_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE) ||
+			m_child_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE) ||
+			m_overlay_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE);
+}
+
 // == TBSkinElementState ====================================================
 
-bool TBSkinElementState::IsMatch(uint32 state, TBSkinConditionContext &context) const
+bool TBSkinElementState::IsMatch(uint32 state, TBSkinConditionContext &context, MATCH_RULE rule) const
 {
-	if (((state & this->state) || this->state == SKIN_STATE_ALL))
+	if (rule == MATCH_RULE_ONLY_SPECIFIC_STATE && this->state == SKIN_STATE_ALL)
+		return false;
+	if ((state & this->state) || this->state == SKIN_STATE_ALL)
 	{
 		for (TBSkinCondition *condition = conditions.GetFirst(); condition; condition = condition->GetNext())
 			if (!condition->GetCondition(context))
@@ -554,8 +563,10 @@ bool TBSkinElementState::IsMatch(uint32 state, TBSkinConditionContext &context) 
 	return false;
 }
 
-bool TBSkinElementState::IsExactMatch(uint32 state, TBSkinConditionContext &context) const
+bool TBSkinElementState::IsExactMatch(uint32 state, TBSkinConditionContext &context, MATCH_RULE rule) const
 {
+	if (rule == MATCH_RULE_ONLY_SPECIFIC_STATE && this->state == SKIN_STATE_ALL)
+		return false;
 	if (state == this->state || this->state == SKIN_STATE_ALL)
 	{
 		for (TBSkinCondition *condition = conditions.GetFirst(); condition; condition = condition->GetNext())
@@ -577,28 +588,28 @@ TBSkinElementStateList::~TBSkinElementStateList()
 	}
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state, TBSkinConditionContext &context) const
+TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
 {
 	// First try to get a state element with a exact match to the current state
-	if (TBSkinElementState *element_state = GetStateElementExactMatch(state, context))
+	if (TBSkinElementState *element_state = GetStateElementExactMatch(state, context, rule))
 		return element_state;
 	// No exact state match. Get a state with a partly match if there is one.
 	TBSkinElementState *state_element = m_state_elements.GetFirst();
 	while (state_element)
 	{
-		if (state_element->IsMatch(state, context))
+		if (state_element->IsMatch(state, context, rule))
 			return state_element;
 		state_element = state_element->GetNext();
 	}
 	return nullptr;
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context) const
+TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
 {
 	TBSkinElementState *state_element = m_state_elements.GetFirst();
 	while (state_element)
 	{
-		if (state_element->IsExactMatch(state, context))
+		if (state_element->IsExactMatch(state, context, rule))
 			return state_element;
 		state_element = state_element->GetNext();
 	}

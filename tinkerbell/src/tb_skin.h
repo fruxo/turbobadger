@@ -115,8 +115,20 @@ public:
 class TBSkinElementState : public TBLinkOf<TBSkinElementState>
 {
 public:
-	bool IsMatch(uint32 state, TBSkinConditionContext &context) const;
-	bool IsExactMatch(uint32 state, TBSkinConditionContext &context) const;
+	/** Defines how to match states. */
+	enum MATCH_RULE {
+		/** States with "all" (SKIN_STATE_ALL) will also be considered a match. */
+		MATCH_RULE_DEFAULT,
+		/** States with "all" will not be considered a match. */
+		MATCH_RULE_ONLY_SPECIFIC_STATE
+	};
+
+	bool IsMatch(uint32 state, TBSkinConditionContext &context,
+				MATCH_RULE rule = MATCH_RULE_DEFAULT) const;
+
+	bool IsExactMatch(uint32 state, TBSkinConditionContext &context,
+				MATCH_RULE rule = MATCH_RULE_DEFAULT) const;
+
 	TBID element_id;
 	uint32 state;
 	TBLinkListOf<TBSkinCondition> conditions;
@@ -129,8 +141,11 @@ class TBSkinElementStateList
 public:
 	~TBSkinElementStateList();
 
-	TBSkinElementState *GetStateElement(uint32 state, TBSkinConditionContext &context) const;
-	TBSkinElementState *GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context) const;
+	TBSkinElementState *GetStateElement(uint32 state, TBSkinConditionContext &context,
+						TBSkinElementState::MATCH_RULE rule = TBSkinElementState::MATCH_RULE_DEFAULT) const;
+
+	TBSkinElementState *GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context,
+						TBSkinElementState::MATCH_RULE rule = TBSkinElementState::MATCH_RULE_DEFAULT) const;
 
 	bool HasStateElements() const { return m_state_elements.HasLinks(); }
 	const TBSkinElementState *GetFirstElement() const { return m_state_elements.GetFirst(); }
@@ -192,11 +207,9 @@ public:
 	TBSkinElementStateList m_overlay_elements;
 
 	/** Check if there's a exact or partial match for the given state in either
-		override, child or overlay element list. */
-	bool HasState(uint32 state, TBSkinConditionContext &context)
-								{ return	m_override_elements.GetStateElement(state, context) ||
-											m_child_elements.GetStateElement(state, context) ||
-											m_overlay_elements.GetStateElement(state, context); }
+		override, child or overlay element list.
+		State elements with state "all" will be ignored. */
+	bool HasState(uint32 state, TBSkinConditionContext &context);
 };
 
 /** TBSkin contains a list of TBSkinElement. */
