@@ -553,13 +553,22 @@ TBRect TBWidget::GetPaddingRect()
 
 PreferredSize TBWidget::GetPreferredContentSize()
 {
-	// The widget may have multiple children, so combine the
-	// PreferredSize from all of them.
-////FIX: detta gör att det egentligen inte behövs göras i de andra ställena det görs!
+	// The default preferred size is calculated to satisfy the children
+	// in the best way. Since this is the default, it's probably not a
+	// layouting widget and children are resized purely by gravity.
+
+	// Allow this widget a larger maximum if our gravity wants both ways,
+	// otherwise don't grow more than the largest child.
+	bool apply_max_w = !((m_gravity & WIDGET_GRAVITY_LEFT) && (m_gravity & WIDGET_GRAVITY_RIGHT));
+	bool apply_max_h = !((m_gravity & WIDGET_GRAVITY_TOP) && (m_gravity & WIDGET_GRAVITY_BOTTOM));
+
 	PreferredSize ps;
 	if (GetFirstChild())
 	{
-		ps.max_w = ps.max_h = 0;
+		if (apply_max_w)
+			ps.max_w = 0;
+		if (apply_max_h)
+			ps.max_h = 0;
 	}
 
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
@@ -569,8 +578,10 @@ PreferredSize TBWidget::GetPreferredContentSize()
 		ps.pref_h = MAX(ps.pref_h, child_ps.pref_h);
 		ps.min_w = MAX(ps.min_w, child_ps.min_w);
 		ps.min_h = MAX(ps.min_h, child_ps.min_h);
-		ps.max_w = MAX(ps.max_w, child_ps.max_w);
-		ps.max_h = MAX(ps.max_h, child_ps.max_h);
+		if (apply_max_w)
+			ps.max_w = MAX(ps.max_w, child_ps.max_w);
+		if (apply_max_h)
+			ps.max_h = MAX(ps.max_h, child_ps.max_h);
 	}
 
 	return ps;
@@ -686,7 +697,7 @@ void TBWidget::InvokeProcessStates(bool force_update)
 void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 {
 	// Don't paint invisible widgets
-	if (m_opacity == 0)
+	if (m_opacity == 0 || m_rect.IsEmpty())
 		return;
 
 	uint32 state = GetAutoState();
