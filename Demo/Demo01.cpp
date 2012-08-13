@@ -638,24 +638,19 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-layout"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_toolbar01.tb.txt");
-			new MyToolbarWindow("Demo/ui_resources/test_toolbar02.tb.txt");
 			new MyToolbarWindow("Demo/ui_resources/test_layout01.tb.txt");
-			return true;
-		}
-		else if (ev.target->GetID() == TBIDC("test-flat-skin"))
-		{
-			new MyToolbarWindow("Demo/ui_resources/test_toolbar03.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_layout02.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_layout03.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-connections"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_toolbar04.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_connections.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-radio-check"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/radio_checkbox.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_radio_checkbox.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-image"))
@@ -680,7 +675,7 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-toggle-container"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/toggle_containers.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_toggle_containers.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-resource-edit"))
@@ -756,7 +751,7 @@ bool DemoApplication::Init()
 	TBWindow *textwindow = new EditWindow;
 
 	ListWindow *listwindow = new ListWindow(&name_source);
-	listwindow->SetPosition(TBPoint(1050, 500));
+	listwindow->SetPosition(TBPoint(950, 380));
 
 	listwindow = new ListWindow(&advanced_source, SCROLL_MODE_X_AUTO_Y_AUTO);
 	listwindow->SetRect(TBRect(950, 50, 300, 300));

@@ -6,7 +6,6 @@ TBLayout: axis: y, distribution_position: left top
 		text Close with dim & alert
 		id TBWindow.close
 	TBButton: text: "Layout", id: "test-layout"
-	TBButton: text: "Flat skin", id: "test-flat-skin"
 	TBButton: text: "TBWidgetValue connections", id: "test-connections"
 	TBButton: text: "Radiobutton & Checkbox", id: "test-radio-check"
 	TBButton: text: "ScrollContainer & misc.", id: "test-scroll-container"

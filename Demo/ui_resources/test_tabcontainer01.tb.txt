@@ -1,6 +1,6 @@
 WindowInfo
 	title TBTabContainer & misc tests
-	position 600 500
+	position 300 500
 TBTabContainer
 	id tabcontainer
 	tabs
