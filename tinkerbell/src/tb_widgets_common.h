@@ -388,6 +388,7 @@ public:
 	WIDGET_SUBCLASS("TBResizer", TBWidget);
 
 	TBResizer();
+	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
