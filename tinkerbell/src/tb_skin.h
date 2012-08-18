@@ -131,7 +131,7 @@ public:
 
 	TBID element_id;
 	uint32 state;
-	TBLinkListOf<TBSkinCondition> conditions;
+	TBLinkListAutoDeleteOf<TBSkinCondition> conditions;
 };
 
 /** List of state elements in a TBSkinElement. */
