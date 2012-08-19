@@ -1263,7 +1263,7 @@ int32 TBTextFragment::GetCharOfs(TBFontFace *font, int32 x)
 int32 TBTextFragment::GetStringWidth(TBFontFace *font, const char *str, int len)
 {
 	if (IsTab())
-		return len == 1 ? block->CalculateTabWidth(font, xpos) : 0;
+		return len == 0 ? 0 : block->CalculateTabWidth(font, xpos);
 	if (IsBreak())
 		return len == 0 ? 0 : 8;
 	return block->CalculateStringWidth(font, str, len);
@@ -1543,7 +1543,7 @@ void TBStyleEdit::InsertBreak()
 
 void TBStyleEdit::InsertText(const char *text, int32 len, bool after_last, bool clear_undo_redo)
 {
-	if (len == -1)
+	if (len == TB_ALL_TO_TERMINATION)
 		len = strlen(text);
 
 	selection.RemoveContent();

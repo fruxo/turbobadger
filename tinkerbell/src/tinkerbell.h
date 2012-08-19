@@ -141,14 +141,14 @@ public:
 	TBStr(const char* str);
 	TBStr(const char* str, int len);
 
-	bool Set(const char* str, int len = -1);
+	bool Set(const char* str, int len = TB_ALL_TO_TERMINATION);
 	bool SetFormatted(const char* format, ...);
 
 	void Clear();
 
 	void Remove(int ofs, int len);
-	bool Insert(int ofs, const char *ins, int ins_len = -1);
-	bool Append(const char *ins, int ins_len = -1)		{ return Insert(strlen(s), ins, ins_len); }
+	bool Insert(int ofs, const char *ins, int ins_len = TB_ALL_TO_TERMINATION);
+	bool Append(const char *ins, int ins_len = TB_ALL_TO_TERMINATION)	{ return Insert(strlen(s), ins, ins_len); }
 
 	inline operator char *() const						{ return s; }
 	char *CStr() const									{ return s; }
