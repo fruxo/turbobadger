@@ -1,6 +1,6 @@
 WindowInfo
 	title TinkerBell demo
-	position 10 100
+	position 10 50
 TBLayout: axis: y, distribution_position: left top
 	TBButton
 		text Close with dim & alert
@@ -17,6 +17,8 @@ TBLayout: axis: y, distribution_position: left top
 	TBButton: text: "ResourceEditWindow", id: "test-resource-edit"
 	TBSection: value: 1, text: "Graphics tests"
 		TBLayout: axis: y
+			TBClickLabel: text: "Continous repaint"
+				TBCheckBox: connection: continous-repaint
 			TBButton
 				text Reload skin bitmaps
 				id reload skin bitmaps
