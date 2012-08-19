@@ -1,5 +1,5 @@
 WindowInfo
-	title Tinkerbell demo
+	title TinkerBell demo
 	position 10 100
 TBLayout: axis: y, distribution_position: left top
 	TBButton

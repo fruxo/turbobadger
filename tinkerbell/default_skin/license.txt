@@ -1,5 +1,5 @@
-This is the default skin of Tinkerbell UI Toolkit.
+This is the default skin of TinkerBell UI Toolkit.
 The license of the skin is Public Domain.
 
-For more information about Tinkerbell UI Toolkit and its license,
+For more information about TinkerBell UI Toolkit and its license,
 see tinkerbell.h.

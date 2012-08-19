@@ -1,9 +1,9 @@
 // ================================================================================
-// == This file is a part of Tinkerbell UI Toolkit. (C) 2011-2012, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2012, Emil Segerås  ==
 // ==             See tinkerbell.h for more information and license.             ==
 // ================================================================================
 
-Tinkerbell Integration guide
+TinkerBell Integration guide
 -----------------------------
 
 This is a short guide to integrating tinkerbell in a game or application.
@@ -15,7 +15,7 @@ Input
 
 You need to create a "root widget" for your UI widgets. A TBWidget that act
 as receiver for input, painting etc, and is parent to your other widgets.
-Tinkerbell will handle input capture, focus, etc. automatically.
+TinkerBell will handle input capture, focus, etc. automatically.
 
 List of input triggers (root is your root TBWidget):
 
@@ -62,7 +62,7 @@ function pipeline.
 
 Some apps need to unload all graphics and reload it again, f.ex when the app
 is put to sleep in the background and the graphics context is lost.
-Tinkerbell implements a renderer listener to handle this in all places that needs
+TinkerBell implements a renderer listener to handle this in all places that needs
 it, so the only thing you need to do is to call:
 
 	g_renderer->InvokeContextLost(); // Forget all bitmaps
