@@ -101,13 +101,16 @@ TBSimpleLayoutItemWidget::~TBSimpleLayoutItemWidget()
 
 bool TBSimpleLayoutItemWidget::OnEvent(const TBWidgetEvent &ev)
 {
-	if (m_source && ev.type == EVENT_TYPE_CLICK && ev.target == this && !m_window_pointer.Get())
+	if (m_source && ev.type == EVENT_TYPE_CLICK && ev.target == this)
 	{
-		// Open a new menu window for the submenu with this widget as target
-		if (TBMenuWindow *menu = new TBMenuWindow(this, TBIDC("submenu")))
+		if (!m_window_pointer.Get())
 		{
-			m_window_pointer.Set(menu);
-			menu->Show(m_source, -1, nullptr, TB_ALIGN_RIGHT);
+			// Open a new menu window for the submenu with this widget as target
+			if (TBMenuWindow *menu = new TBMenuWindow(this, TBIDC("submenu")))
+			{
+				m_window_pointer.Set(menu);
+				menu->Show(m_source, -1, nullptr, TB_ALIGN_RIGHT);
+			}
 		}
 		return true;
 	}
