@@ -18,7 +18,7 @@ TBLayout: axis: y, distribution: available
 				TBTextField: text: Menu
 				skin TBButton.flat
 	TBEditField: multiline: 1, styling: 1, gravity: all, id: editfield, autofocus: 1
-		text: "Tinkerbell UI Toolkit\n\n" \
+		text: "TinkerBell UI Toolkit\n\n" \
 				"<color #0794f8>Test zone</color>\n" \
 				"The menu to the left spawns some examples of what tinkerbell can do.\n\n" \
 				"The code in Demo/* is more like a developers test zone than organized tutorial-like samples. " \

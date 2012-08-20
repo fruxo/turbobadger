@@ -283,7 +283,7 @@ public:
 	int32 GetCharOfs(TBFontFace *font, int32 x);
 
 	/** Get the stringwidth. Handles passwordmode, tab, linebreaks etc automatically. */
-	int32 GetStringWidth(TBFontFace *font, const char *str, int len = -1);
+	int32 GetStringWidth(TBFontFace *font, const char *str, int len);
 
 	bool GetAllowBreakBefore() const;
 	bool GetAllowBreakAfter() const;
@@ -357,8 +357,8 @@ public:
 	bool CanUndo() const { return undoredo.undos.GetNumItems() ? true : false; }
 	bool CanRedo() const { return undoredo.redos.GetNumItems() ? true : false; }
 
-	void InsertText(const char *text, int32 len = -1, bool after_last = false, bool clear_undo_redo = false);
-	void AppendText(const char *text, int32 len = -1, bool clear_undo_redo = false) { InsertText(text, len, true, clear_undo_redo); }
+	void InsertText(const char *text, int32 len = TB_ALL_TO_TERMINATION, bool after_last = false, bool clear_undo_redo = false);
+	void AppendText(const char *text, int32 len = TB_ALL_TO_TERMINATION, bool clear_undo_redo = false) { InsertText(text, len, true, clear_undo_redo); }
 	void InsertBreak();
 
 	TBBlock *FindBlock(int32 y) const;

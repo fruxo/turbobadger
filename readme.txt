@@ -3,13 +3,13 @@
 // ==             See tinkerbell.h for more information and license.             ==
 // ================================================================================
 
-Tinkerbell UI Toolkit - ALPHA
+TinkerBell UI Toolkit - ALPHA
 -----------------------------
 
 NOTE: This is a alpha version. Some APIs is still experimental and is very
       likely to change.
 
-I created Tinkerbell UI toolkit because i wanted a small UI toolkit for use in
+I created TinkerBell UI toolkit because i wanted a small UI toolkit for use in
 games, that has minimal dependencies and is very easy to work with.
 
 It has no dependency on stl, RTTI or exceptions. Compiling without these features
@@ -22,7 +22,7 @@ font system etc.
 What features does it have
 --------------------------
 
-  Tinkerbell core:
+  TinkerBell core:
 
   -Widgets (many common standard widgets)
   -Text editing widget (With clipboard, undo/redo, styling functionality,
@@ -48,7 +48,7 @@ What features does it have
   -Addon system for enabling more stuff just by linking additional files.
   -Animation system.
 
-  Tinkerbell addons:
+  TinkerBell addons:
 
   -Image manager & Image widget
 

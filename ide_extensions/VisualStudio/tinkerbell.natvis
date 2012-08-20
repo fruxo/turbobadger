@@ -29,7 +29,7 @@
 		<DisplayString Condition="m_data != 0">length = {m_data->num}</DisplayString>
 		<DisplayString>length = 0</DisplayString>
 	</Type>
-	<Type Name="tinkerbell::TBListOf&lt;*&gt;">
-		<DisplayString>{m_list}</DisplayString>
+	<Type Name="tinkerbell::TBWidgetEvent">
+		<DisplayString>type={type}</DisplayString>
 	</Type>
 </AutoVisualizer>

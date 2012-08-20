@@ -695,8 +695,6 @@ int fps = 0;
 uint32 frame_counter_total = 0;
 uint32 frame_counter = 0;
 double frame_counter_reset_time = 0;
-TBTextField *fps_field = nullptr;
-TBCheckBox *fps_checkbox = nullptr;
 
 const char *girl_names[] = {
 	"Maja", "Alice", "Julia", "Linnéa", "Wilma", "Ella", "Elsa", "Emma", "Alva", "Olivia", "Molly", "Ebba", "Klara", "Nellie", "Agnes",
@@ -758,20 +756,6 @@ bool DemoApplication::Init()
 
 	new MyToolbarWindow("Demo/ui_resources/test_tabcontainer01.tb.txt");
 
-	// We could have put this UI inside a resource file too, and read it with TBWidgetsReader,
-	// but something has to demo how to build ui programmatically :)
-	fps_field = new TBTextField;
-	fps_field->SetRect(TBRect(10, 10, 300, 30));
-	m_root->AddChild(fps_field);
-
-	TBClickLabel *click_label = new TBClickLabel;
-	click_label->SetText("Continous repaint (FPS test)");
-	click_label->SetRect(TBRect(10, 40, 300, 30));
-	m_root->AddChild(click_label);
-
-	fps_checkbox = new TBCheckBox;
-	click_label->GetContentRoot()->AddChild(fps_checkbox, WIDGET_Z_BOTTOM);
-
 	WidgetsAnimationManager::Init();
 
 	if (num_failed_tests)
@@ -794,22 +778,6 @@ void DemoApplication::Process()
 	WidgetsAnimationManager::Update();
 	m_root->InvokeProcessStates();
 	m_root->InvokeProcess();
-
-	// Update the FPS counter
-	double time = TBSystem::GetTimeMS();
-	if (time > frame_counter_reset_time + 1000)
-	{
-		fps = (int) ((frame_counter / (time - frame_counter_reset_time)) * 1000);
-		frame_counter_reset_time = time;
-		frame_counter = 0;
-	}
-	// Update FPS field
-	TBStr str;
-	if (fps_checkbox->GetState(WIDGET_STATE_SELECTED))
-		str.SetFormatted("FPS: %d Frame %d", fps, frame_counter_total);
-	else
-		str.SetFormatted("Frame %d", frame_counter_total);
-	fps_field->SetText(str);
 }
 
 void DemoApplication::RenderFrame(int window_w, int window_h)
@@ -831,14 +799,33 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 	//g_image_manager->Debug();
 #endif
 
-	g_renderer->EndPaint();
-
 	frame_counter++;
 	frame_counter_total++;
 
-	// If we want continous updates, reinvalidate any widget immediately
-	if (fps_checkbox->GetState(WIDGET_STATE_SELECTED) ||
-		WidgetsAnimationManager::HasAnimationsRunning())
+	// Update the FPS counter
+	double time = TBSystem::GetTimeMS();
+	if (time > frame_counter_reset_time + 1000)
+	{
+		fps = (int) ((frame_counter / (time - frame_counter_reset_time)) * 1000);
+		frame_counter_reset_time = time;
+		frame_counter = 0;
+	}
+
+	// Draw FPS
+	TBWidgetValue *continuous_repaint_val = g_value_group.GetValue(TBIDC("continous-repaint"));
+	bool continuous_repaint = continuous_repaint_val ? !!continuous_repaint_val->GetInt() : 0;
+
+	TBStr str;
+	if (continuous_repaint)
+		str.SetFormatted("FPS: %d Frame %d", fps, frame_counter_total);
+	else
+		str.SetFormatted("Frame %d", frame_counter_total);
+	m_root->GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str);
+
+	g_renderer->EndPaint();
+
+	// If we want continous updates or got animations running, reinvalidate immediately
+	if (continuous_repaint || WidgetsAnimationManager::HasAnimationsRunning())
 		m_root->Invalidate();
 }
 
