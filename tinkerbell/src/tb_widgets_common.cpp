@@ -69,8 +69,12 @@ void TBWidgetString::Paint(TBWidget *widget, const TBRect &rect, const TBColor &
 
 // == TBTextField =======================================
 
+/** This value on m_cached_text_width means it needs to be updated again. */
+#define UPDATE_TEXT_WIDTH_CACHE -1
+
 TBTextField::TBTextField()
-	: m_squeezable(false)
+	: m_cached_text_width(UPDATE_TEXT_WIDTH_CACHE)
+	, m_squeezable(false)
 {
 	SetSkinBg("TBTextField", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
@@ -79,6 +83,7 @@ bool TBTextField::SetText(const char *text)
 {
 	if (m_text.m_text.Equals(text))
 		return true;
+	m_cached_text_width = UPDATE_TEXT_WIDTH_CACHE;
 	Invalidate();
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 	return m_text.SetText(text);
@@ -96,7 +101,9 @@ void TBTextField::SetSqueezable(bool squeezable)
 PreferredSize TBTextField::GetPreferredContentSize()
 {
 	PreferredSize ps;
-	ps.pref_w = m_text.GetWidth(this);
+	if (m_cached_text_width == UPDATE_TEXT_WIDTH_CACHE)
+		m_cached_text_width = m_text.GetWidth(this);
+	ps.pref_w = m_cached_text_width;
 	ps.pref_h = ps.min_h = m_text.GetHeight(this);
 	if (!m_squeezable)
 		ps.min_w = ps.pref_w;
@@ -105,6 +112,7 @@ PreferredSize TBTextField::GetPreferredContentSize()
 
 void TBTextField::OnFontChanged()
 {
+	m_cached_text_width = UPDATE_TEXT_WIDTH_CACHE;
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 }
 

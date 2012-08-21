@@ -73,6 +73,7 @@ public:
 	virtual void OnPaint(const PaintProps &paint_props);
 protected:
 	TBWidgetString m_text;
+	int m_cached_text_width; ///< Cached width of m_text
 	bool m_squeezable;
 };
 
