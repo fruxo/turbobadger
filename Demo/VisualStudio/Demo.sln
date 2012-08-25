@@ -2,6 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo", "Demo.vcxproj", "{C3FDE1FE-1FCB-4156-BB37-2E38F5C2DFE7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{156102D7-F2DD-4618-B2EB-2DFE607EE6DD} = {156102D7-F2DD-4618-B2EB-2DFE607EE6DD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinkerbell_static", "tinkerbell_static.vcxproj", "{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +18,10 @@ Global
 		{C3FDE1FE-1FCB-4156-BB37-2E38F5C2DFE7}.Debug|Win32.Build.0 = Debug|Win32
 		{C3FDE1FE-1FCB-4156-BB37-2E38F5C2DFE7}.Release|Win32.ActiveCfg = Release|Win32
 		{C3FDE1FE-1FCB-4156-BB37-2E38F5C2DFE7}.Release|Win32.Build.0 = Release|Win32
+		{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}.Debug|Win32.Build.0 = Debug|Win32
+		{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}.Release|Win32.ActiveCfg = Release|Win32
+		{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
