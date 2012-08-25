@@ -65,12 +65,4 @@
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\readme.txt">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="..\..\integration.txt">
-      <Filter>Source Files</Filter>
-    </None>
-  </ItemGroup>
 </Project>

@@ -282,4 +282,8 @@
       <Filter>Source Files\utf8</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\readme.txt" />
+    <None Include="..\..\integration.txt" />
+  </ItemGroup>
 </Project>

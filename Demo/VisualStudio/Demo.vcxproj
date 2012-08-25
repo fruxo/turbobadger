@@ -103,10 +103,6 @@
     <ClInclude Include="..\tb_renderer_gl.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\integration.txt" />
-    <None Include="..\..\readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="tinkerbell_static.vcxproj">
       <Project>{156102d7-f2dd-4618-b2eb-2dfe607ee6dd}</Project>
       <Private>true</Private>

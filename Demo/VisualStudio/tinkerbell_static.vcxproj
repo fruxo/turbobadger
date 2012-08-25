@@ -97,6 +97,10 @@
     <ClInclude Include="..\..\tinkerbell\src\tinkerbell.h" />
     <ClInclude Include="..\..\tinkerbell\src\utf8\utf8.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\integration.txt" />
+    <None Include="..\..\readme.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
