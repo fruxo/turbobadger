@@ -36,6 +36,10 @@ TBSkinCondition::TARGET StringToTarget(const char *target_str)
 		target = TBSkinCondition::TARGET_PARENT;
 	else if (strcmp(target_str, "ancestors") == 0)
 		target = TBSkinCondition::TARGET_ANCESTORS;
+	else if (strcmp(target_str, "prev sibling") == 0)
+		target = TBSkinCondition::TARGET_PREV_SIBLING;
+	else if (strcmp(target_str, "next sibling") == 0)
+		target = TBSkinCondition::TARGET_NEXT_SIBLING;
 	else
 		TBDebugOut("Skin error: Unknown target in condition!\n");
 	return target;

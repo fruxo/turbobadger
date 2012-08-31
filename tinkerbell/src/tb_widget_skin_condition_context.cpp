@@ -30,6 +30,10 @@ bool TBWidgetSkinConditionContext::GetCondition(TBSkinCondition::TARGET target, 
 				widget = widget->m_parent;
 			}
 		}
+	case TBSkinCondition::TARGET_PREV_SIBLING:
+		return m_widget->GetPrev() && GetCondition(m_widget->GetPrev(), info);
+	case TBSkinCondition::TARGET_NEXT_SIBLING:
+		return m_widget->GetNext() && GetCondition(m_widget->GetNext(), info);
 	}
 	return false;
 }

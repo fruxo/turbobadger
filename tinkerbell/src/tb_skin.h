@@ -56,9 +56,10 @@ public:
 	enum TARGET {
 		TARGET_THIS,			///< The object painting the skin.
 		TARGET_PARENT,			///< The parent of the object painting the skin.
-		TARGET_ANCESTORS		///< All ancestors of the object painting the skin.
+		TARGET_ANCESTORS,		///< All ancestors of the object painting the skin.
+		TARGET_PREV_SIBLING,	///< The previous sibling of the object painting the skin.
+		TARGET_NEXT_SIBLING		///< The next sibling of the object painting the skin.
 	};
-
 	/** Defines which property in the context that should be checked. */
 	enum PROPERTY {
 		PROPERTY_SKIN,				///< The background skin id.
