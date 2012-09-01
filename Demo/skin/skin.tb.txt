@@ -23,7 +23,7 @@ elements
 		overrides
 			element SpecialButton.pressed
 				state pressed
-		overlay
+		overlays
 			element generic_focus_r8
 				state focused
 			element Star
@@ -36,7 +36,7 @@ elements
 		content-ofs-y 1
 	ImageFrame
 		padding 2
-		overlay
+		overlays
 			element ImageFrame.overlay
 				state all
 	ImageFrame.overlay

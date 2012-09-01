@@ -216,7 +216,7 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			e->m_override_elements.Load(n->GetNode("overrides"));
 			e->m_strong_override_elements.Load(n->GetNode("strong-overrides"));
 			e->m_child_elements.Load(n->GetNode("children"));
-			e->m_overlay_elements.Load(n->GetNode("overlay"));
+			e->m_overlay_elements.Load(n->GetNode("overlays"));
 
 #ifdef _DEBUG
 			if (TBSkinElement *other = GetSkinElement(TBID(e->name)))

@@ -19,7 +19,7 @@ elements
 			element TBButtonInGroup
 				condition: target: parent, property: skin, value: button_group
 				condition: target: parent, property: axis, value: x
-		overlay
+		overlays
 			element generic_focus_r8
 				state focused
 	TBButton.pressed
@@ -36,7 +36,7 @@ elements
 				state hovered
 			element TBButton.flat.pressed
 				state pressed
-		overlay
+		overlays
 			element generic_focus_r8
 				state focused
 	TBButton.flat.hovered
