@@ -351,11 +351,25 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	// Return the override if we have one.
 	TBSkinElement *return_element = element;
 
-	// If there's any override for this state, paint it. Otherwise paint the standard skin element.
+	TB_IF_DEBUG(bool paint_error_highlight = false);
+
+	// If there's any override for this state, paint it.
 	TBSkinElementState *override_state = element->m_override_elements.GetStateElement(state, context);
 	if (override_state)
-		return_element = PaintSkin(dst_rect, override_state->element_id, state, context);
-	else
+	{
+		if (TBSkinElement *used_override = PaintSkin(dst_rect, override_state->element_id, state, context))
+			return_element = used_override;
+		else
+		{
+			TB_IF_DEBUG(paint_error_highlight = true);
+			TBDebugOut("Skin error: The skin references a missing element, or has a reference loop!\n");
+			// Fall back to the standard skin.
+			override_state = nullptr;
+		}
+	}
+
+	// If there was no override, paint the standard skin element.
+	if (!override_state)
 		PaintElement(dst_rect, element);
 
 	// Paint all child elements that matches the state (or should be painted for all states)
@@ -369,6 +383,10 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 			state_element = state_element->GetNext();
 		}
 	}
+
+	// Paint ugly rectangles on invalid skin elements in debug builds.
+	TB_IF_DEBUG(if (paint_error_highlight) g_renderer->DrawRect(dst_rect.Expand(1, 1), TBColor(255, 205, 0)));
+	TB_IF_DEBUG(if (paint_error_highlight) g_renderer->DrawRect(dst_rect.Shrink(1, 1), TBColor(255, 0, 0)));
 
 	element->is_painting = false;
 	return return_element;
