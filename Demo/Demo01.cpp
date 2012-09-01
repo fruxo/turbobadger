@@ -640,7 +640,6 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		{
 			new MyToolbarWindow("Demo/ui_resources/test_layout01.tb.txt");
 			new MyToolbarWindow("Demo/ui_resources/test_layout02.tb.txt");
-			new MyToolbarWindow("Demo/ui_resources/test_layout03.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-connections"))
@@ -670,7 +669,8 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-skin-conditions"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_skin_conditions.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_skin_conditions01.tb.txt");
+			new MyToolbarWindow("Demo/ui_resources/test_skin_conditions02.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-toggle-container"))

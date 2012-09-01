@@ -1,5 +1,6 @@
 WindowInfo
 	title Skin conditions
+	position 200 170
 TBLayout: axis: y
 	TBTextField: text: Normal layout with buttons:
 	TBContainer

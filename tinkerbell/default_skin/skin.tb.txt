@@ -16,6 +16,9 @@ elements
 		overrides
 			element TBButton.pressed
 				state pressed
+			element TBButtonInGroup
+				condition: target: parent, property: skin, value: button_group
+				condition: target: parent, property: axis, value: x
 		overlay
 			element generic_focus_r8
 				state focused
@@ -43,6 +46,50 @@ elements
 	TBButton.flat.pressed
 		bitmap button_flat_pressed.png
 		cut 8
+
+	# == TBButtonInGroup is not a widget. It's only used as override for TBButton under a "button_group" ====
+	TBButtonInGroup
+		bitmap button_grouped_x_middle_up.png
+		cut 17
+		expand 7
+		padding 8 6
+		overrides
+			element TBButtonInGroup.pressed
+				state pressed
+			element TBButtonInGroup.first
+				condition: target: prev sibling, property: skin, value: TBButton, test: !=
+			element TBButtonInGroup.last
+				condition: target: next sibling, property: skin, value: TBButton, test: !=
+	TBButtonInGroup.pressed
+		clone TBButtonInGroup
+		bitmap button_grouped_x_middle_down.png
+		content-ofs-x 1
+		content-ofs-y 1
+		overrides
+	TBButtonInGroup.first
+		clone TBButtonInGroup
+		bitmap button_grouped_x_first_up.png
+		overrides
+			element TBButtonInGroup.first.pressed
+				state pressed
+	TBButtonInGroup.first.pressed
+		clone TBButtonInGroup.pressed
+		bitmap button_grouped_x_first_down.png
+		overrides
+	TBButtonInGroup.last
+		clone TBButtonInGroup
+		bitmap button_grouped_x_last_up.png
+		overrides
+			element TBButtonInGroup.last.pressed
+				state pressed
+	TBButtonInGroup.last.pressed
+		clone TBButtonInGroup.pressed
+		bitmap button_grouped_x_last_down.png
+		overrides
+
+	# == button_group is not a widget. It's specified on widgets that should group TBButton =======
+	button_group
+		spacing -1
 
 	# == TBSection skins ==========================================================================
 	TBSection.layout
