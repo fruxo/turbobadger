@@ -1,8 +1,4 @@
-// ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2012, Emil Seger�s  ==
-// ==             See tinkerbell.h for more information and license.             ==
-// ================================================================================
-
+﻿
 
 TinkerBell UI Toolkit - BETA*
 -----------------------------------------------------------------------------------
@@ -51,15 +47,15 @@ Permission is granted to anyone to use this software for any purpose, including
 commercial applications, and to alter it and redistribute it freely, subject to the
 following restrictions:
 
-	1. The origin of this software must not be misrepresented; you must not claim
-	that you wrote the original software. If you use this software in a product,
-	an acknowledgment in the product documentation would be appreciated but is not
-	required.
+  1. The origin of this software must not be misrepresented; you must not claim
+  that you wrote the original software. If you use this software in a product,
+  an acknowledgment in the product documentation would be appreciated but is not
+  required.
 
-	2. Altered source versions must be plainly marked as such, and must not be
-	misrepresented as being the original software.
+  2. Altered source versions must be plainly marked as such, and must not be
+  misrepresented as being the original software.
 
-	3. This notice may not be removed or altered from any source distribution.
+  3. This notice may not be removed or altered from any source distribution.
 
 
 What features does it have
@@ -67,44 +63,36 @@ What features does it have
 
   TinkerBell core:
 
-  -Widgets (many common standard widgets)
-  -Text editing widget (With clipboard, undo/redo, styling functionality,
-   embedded content (for read only text flow)...)
-  -Extendable skin system with automatic runtime atlas creation,
-   conditions (simple selectors), overrides, overlays, children etc.
-  -Automatic widget layout (No need to specify widget dimensions by pixels)
-  -Text based UI resource format
-  -Keyboard friendly (tab focus etc.)
-  -Message handling, with delayed/timed messages.
-  -All containers are scrollable/pannable (automatically from mouse/finger
-   interaction, and following focus).
-  -Very failproof event handling (F.ex deleting a widget that is on the
-   stack in a event handler is not dangerous).
-  -Widget connections (synchronize multiple widgets with "widget-values")
-  -Language string handling
-  -No dependency on stl, exceptions, RTTI
-  -Very portable & easy to implement new backends (Image loading, fonts, renderer)
-  -Support 32/64bit architectures and tested on Windows/Linux/Mac/iOS
-  -Uses constexpr by default for all ID comparisions on compilers that support it.
-  -Unicode support (UTF8)
-  -Multiple font systems can be used (Implementations of TBBF, freetype and stbf
-   provided)
-  -Addon system for enabling more stuff just by linking additional files.
-  -Animation system.
-  -Unit tests.
+	• Widgets (many common standard widgets)
+	• Text editing widget (With clipboard, undo/redo, styling functionality,
+	  embedded content (for read only text flow)...)
+	• Extendable skin system with automatic runtime atlas creation,
+	  conditions (simple selectors), overrides, overlays, children etc.
+	• Automatic widget layout (No need to specify widget dimensions by pixels)
+	• Text based UI resource format
+	• Keyboard friendly (tab focus etc.)
+	• Message handling, with delayed/timed messages.
+	• All containers are scrollable/pannable (automatically from mouse/finger
+	  interaction, and following focus).
+	• Very failproof event handling (F.ex deleting a widget that is on the
+	  stack in a event handler is not dangerous).
+	• Widget connections (synchronize multiple widgets with "widget-values")
+	• Language string handling
+	• No dependency on stl, exceptions, RTTI
+	• Very portable & easy to implement new backends (Image loading, fonts,
+	  renderer)
+	• Support 32/64bit architectures and tested on Windows/Linux/Mac/iOS
+	• Uses constexpr by default for all ID comparisions on compilers that support
+	  it.
+	• Unicode support (UTF8)
+	• Multiple font systems can be used (Implementations of TBBF, freetype and stbf
+	  provided)
+	• Animation system.
+	• Unit tests.
 
   TinkerBell addons:
 
-  -Image manager & Image widget (load graphics into widgets on demand)
-
-
-What features does it NOT have
------------------------------------------------------------------------------------
-
-  -BIDI
-
-  -Not designed to run in multiple threads (running in a dedicated UI thread should
-   of course be fine)
+	• Image manager & Image widget (load graphics into widgets on demand)
 
 
 The code design & developing TinkerBell - What to think about
@@ -122,16 +110,16 @@ uint32 at compile time.
 If you want to add new stuff to TinkerBell, here are some hints that will make it
 easier to get a pull requests accepted:
 
-  -Do not make it dependant on exceptions, RTTI or stl (or boost or similar)
+	• Do not make it dependant on exceptions, RTTI or stl (or boost or similar)
 
-  -It should not leak or crash if running out of memory.
+	• It should not leak or crash if running out of memory.
 
-  -Follow the used code style (4 spaces wide tabs, indentation & whitespace style,
-   documentation etc.)
+	• Follow the used code style (4 spaces wide tabs, indentation & whitespace style,
+	  documentation etc.)
 
 
 Author
 -----------------------------------------------------------------------------------
 
-Emil Seger�s (emilsegers@gmail.com)
-http://fiffigt.com/
+Emil Segerås (emilsegers@gmail.com)
+Web: http://fiffigt.com/
