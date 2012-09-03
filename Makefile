@@ -3,7 +3,7 @@ CXX = g++
 CC = gcc
 LD = g++
 LDFLAGS =
-LIBS = 
+LIBS = -lGL
 INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/freeglut" -I"."
 
 #release
