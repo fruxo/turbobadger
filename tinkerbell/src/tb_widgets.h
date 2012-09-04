@@ -151,9 +151,16 @@ public:
 	int pref_w, pref_h;			///< The preferred width and height.
 };
 
+/** Defines widget z level, used with TBWidget::SetZ, TBWidget::AddChild. */
 enum WIDGET_Z {
 	WIDGET_Z_TOP,				///< The toplevel (Visually drawn on top of everything else).
 	WIDGET_Z_BOTTOM				///< The bottomlevel (Visually drawn behind everything else).
+};
+
+/** Defines widget z level relative to another widget, used with TBWidget::AddChild. */
+enum WIDGET_Z_REL {
+	WIDGET_Z_REL_BEFORE,		///< Before the reference widget (visually behind reference).
+	WIDGET_Z_REL_AFTER			///< After the reference widget (visually above reference).
 };
 
 enum WIDGET_INVOKE_INFO {
@@ -253,6 +260,13 @@ public:
 	/** Get status of the given state(s). Returns true if the given state combination is set. */
 	bool GetState(WIDGET_STATE state) const { return (m_state & state) ? true : false; }
 
+	/** Set the widget state. Like SetState but setting the entire state as given, instead
+		of toggling individual states. See SetState for more info on states. */
+	void SetStateRaw(uint32 state);
+
+	/** Get the widget state. */
+	uint32 GetStateRaw() const { return m_state; }
+
 	/** Return the current combined state for this widget. It will also add some
 		automatic states, such as hovered (if the widget is currently hovered), or pressed etc.
 
@@ -281,6 +295,10 @@ public:
 	/** Add the child to this widget. The child widget will automatically be deleted when
 		this widget is deleted. (If the child isn't removed again with RemoveChild.) */
 	void AddChild(TBWidget *child, WIDGET_Z z = WIDGET_Z_TOP, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
+
+	/** Add the child to this widget. See AddChild for adding a child to the top or bottom.
+		This takes a relative Z and insert the child before or after the given reference widget.*/
+	void AddChildRelative(TBWidget *child, WIDGET_Z_REL z, TBWidget *reference, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
 	/** Remove child from this widget without deleting it. */
 	void RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
@@ -342,14 +360,26 @@ public:
 	bool SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 	bool GetIsFocused() const { return focused_widget == this; }
 
+	/** Call SetFocus on all children and their children, until a widget is found that accepts it.
+		Returns true if some child was successfully focused. */
+	bool SetFocusRecursive(WIDGET_FOCUS_REASON reason);
+
 	/** Move focus from the currently focused widget to another focusable widget. It will search
 		for a focusable widget in the same TBWindow (or top root if there is no window) forward or
 		backwards in the widget order. */
-	void MoveFocus(bool forward);
+	bool MoveFocus(bool forward);
 
 	/** Returns the child widget that contains the coordinate or nullptr if no one does. If include_children
 		is true, the search will recurse into the childrens children. */
 	TBWidget *GetWidgetAt(int x, int y, bool include_children) const;
+
+	/** Get the text of a child widget with the given id, or an empty string if there was
+		no widget with that id. */
+	TBStr GetTextByID(const TBID &id);
+
+	/** Get the value of a child widget with the given id, or 0 if there was no widget
+		with that id. */
+	int GetValueByID(const TBID &id);
 
 	TBWidget *GetNextDeep() const;
 	TBWidget *GetPrevDeep() const;

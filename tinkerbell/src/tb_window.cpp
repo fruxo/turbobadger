@@ -111,20 +111,9 @@ bool TBWindow::EnsureFocus()
 	bool success = false;
 	if (m_last_focus.Get())
 		success = m_last_focus.Get()->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN);
+	// We didn't have one or failed, so try focus any child.
 	if (!success)
-	{
-		// Search for a child widget that accepts focus
-		TBWidget *child = GetFirstChild();
-		while (child && IsAncestorOf(child))
-		{
-			if (child->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN))
-			{
-				success = true;
-				break;
-			}
-			child = child->GetNextDeep();
-		}
-	}
+		success = SetFocusRecursive(WIDGET_FOCUS_REASON_UNKNOWN);
 	return success;
 }
 

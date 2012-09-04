@@ -51,6 +51,7 @@ TBWidget::TBWidget()
 TBWidget::~TBWidget()
 {
 	assert(!m_parent); ///< A widget must be removed from parent before deleted
+	m_packed.is_dying = true;
 
 	if (this == hovered_widget)
 		hovered_widget = nullptr;
@@ -126,15 +127,31 @@ TBWidget *TBWidget::GetWidgetByID(const TBID &id, const char *classname)
 	return nullptr;
 }
 
+TBStr TBWidget::GetTextByID(const TBID &id)
+{
+	if (TBWidget *widget = GetWidgetByID(id))
+		return widget->GetText();
+	return "";
+}
+
+int TBWidget::GetValueByID(const TBID &id)
+{
+	if (TBWidget *widget = GetWidgetByID(id))
+		return widget->GetValue();
+	return 0;
+}
+
+void TBWidget::SetStateRaw(uint32 state)
+{
+	if (m_state == state)
+		return;
+	m_state = state;
+	Invalidate();
+}
+
 void TBWidget::SetState(WIDGET_STATE state, bool on)
 {
-	if (GetState(state) == on)
-		return;
-	if (on)
-		m_state |= state;
-	else
-		m_state &= ~state;
-	Invalidate();
+	SetStateRaw(on ? m_state | state : m_state & ~state);
 }
 
 uint32 TBWidget::GetAutoState() const
@@ -198,12 +215,28 @@ bool TBWidget::GetDisabled() const
 
 void TBWidget::AddChild(TBWidget *child, WIDGET_Z z, WIDGET_INVOKE_INFO info)
 {
+	AddChildRelative(child, z == WIDGET_Z_TOP ? WIDGET_Z_REL_AFTER : WIDGET_Z_REL_BEFORE, nullptr, info);
+}
+
+void TBWidget::AddChildRelative(TBWidget *child, WIDGET_Z_REL z, TBWidget *reference, WIDGET_INVOKE_INFO info)
+{
 	assert(!child->m_parent);
 	child->m_parent = this;
-	if (z == WIDGET_Z_TOP)
-		m_children.AddLast(child);
-	else
-		m_children.AddFirst(child);
+
+	if (reference)
+	{
+		if (z == WIDGET_Z_REL_BEFORE)
+			m_children.AddBefore(child, reference);
+		else
+			m_children.AddAfter(child, reference);
+	}
+	else // If there is no reference widget, before means first and after means last.
+	{
+		if (z == WIDGET_Z_REL_BEFORE)
+			m_children.AddFirst(child);
+		else
+			m_children.AddLast(child);
+	}
 
 	if (info == WIDGET_INVOKE_INFO_NORMAL)
 	{
@@ -221,6 +254,11 @@ void TBWidget::RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info)
 
 	if (info == WIDGET_INVOKE_INFO_NORMAL)
 	{
+		// If we're not being deleted and delete the focused widget, try
+		// to keep the focus in this widget by moving it to the next widget.
+		if (!m_packed.is_dying && child == focused_widget)
+			m_parent->MoveFocus(true);
+
 		OnChildRemove(child);
 		child->OnRemove();
 		TBGlobalWidgetListener::InvokeWidgetRemove(child);
@@ -351,7 +389,20 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 	return true;
 }
 
-void TBWidget::MoveFocus(bool forward)
+bool TBWidget::SetFocusRecursive(WIDGET_FOCUS_REASON reason)
+{
+	// Search for a child widget that accepts focus
+	TBWidget *child = GetFirstChild();
+	while (child && IsAncestorOf(child))
+	{
+		if (child->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN))
+			return true;
+		child = child->GetNextDeep();
+	}
+	return false;
+}
+
+bool TBWidget::MoveFocus(bool forward)
 {
 	TBWidget *origin = focused_widget;
 	if (!origin)
@@ -373,8 +424,9 @@ void TBWidget::MoveFocus(bool forward)
 			break;
 		// Try to focus what we found
 		if (current && current->SetFocus(WIDGET_FOCUS_REASON_NAVIGATION))
-			return;
+			return true;
 	}
+	return false;
 }
 
 TBWidget *TBWidget::GetNextDeep() const
