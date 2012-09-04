@@ -157,7 +157,7 @@ enum WIDGET_Z {
 	WIDGET_Z_BOTTOM				///< The bottomlevel (Visually drawn behind everything else).
 };
 
-/** Defines widget z level relative to another widget, used with TBWidget::AddChild. */
+/** Defines widget z level relative to another widget, used with TBWidget::AddChildRelative. */
 enum WIDGET_Z_REL {
 	WIDGET_Z_REL_BEFORE,		///< Before the reference widget (visually behind reference).
 	WIDGET_Z_REL_AFTER			///< After the reference widget (visually above reference).
