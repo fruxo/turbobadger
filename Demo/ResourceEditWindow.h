@@ -5,6 +5,7 @@
 #include "tb_select.h"
 #include "tb_widgets_common.h"
 #include "tb_widgets_listener.h"
+#include "tb_editfield.h"
 #include "tb_msg.h"
 
 using namespace tinkerbell;

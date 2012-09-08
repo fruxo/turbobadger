@@ -165,6 +165,12 @@
     <ClCompile Include="..\..\tinkerbell\src\utf8\utf8.cpp">
       <Filter>Source Files\utf8</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_select_item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_inline_select.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">
@@ -280,6 +286,12 @@
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\utf8\utf8.h">
       <Filter>Source Files\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_select_item.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_inline_select.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

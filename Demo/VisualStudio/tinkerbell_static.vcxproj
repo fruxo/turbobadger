@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hashtable.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_inline_select.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_language.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_layout.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_linklist.cpp" />
@@ -31,6 +32,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_renderer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_scroll_container.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_select.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_select_item.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_skin.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_style_edit.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_style_edit_content.cpp" />
@@ -68,6 +70,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_font_renderer.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_hash.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_hashtable.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_inline_select.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_layout.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_linklist.h" />
@@ -77,6 +80,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_renderer.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_scroll_container.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_select.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_select_item.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_skin.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_style_edit.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_style_edit_content.h" />

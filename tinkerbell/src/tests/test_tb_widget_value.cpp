@@ -7,6 +7,7 @@
 #include "tb_editfield.h"
 #include "tb_widgets_common.h"
 #include "tb_select.h"
+#include "tb_inline_select.h"
 #include "tb_widget_value.h"
 
 #ifdef TB_UNIT_TESTING

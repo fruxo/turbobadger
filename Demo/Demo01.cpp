@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include "tests/tb_test.h"
 #include "tb_system.h"
+#include "tb_inline_select.h"
 #include "tb_select.h"
 #include "tb_editfield.h"
 #include "tb_tab_container.h"

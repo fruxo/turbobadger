@@ -28,7 +28,9 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_scroll_container.cpp \
       tinkerbell/src/tb_skin.cpp \
       tinkerbell/src/tb_bitmap_fragment.cpp \
+      tinkerbell/src/tb_inline_select.cpp \
       tinkerbell/src/tb_select.cpp \
+      tinkerbell/src/tb_select_item.cpp \
       tinkerbell/src/tb_editfield.cpp \
       tinkerbell/src/tb_system_linux.cpp \
       tinkerbell/src/tb_tab_container.cpp \
