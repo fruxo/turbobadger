@@ -348,7 +348,7 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 	}
 	if (const char *gravity = node->GetValueString("gravity", nullptr))
 	{
-		WIDGET_GRAVITY g = 0;
+		WIDGET_GRAVITY g = WIDGET_GRAVITY_NONE;
 		if (strstr(gravity, "left"))		g |= WIDGET_GRAVITY_LEFT;
 		if (strstr(gravity, "top"))			g |= WIDGET_GRAVITY_TOP;
 		if (strstr(gravity, "right"))		g |= WIDGET_GRAVITY_RIGHT;

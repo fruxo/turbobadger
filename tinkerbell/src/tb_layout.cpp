@@ -128,15 +128,15 @@ TBRect RotRect(const TBRect &rect, AXIS axis)
 	return TBRect(rect.y, rect.x, rect.h, rect.w);
 }
 
-uint32 RotGravity(uint32 gravity, AXIS axis)
+WIDGET_GRAVITY RotGravity(WIDGET_GRAVITY gravity, AXIS axis)
 {
 	if (axis == AXIS_X)
 		return gravity;
-	uint32 r = 0;
-	r |= (gravity & WIDGET_GRAVITY_LEFT) ? WIDGET_GRAVITY_TOP : 0;
-	r |= (gravity & WIDGET_GRAVITY_TOP) ? WIDGET_GRAVITY_LEFT : 0;
-	r |= (gravity & WIDGET_GRAVITY_RIGHT) ? WIDGET_GRAVITY_BOTTOM : 0;
-	r |= (gravity & WIDGET_GRAVITY_BOTTOM) ? WIDGET_GRAVITY_RIGHT : 0;
+	WIDGET_GRAVITY r = WIDGET_GRAVITY_NONE;
+	r |= (gravity & WIDGET_GRAVITY_LEFT) ? WIDGET_GRAVITY_TOP : WIDGET_GRAVITY_NONE;
+	r |= (gravity & WIDGET_GRAVITY_TOP) ? WIDGET_GRAVITY_LEFT : WIDGET_GRAVITY_NONE;
+	r |= (gravity & WIDGET_GRAVITY_RIGHT) ? WIDGET_GRAVITY_BOTTOM : WIDGET_GRAVITY_NONE;
+	r |= (gravity & WIDGET_GRAVITY_BOTTOM) ? WIDGET_GRAVITY_RIGHT : WIDGET_GRAVITY_NONE;
 	return r;
 }
 
@@ -228,7 +228,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	{
 		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
 		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(), m_axis);
-		uint32 gravity = RotGravity(child->GetGravity(), m_axis);
+		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		// Collapse empty widgets completly if there is other widgets.
 		last_child_is_collapsed = (ps.pref_w == 0 && m_children.GetFirst() != m_children.GetLast());
@@ -307,7 +307,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	{
 		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
 		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(), m_axis);
-		uint32 gravity = RotGravity(child->GetGravity(), m_axis);
+		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		// Collapse empty widgets completly if there is other widgets
 		if (ps.pref_w == 0 && m_children.GetFirst() != m_children.GetLast())

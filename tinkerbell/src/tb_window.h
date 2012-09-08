@@ -11,7 +11,7 @@
 
 namespace tinkerbell {
 
-enum WINDOW_SETTINGS_ {
+enum WINDOW_SETTINGS {
 	WINDOW_SETTINGS_NONE			= 0,	///< Chrome less window without any other settings.
 	WINDOW_SETTINGS_TITLEBAR		= 1,	///< Show a title bar that can also move the window.
 	WINDOW_SETTINGS_RESIZABLE		= 2,	///< Show a widget for resizing the window.
@@ -21,7 +21,7 @@ enum WINDOW_SETTINGS_ {
 	WINDOW_SETTINGS_DEFAULT = WINDOW_SETTINGS_TITLEBAR | WINDOW_SETTINGS_RESIZABLE |
 								WINDOW_SETTINGS_CLOSE_BUTTON | WINDOW_SETTINGS_CAN_ACTIVATE
 };
-typedef uint16 WINDOW_SETTINGS;
+MAKE_ENUM_FLAG_COMBO(WINDOW_SETTINGS);
 
 /** TBWindow is a TBWidget that provides some window-like features.
 

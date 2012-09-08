@@ -195,7 +195,7 @@ void TBButton::OnMessageReceived(TBMessage *msg)
 		assert(captured_widget == this);
 		if (!is_panning && GetHitStatus(pointer_move_widget_x, pointer_move_widget_y))
 		{
-			TBWidgetEvent ev(EVENT_TYPE_CLICK, pointer_move_widget_x, pointer_move_widget_y, 0);
+			TBWidgetEvent ev(EVENT_TYPE_CLICK, pointer_move_widget_x, pointer_move_widget_y);
 			captured_widget->InvokeEvent(ev);
 		}
 		if (auto_click_repeat_delay)

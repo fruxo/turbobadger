@@ -52,12 +52,13 @@ enum EVENT_TYPE {
 	EVENT_TYPE_CONTEXT_MENU
 };
 
-enum MODIFIER_KEYS_ {
-	TB_CTRL		= 1,
-	TB_SHIFT	= 2,
-	TB_ALT		= 4
+enum MODIFIER_KEYS {
+	TB_MODIFIER_NONE	= 0,
+	TB_CTRL				= 1,
+	TB_SHIFT			= 2,
+	TB_ALT				= 4
 };
-typedef uint8 MODIFIER_KEYS;
+MAKE_ENUM_FLAG_COMBO(MODIFIER_KEYS);
 
 enum SPECIAL_KEY
 {
@@ -85,9 +86,9 @@ public:
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 
 	TBWidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta(0), count(1),
-												key(0), special_key(0), modifierkeys(0) {}
+												key(0), special_key(0), modifierkeys(TB_MODIFIER_NONE) {}
 
-	TBWidgetEvent(EVENT_TYPE type, int x, int y, MODIFIER_KEYS modifierkeys = 0) :
+	TBWidgetEvent(EVENT_TYPE type, int x, int y, MODIFIER_KEYS modifierkeys = TB_MODIFIER_NONE) :
 												target(nullptr), type(type), target_x(x), target_y(y), delta(0),
 												count(1), key(0), special_key(0), modifierkeys(modifierkeys) {}
 
@@ -105,17 +106,26 @@ public:
 
 /** TBWidget state types (may be combined).
 	NOTE: This should exactly match SKIN_STATE in tb_skin.h! */
-enum WIDGET_STATE_ {
+enum WIDGET_STATE {
 	WIDGET_STATE_NONE			= 0,
 	WIDGET_STATE_DISABLED		= 1,
 	WIDGET_STATE_FOCUSED		= 2,
 	WIDGET_STATE_PRESSED		= 4,
 	WIDGET_STATE_SELECTED		= 8,
-	WIDGET_STATE_HOVERED		= 16
-};
-typedef uint16 WIDGET_STATE;
+	WIDGET_STATE_HOVERED		= 16,
 
-enum WIDGET_GRAVITY_ {
+	WIDGET_STATE_ALL			=	WIDGET_STATE_DISABLED |
+									WIDGET_STATE_FOCUSED |
+									WIDGET_STATE_PRESSED |
+									WIDGET_STATE_SELECTED |
+									WIDGET_STATE_HOVERED
+};
+MAKE_ENUM_FLAG_COMBO(WIDGET_STATE);
+
+/** TBWidget gravity (may be combined).
+	Gravity gives hints about positioning and sizing preferences. */
+enum WIDGET_GRAVITY {
+	WIDGET_GRAVITY_NONE			= 0,
 	WIDGET_GRAVITY_LEFT			= 1,
 	WIDGET_GRAVITY_RIGHT		= 2,
 	WIDGET_GRAVITY_TOP			= 4,
@@ -126,7 +136,7 @@ enum WIDGET_GRAVITY_ {
 	WIDGET_GRAVITY_ALL			= WIDGET_GRAVITY_LEFT_RIGHT | WIDGET_GRAVITY_TOP_BOTTOM,
 	WIDGET_GRAVITY_DEFAULT		= WIDGET_GRAVITY_LEFT | WIDGET_GRAVITY_TOP
 };
-typedef uint16 WIDGET_GRAVITY;
+MAKE_ENUM_FLAG_COMBO(WIDGET_GRAVITY);
 
 enum AXIS {
 	AXIS_X, ///< Horizontal layout
@@ -677,7 +687,6 @@ public:
 	TBLinkListOf<TBWidget> m_children;///< List of child widgets
 	TBWidget *m_parent;				///< The parent of this widget
 	TBRect m_rect;					///< The rectangle of this widget, relative to the parent. See SetRect.
-	uint32 m_state;					///< The widget state (excluding any auto states)
 	float m_opacity;				///< Opacity 0-1. See SetOpacity.
 	TBID m_skin_bg;					///< ID for the background skin (0 for no skin).
 	TBID m_skin_bg_expected;		///< ID for the background skin after strong override,
@@ -686,6 +695,7 @@ public:
 	TBID m_group_id;				///< ID for button groups (such as TBRadioButton)
 	TBWidgetValueConnection m_connection; ///< TBWidget value connection
 	uint32 m_data;					///< Additional generic data (depends on widget). Initially 0.
+	WIDGET_STATE m_state;			///< The widget state (excluding any auto states)
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
 	TBFontDescription m_font_desc;	///< The font description.
 	union {

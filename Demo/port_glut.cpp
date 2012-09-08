@@ -30,7 +30,7 @@ bool has_pending_update = false;
 MODIFIER_KEYS GlutModToTBMod()
 {
 	int glut_modifier = glutGetModifiers();
-	MODIFIER_KEYS modifier = 0;
+	MODIFIER_KEYS modifier = TB_MODIFIER_NONE;
 	if (glut_modifier & GLUT_ACTIVE_SHIFT)	modifier |= TB_SHIFT;
 	if (glut_modifier & GLUT_ACTIVE_CTRL)	modifier |= TB_CTRL;
 	if (glut_modifier & GLUT_ACTIVE_ALT)	modifier |= TB_ALT;
