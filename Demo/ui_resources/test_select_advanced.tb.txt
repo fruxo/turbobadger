@@ -1,0 +1,31 @@
+WindowInfo
+	title Customized list items
+TBLayout
+	axis y
+	distribution gravity
+	gravity all
+	TBLayout
+		distribution gravity
+		TBEditField
+			id filter
+			gravity left right
+			placeholder @search
+			type search
+	TBSelectList
+		id list
+		gravity all
+	TBLayout
+		distribution gravity
+		TBEditField
+			id name
+			gravity left right
+			placeholder Name
+		TBButton
+			id add
+			text Add
+		TBButton
+			id delete
+			text Delete
+		TBButton
+			id delete all
+			text Delete all

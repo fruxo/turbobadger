@@ -354,7 +354,7 @@ elements
 	TBSelectItem.hovered
 		cut 7
 		bitmap item_hover.png
-	TBSelectItem.separatorX
+	TBSelectItem.separator
 		bitmap item_separator_x.png
 		type Stretch Image
 
@@ -407,6 +407,9 @@ elements
 		min-height 28
 	TBProgressSpinner.fg
 		bitmap progress_spinner_strip.png
+
+	# The TBList header is always disabled, thus gets slightly less opacity default.
+	TBList.header
 
 	arrow.left: type: Image, bitmap: arrow_left.png, min-width: 5, min-height: 10
 	arrow.right: type: Image, bitmap: arrow_right.png, min-width: 5, min-height: 10

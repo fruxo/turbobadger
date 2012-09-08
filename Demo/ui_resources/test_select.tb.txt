@@ -2,7 +2,7 @@ WindowInfo
 	title List and filter
 TBLayout
 	axis y
-	distribution available
+	distribution gravity
 	gravity all
 	TBEditField
 		id filter

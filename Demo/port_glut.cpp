@@ -48,7 +48,7 @@ void Keyboard(unsigned char key, int x, int y, bool down)
 	case 9:		g_root->InvokeKey(0, TB_KEY_TAB, modifier, down);		break;
 	case 13:	g_root->InvokeKey(0, TB_KEY_ENTER, modifier, down);		break;
 	default:
-		g_root->InvokeKey(key, 0, modifier, down);
+		g_root->InvokeKey(key, TB_KEY_UNDEFINED, modifier, down);
 		break;
 	}
 }

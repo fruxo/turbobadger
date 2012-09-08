@@ -9,6 +9,7 @@ TBMessageWindow.ok Ok
 TBMessageWindow.cancel Cancel
 TBMessageWindow.yes Yes
 TBMessageWindow.no No
+TBList.header Showing %d of %d
 new New
 save Save
 close Close

@@ -1,4 +1,5 @@
 #include "Demo.h"
+#include "ListWindow.h"
 #include "ResourceEditWindow.h"
 #include <stdio.h>
 #include <stdarg.h>
@@ -15,6 +16,7 @@
 #include "addons/tbimage/tb_image_manager.h"
 #include "utf8/utf8.h"
 
+AdvancedItemSource advanced_source;
 TBGenericStringItemSource name_source;
 TBGenericStringItemSource popup_menu_source;
 
@@ -150,69 +152,6 @@ bool DemoWindow::OnEvent(const TBWidgetEvent &ev)
 	return TBWindow::OnEvent(ev);
 }
 
-class TestItemSource : public TBGenericStringItemSource
-{
-public:
-	virtual TBWidget *CreateItemWidget(int index);
-};
-
-TBWidget *TestItemSource::CreateItemWidget(int index)
-{
-	if (TBLayout *layout = new TBLayout)
-	{
-		layout->SetSkinBg("TBSelectItem");
-		layout->SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
-		layout->SetPaintOverflowFadeout(false);
-
-		if (TBSkinImage *image = new TBSkinImage)
-		{
-			image->SetSkinBg("Icon48");
-			image->SetIgnoreInput(true);
-			layout->AddChild(image);
-		}
-
-		if (TBTextField *textfield = new TBTextField)
-		{
-			textfield->SetText(GetItemString(index));
-			textfield->SetTextAlign(TB_TEXT_ALIGN_LEFT);
-			textfield->SetIgnoreInput(true);
-			layout->AddChild(textfield);
-		}
-
-		if (TBCheckBox *checkbox = new TBCheckBox)
-			layout->AddChild(checkbox);
-		return layout;
-	}
-	return nullptr;
-}
-TestItemSource advanced_source;
-
-// == ListWindow ==============================================================
-
-class ListWindow : public DemoWindow
-{
-public:
-	ListWindow(TBSelectItemSource *source, SCROLL_MODE scrollmode = SCROLL_MODE_Y_AUTO)
-	{
-		LoadResourceFile("Demo/ui_resources/test_select.tb.txt");
-		if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
-		{
-			select->SetSource(source);
-			select->GetScrollContainer()->SetScrollMode(scrollmode);
-		}
-	}
-	virtual bool OnEvent(const TBWidgetEvent &ev)
-	{
-		if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("filter"))
-		{
-			if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
-				select->SetFilter(ev.target->GetText());
-			return true;
-		}
-		return DemoWindow::OnEvent(ev);
-	}
-};
-
 // == EditWindow ==============================================================
 
 class EditWindow : public DemoWindow
@@ -283,8 +222,8 @@ public:
 					source.AddItem(new TBGenericStringItem("Align right", TBIDC("align right")));
 				}
 
-				TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popup_menu"));
-				menu->Show(&source);
+				if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popup_menu")))
+					menu->Show(&source);
 				return true;
 			}
 			else if (ev.target->GetID() == TBIDC("popup_menu"))
@@ -479,8 +418,8 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))
 		{
-			TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu1"));
-			menu->Show(&popup_menu_source);
+			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu1")))
+				menu->Show(&popup_menu_source);
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("popupmenu1"))
@@ -652,6 +591,11 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 			new MyToolbarWindow("Demo/ui_resources/test_radio_checkbox.tb.txt");
 			return true;
 		}
+		else if (ev.target->GetID() == TBIDC("test-list"))
+		{
+			new AdvancedListWindow(&advanced_source);
+			return true;
+		}
 		else if (ev.target->GetID() == TBIDC("test-image"))
 		{
 			new MyToolbarWindow("Demo/ui_resources/test_image_widget.tb.txt");
@@ -726,7 +670,7 @@ bool DemoApplication::Init()
 	// Here we prepare the name source, that is used in a few places.
 	int i = 0;
 	while (boy_names[i])
-		advanced_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
+		advanced_source.AddItem(new AdvancedItem(boy_names[i++], TBIDC("boy_item")));
 	i = 0;
 	while (girl_names[i])
 		name_source.AddItem(new TBGenericStringItem(girl_names[i++], TBIDC("girl_item")));
@@ -749,10 +693,10 @@ bool DemoApplication::Init()
 	TBWindow *textwindow = new EditWindow;
 
 	ListWindow *listwindow = new ListWindow(&name_source);
-	listwindow->SetPosition(TBPoint(950, 380));
+	listwindow->SetPosition(TBPoint(730, 500));
 
-	listwindow = new ListWindow(&advanced_source, SCROLL_MODE_X_AUTO_Y_AUTO);
-	listwindow->SetRect(TBRect(950, 50, 300, 300));
+	AdvancedListWindow *listwindow2 = new AdvancedListWindow(&advanced_source);
+	listwindow2->SetRect(TBRect(950, 50, 300, 300));
 
 	new MyToolbarWindow("Demo/ui_resources/test_tabcontainer01.tb.txt");
 

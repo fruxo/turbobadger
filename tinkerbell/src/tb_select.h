@@ -14,18 +14,55 @@
 
 namespace tinkerbell {
 
+class TBMenuWindow;
+class TBSelectItemSource;
+
 // FIX: A maximum items showed option, and a automatic "Show more" item at the bottom.
-// FIX: ScrollableContainer: Scrolla inte om man håller i en scrollbar eller draggar.
 // FIX: Item-quick-find by pressing one or two keys in the list!
+//      -Implement with generic search-and-find in widgets. Should be available in all UI!
 // FIX: gör även en default string source med checkboxar (multiselectable)??
 // Indentera alla items, och ge menyn ett bg skin/underlay ifall någon har ikon!
 // Treeview item, item column, och indent för items utan ikon.. använda samma indent system?
-// FIX: ändring av source måste kunna updatera alla listor. Ändra separat item updaterar bara den itemen i alla listor.
 
 enum TB_SORT {
 	TB_SORT_NONE,		///< No sorting. Items appear in list order.
 	TB_SORT_ASCENDING,	///< Ascending sort.
 	TB_SORT_DESCENDING	///< Descending sort.
+};
+
+/** TBSelectItemViewer is the viewer for items provided by TBSelectItemSource.
+	There can be multiple viewers for each source. The viewer will recieve
+	callbacks when the source is changed, so it can update itself.
+*/
+class TBSelectItemViewer : public TBLinkOf<TBSelectItemViewer>
+{
+public:
+	TBSelectItemViewer() : m_source(nullptr) {}
+	virtual ~TBSelectItemViewer() {}
+
+	/** Set the source which should provide the items for this viewer.
+		This source needs to live longer than this viewer.
+		Set nullptr to unset currently set source. */
+	void SetSource(TBSelectItemSource *source);
+	TBSelectItemSource *GetSource() const { return m_source; }
+
+	/** Called when the source has changed or been unset by calling SetSource. */
+	virtual void OnSourceChanged() = 0;
+
+	/** Called when the item at the given index has changed in a way that should
+		update the viewer. */
+	virtual void OnItemChanged(int index) = 0;
+
+	/** Called when the item at the given index has been added. */
+	virtual void OnItemAdded(int index) = 0;
+
+	/** Called when the item at the given index has been removed. */
+	virtual void OnItemRemoved(int index) = 0;
+
+	/** Called when all items have been removed. */
+	virtual void OnAllItemsRemoved() = 0;
+protected:
+	TBSelectItemSource *m_source;
 };
 
 /** TBSelectItemSource is a item provider interface for list widgets (TBSelectList and
@@ -35,12 +72,17 @@ enum TB_SORT {
 	will ask TBSelectItemSource when it needs it. The list widgets may also apply
 	filtering so only a subset of all the items are shown.
 
-	CreateItemWidget can be overridden to create more advanced content than a single string. */
+	CreateItemWidget can be overridden to create any set of widget content for each item.
+
+	This class has no storage of items. If you want an array storage of items,
+	use the subclass TBSelectItemSourceList. If you implement your own storage,
+	remember to call InvokeItem[Added/*] to notify viewers that they need to update.
+*/
 
 class TBSelectItemSource
 {
 public:
-	TBSelectItemSource() : m_in_use_count(0), m_sort(TB_SORT_NONE) {}
+	TBSelectItemSource() : m_sort(TB_SORT_NONE) {}
 	virtual ~TBSelectItemSource();
 
 	/** Return true if a item matches the given filter text.
@@ -54,7 +96,7 @@ public:
 	virtual const char *GetItemString(int index) = 0;
 
 	/** Get the source to be used if this item should open a sub menu. */
-	virtual TBSelectItemSource *GetItemSource(int index) { return nullptr; }
+	virtual TBSelectItemSource *GetItemSubSource(int index) { return nullptr; }
 
 	/** Get the skin image to be painted before the text for this item. */
 	virtual TBID GetItemImage(int index) { return TBID(); }
@@ -62,24 +104,90 @@ public:
 	/** Create the item representation widget(s). By default, it will create
 		a TBTextField for string-only items, and other types for items that
 		also has image or submenu. */
-	virtual TBWidget *CreateItemWidget(int index);
+	virtual TBWidget *CreateItemWidget(int index, TBSelectItemViewer *viewer);
 
 	/** Get the number of items */
 	virtual int GetNumItems() = 0;
 
-	/** Get the number of items that would be shown with the given filter. */
-	int GetNumVisibleItems(const char *filter);
-
 	/** Set sort type. Default is TB_SORT_NONE. */
 	void SetSort(TB_SORT sort) { m_sort = sort; }
 	TB_SORT GetSort() const { return m_sort; }
+
+	/** Invoke OnItemChanged on all open viewers for this source. */
+	void InvokeItemChanged(int index, TBSelectItemViewer *exclude_viewer = nullptr);
+	void InvokeItemAdded(int index);
+	void InvokeItemRemoved(int index);
+	void InvokeAllItemsRemoved();
 private:
-	friend class TBSelectList;
-	friend class TBSelectDropdown;
-	int m_in_use_count; ///< How many lists that currently have this source set.
+	friend class TBSelectItemViewer;
+	TBLinkListOf<TBSelectItemViewer> m_viewers;
 	TB_SORT m_sort;
 };
 
+/** TBSelectItemSourceList is a item provider for list widgets (TBSelectList and
+	TBSelectDropdown). It stores items of the type specified by the template in an array. */
+
+template<class T>
+class TBSelectItemSourceList : public TBSelectItemSource
+{
+public:
+	TBSelectItemSourceList() {}
+	virtual ~TBSelectItemSourceList()					{ DeleteAllItems(); }
+	virtual const char *GetItemString(int index)		{ return GetItem(index)->str; }
+	virtual TBSelectItemSource *GetItemSubSource(int index){ return GetItem(index)->sub_source; }
+	virtual TBID GetItemImage(int index)				{ return GetItem(index)->skin_image; }
+	virtual int GetNumItems()							{ return m_items.GetNumItems(); }
+	virtual TBWidget *CreateItemWidget(int index, TBSelectItemViewer *viewer)
+	{
+		if (TBWidget *widget = TBSelectItemSource::CreateItemWidget(index, viewer))
+		{
+			T *item = m_items[index];
+			widget->GetID().Set(item->id);
+			return widget;
+		}
+		return nullptr;
+	}
+
+	/** Add a new item at the given index. */
+	bool AddItem(T *item, int index)
+	{
+		if (m_items.Add(item, index))
+		{
+			InvokeItemAdded(index);
+			return true;
+		}
+		return false;
+	}
+
+	/** Add a new item last. */
+	bool AddItem(T *item)				{ return AddItem(item, m_items.GetNumItems()); }
+
+	/** Get the item at the given index. */
+	T *GetItem(int index)				{ return m_items[index]; }
+
+	/** Delete the item at the given index. */
+	void DeleteItem(int index)
+	{
+		if (!m_items.GetNumItems())
+			return;
+		m_items.Delete(index);
+		InvokeItemRemoved(index);
+	}
+
+	/** Delete all items. */
+	void DeleteAllItems()
+	{
+		if (!m_items.GetNumItems())
+			return;
+		m_items.DeleteAll();
+		InvokeAllItemsRemoved();
+	}
+private:
+	TBListOf<T> m_items;
+};
+
+/** TBGenericStringItem item for TBGenericStringItemSource.
+	It has a string and may have a skin image and sub item source. */
 class TBGenericStringItem
 {
 public:
@@ -101,43 +209,13 @@ public:
 	void *user_ptr;
 };
 
-template<class T>
-class TBSelectItemSourceList : public TBSelectItemSource
-{
-public:
-	TBSelectItemSourceList() {}
-	virtual ~TBSelectItemSourceList()					{ DeleteAllItems(); }
-	virtual const char *GetItemString(int index)		{ return GetItem(index)->str; }
-	virtual TBSelectItemSource *GetItemSource(int index){ return GetItem(index)->sub_source; }
-	virtual TBID GetItemImage(int index)				{ return GetItem(index)->skin_image; }
-	virtual int GetNumItems()							{ return m_items.GetNumItems(); }
-	virtual TBWidget *CreateItemWidget(int index)
-	{
-		if (TBWidget *widget = TBSelectItemSource::CreateItemWidget(index))
-		{
-			T *item = m_items[index];
-			widget->GetID().Set(item->id);
-			return widget;
-		}
-		return nullptr;
-	}
+/** TBGenericStringItemSource is a item source list providing items of type TBGenericStringItem. */
 
-	bool AddItem(T *item, int index)	{ return m_items.Add(item, index); }
-	bool AddItem(T *item)				{ return m_items.Add(item); }
-	T *GetItem(int index)				{ return m_items[index]; }
+class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem> { };
 
-	void DeleteItem(int index)			{ m_items.Delete(index); }
-	void DeleteAllItems()				{ m_items.DeleteAll(); }
-private:
-	TBListOf<T> m_items;
-};
+/** TBSelectList shows a scrollable list of items provided by a TBSelectItemSource. */
 
-class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem>
-{
-public:
-};
-
-class TBSelectList : public TBWidget
+class TBSelectList : public TBWidget, public TBSelectItemViewer
 {
 public:
 	// For safe typecasting
@@ -145,11 +223,6 @@ public:
 
 	TBSelectList();
 	~TBSelectList();
-
-	/** Set the source which should provide the items for this select.
-		This source needs to live longer than this widget. */
-	void SetSource(TBSelectItemSource *source);
-	TBSelectItemSource *GetSource() const { return m_source; }
 
 	/** Get the default item source for this widget. This source can be used to add
 		items of type TBGenericStringItem to this widget.
@@ -165,6 +238,10 @@ public:
 	void SetFilter(const char *filter);
 	const char *GetFilter() const { return m_filter; }
 
+	/** Set the language string id for the header. The header is shown
+		at the top of the list when only a subset of all items are shown. */
+	void SetHeaderString(const TBID& id);
+
 	/** Make the list update its items to reflect the items from the
 		in the current source. The update will take place next time
 		the list is validated. */
@@ -177,6 +254,15 @@ public:
 		items it's the item that is the current focus. */
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
+
+	/** Change the value to a non disabled item that is visible with the current
+		filter. Returns true if it successfully found another item.
+		Valid keys:
+			TB_KEY_UP - Previous item.
+			TB_KEY_DOWN - Next item.
+			TB_KEY_HOME - First item.
+			TB_KEY_END - Last item. */
+	bool ChangeValue(SPECIAL_KEY key);
 
 	/** Set the selected state of the item at the given index. If you want
 		to unselect the previously selected item, use SetValue. */
@@ -194,18 +280,30 @@ public:
 	virtual void OnProcess();
 	virtual void OnProcessAfterChildren();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
+
+	// == TBSelectItemViewer ==================================================
+	virtual void OnSourceChanged();
+	virtual void OnItemChanged(int index);
+	virtual void OnItemAdded(int index);
+	virtual void OnItemRemoved(int index);
+	virtual void OnAllItemsRemoved();
 protected:
 	TBScrollContainer m_container;
 	TBLayout m_layout;
 	TBGenericStringItemSource m_default_source;
-	TBSelectItemSource *m_source;
 	int m_value;
 	TBStr m_filter;
 	bool m_list_is_invalid;
 	bool m_scroll_to_current;
+	TBID m_header_lng_string_id;
+private:
+	TBWidget *CreateAndAddItemAfter(int index, TBWidget *reference);
 };
 
-class TBSelectDropdown : public TBButton
+/** TBSelectDropdown shows a button that opens a popup with a TBSelectList with items
+	provided by a TBSelectItemSource. */
+
+class TBSelectDropdown : public TBButton, public TBSelectItemViewer
 {
 public:
 	// For safe typecasting
@@ -213,13 +311,6 @@ public:
 
 	TBSelectDropdown();
 	~TBSelectDropdown();
-
-	/** Set the source which should provide the items for this select.
-		This source needs to live longer than this widget.
-		By default, the source is set to a TBGenericStringItemSource
-		(See GetDefaultSource). */
-	void SetSource(TBSelectItemSource *source);
-	TBSelectItemSource *GetSource() const { return m_source; }
 
 	/** Get the default item source for this widget. This source can be used to add
 		items of type TBGenericStringItem to this widget.
@@ -237,10 +328,19 @@ public:
 	/** Open the window if the model has items. */
 	void OpenWindow();
 
+	/** Return the menu window if it's open, or nullptr. */
+	TBMenuWindow *GetMenuIfOpen() const;
+
 	virtual bool OnEvent(const TBWidgetEvent &ev);
+
+	// == TBSelectItemViewer ==================================================
+	virtual void OnSourceChanged();
+	virtual void OnItemChanged(int index);
+	virtual void OnItemAdded(int index) {}
+	virtual void OnItemRemoved(int index) {}
+	virtual void OnAllItemsRemoved() {}
 protected:
 	TBGenericStringItemSource m_default_source;
-	TBSelectItemSource *m_source;
 	TBSkinImage m_arrow;
 	int m_value;
 	TBWidgetSafePointer m_window_pointer; ///< Points to the dropdown window if opened

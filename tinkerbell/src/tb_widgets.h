@@ -62,7 +62,8 @@ MAKE_ENUM_FLAG_COMBO(MODIFIER_KEYS);
 
 enum SPECIAL_KEY
 {
-	TB_KEY_UP = 1, TB_KEY_DOWN, TB_KEY_LEFT, TB_KEY_RIGHT,
+	TB_KEY_UNDEFINED = 0,
+	TB_KEY_UP, TB_KEY_DOWN, TB_KEY_LEFT, TB_KEY_RIGHT,
 	TB_KEY_PAGE_UP, TB_KEY_PAGE_DOWN, TB_KEY_HOME, TB_KEY_END,
 	TB_KEY_TAB, TB_KEY_BACKSPACE, TB_KEY_INSERT, TB_KEY_DELETE,
 	TB_KEY_ENTER, TB_KEY_ESC,
@@ -80,17 +81,16 @@ public:
 	int delta;			///< Set for EVENT_TYPE_WHEEL. Positive is a turn against the user.
 	int count;			///< 1 for all events, but increased for POINTER_DOWN event to 2 for doubleclick, 3 for tripleclick and so on.
 	int key;
-	int special_key;
-	// FIX: Skicka modifier i InvokePointerDown/Up också!
+	SPECIAL_KEY special_key;
 	MODIFIER_KEYS modifierkeys;
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 
 	TBWidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta(0), count(1),
-												key(0), special_key(0), modifierkeys(TB_MODIFIER_NONE) {}
+											key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(TB_MODIFIER_NONE) {}
 
 	TBWidgetEvent(EVENT_TYPE type, int x, int y, MODIFIER_KEYS modifierkeys = TB_MODIFIER_NONE) :
-												target(nullptr), type(type), target_x(x), target_y(y), delta(0),
-												count(1), key(0), special_key(0), modifierkeys(modifierkeys) {}
+											target(nullptr), type(type), target_x(x), target_y(y), delta(0),
+											count(1), key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(modifierkeys) {}
 
 	/** The count value may be 1 to infinity. If you f.ex want to see which count it is for something
 		handling click and double click, call GetCountCycle(2). If you also handle triple click, call
@@ -654,7 +654,7 @@ public:
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */
-	void InvokeKey(int key, int special_key, MODIFIER_KEYS modifierkeys, bool down);
+	void InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down);
 
 	/** A widget that receive a EVENT_TYPE_POINTER_DOWN event, will stay "captured" until EVENT_TYPE_POINTER_UP
 		is received. While captured, all EVENT_TYPE_POINTER_MOVE are sent to it. This method can force release the capture,

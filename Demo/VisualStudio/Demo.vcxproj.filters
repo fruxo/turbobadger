@@ -42,6 +42,9 @@
     <ClCompile Include="..\ResourceEditWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\ListWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\freeglut.lib">
@@ -62,6 +65,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ResourceEditWindow.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ListWindow.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

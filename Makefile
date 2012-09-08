@@ -73,6 +73,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tbanimation/Animation.cpp \
       tbanimation/tb_animation.cpp \
       Demo/Demo01.cpp \
+      Demo/ListWindow.cpp \
       Demo/ResourceEditWindow.cpp \
       Demo/port_glut.cpp \
       Demo/tb_renderer_gl.cpp

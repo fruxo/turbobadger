@@ -962,7 +962,7 @@ void TBWidget::InvokeWheel(int x, int y, int delta, MODIFIER_KEYS modifierkeys)
 	}
 }
 
-void TBWidget::InvokeKey(int key, int special_key, MODIFIER_KEYS modifierkeys, bool down)
+void TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
 	bool handled = false;
 	if (focused_widget)

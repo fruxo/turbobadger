@@ -91,6 +91,7 @@
     <ClCompile Include="..\..\tbanimation\Animation.cpp" />
     <ClCompile Include="..\..\tbanimation\tb_animation.cpp" />
     <ClCompile Include="..\Demo01.cpp" />
+    <ClCompile Include="..\ListWindow.cpp" />
     <ClCompile Include="..\ResourceEditWindow.cpp" />
     <ClCompile Include="..\port_glut.cpp" />
     <ClCompile Include="..\tb_renderer_gl.cpp" />
@@ -102,6 +103,7 @@
     <ClInclude Include="..\..\tbanimation\Animation.h" />
     <ClInclude Include="..\..\tbanimation\tb_animation.h" />
     <ClInclude Include="..\Demo.h" />
+    <ClInclude Include="..\ListWindow.h" />
     <ClInclude Include="..\ResourceEditWindow.h" />
     <ClInclude Include="..\tb_renderer_gl.h" />
   </ItemGroup>
