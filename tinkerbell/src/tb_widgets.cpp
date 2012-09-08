@@ -141,7 +141,7 @@ int TBWidget::GetValueByID(const TBID &id)
 	return 0;
 }
 
-void TBWidget::SetStateRaw(uint32 state)
+void TBWidget::SetStateRaw(WIDGET_STATE state)
 {
 	if (m_state == state)
 		return;

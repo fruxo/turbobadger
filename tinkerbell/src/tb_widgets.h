@@ -272,10 +272,10 @@ public:
 
 	/** Set the widget state. Like SetState but setting the entire state as given, instead
 		of toggling individual states. See SetState for more info on states. */
-	void SetStateRaw(uint32 state);
+	void SetStateRaw(WIDGET_STATE state);
 
 	/** Get the widget state. */
-	uint32 GetStateRaw() const { return m_state; }
+	WIDGET_STATE GetStateRaw() const { return m_state; }
 
 	/** Return the current combined state for this widget. It will also add some
 		automatic states, such as hovered (if the widget is currently hovered), or pressed etc.
