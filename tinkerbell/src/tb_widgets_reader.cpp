@@ -8,6 +8,7 @@
 #include "tb_scroll_container.h"
 #include "tb_tab_container.h"
 #include "tb_select.h"
+#include "tb_inline_select.h"
 #include "tb_editfield.h"
 #include "tb_language.h"
 #include "parser/TBNodeTree.h"
