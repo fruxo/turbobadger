@@ -166,18 +166,18 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 				TBValue &val = padding_node->GetValue();
 				if (val.GetArrayLength() == 4)
 				{
-					e->padding_left = val.GetArray()->GetValue(0)->GetInt();
-					e->padding_top = val.GetArray()->GetValue(1)->GetInt();
-					e->padding_right = val.GetArray()->GetValue(2)->GetInt();
-					e->padding_bottom = val.GetArray()->GetValue(3)->GetInt();
+					e->padding_top = val.GetArray()->GetValue(0)->GetInt();
+					e->padding_right = val.GetArray()->GetValue(1)->GetInt();
+					e->padding_bottom = val.GetArray()->GetValue(2)->GetInt();
+					e->padding_left = val.GetArray()->GetValue(3)->GetInt();
 				}
 				else if (val.GetArrayLength() == 2)
 				{
-					e->padding_left = e->padding_right = val.GetArray()->GetValue(0)->GetInt();
-					e->padding_top = e->padding_bottom = val.GetArray()->GetValue(1)->GetInt();
+					e->padding_top = e->padding_bottom = val.GetArray()->GetValue(0)->GetInt();
+					e->padding_left = e->padding_right = val.GetArray()->GetValue(1)->GetInt();
 				}
 				else
-					e->padding_left = e->padding_top = e->padding_right = e->padding_bottom = val.GetInt();
+					e->padding_top = e->padding_right = e->padding_bottom = e->padding_left = val.GetInt();
 			}
 
 			e->min_width = n->GetValueInt("min-width", SKIN_VALUE_NOT_SPECIFIED);

@@ -12,7 +12,7 @@ elements
 		bitmap button.png
 		cut 17
 		expand 7
-		padding 8 6
+		padding 6 8
 		overrides
 			element TBButton.pressed
 				state pressed
@@ -30,7 +30,7 @@ elements
 		content-ofs-y 1
 
 	TBButton.flat
-		padding 8 6
+		padding 6 8
 		children
 			element TBButton.flat.hovered
 				state hovered
@@ -52,7 +52,7 @@ elements
 		bitmap button_grouped_x_middle_up.png
 		cut 17
 		expand 7
-		padding 8 6
+		padding 6 8
 		overrides
 			element TBButtonInGroup.pressed
 				state pressed
@@ -104,7 +104,7 @@ elements
 		bitmap TBSectionHeader.png
 		cut 11
 		expand 5
-		padding 16 2
+		padding 2 16
 		children
 			element TBSectionHeader.icon_0
 				condition: target: this, property: value, value: 0
@@ -132,9 +132,9 @@ elements
 
 	# == TBTabContainer skins - Create strong overrides for the tab buttons four alignments ============
 	TBTabContainer.tablayout_x
-		padding 10 0
-	TBTabContainer.tablayout_y
 		padding 0 10
+	TBTabContainer.tablayout_y
+		padding 10 0
 	TBTabContainer.container
 		clone TBContainer
 	TBTabContainer.tab
@@ -152,7 +152,7 @@ elements
 		bitmap tab_button_top_inactive.png
 		cut 12
 		expand 6
-		padding 6 6 6 3
+		padding 6 6 3 6
 		min-width 50
 		overrides
 			element TBTabContainer.tab_top.pressed
@@ -174,7 +174,7 @@ elements
 		bitmap tab_button_bottom_inactive.png
 		cut 12
 		expand 6
-		padding 6 3 6 6
+		padding 3 6 6 6
 		min-width 50
 		overrides
 			element TBTabContainer.tab_bottom.pressed
@@ -194,7 +194,7 @@ elements
 		bitmap tab_button_left_inactive.png
 		cut 12
 		expand 6
-		padding 6 6 3 6
+		padding 6 3 6 6
 		min-width 50
 		overrides
 			element TBTabContainer.tab_left.pressed
@@ -216,7 +216,7 @@ elements
 		bitmap tab_button_right_inactive.png
 		cut 12
 		expand 6
-		padding 3 6 6 6
+		padding 6 6 6 3
 		min-width 50
 		overrides
 			element TBTabContainer.tab_right.pressed
@@ -247,7 +247,7 @@ elements
 
 	TBEditField.search
 		clone TBEditField
-		padding 24 4 4 4
+		padding 4 4 4 24
 		min-width 50
 		children
 			element TBEditField.search.icon
@@ -342,7 +342,7 @@ elements
 		clone TBWindow
 		padding 2
 	TBSelectItem
-		padding 5 2
+		padding 2 5
 		children
 			element TBSelectItem.hovered
 				state hovered

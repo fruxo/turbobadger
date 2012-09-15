@@ -19,7 +19,7 @@ elements
 		bitmap special_button.png
 		cut 17
 		expand 7
-		padding 8 6
+		padding 6 8
 		overrides
 			element SpecialButton.pressed
 				state pressed
