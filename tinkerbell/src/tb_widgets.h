@@ -284,7 +284,7 @@ public:
 
 		Remarks for WIDGET_STATE_FOCUSED: May also be controlled by calling SetAutoFocusState and
 		the define TB_ALWAYS_SHOW_EDIT_FOCUS. */
-	uint32 GetAutoState() const;
+	WIDGET_STATE GetAutoState() const;
 
 	/** Set if the state WIDGET_STATE_FOCUSED should be set automatically for the focused widget.
 		This value is set to true when moving focus by keyboard, and set to off when clicking

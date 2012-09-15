@@ -15,9 +15,9 @@ namespace tinkerbell {
 
 // == Util functions ==========================================================
 
-uint32 StringToState(const char *state_str)
+SKIN_STATE StringToState(const char *state_str)
 {
-	uint32 state = 0;
+	SKIN_STATE state = SKIN_STATE_NONE;
 	if (strstr(state_str, "all"))		state |= SKIN_STATE_ALL;
 	if (strstr(state_str, "disabled"))	state |= SKIN_STATE_DISABLED;
 	if (strstr(state_str, "focused"))	state |= SKIN_STATE_FOCUSED;
@@ -309,7 +309,7 @@ TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id) const
 	return m_elements.Get(skin_id);
 }
 
-TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, uint32 state, TBSkinConditionContext &context) const
+TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context) const
 {
 	if (TBSkinElement *skin_element = GetSkinElement(skin_id))
 	{
@@ -335,12 +335,12 @@ TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, uint32 
 	return nullptr;
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state, TBSkinConditionContext &context)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context)
 {
 	return PaintSkin(dst_rect, GetSkinElement(skin_id), state, context);
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return nullptr;
@@ -392,7 +392,7 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	return return_element;
 }
 
-void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context)
+void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return;
@@ -562,7 +562,7 @@ TBSkinElement::~TBSkinElement()
 {
 }
 
-bool TBSkinElement::HasState(uint32 state, TBSkinConditionContext &context)
+bool TBSkinElement::HasState(SKIN_STATE state, TBSkinConditionContext &context)
 {
 	return	m_override_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE) ||
 			m_child_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE) ||
@@ -571,7 +571,7 @@ bool TBSkinElement::HasState(uint32 state, TBSkinConditionContext &context)
 
 // == TBSkinElementState ====================================================
 
-bool TBSkinElementState::IsMatch(uint32 state, TBSkinConditionContext &context, MATCH_RULE rule) const
+bool TBSkinElementState::IsMatch(SKIN_STATE state, TBSkinConditionContext &context, MATCH_RULE rule) const
 {
 	if (rule == MATCH_RULE_ONLY_SPECIFIC_STATE && this->state == SKIN_STATE_ALL)
 		return false;
@@ -585,7 +585,7 @@ bool TBSkinElementState::IsMatch(uint32 state, TBSkinConditionContext &context, 
 	return false;
 }
 
-bool TBSkinElementState::IsExactMatch(uint32 state, TBSkinConditionContext &context, MATCH_RULE rule) const
+bool TBSkinElementState::IsExactMatch(SKIN_STATE state, TBSkinConditionContext &context, MATCH_RULE rule) const
 {
 	if (rule == MATCH_RULE_ONLY_SPECIFIC_STATE && this->state == SKIN_STATE_ALL)
 		return false;
@@ -610,7 +610,7 @@ TBSkinElementStateList::~TBSkinElementStateList()
 	}
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
+TBSkinElementState *TBSkinElementStateList::GetStateElement(SKIN_STATE state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
 {
 	// First try to get a state element with a exact match to the current state
 	if (TBSkinElementState *element_state = GetStateElementExactMatch(state, context, rule))
@@ -626,7 +626,7 @@ TBSkinElementState *TBSkinElementStateList::GetStateElement(uint32 state, TBSkin
 	return nullptr;
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
+TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(SKIN_STATE state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
 {
 	TBSkinElementState *state_element = m_state_elements.GetFirst();
 	while (state_element)
@@ -674,7 +674,7 @@ void TBSkinElementStateList::Load(TBNode *n)
 				if (TBNode *value_n = condition_node->GetNode("value"))
 				{
 					// Set the it to number or string. If it's a state, we must first convert the
-					// state string to the uint32 state combo.
+					// state string to the SKIN_STATE state combo.
 					if (prop == TBSkinCondition::PROPERTY_STATE)
 						value.Set(StringToState(value_n->GetValue().GetString()));
 					else if (value_n->GetValue().IsString())

@@ -154,9 +154,9 @@ void TBWidget::SetState(WIDGET_STATE state, bool on)
 	SetStateRaw(on ? m_state | state : m_state & ~state);
 }
 
-uint32 TBWidget::GetAutoState() const
+WIDGET_STATE TBWidget::GetAutoState() const
 {
-	uint32 state = m_state;
+	WIDGET_STATE state = m_state;
 	if (!is_panning && this == captured_widget && this == hovered_widget)
 		state |= WIDGET_STATE_PRESSED;
 	if (this == hovered_widget)
@@ -311,8 +311,8 @@ void TBWidget::SetSkinBg(const TBID &skin_bg, WIDGET_INVOKE_INFO info)
 TBSkinElement *TBWidget::GetSkinBgElement()
 {
 	TBWidgetSkinConditionContext context(this);
-	uint32 state = GetAutoState();
-	return g_tb_skin->GetSkinElementStrongOverride(m_skin_bg, state, context);
+	WIDGET_STATE state = GetAutoState();
+	return g_tb_skin->GetSkinElementStrongOverride(m_skin_bg, static_cast<SKIN_STATE>(state), context);
 }
 
 void TBWidget::ScrollByRecursive(int &dx, int &dy)
@@ -547,7 +547,7 @@ void TBWidget::OnPaintChildren(const PaintProps &paint_props)
 		if (clip_rect.Intersects(child->m_rect))
 		{
 			TBWidgetSkinConditionContext context(child);
-			g_tb_skin->PaintSkinOverlay(child->m_rect, child->GetSkinBgElement(), child->GetAutoState(), context);
+			g_tb_skin->PaintSkinOverlay(child->m_rect, child->GetSkinBgElement(), static_cast<SKIN_STATE>(child->GetAutoState()), context);
 		}
 	}
 
@@ -559,9 +559,9 @@ void TBWidget::OnPaintChildren(const PaintProps &paint_props)
 		TBSkinElement *skin_element = focused_widget->GetSkinBgElement();
 		if (!skin_element || !skin_element->HasState(SKIN_STATE_FOCUSED, context))
 		{
-			uint32 state = focused_widget->GetAutoState();
+			WIDGET_STATE state = focused_widget->GetAutoState();
 			if (state & SKIN_STATE_FOCUSED)
-				g_tb_skin->PaintSkin(focused_widget->m_rect, TBIDC("generic_focus"), state, context);
+				g_tb_skin->PaintSkin(focused_widget->m_rect, TBIDC("generic_focus"), static_cast<SKIN_STATE>(state), context);
 		}
 	}
 
@@ -752,7 +752,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	if (m_opacity == 0 || m_rect.IsEmpty())
 		return;
 
-	uint32 state = GetAutoState();
+	WIDGET_STATE state = GetAutoState();
 	TBSkinElement *skin_element = GetSkinBgElement();
 
 	// Multiply current opacity with widget opacity, skin opacity and state opacity.
@@ -774,7 +774,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	// Paint background skin
 	TBRect local_rect(0, 0, m_rect.w, m_rect.h);
 	TBWidgetSkinConditionContext context(this);
-	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, state, context);
+	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, static_cast<SKIN_STATE>(state), context);
 	assert(!!used_element == !!skin_element);
 
 	TB_IF_GFX_DEBUG(g_renderer->DrawRect(local_rect, TBColor(255, 255, 255, 50)));

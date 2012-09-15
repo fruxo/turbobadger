@@ -129,14 +129,14 @@ public:
 		MATCH_RULE_ONLY_SPECIFIC_STATE
 	};
 
-	bool IsMatch(uint32 state, TBSkinConditionContext &context,
+	bool IsMatch(SKIN_STATE state, TBSkinConditionContext &context,
 				MATCH_RULE rule = MATCH_RULE_DEFAULT) const;
 
-	bool IsExactMatch(uint32 state, TBSkinConditionContext &context,
+	bool IsExactMatch(SKIN_STATE state, TBSkinConditionContext &context,
 				MATCH_RULE rule = MATCH_RULE_DEFAULT) const;
 
 	TBID element_id;
-	uint32 state;
+	SKIN_STATE state;
 	TBLinkListAutoDeleteOf<TBSkinCondition> conditions;
 };
 
@@ -147,10 +147,10 @@ class TBSkinElementStateList
 public:
 	~TBSkinElementStateList();
 
-	TBSkinElementState *GetStateElement(uint32 state, TBSkinConditionContext &context,
+	TBSkinElementState *GetStateElement(SKIN_STATE state, TBSkinConditionContext &context,
 						TBSkinElementState::MATCH_RULE rule = TBSkinElementState::MATCH_RULE_DEFAULT) const;
 
-	TBSkinElementState *GetStateElementExactMatch(uint32 state, TBSkinConditionContext &context,
+	TBSkinElementState *GetStateElementExactMatch(SKIN_STATE state, TBSkinConditionContext &context,
 						TBSkinElementState::MATCH_RULE rule = TBSkinElementState::MATCH_RULE_DEFAULT) const;
 
 	bool HasStateElements() const { return m_state_elements.HasLinks(); }
@@ -215,7 +215,7 @@ public:
 	/** Check if there's a exact or partial match for the given state in either
 		override, child or overlay element list.
 		State elements with state "all" will be ignored. */
-	bool HasState(uint32 state, TBSkinConditionContext &context);
+	bool HasState(SKIN_STATE state, TBSkinConditionContext &context);
 };
 
 /** TBSkin contains a list of TBSkinElement. */
@@ -247,7 +247,7 @@ public:
 		This is like calling GetSkinElement and also following any strong overrides that
 		match the current state (if any). See details about strong overrides in PaintSkin.
 		Returns nullptr if there's no match. */
-	TBSkinElement *GetSkinElementStrongOverride(const TBID &skin_id, uint32 state, TBSkinConditionContext &context) const;
+	TBSkinElement *GetSkinElementStrongOverride(const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context) const;
 
 	/** Get the default text color for all skin elements */
 	TBColor GetDefaultTextColor() const { return m_default_text_color; }
@@ -282,14 +282,14 @@ public:
 
 		Return the skin element used (after following override elements or override skins),
 		or nullptr if no skin element was found matching the skin_id. */
-	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, uint32 state, TBSkinConditionContext &context);
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context);
 
 	/** Paint the skin at dst_rect. Just like the PaintSkin above, but takes a specific
 		skin element instead of looking it up from the id. */
-	TBSkinElement *PaintSkin(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context);
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context);
 
 	/** Paint the overlay elements for the given skin element and state. */
-	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, uint32 state, TBSkinConditionContext &context);
+	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context);
 
 #ifdef _DEBUG
 	/** Render the skin bitmaps on screen, to analyze fragment positioning. */

@@ -405,13 +405,13 @@ void TBEditField::DrawRectFill(const TBRect &rect, const TBColor &color)
 void TBEditField::DrawTextSelectionBg(const TBRect &rect)
 {
 	TBWidgetSkinConditionContext context(this);
-	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState(), context);
+	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), static_cast<SKIN_STATE>(GetAutoState()), context);
 }
 
 void TBEditField::DrawContentSelectionFg(const TBRect &rect)
 {
 	TBWidgetSkinConditionContext context(this);
-	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), GetAutoState(), context);
+	g_tb_skin->PaintSkin(rect, TBIDC("TBEditField.selection"), static_cast<SKIN_STATE>(GetAutoState()), context);
 }
 
 void TBEditField::DrawCaret(const TBRect &rect)
