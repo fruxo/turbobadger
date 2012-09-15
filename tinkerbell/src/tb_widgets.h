@@ -220,7 +220,7 @@ public:
 	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
 		The skin may expand outside this rect to draw f.ex shadows. */
 	void SetRect(const TBRect &rect);
-	TBRect GetRect() const { return m_rect; }
+	inline TBRect GetRect() const { return m_rect; }
 
 	/** Set position of this widget in its parent. The position is relative to the parent widget. */
 	void SetPosition(const TBPoint &pos) { SetRect(TBRect(pos.x, pos.y, m_rect.w, m_rect.h)); }
@@ -250,14 +250,16 @@ public:
 	/** Return true if this widget or any of its parents is dying. */
 	bool GetIsDying() const { return m_packed.is_dying || (m_parent && m_parent->GetIsDying()); }
 
-	/** Get the id reference for this widgets. This id is 0 by default.
+	/** Set the id reference for this widgets. This id is 0 by default.
 		You can use this id to receive the widget from GetWidgetByID (or
 		preferable TBSafeGetByID to avoid dangerous casts). */
+	void SetID(const TBID &id) { m_id = id; }
 	TBID &GetID() { return m_id; }
 
-	/** Get the group id reference for this widgets. This id is 0 by default.
+	/** Set the group id reference for this widgets. This id is 0 by default.
 		All widgets with the same group id under the same group root will
 		be automatically changed when one change its value. */
+	void SetGroupID(const TBID &id) { m_group_id = id; }
 	TBID &GetGroupID() { return m_group_id; }
 
 	/** Get this widget or any child widget with a matching id, or nullptr if none is found. */
@@ -338,6 +340,9 @@ public:
 
 		It's possible to omit the OnSkinChanged callback using WIDGET_INVOKE_INFO_NO_CALLBACKS. */
 	void SetSkinBg(const TBID &skin_bg, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
+
+	/** Return the current skin background, as set by SetSkinBg. */
+	TBID GetSkinBg() const { return m_skin_bg; }
 
 	/** Return the skin background element, or nullptr. */
 	TBSkinElement *GetSkinBgElement();
@@ -503,8 +508,12 @@ public:
 	/** Get this widget or a parent widget that is the absolute root parent. */
 	TBWidget *GetParentRoot();
 
-	/** Get the widget or closest parent widget that is a TBWindow. */
+	/** Get the closest parent widget that is a TBWindow or nullptr if there is none.
+		If this widget is a window itself, this will be returned. */
 	TBWindow *GetParentWindow();
+
+	/** Get the parent widget, or nullptr if this widget is not added. */
+	inline TBWidget *GetParent() const { return m_parent; }
 
 	/** Get the widget that should receive the events this widget invoke. By default the parent. */
 	virtual TBWidget *GetEventDestination() { return m_parent; }
@@ -672,8 +681,15 @@ public:
 		Setting a unspecified TBFontDescription (no changes made since construction) means
 		it will be inherited from parent (the default).
 
-		This will invoke OnFontChanged on all affected widgets. */
+		Returns true and invokes OnFontChanged on all affected widgets, if the
+		font was successfully set.
+
+		Returns false and keep the font onchanged if it no matching font exists or fails creation. */
 	bool SetFontDescription(const TBFontDescription &font_desc);
+
+	/** Get the font description as set with SetFontDescription. Use GetCalculatedFontDescription()
+		to get the calculated font description (Inherit from parent widget etc.) */
+	TBFontDescription GetFontDescription() const { return m_font_desc; }
 
 	/** Calculate the font description for this widget. If this widget have unspecified font
 		description, it will be inheritted from parent. If no parent specify any font,
@@ -683,18 +699,18 @@ public:
 	/** Get the TBFontFace for this widget from the current font description (calculated
 		by GetCalculatedFontDescription) */
 	TBFontFace *GetFont() const;
-public:
-	TBLinkListOf<TBWidget> m_children;///< List of child widgets
+
+private:
 	TBWidget *m_parent;				///< The parent of this widget
 	TBRect m_rect;					///< The rectangle of this widget, relative to the parent. See SetRect.
-	float m_opacity;				///< Opacity 0-1. See SetOpacity.
+	TBID m_id;						///< ID for GetWidgetByID and others.
+	TBID m_group_id;				///< ID for button groups (such as TBRadioButton)
 	TBID m_skin_bg;					///< ID for the background skin (0 for no skin).
 	TBID m_skin_bg_expected;		///< ID for the background skin after strong override,
 									///< used to indirect skin changes because of condition changes.
-	TBID m_id;						///< ID for GetWidgetByID and others.
-	TBID m_group_id;				///< ID for button groups (such as TBRadioButton)
+	TBLinkListOf<TBWidget> m_children;///< List of child widgets
 	TBWidgetValueConnection m_connection; ///< TBWidget value connection
-	uint32 m_data;					///< Additional generic data (depends on widget). Initially 0.
+	float m_opacity;				///< Opacity 0-1. See SetOpacity.
 	WIDGET_STATE m_state;			///< The widget state (excluding any auto states)
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
 	TBFontDescription m_font_desc;	///< The font description.
@@ -709,6 +725,8 @@ public:
 		} m_packed;
 		uint16 m_packed_init;
 	};
+public:
+	uint32 m_data;					///< Additional generic data (depends on widget). Initially 0.
 
 	// TBWidget related globals
 	static TBWidget *hovered_widget;		///< The currently hovered widget, or nullptr.

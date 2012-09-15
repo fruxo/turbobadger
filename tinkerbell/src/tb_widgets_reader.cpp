@@ -320,9 +320,9 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 	// We should also support setting pixel rects?
 	new_widget->SetRect(target->GetContentRoot()->GetPaddingRect());
 
-	SetIDFromNode(new_widget->m_id, node->GetNode("id"));
+	SetIDFromNode(new_widget->GetID(), node->GetNode("id"));
 
-	SetIDFromNode(new_widget->m_group_id, node->GetNode("group_id"));
+	SetIDFromNode(new_widget->GetGroupID(), node->GetNode("group_id"));
 
 	if (wc->sync_type == TBValue::TYPE_FLOAT)
 		new_widget->SetValueDouble(node->GetValueFloat("value", 0));

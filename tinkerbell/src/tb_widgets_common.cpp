@@ -229,7 +229,7 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 {
 	// Get a widget from the layout that isn't the textfield, or just bail out
 	// if we only have the textfield.
-	if (m_layout.m_children.GetFirst() == m_layout.m_children.GetLast())
+	if (m_layout.GetFirstChild() == m_layout.GetLastChild())
 		return false;
 	TBWidget *click_target = (m_layout.GetFirstChild() == &m_textfield ? m_layout.GetLastChild() : m_layout.GetFirstChild());
 	// Invoke the event on it, as if it was invoked on the target itself.
@@ -240,7 +240,7 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 			click_target->SetFocus(WIDGET_FOCUS_REASON_POINTER);
 
 		click_target->SetState(WIDGET_STATE_PRESSED, (ev.target->GetAutoState() & WIDGET_STATE_PRESSED) ? true : false);
-		TBWidgetEvent target_ev(ev.type, ev.target_x - click_target->m_rect.x, ev.target_y - click_target->m_rect.y);
+		TBWidgetEvent target_ev(ev.type, ev.target_x - click_target->GetRect().x, ev.target_y - click_target->GetRect().y);
 		return click_target->InvokeEvent(target_ev);
 	}
 	return false;
@@ -304,7 +304,7 @@ void TBProgressSpinner::OnPaint(const PaintProps &paint_props)
 			int size = e->bitmap->Height();
 			int num_frames = e->bitmap->Width() / e->bitmap->Height();
 			int current_frame = m_frame % num_frames;
-			g_renderer->DrawBitmap(TBRect(0, 0, m_rect.w, m_rect.h), TBRect(current_frame * size, 0, size, size), e->bitmap);
+			g_renderer->DrawBitmap(GetPaddingRect(), TBRect(current_frame * size, 0, size, size), e->bitmap);
 		}
 	}
 }
@@ -328,7 +328,7 @@ TBRadioCheckBox::TBRadioCheckBox()
 
 void TBRadioCheckBox::ToggleGroup(TBWidget *root, TBWidget *toggled)
 {
-	if (root != toggled && root->m_group_id == toggled->m_group_id)
+	if (root != toggled && root->GetGroupID() == toggled->GetGroupID())
 		root->SetValue(0);
 	for (TBWidget *child = root->GetFirstChild(); child; child = child->GetNext())
 		ToggleGroup(child, toggled);
@@ -346,13 +346,13 @@ void TBRadioCheckBox::SetValue(int value)
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
 
-	if (!value || !m_group_id)
+	if (!value || !GetGroupID())
 		return;
 	// Toggle all other widgets in the same group. First get a root widget
 	// for the search.
 	TBWidget *group = this;
 	while (group && !group->GetIsGroupRoot())
-		group = group->m_parent;
+		group = group->GetParent();
 	if (group)
 	{
 		ToggleGroup(group, this);
@@ -372,7 +372,7 @@ bool TBRadioCheckBox::OnEvent(const TBWidgetEvent &ev)
 	if (ev.target == this && ev.type == EVENT_TYPE_CLICK)
 	{
 		// Toggle the value, if it's not a grouped widget with value on.
-		if (!(m_group_id && GetValue()))
+		if (!(GetGroupID() && GetValue()))
 		{
 			SetValue(!GetValue());
 		}
@@ -469,7 +469,7 @@ bool TBScrollBar::OnEvent(const TBWidgetEvent &ev)
 		return true;
 	else if (ev.type == EVENT_TYPE_POINTER_DOWN && ev.target == this)
 	{
-		bool after_handle = (m_axis == AXIS_X ? ev.target_x > m_handle.m_rect.x : ev.target_y > m_handle.m_rect.y);
+		bool after_handle = (m_axis == AXIS_X ? ev.target_x > m_handle.GetRect().x : ev.target_y > m_handle.GetRect().y);
 		SetValueDouble(m_value + (after_handle ? m_visible : -m_visible));
 		return true;
 	}
@@ -486,8 +486,8 @@ void TBScrollBar::UpdateHandle()
 {
 	// Calculate the mover size and position
 	bool horizontal = m_axis == AXIS_X;
-	int available_pixels = horizontal ? m_rect.w : m_rect.h;
-	int min_thickness_pixels = MIN(m_rect.h, m_rect.w);
+	int available_pixels = horizontal ? GetRect().w : GetRect().h;
+	int min_thickness_pixels = MIN(GetRect().h, GetRect().w);
 
 	int visible_pixels = available_pixels;
 
@@ -514,9 +514,9 @@ void TBScrollBar::UpdateHandle()
 
 	TBRect rect;
 	if (horizontal)
-		rect.Set(pixel_pos, 0, visible_pixels, m_rect.h);
+		rect.Set(pixel_pos, 0, visible_pixels, GetRect().h);
 	else
-		rect.Set(0, pixel_pos, m_rect.w, visible_pixels);
+		rect.Set(0, pixel_pos, GetRect().w, visible_pixels);
 
 	m_handle.SetRect(rect);
 }
@@ -630,7 +630,7 @@ void TBSlider::UpdateHandle()
 {
 	// Calculate the handle position
 	bool horizontal = m_axis == AXIS_X;
-	int available_pixels = horizontal ? m_rect.w : m_rect.h;
+	int available_pixels = horizontal ? GetRect().w : GetRect().h;
 
 	TBRect rect;
 	if (m_max - m_min > 0)
@@ -644,9 +644,9 @@ void TBSlider::UpdateHandle()
 		int pixel_pos = (int)((tmp_val - m_min) * m_to_pixel_factor);
 
 		if (horizontal)
-			rect.Set(pixel_pos, (m_rect.h - ps.pref_h) / 2, ps.pref_w, ps.pref_h);
+			rect.Set(pixel_pos, (GetRect().h - ps.pref_h) / 2, ps.pref_w, ps.pref_h);
 		else
-			rect.Set((m_rect.w - ps.pref_w) / 2, pixel_pos, ps.pref_w, ps.pref_h);
+			rect.Set((GetRect().w - ps.pref_w) / 2, pixel_pos, ps.pref_w, ps.pref_h);
 	}
 	else
 		m_to_pixel_factor = 0;
@@ -675,20 +675,21 @@ TBMover::TBMover()
 
 bool TBMover::OnEvent(const TBWidgetEvent &ev)
 {
-	if (!m_parent)
+	TBWidget *target = GetParent();
+	if (!target)
 		return false;
 	if (ev.type == EVENT_TYPE_POINTER_MOVE && captured_widget == this)
 	{
 		int dx = ev.target_x - pointer_down_widget_x;
 		int dy = ev.target_y - pointer_down_widget_y;
-		TBRect rect = m_parent->m_rect.Offset(dx, dy);
-		if (m_parent->m_parent)
+		TBRect rect = target->GetRect().Offset(dx, dy);
+		if (target->GetParent())
 		{
 			// Apply limit.
-			rect.x = CLAMP(rect.x, -pointer_down_widget_x, m_parent->m_parent->m_rect.w - pointer_down_widget_x);
-			rect.y = CLAMP(rect.y, -pointer_down_widget_y, m_parent->m_parent->m_rect.h - pointer_down_widget_y);
+			rect.x = CLAMP(rect.x, -pointer_down_widget_x, target->GetParent()->GetRect().w - pointer_down_widget_x);
+			rect.y = CLAMP(rect.y, -pointer_down_widget_y, target->GetParent()->GetRect().h - pointer_down_widget_y);
 		}
-		m_parent->SetRect(rect);
+		target->SetRect(rect);
 		return true;
 	}
 	return false;
@@ -705,27 +706,28 @@ WIDGET_HIT_STATUS TBResizer::GetHitStatus(int x, int y)
 {
 	// Shave off some of the upper left diagonal half from the hit area.
 	const int extra_hit_area = 3;
-	if (x < m_rect.w - y - extra_hit_area)
+	if (x < GetRect().w - y - extra_hit_area)
 		return WIDGET_HIT_STATUS_NO_HIT;
 	return TBWidget::GetHitStatus(x, y);
 }
 
 bool TBResizer::OnEvent(const TBWidgetEvent &ev)
 {
-	if (!m_parent)
+	TBWidget *target = GetParent();
+	if (!target)
 		return false;
 	if (ev.type == EVENT_TYPE_POINTER_MOVE && captured_widget == this)
 	{
 		int dx = ev.target_x - pointer_down_widget_x;
 		int dy = ev.target_y - pointer_down_widget_y;
-		TBRect rect = m_parent->m_rect;
+		TBRect rect = target->GetRect();
 		rect.w += dx;
 		rect.h += dy;
 		// Apply limit. We should not use minimum size since we can squeeze
 		// the layout much more, and provide scroll/pan when smaller.
 		rect.w = MAX(rect.w, 50);
 		rect.h = MAX(rect.h, 50);
-		m_parent->SetRect(rect);
+		target->SetRect(rect);
 	}
 	else
 		return false;
@@ -742,7 +744,7 @@ TBDimmer::TBDimmer()
 
 void TBDimmer::OnAdded()
 {
-	SetRect(TBRect(0, 0, m_parent->m_rect.w, m_parent->m_rect.h));
+	SetRect(TBRect(0, 0, GetParent()->GetRect().w, GetParent()->GetRect().h));
 }
 
 }; // namespace tinkerbell

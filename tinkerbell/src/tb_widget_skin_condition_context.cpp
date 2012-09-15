@@ -19,15 +19,15 @@ bool TBWidgetSkinConditionContext::GetCondition(TBSkinCondition::TARGET target, 
 	case TBSkinCondition::TARGET_THIS:
 		return GetCondition(m_widget, info);
 	case TBSkinCondition::TARGET_PARENT:
-		return m_widget->m_parent && GetCondition(m_widget->m_parent, info);
+		return m_widget->GetParent() && GetCondition(m_widget->GetParent(), info);
 	case TBSkinCondition::TARGET_ANCESTORS:
 		{
-			TBWidget *widget = m_widget->m_parent;
+			TBWidget *widget = m_widget->GetParent();
 			while (widget)
 			{
 				if (GetCondition(widget, info))
 					return true;
-				widget = widget->m_parent;
+				widget = widget->GetParent();
 			}
 		}
 	case TBSkinCondition::TARGET_PREV_SIBLING:
@@ -43,7 +43,7 @@ bool TBWidgetSkinConditionContext::GetCondition(TBWidget *widget, const TBSkinCo
 	switch (info.prop)
 	{
 	case TBSkinCondition::PROPERTY_SKIN:
-		return widget->m_skin_bg == info.value;
+		return widget->GetSkinBg() == info.value;
 	case TBSkinCondition::PROPERTY_WINDOW_ACTIVE:
 		if (TBWindow *window = widget->GetParentWindow())
 			return window->IsActive();
@@ -62,7 +62,7 @@ bool TBWidgetSkinConditionContext::GetCondition(TBWidget *widget, const TBSkinCo
 		}
 		return false;
 	case TBSkinCondition::PROPERTY_ID:
-		return widget->m_id == info.value;
+		return widget->GetID() == info.value;
 	case TBSkinCondition::PROPERTY_STATE:
 		return !!(widget->GetAutoState() & info.value);
 	case TBSkinCondition::PROPERTY_VALUE:

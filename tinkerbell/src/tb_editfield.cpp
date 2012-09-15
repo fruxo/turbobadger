@@ -45,8 +45,8 @@ TBEditField::TBEditField()
 	m_scrollbar_y.SetAxis(AXIS_Y);
 	int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
 	int scrollbar_x_h = m_scrollbar_x.GetPreferredSize().pref_h;
-	m_scrollbar_x.SetRect(TBRect(0, m_rect.h - scrollbar_x_h, m_rect.w - scrollbar_y_w, scrollbar_x_h));
-	m_scrollbar_y.SetRect(TBRect(m_rect.w - scrollbar_y_w, 0, scrollbar_y_w, m_rect.h));
+	m_scrollbar_x.SetRect(TBRect(0, - scrollbar_x_h, - scrollbar_y_w, scrollbar_x_h));
+	m_scrollbar_y.SetRect(TBRect(- scrollbar_y_w, 0, scrollbar_y_w, 0));
 	m_scrollbar_x.SetOpacity(0);
 	m_scrollbar_y.SetOpacity(0);
 
@@ -72,9 +72,9 @@ TBRect TBEditField::GetVisibleRect()
 {
 	TBRect rect = GetPaddingRect();
 	if (m_scrollbar_y.GetOpacity())
-		rect.w -= m_scrollbar_y.m_rect.w;
+		rect.w -= m_scrollbar_y.GetRect().w;
 	if (m_scrollbar_x.GetOpacity())
-		rect.h -= m_scrollbar_x.m_rect.h;
+		rect.h -= m_scrollbar_x.GetRect().h;
 	return rect;
 }
 
@@ -454,17 +454,17 @@ void TBEditField::CaretBlinkStop()
 void TBEditFieldScrollRoot::OnPaintChildren(const PaintProps &paint_props)
 {
 	// Avoid setting clipping (can be expensive) if we have no children to paint anyway.
-	if (!m_children.GetFirst())
+	if (!GetFirstChild())
 		return;
 	// Clip children
-	TBRect old_clip_rect = g_renderer->SetClipRect(TBRect(0, 0, m_rect.w, m_rect.h), true);
+	TBRect old_clip_rect = g_renderer->SetClipRect(GetPaddingRect(), true);
 	TBWidget::OnPaintChildren(paint_props);
 	g_renderer->SetClipRect(old_clip_rect, false);
 }
 
 void TBEditFieldScrollRoot::GetChildTranslation(int &x, int &y) const
 {
-	TBEditField *edit_field = static_cast<TBEditField *>(m_parent);
+	TBEditField *edit_field = static_cast<TBEditField *>(GetParent());
 	x = (int) -edit_field->GetStyleEdit()->scroll_x;
 	y = (int) -edit_field->GetStyleEdit()->scroll_y;
 }
@@ -501,7 +501,7 @@ TBTextFragmentContentWidget::TBTextFragmentContentWidget(TBWidget *parent, TBWid
 
 TBTextFragmentContentWidget::~TBTextFragmentContentWidget()
 {
-	m_widget->m_parent->RemoveChild(m_widget);
+	m_widget->GetParent()->RemoveChild(m_widget);
 	delete m_widget;
 }
 
@@ -512,12 +512,12 @@ void TBTextFragmentContentWidget::UpdatePos(int x, int y)
 
 int32 TBTextFragmentContentWidget::GetWidth(TBFontFace *font, TBTextFragment *fragment)
 {
-	return m_widget->m_rect.w ? m_widget->m_rect.w : m_widget->GetPreferredSize().pref_w;
+	return m_widget->GetRect().w ? m_widget->GetRect().w : m_widget->GetPreferredSize().pref_w;
 }
 
 int32 TBTextFragmentContentWidget::GetHeight(TBFontFace *font, TBTextFragment *fragment)
 {
-	return m_widget->m_rect.h ? m_widget->m_rect.h : m_widget->GetPreferredSize().pref_h;
+	return m_widget->GetRect().h ? m_widget->GetRect().h : m_widget->GetPreferredSize().pref_h;
 }
 
 int32 TBTextFragmentContentWidget::GetBaseline(TBFontFace *font, TBTextFragment *fragment)

@@ -64,14 +64,14 @@ TBScrollBarVisibility TBScrollBarVisibility::Solve(SCROLL_MODE mode, int content
 
 void TBScrollContainerRoot::OnPaintChildren(const PaintProps &paint_props)
 {
-	TBRect old_clip_rect = g_renderer->SetClipRect(TBRect(0, 0, m_rect.w, m_rect.h), true);
+	TBRect old_clip_rect = g_renderer->SetClipRect(GetPaddingRect(), true);
 	TBWidget::OnPaintChildren(paint_props);
 	g_renderer->SetClipRect(old_clip_rect, false);
 }
 
 void TBScrollContainerRoot::GetChildTranslation(int &x, int &y) const
 {
-	TBScrollContainer *sc = static_cast<TBScrollContainer *>(m_parent);
+	TBScrollContainer *sc = static_cast<TBScrollContainer *>(GetParent());
 	x = (int) -sc->m_scrollbar_x.GetValue();
 	y = (int) -sc->m_scrollbar_y.GetValue();
 }
@@ -93,9 +93,9 @@ TBScrollContainer::TBScrollContainer()
 	m_scrollbar_y.SetAxis(AXIS_Y);
 	int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
 	int scrollbar_x_h = m_scrollbar_x.GetPreferredSize().pref_h;
-	m_scrollbar_x.SetRect(TBRect(0, m_rect.h - scrollbar_x_h, m_rect.w - scrollbar_y_w, scrollbar_x_h));
-	m_scrollbar_y.SetRect(TBRect(m_rect.w - scrollbar_y_w, 0, scrollbar_y_w, m_rect.h));
-	m_root.SetRect(TBRect(0, 0, m_rect.w - scrollbar_y_w, m_rect.h - scrollbar_x_h));
+	m_scrollbar_x.SetRect(TBRect(0, - scrollbar_x_h, - scrollbar_y_w, scrollbar_x_h));
+	m_scrollbar_y.SetRect(TBRect(- scrollbar_y_w, 0, scrollbar_y_w, 0));
+	m_root.SetRect(TBRect(0, 0, - scrollbar_y_w, - scrollbar_x_h));
 }
 
 TBScrollContainer::~TBScrollContainer()
@@ -115,8 +115,8 @@ void TBScrollContainer::SetScrollMode(SCROLL_MODE mode)
 
 TBRect TBScrollContainer::GetVisibleRect()
 {
-	int visible_w = m_rect.w;
-	int visible_h = m_rect.h;
+	int visible_w = GetRect().w;
+	int visible_h = GetRect().h;
 	if (m_scrollbar_x.GetOpacity())
 		visible_h -= m_scrollbar_x.GetPreferredSize().pref_h;
 	if (m_scrollbar_y.GetOpacity())
@@ -229,7 +229,7 @@ void TBScrollContainer::ValidateLayout()
 		int scrollbar_x_h = m_scrollbar_x.GetPreferredSize().pref_h;
 		int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
 		TBScrollBarVisibility visibility = TBScrollBarVisibility::Solve(m_mode, ps.pref_w, ps.pref_h,
-																		m_rect.w, m_rect.h,
+																		GetRect().w, GetRect().h,
 																		scrollbar_x_h, scrollbar_y_w);
 		m_scrollbar_x.SetOpacity(visibility.x_on ? 1.f : 0.f);
 		m_scrollbar_y.SetOpacity(visibility.y_on ? 1.f : 0.f);
@@ -238,10 +238,10 @@ void TBScrollContainer::ValidateLayout()
 		int content_w, content_h;
 		if (m_adapt_content_size)
 		{
-			content_w = MAX(ps.pref_w, m_root.m_rect.w);
-			content_h = MAX(ps.pref_h, m_root.m_rect.h);
-			if (!visibility.x_on && m_root.m_rect.w < ps.pref_w)
-				content_w = MIN(ps.pref_w, m_root.m_rect.w);
+			content_w = MAX(ps.pref_w, m_root.GetRect().w);
+			content_h = MAX(ps.pref_h, m_root.GetRect().h);
+			if (!visibility.x_on && m_root.GetRect().w < ps.pref_w)
+				content_w = MIN(ps.pref_w, m_root.GetRect().w);
 		}
 		else
 		{
@@ -249,10 +249,10 @@ void TBScrollContainer::ValidateLayout()
 			content_h = ps.pref_h;
 		}
 		content_child->SetRect(TBRect(0, 0, content_w, content_h));
-		double limit_max_w = MAX(0, content_w - m_root.m_rect.w);
-		double limit_max_h = MAX(0, content_h - m_root.m_rect.h);
-		m_scrollbar_x.SetLimits(0, limit_max_w, m_root.m_rect.w);
-		m_scrollbar_y.SetLimits(0, limit_max_h, m_root.m_rect.h);
+		double limit_max_w = MAX(0, content_w - m_root.GetRect().w);
+		double limit_max_h = MAX(0, content_h - m_root.GetRect().h);
+		m_scrollbar_x.SetLimits(0, limit_max_w, m_root.GetRect().w);
+		m_scrollbar_y.SetLimits(0, limit_max_h, m_root.GetRect().h);
 	}
 }
 

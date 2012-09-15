@@ -161,9 +161,9 @@ bool ResourceEditWindow::OnEvent(const TBWidgetEvent &ev)
 			win->SetText("Test window");
 			g_widgets_reader->LoadData(win->GetContentRoot(), m_source_edit->GetText());
 			win->ResizeToFitContent();
-			win->SetPosition(TBPoint((m_parent->m_rect.w - win->m_rect.w) / 2,
-									(m_parent->m_rect.h - win->m_rect.h) / 2));
-			m_parent->AddChild(win);
+			win->SetPosition(TBPoint((GetParent()->GetRect().w - win->GetRect().w) / 2,
+									(GetParent()->GetRect().h - win->GetRect().h) / 2));
+			GetParent()->AddChild(win);
 		}
 		return true;
 	}

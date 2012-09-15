@@ -16,14 +16,14 @@ namespace tinkerbell {
 TBMessageWindow::TBMessageWindow(TBWidget *target, TBID id)
 	: TBWidgetSafePointer(target)
 {
-	m_id.Set(id);
+	SetID(id);
 }
 
 TBMessageWindow::~TBMessageWindow()
 {
 	if (TBWidget *dimmer = m_dimmer.Get())
 	{
-		dimmer->m_parent->RemoveChild(dimmer);
+		dimmer->GetParent()->RemoveChild(dimmer);
 		delete dimmer;
 	}
 }
@@ -77,8 +77,8 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 	ResizeToFitContent();
 
 	// Get how much we overflow the textfield has given the current width, and grow our height to show all we can.
-	int new_height = m_rect.h + editfield->GetStyleEdit()->GetOverflowY();
-	new_height = MIN(new_height, root->m_rect.h - 50); // 50px for some window title and padding
+	int new_height = GetRect().h + editfield->GetStyleEdit()->GetOverflowY();
+	new_height = MIN(new_height, root->GetRect().h - 50); // 50px for some window title and padding
 
 	// Create background dimmer
 	if (settings->dimmer)
@@ -91,9 +91,9 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 	}
 
 	// Center and size to the new height
-	SetRect(TBRect((root->m_rect.w - m_rect.w) / 2,
-					(root->m_rect.h - new_height) / 2,
-					m_rect.w, new_height));
+	SetRect(TBRect((root->GetRect().w - GetRect().w) / 2,
+					(root->GetRect().h - new_height) / 2,
+					GetRect().w, new_height));
 	root->AddChild(this);
 	return true;
 }
@@ -121,7 +121,7 @@ bool TBMessageWindow::OnEvent(const TBWidgetEvent &ev)
 
 		// Invoke the click on the target
 		TBWidgetEvent target_ev(EVENT_TYPE_CLICK);
-		target_ev.ref_id = ev.target->m_id;
+		target_ev.ref_id = ev.target->GetID();
 		InvokeEvent(target_ev);
 
 		// If target got deleted, close

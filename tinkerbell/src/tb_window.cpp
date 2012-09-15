@@ -28,9 +28,9 @@ TBWindow::TBWindow()
 
 TBWindow::~TBWindow()
 {
-	if (m_resizer.m_parent)			RemoveChild(&m_resizer);
-	if (m_mover.m_parent)			RemoveChild(&m_mover);
-	if (m_close_button.m_parent)	m_mover.RemoveChild(&m_close_button);
+	if (m_resizer.GetParent())		RemoveChild(&m_resizer);
+	if (m_mover.GetParent())		RemoveChild(&m_mover);
+	if (m_close_button.GetParent())	m_mover.RemoveChild(&m_close_button);
 	m_mover.RemoveChild(&m_textfield);
 }
 
@@ -46,15 +46,15 @@ void TBWindow::ResizeToFitContent(RESIZE_FIT fit)
 	}
 	else if (fit == RESIZE_FIT_CURRENT_OR_NEEDED)
 	{
-		new_w = CLAMP(m_rect.w, ps.min_w, ps.max_w);
-		new_h = CLAMP(m_rect.h, ps.min_h, ps.max_h);
+		new_w = CLAMP(GetRect().w, ps.min_w, ps.max_w);
+		new_h = CLAMP(GetRect().h, ps.min_h, ps.max_h);
 	}
-	if (m_parent)
+	if (GetParent())
 	{
-		new_w = MIN(new_w, m_parent->m_rect.w);
-		new_h = MIN(new_h, m_parent->m_rect.h);
+		new_w = MIN(new_w, GetParent()->GetRect().w);
+		new_h = MIN(new_h, GetParent()->GetRect().h);
 	}
-	SetRect(TBRect(m_rect.x, m_rect.y, new_w, new_h));
+	SetRect(TBRect(GetRect().x, GetRect().y, new_w, new_h));
 }
 
 void TBWindow::Close()
@@ -70,7 +70,7 @@ bool TBWindow::IsActive()
 TBWindow *TBWindow::GetTopMostOtherWindow(bool only_activable_windows)
 {
 	TBWindow *other_window = nullptr;
-	TBWidget *sibling = m_parent->GetLastChild();
+	TBWidget *sibling = GetParent()->GetLastChild();
 	while (sibling && !other_window)
 	{
 		if (sibling != this)
@@ -86,7 +86,7 @@ TBWindow *TBWindow::GetTopMostOtherWindow(bool only_activable_windows)
 
 void TBWindow::Activate()
 {
-	if (!m_parent || IsActive() || !(m_settings & WINDOW_SETTINGS_CAN_ACTIVATE))
+	if (!GetParent() || IsActive() || !(m_settings & WINDOW_SETTINGS_CAN_ACTIVATE))
 		return;
 
 	// Deactivate currently active window
@@ -138,27 +138,33 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 
 	if (settings & WINDOW_SETTINGS_TITLEBAR)
 	{
-		if (!m_mover.m_parent)			AddChild(&m_mover);
+		if (!m_mover.GetParent())
+			AddChild(&m_mover);
 	}
 	else if (!(settings & WINDOW_SETTINGS_TITLEBAR))
 	{
-		if (m_mover.m_parent)			RemoveChild(&m_mover);
+		if (m_mover.GetParent())
+			RemoveChild(&m_mover);
 	}
 	if (settings & WINDOW_SETTINGS_RESIZABLE)
 	{
-		if (!m_resizer.m_parent)		AddChild(&m_resizer);
+		if (!m_resizer.GetParent())
+			AddChild(&m_resizer);
 	}
 	else if (!(settings & WINDOW_SETTINGS_RESIZABLE))
 	{
-		if (m_resizer.m_parent)			RemoveChild(&m_resizer);
+		if (m_resizer.GetParent())
+			RemoveChild(&m_resizer);
 	}
 	if (settings & WINDOW_SETTINGS_CLOSE_BUTTON)
 	{
-		if (!m_close_button.m_parent)	AddChild(&m_close_button);
+		if (!m_close_button.GetParent())
+			AddChild(&m_close_button);
 	}
 	else if (!(settings & WINDOW_SETTINGS_CLOSE_BUTTON))
 	{
-		if (m_close_button.m_parent)	RemoveChild(&m_close_button);
+		if (m_close_button.GetParent())
+			RemoveChild(&m_close_button);
 	}
 
 	// FIX: invalidate layout / resize window!
@@ -214,7 +220,7 @@ bool TBWindow::OnEvent(const TBWidgetEvent &ev)
 void TBWindow::OnAdded()
 {
 	// If we was added last, call Activate to update status etc.
-	if (m_parent->GetLastChild() == this)
+	if (GetParent()->GetLastChild() == this)
 		Activate();
 }
 
@@ -239,8 +245,8 @@ void TBWindow::OnResized(int old_w, int old_h)
 	// Manually move our own decoration children
 	// FIX: Put a layout in the TBMover so we can add things there nicely.
 	int title_height = GetTitleHeight();
-	m_mover.SetRect(TBRect(0, 0, m_rect.w, title_height));
-	m_resizer.SetRect(TBRect(m_rect.w - 20, m_rect.h - 20, 20, 20));
+	m_mover.SetRect(TBRect(0, 0, GetRect().w, title_height));
+	m_resizer.SetRect(TBRect(GetRect().w - 20, GetRect().h - 20, 20, 20));
 	TBRect mover_rect = m_mover.GetPaddingRect();
 	int button_size = mover_rect.h;
 	m_close_button.SetRect(TBRect(mover_rect.x + mover_rect.w - button_size, mover_rect.y, button_size, button_size));

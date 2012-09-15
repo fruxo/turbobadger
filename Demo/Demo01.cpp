@@ -91,8 +91,8 @@ void DemoWindow::LoadResource(TBNode &node)
 		SetPosition(TBPoint(tmp->GetValue().GetArray()->GetValue(0)->GetInt(),
 							tmp->GetValue().GetArray()->GetValue(1)->GetInt()));
 	else
-		SetPosition(TBPoint((m_parent->m_rect.w - m_rect.w) / 2,
-							(m_parent->m_rect.h - m_rect.h) / 2));
+		SetPosition(TBPoint((GetParent()->GetRect().w - GetRect().w) / 2,
+							(GetParent()->GetRect().h - GetRect().h) / 2));
 
 	// Ensure we have focus - now that we've filled the window with possible focusable
 	// widgets. EnsureFocus was automatically called when the window was activated (by
@@ -396,7 +396,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 				TBButton *button = new TBButton;
 				button->GetID().Set("remove button");
 				button->SetText(str);
-				ev.target->m_parent->AddChild(button);
+				ev.target->GetParent()->AddChild(button);
 			}
 			return true;
 		}
@@ -405,7 +405,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 			for(uint32 i = 0; i < ev.target->m_data; i++)
 			{
 				TBMessageData *data = new TBMessageData();
-				data->id1 = ev.target->m_parent->m_id;
+				data->id1 = ev.target->GetParent()->GetID();
 				data->v1.SetInt(i);
 				PostMessageDelayed(TBIDC("new button"), data, 100 + i * 500);
 			}
@@ -413,7 +413,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("remove button"))
 		{
-			ev.target->m_parent->RemoveChild(ev.target);
+			ev.target->GetParent()->RemoveChild(ev.target);
 			delete ev.target;
 			return true;
 		}
@@ -476,7 +476,7 @@ void AnimationsWindow::Animate()
 		fade = fade_check->GetValue() ? true : false;
 
 	// Start move animation
-	if (AnimationObject *anim = new WidgetAnimationRect(this, m_rect.Offset(-m_rect.x - m_rect.w, 0), m_rect))
+	if (AnimationObject *anim = new WidgetAnimationRect(this, GetRect().Offset(-GetRect().x - GetRect().w, 0), GetRect()))
 		AnimationManager::StartAnimation(anim, curve, duration);
 	// Start fade animation
 	if (fade)
@@ -627,7 +627,7 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		{
 			ResourceEditWindow *res_edit_win = new ResourceEditWindow();
 			res_edit_win->Load("Demo/ui_resources/resource_edit_test.tb.txt");
-			m_parent->AddChild(res_edit_win);
+			GetParent()->AddChild(res_edit_win);
 			return true;
 		}
 	}

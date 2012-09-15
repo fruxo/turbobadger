@@ -22,9 +22,9 @@ TBSectionHeader::TBSectionHeader()
 
 bool TBSectionHeader::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.target == this && ev.type == EVENT_TYPE_CHANGED && m_parent->m_parent)
+	if (ev.target == this && ev.type == EVENT_TYPE_CHANGED && GetParent()->GetParent())
 	{
-		if (TBSection *section = TBSafeCast(TBSection, m_parent->m_parent))
+		if (TBSection *section = TBSafeCast(TBSection, GetParent()->GetParent()))
 		{
 			section->GetContainer()->SetValue(GetValue());
 
@@ -157,7 +157,7 @@ PreferredSize TBToggleContainer::GetPreferredSize()
 	{
 		if (!GetIsOn())
 		{
-			if (m_parent->GetAxis() == AXIS_X)
+			if (GetParent()->GetAxis() == AXIS_X)
 				ps.min_w = ps.pref_w = ps.max_w = 0;
 			else
 				ps.min_h = ps.pref_h = ps.max_h = 0;

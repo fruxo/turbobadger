@@ -59,8 +59,8 @@ void WidgetAnimationOpacity::OnAnimationStop(bool aborted)
 	if (m_die && !aborted)
 	{
 		TBWidgetSafePointer the_widget(m_widget);
-		if (m_widget->m_parent)
-			m_widget->m_parent->RemoveChild(m_widget);
+		if (m_widget->GetParent())
+			m_widget->GetParent()->RemoveChild(m_widget);
 		if (the_widget.Get())
 			delete the_widget.Get();
 	}
@@ -162,10 +162,10 @@ bool WidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 	if (TBMessageWindow *window = TBSafeCast(TBMessageWindow, widget))
 	{
 		// Move out dying message windows
-		if (!window->m_rect.IsEmpty())
+		if (!window->GetRect().IsEmpty())
 		{
-			TBRect src_rect = window->m_rect;
-			TBRect dst_rect = window->m_rect.Offset(0, 50);
+			TBRect src_rect = window->GetRect();
+			TBRect dst_rect = window->GetRect().Offset(0, 50);
 			if (AnimationObject *anim = new WidgetAnimationRect(window, src_rect, dst_rect))
 				AnimationManager::StartAnimation(anim, ANIMATION_CURVE_SPEED_UP);
 		}
@@ -192,10 +192,10 @@ void WidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
 	if (TBMessageWindow *window = TBSafeCast(TBMessageWindow, widget))
 	{
 		// Move in new message windows
-		if (!window->m_rect.IsEmpty())
+		if (!window->GetRect().IsEmpty())
 		{
-			TBRect src_rect = window->m_rect.Offset(0, -50);
-			TBRect dst_rect = window->m_rect;
+			TBRect src_rect = window->GetRect().Offset(0, -50);
+			TBRect dst_rect = window->GetRect();
 			if (AnimationObject *anim = new WidgetAnimationRect(window, src_rect, dst_rect))
 				AnimationManager::StartAnimation(anim);
 		}

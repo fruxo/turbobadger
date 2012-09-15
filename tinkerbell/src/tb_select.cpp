@@ -94,7 +94,7 @@ void TBSelectList::OnItemChanged(int index)
 	if (TBWidget *widget = CreateAndAddItemAfter(index, old_widget))
 		widget->SetStateRaw(old_state);
 
-	old_widget->m_parent->RemoveChild(old_widget);
+	old_widget->GetParent()->RemoveChild(old_widget);
 	delete old_widget;
 }
 
@@ -161,7 +161,7 @@ void TBSelectList::ValidateList()
 	// Remove old items
 	while (TBWidget *child = m_layout.GetContentRoot()->GetFirstChild())
 	{
-		child->m_parent->RemoveChild(child);
+		child->GetParent()->RemoveChild(child);
 		delete child;
 	}
 	if (!m_source || !m_source->GetNumItems())
@@ -236,7 +236,7 @@ void TBSelectList::SetValue(int value)
 
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	if (TBWidget *widget = GetItemWidget(m_value))
-		ev.ref_id = widget->m_id;
+		ev.ref_id = widget->GetID();
 	InvokeEvent(ev);
 }
 
@@ -288,7 +288,7 @@ void TBSelectList::OnProcessAfterChildren()
 
 bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_CLICK && ev.target->m_parent == m_layout.GetContentRoot())
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->GetParent() == m_layout.GetContentRoot())
 	{
 		// SetValue (EVENT_TYPE_CHANGED) might cause something to delete this (f.ex closing
 		// the dropdown menu. We want to sent another event, so ensure we're still around.
@@ -315,7 +315,7 @@ bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 			// Invoke the click event on the target list
 			TBWidgetEvent ev(EVENT_TYPE_CLICK, 0, 0);
 			if (TBWidget *widget = GetItemWidget(m_value))
-				ev.ref_id = widget->m_id;
+				ev.ref_id = widget->GetID();
 			target_list->InvokeEvent(ev);
 		}
 		return true;
@@ -469,7 +469,7 @@ TBMenuWindow::TBMenuWindow(TBWidget *target, TBID id)
 	: TBWidgetSafePointer(target)
 	, m_select_list(nullptr)
 {
-	m_id.Set(id);
+	SetID(id);
 	SetSkinBg("TBMenuWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
@@ -506,8 +506,8 @@ TBRect TBMenuWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
 
 	TBRect target_rect;
 	TBPoint pos;
-	int w = MIN(ps.pref_w, root->m_rect.w);
-	int h = MIN(ps.pref_h, root->m_rect.h);
+	int w = MIN(ps.pref_w, root->GetRect().w);
+	int h = MIN(ps.pref_h, root->GetRect().h);
 	if (pos_in_root)
 	{
 		pos = *pos_in_root;
@@ -521,15 +521,15 @@ TBRect TBMenuWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
 		// If the menu is aligned top or bottom, limit its height to the worst case available height.
 		// Being in the center of the root, that is half the root height minus the target rect.
 		if (align == TB_ALIGN_TOP || align == TB_ALIGN_BOTTOM)
-			h = MIN(h, root->m_rect.h / 2 - target->m_rect.h);
-		target_rect = target->m_rect;
+			h = MIN(h, root->GetRect().h / 2 - target->GetRect().h);
+		target_rect = target->GetRect();
 	}
 
 	int x, y;
 	if (align == TB_ALIGN_BOTTOM)
 	{
 		x = pos.x;
-		y = pos.y + target_rect.h + h > root->m_rect.h ? pos.y - h : pos.y + target_rect.h;
+		y = pos.y + target_rect.h + h > root->GetRect().h ? pos.y - h : pos.y + target_rect.h;
 	}
 	else if (align == TB_ALIGN_TOP)
 	{
@@ -538,13 +538,13 @@ TBRect TBMenuWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
 	}
 	else if (align == TB_ALIGN_RIGHT)
 	{
-		x = pos.x + target_rect.w + w > root->m_rect.w ? pos.x - w : pos.x + target_rect.w;
-		y = MIN(pos.y, root->m_rect.h - h);
+		x = pos.x + target_rect.w + w > root->GetRect().w ? pos.x - w : pos.x + target_rect.w;
+		y = MIN(pos.y, root->GetRect().h - h);
 	}
 	else //if (align == TB_ALIGN_LEFT)
 	{
 		x = pos.x - w < 0 ? pos.x + target_rect.w : pos.x - w;
-		y = MIN(pos.y, root->m_rect.h - h);
+		y = MIN(pos.y, root->GetRect().h - h);
 	}
 
 	return TBRect(x, y, w, h);

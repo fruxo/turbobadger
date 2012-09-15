@@ -231,7 +231,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		// Collapse empty widgets completly if there is other widgets.
-		last_child_is_collapsed = (ps.pref_w == 0 && m_children.GetFirst() != m_children.GetLast());
+		last_child_is_collapsed = (ps.pref_w == 0 && GetFirstChild() != GetLastChild());
 		if (last_child_is_collapsed)
 			continue;
 		last_added_spacing = ending_space;
@@ -310,7 +310,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		// Collapse empty widgets completly if there is other widgets
-		if (ps.pref_w == 0 && m_children.GetFirst() != m_children.GetLast())
+		if (ps.pref_w == 0 && GetFirstChild() != GetLastChild())
 		{
 			child->SetRect(TBRect());
 			continue;
@@ -481,6 +481,7 @@ void TBLayout::GetChildTranslation(int &x, int &y) const
 
 void TBLayout::ScrollIntoView(const TBRect &rect)
 {
+	TBRect m_rect = GetRect();
 	TBRect visible_rect = m_axis == AXIS_X ?	TBRect(m_overflow_scroll, 0, m_rect.w, m_rect.h) :
 												TBRect(0, m_overflow_scroll, m_rect.w, m_rect.h);
 	int new_x = visible_rect.x;

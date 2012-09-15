@@ -62,10 +62,10 @@ TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSourc
 
 TBSimpleLayoutItemWidget::~TBSimpleLayoutItemWidget()
 {
-	if (m_image_arrow.m_parent)
+	if (m_image_arrow.GetParent())
 		RemoveChild(&m_image_arrow);
 	RemoveChild(&m_textfield);
-	if (m_image.m_parent)
+	if (m_image.GetParent())
 		RemoveChild(&m_image);
 }
 
