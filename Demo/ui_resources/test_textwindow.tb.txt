@@ -31,5 +31,4 @@ TBLayout: axis: y, distribution: available
 				" • <u>Underline</u>, <color #f44>Red</color>, <color #6f6>Green</color>, <color #aaf>Blue</color>\n\n" \
 				"<color #0794f8>Good to know</color>\n" \
 				" • The text component you're reading in handles styling and embedded content (such as this widget: <widget TBButton: text: ':)'>), but does not handle editing of those fully. Undo/Redo should work fine, but caret movement and position updates doesn't.\n" \
-				" • All resources are UTF-8.\n" \
-				" • Don't \"upgrade project\" in Visual Studio 2012. Freeglut is having input bugs with the new toolset version. Freeglut is awfully buggy and outdated on other platforms as well and it needs to be replaced. It's not a dependency of tinkerbell itself or the GL backend.\n"
+				" • All resources are UTF-8.\n"
