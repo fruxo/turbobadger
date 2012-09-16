@@ -24,10 +24,10 @@ public:
 	bool Reserve(int size);
 
 	/** Get a pointer to the buffer data. */
-	char *GetData() { return m_data; }
+	char *GetData() const { return m_data; }
 
 	/** Return the size of the buffer in bytes. */
-	int GetCapacity() { return m_data_size; }
+	int GetCapacity() const { return m_data_size; }
 
 	/** Append data with size bytes at the end of the buffer and
 		increase the append position with the same amount.
@@ -53,7 +53,7 @@ public:
 	void ResetAppendPos() { m_append_pos = 0; }
 
 	/** Return the current append position in in bytes. */
-	int GetAppendPos() { return m_append_pos; }
+	int GetAppendPos() const { return m_append_pos; }
 private:
 	char *m_data;
 	int m_data_size;
