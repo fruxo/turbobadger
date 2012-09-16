@@ -19,6 +19,12 @@
     <Filter Include="Source Files\stb_image">
       <UniqueIdentifier>{9635f581-5440-40ed-9040-6534391f08fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\glfw">
+      <UniqueIdentifier>{c0affabe-02aa-41c1-8236-3de174f4e472}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\glfw\src">
+      <UniqueIdentifier>{78c12b96-9e82-4995-9b9d-2ddadeb85eda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Demo01.cpp">
@@ -45,6 +51,63 @@
     <ClCompile Include="..\ListWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\glfw\src\clipboard.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\fullscreen.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\init.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\input.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\joystick.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\opengl.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\time.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_clipboard.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_fullscreen.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_gamma.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_init.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_input.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_joystick.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_native.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_opengl.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_time.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\win32_window.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw\src\window.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\glfw_extra_win.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Demo.h">
@@ -63,6 +126,18 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ListWindow.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\glfw\src\win32_platform.h">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\glfw\include\GL\glfw3.h">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\glfw_extra.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\config.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

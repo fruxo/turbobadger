@@ -947,7 +947,7 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 	}
 }
 
-void TBWidget::InvokeWheel(int x, int y, int delta, MODIFIER_KEYS modifierkeys)
+void TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys)
 {
 	SetHoveredWidget(GetWidgetAt(x, y, true));
 	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
@@ -957,7 +957,8 @@ void TBWidget::InvokeWheel(int x, int y, int delta, MODIFIER_KEYS modifierkeys)
 		pointer_move_widget_x = x;
 		pointer_move_widget_y = y;
 		TBWidgetEvent ev(EVENT_TYPE_WHEEL, x, y, modifierkeys);
-		ev.delta = delta;
+		ev.delta_x = delta_x;
+		ev.delta_y = delta_y;
 		target->InvokeEvent(ev);
 	}
 }

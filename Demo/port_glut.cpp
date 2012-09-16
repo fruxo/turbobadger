@@ -1,9 +1,4 @@
-#ifdef MACOSX
-#include "GLUT/glut.h"
-#define glutLeaveMainLoop() exit(0)
-#else
-#include "GL/freeglut.h"
-#endif
+#include "glfw_extra.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -22,79 +17,100 @@ TBWidget *g_root = nullptr;
 Application *application = nullptr;
 /*static */Application *Application::GetApp() { return application; }
 
-int mainWindow;
+GLFWwindow mainWindow;
 int window_w = 1280;
 int window_h = 740;
+int mouse_x = 0;
+int mouse_y = 0;
+bool key_alt = false;
+bool key_ctrl = false;
+bool key_shift = false;
 bool has_pending_update = false;
 
-MODIFIER_KEYS GlutModToTBMod()
+MODIFIER_KEYS GetModifierKeys()
 {
-	int glut_modifier = glutGetModifiers();
-	MODIFIER_KEYS modifier = TB_MODIFIER_NONE;
-	if (glut_modifier & GLUT_ACTIVE_SHIFT)	modifier |= TB_SHIFT;
-	if (glut_modifier & GLUT_ACTIVE_CTRL)	modifier |= TB_CTRL;
-	if (glut_modifier & GLUT_ACTIVE_ALT)	modifier |= TB_ALT;
-	return modifier;
+	MODIFIER_KEYS code = TB_MODIFIER_NONE;
+	if (key_alt)	code |= TB_ALT;
+	if (key_ctrl)	code |= TB_CTRL;
+	if (key_shift)	code |= TB_SHIFT;
+	return code;
 }
 
-void Keyboard(unsigned char key, int x, int y, bool down)
+static void char_callback(GLFWwindow window, int character)
 {
-	MODIFIER_KEYS modifier = GlutModToTBMod();
+	g_root->InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), true);
+	g_root->InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), false);
+}
+
+static void key_callback(GLFWwindow window, int key, int action)
+{
+	MODIFIER_KEYS modifier = GetModifierKeys();
+	bool down = (action == GLFW_PRESS);
 	switch (key)
 	{
-	case 27:	g_root->InvokeKey(0, TB_KEY_ESC, modifier, down);		break;
-	case 127:	g_root->InvokeKey(0, TB_KEY_DELETE, modifier, down);	break;
-	case 8:		g_root->InvokeKey(0, TB_KEY_BACKSPACE, modifier, down);	break;
-	case 9:		g_root->InvokeKey(0, TB_KEY_TAB, modifier, down);		break;
-	case 13:	g_root->InvokeKey(0, TB_KEY_ENTER, modifier, down);		break;
+	case GLFW_KEY_F1:			g_root->InvokeKey(0, TB_KEY_F1, modifier, down); break;
+	case GLFW_KEY_F2:			g_root->InvokeKey(0, TB_KEY_F2, modifier, down); break;
+	case GLFW_KEY_F3:			g_root->InvokeKey(0, TB_KEY_F3, modifier, down); break;
+	case GLFW_KEY_F4:			g_root->InvokeKey(0, TB_KEY_F4, modifier, down); break;
+	case GLFW_KEY_F5:			g_root->InvokeKey(0, TB_KEY_F5, modifier, down); break;
+	case GLFW_KEY_F6:			g_root->InvokeKey(0, TB_KEY_F6, modifier, down); break;
+	case GLFW_KEY_F7:			g_root->InvokeKey(0, TB_KEY_F7, modifier, down); break;
+	case GLFW_KEY_F8:			g_root->InvokeKey(0, TB_KEY_F8, modifier, down); break;
+	case GLFW_KEY_F9:			g_root->InvokeKey(0, TB_KEY_F9, modifier, down); break;
+	case GLFW_KEY_F10:			g_root->InvokeKey(0, TB_KEY_F10, modifier, down); break;
+	case GLFW_KEY_F11:			g_root->InvokeKey(0, TB_KEY_F11, modifier, down); break;
+	case GLFW_KEY_F12:			g_root->InvokeKey(0, TB_KEY_F12, modifier, down); break;
+	case GLFW_KEY_LEFT:			g_root->InvokeKey(0, TB_KEY_LEFT, modifier, down); break;
+	case GLFW_KEY_UP:			g_root->InvokeKey(0, TB_KEY_UP, modifier, down); break;
+	case GLFW_KEY_RIGHT:		g_root->InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
+	case GLFW_KEY_DOWN:			g_root->InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
+	case GLFW_KEY_PAGEUP:		g_root->InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
+	case GLFW_KEY_PAGEDOWN:		g_root->InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
+	case GLFW_KEY_HOME:			g_root->InvokeKey(0, TB_KEY_HOME, modifier, down); break;
+	case GLFW_KEY_END:			g_root->InvokeKey(0, TB_KEY_END, modifier, down); break;
+	case GLFW_KEY_INSERT:		g_root->InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
+	case GLFW_KEY_TAB:			g_root->InvokeKey(0, TB_KEY_TAB, modifier, down); break;
+	case GLFW_KEY_DEL:			g_root->InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
+	case GLFW_KEY_BACKSPACE:	g_root->InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
+	case GLFW_KEY_ENTER:		g_root->InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
+	case GLFW_KEY_ESC:			g_root->InvokeKey(0, TB_KEY_ESC, modifier, down); break;
+	case GLFW_KEY_MENU:
+		if (TBWidget::focused_widget)
+		{
+			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, 0, 0, GetModifierKeys());
+			TBWidget::focused_widget->InvokeEvent(ev);
+		}
+		break;
+	case GLFW_KEY_LSHIFT:
+	case GLFW_KEY_RSHIFT:
+		key_shift = down;
+		break;
+	case GLFW_KEY_LCTRL:
+	case GLFW_KEY_RCTRL:
+		key_ctrl = down;
+		break;
+	case GLFW_KEY_LALT:
+	case GLFW_KEY_RALT:
+		key_alt = down;
+		break;
 	default:
-		g_root->InvokeKey(key, TB_KEY_UNDEFINED, modifier, down);
+		// At least the windows implementation of glfw calls KeyboardSpecial
+		// when pressing a character while ctrl is also pressed.
+		if (key_ctrl && !key_alt && key >= 32 && key <= 255)
+			g_root->InvokeKey(key, TB_KEY_UNDEFINED, modifier, down);
 		break;
 	}
 }
 
-void KeyboardSpecial(int key, int x, int y, bool down)
+static void mouse_button_callback(GLFWwindow window, int button, int action)
 {
-	MODIFIER_KEYS modifier = GlutModToTBMod();
-	switch (key)
+	int x = mouse_x;
+	int y = mouse_y;
+	if (button == GLFW_MOUSE_BUTTON_LEFT)
 	{
-	case GLUT_KEY_F1:			g_root->InvokeKey(0, TB_KEY_F1, modifier, down); break;
-	case GLUT_KEY_F2:			g_root->InvokeKey(0, TB_KEY_F2, modifier, down); break;
-	case GLUT_KEY_F3:			g_root->InvokeKey(0, TB_KEY_F3, modifier, down); break;
-	case GLUT_KEY_F4:			g_root->InvokeKey(0, TB_KEY_F4, modifier, down); if (modifier & TB_ALT) glutLeaveMainLoop(); break;
-	case GLUT_KEY_F5:			g_root->InvokeKey(0, TB_KEY_F5, modifier, down); break;
-	case GLUT_KEY_F6:			g_root->InvokeKey(0, TB_KEY_F6, modifier, down); break;
-	case GLUT_KEY_F7:			g_root->InvokeKey(0, TB_KEY_F7, modifier, down); break;
-	case GLUT_KEY_F8:			g_root->InvokeKey(0, TB_KEY_F8, modifier, down); break;
-	case GLUT_KEY_F9:			g_root->InvokeKey(0, TB_KEY_F9, modifier, down); break;
-	case GLUT_KEY_F10:			g_root->InvokeKey(0, TB_KEY_F10, modifier, down); break;
-	case GLUT_KEY_F11:			g_root->InvokeKey(0, TB_KEY_F11, modifier, down); break;
-	case GLUT_KEY_F12:			g_root->InvokeKey(0, TB_KEY_F12, modifier, down); break;
-	case GLUT_KEY_LEFT:			g_root->InvokeKey(0, TB_KEY_LEFT, modifier, down); break;
-	case GLUT_KEY_UP:			g_root->InvokeKey(0, TB_KEY_UP, modifier, down); break;
-	case GLUT_KEY_RIGHT:		g_root->InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
-	case GLUT_KEY_DOWN:			g_root->InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
-	case GLUT_KEY_PAGE_UP:		g_root->InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
-	case GLUT_KEY_PAGE_DOWN:	g_root->InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
-	case GLUT_KEY_HOME:			g_root->InvokeKey(0, TB_KEY_HOME, modifier, down); break;
-	case GLUT_KEY_END:			g_root->InvokeKey(0, TB_KEY_END, modifier, down); break;
-	case GLUT_KEY_INSERT:		g_root->InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
-	default: break;
-	}
-}
-
-void KeyboardDown(unsigned char key, int x, int y)	{ Keyboard(key, x, y, true); }
-void KeyboardUp(unsigned char key, int x, int y)	{ Keyboard(key, x, y, false); }
-void KeyboardSpecialDown(int key, int x, int y)		{ KeyboardSpecial(key, x, y, true); }
-void KeyboardSpecialUp(int key, int x, int y)		{ KeyboardSpecial(key, x, y, false); }
-
-void Mouse(int button, int state, int x, int y)
-{
-	if (button == GLUT_LEFT_BUTTON)
-	{
-		if (state == GLUT_DOWN)
+		if (action == GLFW_PRESS)
 		{
-			// Glut doesn't support doubleclick. This is a quick fix with n-click support :)
+			// This is a quick fix with n-click support :)
 			static double last_time = 0;
 			static int last_x = 0;
 			static int last_y = 0;
@@ -109,39 +125,38 @@ void Mouse(int button, int state, int x, int y)
 			last_y = y;
 			last_time = time;
 
-			g_root->InvokePointerDown(x, y, counter, GlutModToTBMod());
+			g_root->InvokePointerDown(x, y, counter, GetModifierKeys());
 		}
 		else
-			g_root->InvokePointerUp(x, y, GlutModToTBMod());
+			g_root->InvokePointerUp(x, y, GetModifierKeys());
 	}
-	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
+	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
 	{
-		g_root->InvokePointerMove(x, y, GlutModToTBMod());
+		g_root->InvokePointerMove(x, y, GetModifierKeys());
 		if (TBWidget::hovered_widget)
 		{
 			TBWidget::hovered_widget->ConvertFromRoot(x, y);
-			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, GlutModToTBMod());
+			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, GetModifierKeys());
 			TBWidget::hovered_widget->InvokeEvent(ev);
 		}
 	}
 }
 
-void MouseMotion(int x, int y)
+void cursor_position_callback(GLFWwindow window, int x, int y)
 {
-	g_root->InvokePointerMove(x, y, GlutModToTBMod());
+	mouse_x = x;
+	mouse_y = y;
+	if (g_root)
+		g_root->InvokePointerMove(x, y, GetModifierKeys());
 }
 
-void MouseMotionPassive(int x, int y)
+static void scroll_callback(GLFWwindow window, double x, double y)
 {
-	g_root->InvokePointerMove(x, y, GlutModToTBMod());
+	if (g_root)
+		g_root->InvokeWheel(mouse_x, mouse_y, (int)x, -(int)y, GetModifierKeys());
 }
 
-void MouseWheel(int wheel, int direction, int x, int y)
-{
-	g_root->InvokeWheel(x, y, direction > 0 ? -1 : 1, GlutModToTBMod());
-}
-
-void TimerFunc(int value)
+static void timer_callback()
 {
 	TBMessageHandler::ProcessMessages();
 
@@ -154,39 +169,31 @@ void TimerFunc(int value)
 // This is here since the proper implementations has not yet been done.
 void TBSystem::RescheduleTimer(double fire_time)
 {
-	// Note: Unfortunately, glut can't cancel old set timers we no longer want to fire,
-	//       so this will bleed timer callbacks if rescedule while already waiting for a callback.
-
 	if (fire_time == TB_NOT_SOON)
-		return;
-
-	static double set_fire_time = -1;
-	if (fire_time != set_fire_time)
 	{
-		set_fire_time = fire_time;
-		glutTimerFunc((unsigned int)(fire_time - GetTimeMS()), TimerFunc, 0);
+		glfwKillTimer();
+		return;
 	}
+	glfwRescheduleTimer(fire_time);
 }
 
-void DisplayFunc()
+static void window_refresh_callback(GLFWwindow window)
 {
-	// Make sure pending update is true, so anything causing invalidate in Process
-	// doesn't end up with another glutPostRedisplay we don't want from OnInvalid.
-	// We know we're rendering the frame below anyway.
-	has_pending_update = true;
 	application->Process();
+
 	has_pending_update = false;
 
 	application->RenderFrame(window_w, window_h);
 
-	glutSwapBuffers();
+	glfwSwapBuffers(mainWindow);
 }
 
-void ResizeFunc(int w, int h)
+static void window_size_callback(GLFWwindow window, int w, int h)
 {
 	window_w = w;
 	window_h = h;
-	g_root->SetRect(TBRect(0, 0, window_w, window_h));
+	if (g_root)
+		g_root->SetRect(TBRect(0, 0, window_w, window_h));
 }
 
 class RootWidget : public TBWidget
@@ -194,35 +201,39 @@ class RootWidget : public TBWidget
 public:
 	virtual void OnInvalid()
 	{
-		if (has_pending_update)
-			return;
 		has_pending_update = true;
-		glutPostRedisplay();
+		glfwPostNull(mainWindow);
 	}
 };
 
 int main(int argc, char** argv)
 {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutInitWindowSize(window_w, window_h);
-	mainWindow = glutCreateWindow("Demo");
-#ifndef MACOSX
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-#endif
+	if (!glfwInit())
+		exit(1);
+	mainWindow = glfwCreateWindow(window_w, window_h, GLFW_WINDOWED, "", NULL);
+	if (!mainWindow)
+	{
+		glfwTerminate();
+		exit(1);
+	}
+    glfwMakeContextCurrent(mainWindow);
 
-	glutDisplayFunc(DisplayFunc);
-	glutReshapeFunc(ResizeFunc);
-	glutKeyboardFunc(KeyboardDown);
-	glutKeyboardUpFunc(KeyboardUp);
-	glutSpecialFunc(KeyboardSpecialDown);
-	glutSpecialUpFunc(KeyboardSpecialUp);
-	glutMouseFunc(Mouse);
-#ifndef MACOSX
-	glutMouseWheelFunc(MouseWheel);
-#endif
-	glutMotionFunc(MouseMotion);
-	glutPassiveMotionFunc(MouseMotionPassive);
+	glfwSetWindowTitle(mainWindow, "Demo");
+
+	// Ensure we can capture the escape key being pressed below
+	//glfwSetInputMode(mainWindow, GLFW_STICKY_KEYS, GL_TRUE);
+	//glfwSetInputMode(mainWindow, GLFW_SYSTEM_KEYS, GL_TRUE);
+    glfwSetInputMode(mainWindow, GLFW_KEY_REPEAT, GL_TRUE);
+
+	// Set callback functions
+	glfwSetWindowSizeCallback(window_size_callback);
+	glfwSetWindowRefreshCallback(window_refresh_callback);
+	glfwSetCursorPosCallback(cursor_position_callback);
+    glfwSetMouseButtonCallback(mouse_button_callback);
+    glfwSetScrollCallback(scroll_callback);
+    glfwSetKeyCallback(key_callback);
+    glfwSetCharCallback(char_callback);
+    glfwSetTimerCallback(timer_callback);
 
 	init_tinkerbell(new TBRendererGL(), "tinkerbell/lng_en.tb.txt");
 
@@ -271,7 +282,13 @@ int main(int argc, char** argv)
 	application = new DemoApplication(g_root);
 	application->Init();
 
-	glutMainLoop();
+	do
+	{
+		if (has_pending_update)
+			window_refresh_callback(mainWindow);
+		glfwWaitEvents();
+	}
+    while (!glfwGetWindowParam(mainWindow, GLFW_CLOSE_REQUESTED));
 
 	delete application;
 	application = nullptr;
@@ -279,6 +296,8 @@ int main(int argc, char** argv)
 	delete g_root;
 
 	shutdown_tinkerbell();
+
+	glfwTerminate();
 
 	return 0;
 }

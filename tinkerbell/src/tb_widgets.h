@@ -78,18 +78,19 @@ public:
 	EVENT_TYPE type;	///< Which type of event
 	int target_x;		///< X position in target widget. Set for all pointer events, click and wheel.
 	int target_y;		///< Y position in target widget. Set for all pointer events, click and wheel.
-	int delta;			///< Set for EVENT_TYPE_WHEEL. Positive is a turn against the user.
+	int delta_x;		///< Set for EVENT_TYPE_WHEEL. Positive is a turn right.
+	int delta_y;		///< Set for EVENT_TYPE_WHEEL. Positive is a turn against the user.
 	int count;			///< 1 for all events, but increased for POINTER_DOWN event to 2 for doubleclick, 3 for tripleclick and so on.
 	int key;
 	SPECIAL_KEY special_key;
 	MODIFIER_KEYS modifierkeys;
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 
-	TBWidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta(0), count(1),
+	TBWidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta_x(0), delta_y(0), count(1),
 											key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(TB_MODIFIER_NONE) {}
 
 	TBWidgetEvent(EVENT_TYPE type, int x, int y, MODIFIER_KEYS modifierkeys = TB_MODIFIER_NONE) :
-											target(nullptr), type(type), target_x(x), target_y(y), delta(0),
+											target(nullptr), type(type), target_x(x), target_y(y), delta_x(0), delta_y(0),
 											count(1), key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(modifierkeys) {}
 
 	/** The count value may be 1 to infinity. If you f.ex want to see which count it is for something
@@ -659,7 +660,7 @@ public:
 	void InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys);
 	void InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys);
 	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys);
-	void InvokeWheel(int x, int y, int delta, MODIFIER_KEYS modifierkeys);
+	void InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */

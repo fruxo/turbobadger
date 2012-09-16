@@ -167,7 +167,7 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_WHEEL)
 	{
 		int old_val = m_scrollbar_y.GetValue();
-		m_scrollbar_y.SetValue(old_val + ev.delta * 40);
+		m_scrollbar_y.SetValue(old_val + ev.delta_y * 40);
 		return m_scrollbar_y.GetValue() != old_val;
 	}
 	else if (ev.type == EVENT_TYPE_POINTER_DOWN && ev.target == this)

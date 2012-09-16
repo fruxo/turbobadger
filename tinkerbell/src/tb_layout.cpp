@@ -393,7 +393,7 @@ bool TBLayout::OnEvent(const TBWidgetEvent &ev)
 	if (ev.type == EVENT_TYPE_WHEEL)
 	{
 		int old_scroll = GetOverflowScroll();
-		SetOverflowScroll(m_overflow_scroll + ev.delta * 40);
+		SetOverflowScroll(m_overflow_scroll + ev.delta_y * 40);
 		return m_overflow_scroll != old_scroll;
 	}
 	return false;

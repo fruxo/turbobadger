@@ -476,7 +476,7 @@ bool TBScrollBar::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_WHEEL)
 	{
 		double old_val = m_value;
-		SetValueDouble(m_value + ev.delta * 40);
+		SetValueDouble(m_value + ev.delta_y * 40);
 		return m_value != old_val;
 	}
 	return false;
@@ -603,7 +603,7 @@ bool TBSlider::OnEvent(const TBWidgetEvent &ev)
 	{
 		double old_val = m_value;
 		double step = (m_axis == AXIS_X ? GetSmallStep() : -GetSmallStep());
-		SetValueDouble(m_value + step * ev.delta);
+		SetValueDouble(m_value + step * ev.delta_y);
 		return m_value != old_val;
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN)
