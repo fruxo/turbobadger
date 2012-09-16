@@ -54,7 +54,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>../freeglut/include/;../;../../tinkerbell/src/;../../</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../../tinkerbell/src/;../../</AdditionalIncludeDirectories>
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -74,7 +74,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <AdditionalIncludeDirectories>../freeglut/include/;../;../../tinkerbell/src/;../../</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../../tinkerbell/src/;../../</AdditionalIncludeDirectories>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -95,9 +95,6 @@
     <ClCompile Include="..\ResourceEditWindow.cpp" />
     <ClCompile Include="..\port_glut.cpp" />
     <ClCompile Include="..\tb_renderer_gl.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\freeglut.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tbanimation\Animation.h" />

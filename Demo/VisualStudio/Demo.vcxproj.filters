@@ -47,11 +47,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\freeglut.lib">
-      <Filter>Source Files</Filter>
-    </Library>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\Demo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
