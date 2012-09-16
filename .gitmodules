@@ -1,0 +1,3 @@
+[submodule "Demo/glfw"]
+	path = Demo/glfw
+	url = git://github.com/elmindreda/glfw.git
