@@ -118,6 +118,21 @@ easier to get a pull requests accepted:
 	  documentation etc.)
 
 
+Building the demo
+-----------------------------------------------------------------------------------
+
+The demo use GLFW as a submodule for some platform window handling.
+After the first git clone, you need to run:
+
+	git submodule init
+	git submodule update
+
+This will clone GLFW into the right directory.
+
+On Windows, use the project files for Visual Studio 2010 in Demo/VisualStudio.
+On Linux & Mac, simply run make. It will create a executable called RunDemo.
+
+
 Author
 -----------------------------------------------------------------------------------
 
