@@ -7,7 +7,6 @@
 
 GLFWtimerfun timerCallback;
 UINT_PTR timer_id;
-double set_fire_time = -1;
 
 #define GLFW_EXTRA_MSG_NULL WM_USER + 1
 
@@ -22,15 +21,9 @@ VOID CALLBACK windows_timer_proc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTim
 		timerCallback();
 }
 
-void glfwRescheduleTimer(double fire_time)
+void glfwRescheduleTimer(unsigned int delay_ms)
 {
-	if (fire_time != set_fire_time)
-	{
-		set_fire_time = fire_time;
-		double delay = fire_time - tinkerbell::TBSystem::GetTimeMS();
-		UINT idelay = (UINT) MAX(delay, 0);
-		timer_id = SetTimer(NULL, timer_id, idelay, windows_timer_proc);
-	}
+	timer_id = SetTimer(NULL, timer_id, delay_ms, windows_timer_proc);
 }
 
 void glfwKillTimer()
@@ -39,7 +32,6 @@ void glfwKillTimer()
 	{
 		KillTimer(NULL, timer_id);
 		timer_id = 0;
-		set_fire_time = -1;
 	}
 }
 

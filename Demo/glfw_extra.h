@@ -12,7 +12,7 @@ typedef void (* GLFWtimerfun)();
 /** Post a message to the message loop so we'll spin it once more. */
 void glfwPostNull(GLFWwindow window);
 
-void glfwRescheduleTimer(double fire_time);
+void glfwRescheduleTimer(unsigned int delay_ms);
 void glfwKillTimer();
 void glfwSetTimerCallback(GLFWtimerfun cbfun);
 

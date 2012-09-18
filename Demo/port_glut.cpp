@@ -156,8 +156,39 @@ static void scroll_callback(GLFWwindow window, double x, double y)
 		g_root->InvokeWheel(mouse_x, mouse_y, (int)x, -(int)y, GetModifierKeys());
 }
 
+/** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
+	If force is true, it will ask the platform to schedule it again, even if
+	the fire_time is the same as last time. */
+static void ReschedulePlatformTimer(double fire_time, bool force)
+{
+	static double set_fire_time = -1;
+	if (fire_time == TB_NOT_SOON)
+	{
+		set_fire_time = -1;
+		glfwKillTimer();
+	}
+	else if (fire_time != set_fire_time || force)
+	{
+		set_fire_time = fire_time;
+		double delay = fire_time - tinkerbell::TBSystem::GetTimeMS();
+		unsigned int idelay = (unsigned int) MAX(delay, 0);
+		glfwRescheduleTimer(idelay);
+	}
+}
+
 static void timer_callback()
 {
+	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
+	double now = tinkerbell::TBSystem::GetTimeMS();
+	if (now < next_fire_time)
+	{
+		// We timed out *before* we were supposed to (the OS is not playing nice).
+		// Calling ProcessMessages now won't achieve a thing so force a reschedule
+		// of the platform timer again with the same time.
+		ReschedulePlatformTimer(next_fire_time, true);
+		return;
+	}
+
 	TBMessageHandler::ProcessMessages();
 
 	// If we still have things to do (because we didn't process all messages,
@@ -169,12 +200,7 @@ static void timer_callback()
 // This is here since the proper implementations has not yet been done.
 void TBSystem::RescheduleTimer(double fire_time)
 {
-	if (fire_time == TB_NOT_SOON)
-	{
-		glfwKillTimer();
-		return;
-	}
-	glfwRescheduleTimer(fire_time);
+	ReschedulePlatformTimer(fire_time, false);
 }
 
 static void window_refresh_callback(GLFWwindow window)
