@@ -7,8 +7,6 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-namespace tinkerbell {
-
 #ifdef _DEBUG
 
 void TBDebugOut(const char *str)
@@ -17,6 +15,8 @@ void TBDebugOut(const char *str)
 }
 
 #endif // _DEBUG
+
+namespace tinkerbell {
 
 // == TBSystem ========================================
 

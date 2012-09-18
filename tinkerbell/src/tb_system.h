@@ -8,13 +8,13 @@
 
 #include "tinkerbell.h"
 
-namespace tinkerbell {
-
 #ifdef _DEBUG
 void TBDebugOut(const char *str);
 #else
 #define TBDebugOut(str) ((void)0)
 #endif
+
+namespace tinkerbell {
 
 // == Platform interface ===================================================
 

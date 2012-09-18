@@ -135,7 +135,6 @@ void TBMessageHandler::DeleteAllMessages()
 		DeleteMessage(msg);
 }
 
-//FIX: Skicka in max tid den får köra!
 //static
 void TBMessageHandler::ProcessMessages()
 {
