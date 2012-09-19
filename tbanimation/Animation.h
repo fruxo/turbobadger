@@ -15,7 +15,8 @@ enum ANIMATION_CURVE {
 	ANIMATION_CURVE_LINEAR,		///< Linear
 	ANIMATION_CURVE_SLOW_DOWN,	///< Fast start, slow end
 	ANIMATION_CURVE_SPEED_UP,	///< Slow start, fast end
-	ANIMATION_CURVE_BEZIER		///< Slow start, slow end
+	ANIMATION_CURVE_BEZIER,		///< Slow start, slow end. Almost linear.
+	ANIMATION_CURVE_SMOOTH		///< Slow start, slow end. Stronger than ANIMATION_CURVE_BEZIER.
 };
 
 /** Defines what the animation duration time is relative to. */

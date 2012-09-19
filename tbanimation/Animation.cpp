@@ -8,7 +8,25 @@
 
 namespace tinkerbell {
 
+// == Helpers =======================================================
+
 #define SMOOTHSTEP(x) ((x) * (x) * (3.0f - 2.0f * (x)))
+
+static float sc(float x)
+{
+	float s = x < 0 ? -1.f : 1.f;
+	x = ABS(x);
+	if (x >= 1)
+		return s;
+	return s * (x < 0 ? x / 0.5f : (x / (1 + x * x)) / 0.5f);
+}
+
+static float SmoothCurve(float x, float a)
+{
+	float r = a * x / (2 * a * x - a - x + 1);
+	r = (r - 0.5f) * 2;
+	return sc(r) * 0.5f + 0.5f;
+}
 
 // == AnimationObject ===============================================
 
@@ -57,6 +75,9 @@ void AnimationManager::Update()
 			break;
 		case ANIMATION_CURVE_BEZIER:
 			progress = SMOOTHSTEP(progress);
+			break;
+		case ANIMATION_CURVE_SMOOTH:
+			progress = SmoothCurve(progress, 0.6f);
 			break;
 		default: // linear (progress is already linear)
 			break;
