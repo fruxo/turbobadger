@@ -9,8 +9,15 @@
 /* Function pointer types */
 typedef void (* GLFWtimerfun)();
 
-/** Post a message to the message loop so we'll spin it once more. */
-void glfwPostNull(GLFWwindow window);
+/** Do something (like posting a dummy message) to get the message loop to stop waiting
+	in glfwWaitMsgLoop. */
+void glfwWakeUpMsgLoop(GLFWwindow window);
+
+/** Wait for a new message in the message loop. Should stop waiting if glfwWakeUpMsgLoop is called. */
+void glfwWaitMsgLoop(GLFWwindow window);
+
+/** Handle message(s) waiting in the message loop, or return immediately if there are none. */
+void glfwPollMsgLoop(GLFWwindow window);
 
 /** Start a timer that after the delay will call the callback set by glfwSetTimerCallback.
 	Calling this should cancel any previously scheduled time out that has not yet happened. */

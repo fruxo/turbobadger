@@ -4,7 +4,7 @@ CC = gcc
 LD = g++
 LDFLAGS =
 LIBS =
-INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/freeglut" -I"."
+INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/glfw/include" -I"."
 
 #release
 CFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
@@ -16,11 +16,11 @@ CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
 ifeq ($(UNAME),Darwin)
  CFLAGS += -DMACOSX -Dnullptr=0
  CXXFLAGS += -DMACOSX -Dnullptr=0
- LIBS +=  -framework GLUT -framework OpenGL
+ LIBS +=  -framework OpenGL
 else
  CFLAGS += -DLINUX -Dnullptr=0
  CXXFLAGS += -DLINUX -Dnullptr=0 --std=c++0x
- LIBS += -lglut -lGL
+ LIBS += -lGL
 endif
 
 TARGET = RunDemo
@@ -78,7 +78,29 @@ SRC = tinkerbell/src/tb_layout.cpp \
       Demo/ListWindow.cpp \
       Demo/ResourceEditWindow.cpp \
       Demo/port_glut.cpp \
+      Demo/glfw_extra_linux.cpp \
       Demo/tb_renderer_gl.cpp
+
+CSRC = Demo/glfw/src/clipboard.c \
+       Demo/glfw/src/fullscreen.c \
+       Demo/glfw/src/gamma.c \
+       Demo/glfw/src/init.c \
+       Demo/glfw/src/input.c \
+       Demo/glfw/src/joystick.c \
+       Demo/glfw/src/opengl.c \
+       Demo/glfw/src/time.c \
+       Demo/glfw/src/window.c \
+       Demo/glfw/src/x11_clipboard.c \
+       Demo/glfw/src/x11_fullscreen.c \
+       Demo/glfw/src/x11_gamma.c \
+       Demo/glfw/src/x11_init.c \
+       Demo/glfw/src/x11_input.c \
+       Demo/glfw/src/x11_joystick.c \
+       Demo/glfw/src/x11_keysym2unicode.c \
+       Demo/glfw/src/x11_native.c \
+       Demo/glfw/src/x11_opengl.c \
+       Demo/glfw/src/x11_time.c \
+       Demo/glfw/src/x11_window.c
 
 OBJ=$(SRC:.cpp=.o)
 OBJ += $(CSRC:.c=.o)

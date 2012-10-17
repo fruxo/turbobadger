@@ -94,10 +94,12 @@ static void key_callback(GLFWwindow window, int key, int action)
 		key_alt = down;
 		break;
 	default:
+#ifdef WIN32 // FIX: Move this fix into glfw!
 		// At least the windows implementation of glfw calls KeyboardSpecial
 		// when pressing a character while ctrl is also pressed.
 		if (key_ctrl && !key_alt && key >= 32 && key <= 255)
 			g_root->InvokeKey(key, TB_KEY_UNDEFINED, modifier, down);
+#endif // WIN32
 		break;
 	}
 }
@@ -227,8 +229,11 @@ class RootWidget : public TBWidget
 public:
 	virtual void OnInvalid()
 	{
-		has_pending_update = true;
-		glfwPostNull(mainWindow);
+		if (!has_pending_update)
+		{
+			has_pending_update = true;
+			glfwWakeUpMsgLoop(mainWindow);
+		}
 	}
 };
 
@@ -312,7 +317,7 @@ int main(int argc, char** argv)
 	{
 		if (has_pending_update)
 			window_refresh_callback(mainWindow);
-		glfwWaitEvents();
+        glfwWaitMsgLoop(mainWindow);
 	}
     while (!glfwGetWindowParam(mainWindow, GLFW_CLOSE_REQUESTED));
 

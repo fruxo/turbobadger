@@ -10,9 +10,19 @@ UINT_PTR timer_id;
 
 #define GLFW_EXTRA_MSG_NULL WM_USER + 1
 
-void glfwPostNull(GLFWwindow window)
+void glfwWakeUpMsgLoop(GLFWwindow window)
 {
 	PostMessage(glfwGetWin32Window(window), GLFW_EXTRA_MSG_NULL, 0, 0);
+}
+
+void glfwWaitMsgLoop(GLFWwindow window)
+{
+	glfwWaitEvents();
+}
+
+void glfwPollMsgLoop(GLFWwindow window)
+{
+	glfwPollEvents();
 }
 
 VOID CALLBACK windows_timer_proc(HWND hwnd, UINT uMsg, UINT idEvent, DWORD dwTime)

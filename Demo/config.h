@@ -10,6 +10,7 @@
 # define _GLFW_COCOA_NSGL
 #else
 # define _GLFW_X11_GLX
+# define _GLFW_HAS_GLXGETPROCADDRESS
 #endif
 
 #define _GLFW_VERSION_FULL "3.0.0"
