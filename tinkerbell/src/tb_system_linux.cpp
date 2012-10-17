@@ -38,28 +38,9 @@ int TBSystem::GetPanThreshold()
 	return 5;
 }
 
-// == TBClipboard =====================================
-
-TBStr clipboard; ///< FIX: Obviosly not the full implementation :)
-
-void TBClipboard::Empty()
+int TBSystem::GetPixelsPerLine()
 {
-	clipboard.Clear();
-}
-
-bool TBClipboard::HasText()
-{
-	return !clipboard.IsEmpty();
-}
-
-bool TBClipboard::SetText(const char *text)
-{
-	return clipboard.Set(text);
-}
-
-bool TBClipboard::GetText(TBStr &text)
-{
-	return text.Set(clipboard);
+	return 40;
 }
 
 // == TBFile =====================================

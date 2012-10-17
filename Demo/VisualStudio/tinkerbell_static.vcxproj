@@ -17,6 +17,7 @@
     <ClCompile Include="..\..\tinkerbell\src\parser\TBParser.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_addon.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_clipboard_win.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_editfield.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp" />

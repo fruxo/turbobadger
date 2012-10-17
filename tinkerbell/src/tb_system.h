@@ -33,6 +33,10 @@ public:
 
 	/** Get how many pixels of dragging should start panning scrollable widgets. */
 	static int GetPanThreshold();
+
+	/** Get how many pixels a typical line is: The length that should be scrolled when turning a mouse
+		wheel one notch. */
+	static int GetPixelsPerLine();
 };
 
 /** TBClipboard is a porting interface for the clipboard. */

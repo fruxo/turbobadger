@@ -171,6 +171,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_inline_select.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_clipboard_win.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">

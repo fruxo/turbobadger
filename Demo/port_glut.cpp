@@ -240,12 +240,12 @@ public:
 int main(int argc, char** argv)
 {
 	if (!glfwInit())
-		exit(1);
+		return 1;
 	mainWindow = glfwCreateWindow(window_w, window_h, GLFW_WINDOWED, "", NULL);
 	if (!mainWindow)
 	{
 		glfwTerminate();
-		exit(1);
+		return 1;
 	}
     glfwMakeContextCurrent(mainWindow);
 

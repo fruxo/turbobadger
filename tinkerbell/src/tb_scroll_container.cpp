@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "tb_scroll_container.h"
+#include "tb_system.h"
 #include <assert.h>
 
 namespace tinkerbell {
@@ -205,7 +206,7 @@ bool TBScrollContainer::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_WHEEL)
 	{
 		double old_val = m_scrollbar_y.GetValueDouble();
-		m_scrollbar_y.SetValueDouble(old_val + ev.delta_y * 40);
+		m_scrollbar_y.SetValueDouble(old_val + ev.delta_y * TBSystem::GetPixelsPerLine());
 		return m_scrollbar_y.GetValueDouble() != old_val;
 	}
 	return false;
