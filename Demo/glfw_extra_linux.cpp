@@ -3,15 +3,15 @@
 #include "tb_system.h"
 #include <stdio.h>
 
-#include <X11/Xlib.h>
+//#include <X11/Xlib.h>
 
-#define GLX_GLXEXT_LEGACY
-#include <GL/glx.h>
+//#define GLX_GLXEXT_LEGACY
+//#include <GL/glx.h>
 
-#define GLFW_EXPOSE_NATIVE_X11_GLX
-#include "GL/glfw3native.h"
+//#define GLFW_EXPOSE_NATIVE_X11_GLX
+//#include "GL/glfw3native.h"
 
-#include "GL/glfw3.h"
+//#include "GL/glfw3.h"
 
 // ## NOTE ############################################
 // FIX: Implement message loop and timer on linux!

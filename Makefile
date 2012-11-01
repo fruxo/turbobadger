@@ -7,7 +7,7 @@ LIBS =
 INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/glfw/include" -I"."
 
 #release
-CFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
+CFLAGS = -DNDEBUG -fno-exceptions -O2 $(INCPATH)
 CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
 #debug
 #CFLAGS = -D_DEBUG -g $(INCPATH)
@@ -16,7 +16,7 @@ CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
 ifeq ($(UNAME),Darwin)
  CFLAGS += -DMACOSX -Dnullptr=0
  CXXFLAGS += -DMACOSX -Dnullptr=0
- LIBS +=  -framework OpenGL
+ LIBS +=  -framework OpenGL -framework AppKit -framework IOKit -lobjc
 else
  CFLAGS += -DLINUX -Dnullptr=0
  CXXFLAGS += -DLINUX -Dnullptr=0 --std=c++0x
@@ -90,21 +90,47 @@ CSRC = Demo/glfw/src/clipboard.c \
        Demo/glfw/src/joystick.c \
        Demo/glfw/src/opengl.c \
        Demo/glfw/src/time.c \
-       Demo/glfw/src/window.c \
-       Demo/glfw/src/x11_clipboard.c \
-       Demo/glfw/src/x11_fullscreen.c \
-       Demo/glfw/src/x11_gamma.c \
-       Demo/glfw/src/x11_init.c \
-       Demo/glfw/src/x11_input.c \
-       Demo/glfw/src/x11_joystick.c \
-       Demo/glfw/src/x11_keysym2unicode.c \
-       Demo/glfw/src/x11_native.c \
-       Demo/glfw/src/x11_opengl.c \
-       Demo/glfw/src/x11_time.c \
-       Demo/glfw/src/x11_window.c
+       Demo/glfw/src/window.c
 
-OBJ=$(SRC:.cpp=.o)
+ifeq ($(UNAME),Darwin)
+MSRC = Demo/glfw/src/cocoa_clipboard.m \
+       Demo/glfw/src/cocoa_fullscreen.m \
+       Demo/glfw/src/cocoa_gamma.m \
+       Demo/glfw/src/cocoa_init.m \
+       Demo/glfw/src/cocoa_input.m \
+       Demo/glfw/src/cocoa_joystick.m \
+       Demo/glfw/src/cocoa_native.m \
+       Demo/glfw/src/cocoa_opengl.m \
+       Demo/glfw/src/cocoa_time.m \
+       Demo/glfw/src/cocoa_window.m
+else
+CSRC += Demo/glfw/src/x11_clipboard.c \
+        Demo/glfw/src/x11_fullscreen.c \
+        Demo/glfw/src/x11_gamma.c \
+        Demo/glfw/src/x11_init.c \
+        Demo/glfw/src/x11_input.c \
+        Demo/glfw/src/x11_joystick.c \
+        Demo/glfw/src/x11_keysym2unicode.c \
+        Demo/glfw/src/x11_native.c \
+        Demo/glfw/src/x11_opengl.c \
+        Demo/glfw/src/x11_time.c \
+        Demo/glfw/src/x11_window.c
+endif
+
+.SUFFIXES: .cpp .c .m
+
+.c.o:
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+.cpp.o:
+	$(CXX) -c $(CXXFLAGS) -o $@ $<
+
+.m.o:
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+OBJ = $(SRC:.cpp=.o)
 OBJ += $(CSRC:.c=.o)
+OBJ += $(MSRC:.m=.o)
 
 all: $(TARGET)
 
@@ -114,12 +140,3 @@ $(TARGET): $(OBJ)
 clean:
 	\rm -rf $(OBJ) $(TARGET)
 	\rm -rf RunDemo
-
-.SUFFIXES: .cpp .c
-.c.o:
-	$(CC) -c $(CFLAGS) -o $@ $<
-
-.cpp.o:
-	$(CXX) -c $(CXXFLAGS) -o $@ $<
-
-
