@@ -114,7 +114,7 @@
     <ClCompile Include="..\glfw_extra_win.cpp" />
     <ClCompile Include="..\ListWindow.cpp" />
     <ClCompile Include="..\ResourceEditWindow.cpp" />
-    <ClCompile Include="..\port_glut.cpp" />
+    <ClCompile Include="..\port_glfw.cpp" />
     <ClCompile Include="..\tb_renderer_gl.cpp" />
   </ItemGroup>
   <ItemGroup>

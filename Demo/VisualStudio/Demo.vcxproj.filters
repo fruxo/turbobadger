@@ -30,9 +30,6 @@
     <ClCompile Include="..\Demo01.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\port_glut.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tbanimation\Animation.cpp">
       <Filter>Source Files\tbanimation</Filter>
     </ClCompile>
@@ -106,6 +103,9 @@
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
     <ClCompile Include="..\glfw_extra_win.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\port_glfw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
