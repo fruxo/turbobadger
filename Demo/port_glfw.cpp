@@ -75,7 +75,7 @@ static void key_callback(GLFWwindow window, int key, int action)
 	case GLFW_KEY_ENTER:		g_root->InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
 	case GLFW_KEY_ESC:			g_root->InvokeKey(0, TB_KEY_ESC, modifier, down); break;
 	case GLFW_KEY_MENU:
-		if (TBWidget::focused_widget)
+		if (TBWidget::focused_widget && !down)
 		{
 			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, 0, 0, GetModifierKeys());
 			TBWidget::focused_widget->InvokeEvent(ev);
