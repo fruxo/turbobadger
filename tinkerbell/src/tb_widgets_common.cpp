@@ -240,7 +240,14 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 		if (ev.type == EVENT_TYPE_CLICK)
 			click_target->SetFocus(WIDGET_FOCUS_REASON_POINTER);
 
-		click_target->SetState(WIDGET_STATE_PRESSED, (ev.target->GetAutoState() & WIDGET_STATE_PRESSED) ? true : false);
+		// Sync our pressed state with the click target. Special case for when we're just about to
+		// lose it ourself (pointer is being released).
+		bool pressed_state = (ev.target->GetAutoState() & WIDGET_STATE_PRESSED) ? true : false;
+		if (ev.type == EVENT_TYPE_POINTER_UP || ev.type == EVENT_TYPE_CLICK)
+			pressed_state = false;
+
+		click_target->SetState(WIDGET_STATE_PRESSED, pressed_state);
+
 		TBWidgetEvent target_ev(ev.type, ev.target_x - click_target->GetRect().x, ev.target_y - click_target->GetRect().y);
 		return click_target->InvokeEvent(target_ev);
 	}
