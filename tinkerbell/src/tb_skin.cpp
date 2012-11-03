@@ -15,6 +15,15 @@ namespace tinkerbell {
 
 // == Util functions ==========================================================
 
+/*TB_TEXT_ALIGN StringToTextAlign(const char *align_str)
+{
+	TB_TEXT_ALIGN align = TB_TEXT_ALIGN_CENTER;
+	if (strstr(state_str, "left"))		align = TB_TEXT_ALIGN_LEFT;
+	if (strstr(state_str, "center"))	align = TB_TEXT_ALIGN_CENTER;
+	if (strstr(state_str, "right"))		align = TB_TEXT_ALIGN_RIGHT;
+	return state;
+}*/
+
 SKIN_STATE StringToState(const char *state_str)
 {
 	SKIN_STATE state = SKIN_STATE_NONE;
@@ -448,15 +457,17 @@ TBRect TBSkin::GetFlippedRect(const TBRect &src_rect, TBSkinElement *element)
 void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
 {
 	TBRect src_rect(0, 0, element->bitmap->Width(), element->bitmap->Height());
-	TBRect rect(dst_rect.x + element->img_ofs_x + (dst_rect.w - src_rect.w) * element->img_position_x / 100,
-				dst_rect.y + element->img_ofs_y + (dst_rect.h - src_rect.h) * element->img_position_y / 100,
-				src_rect.w, src_rect.h);
+	TBRect rect = dst_rect.Expand(element->expand, element->expand);
+	rect.Set(rect.x + element->img_ofs_x + (rect.w - src_rect.w) * element->img_position_x / 100,
+			rect.y + element->img_ofs_y + (rect.h - src_rect.h) * element->img_position_y / 100,
+			src_rect.w, src_rect.h);
 	g_renderer->DrawBitmap(rect, GetFlippedRect(src_rect, element), element->bitmap);
 }
 
 void TBSkin::PaintElementTile(const TBRect &dst_rect, TBSkinElement *element)
 {
-	g_renderer->DrawBitmapTile(dst_rect, element->bitmap->GetBitmap());
+	TBRect rect = dst_rect.Expand(element->expand, element->expand);
+	g_renderer->DrawBitmapTile(rect, element->bitmap->GetBitmap());
 }
 
 void TBSkin::PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element)
