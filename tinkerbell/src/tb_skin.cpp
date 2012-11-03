@@ -207,7 +207,7 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			if (const char *color = n->GetValueString("text-color", nullptr))
 				e->text_color.SetFromString(color, strlen(color));
 			else
-				e->text_color = m_default_text_color;
+				e->text_color = TBColor(0, 0, 0, 0);
 
 			const char *type = n->GetValueString("type", "StretchBox");
 			if (strcmp(type, "Image") == 0)

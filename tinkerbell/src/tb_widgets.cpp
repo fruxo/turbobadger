@@ -781,7 +781,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 
 	// Inherit properties from parent if not specified in the used skin for this widget.
 	PaintProps paint_props = parent_paint_props;
-	if (used_element && used_element->text_color != TBColor())
+	if (used_element && used_element->text_color != 0)
 		paint_props.text_color = used_element->text_color;
 
 	// Paint content
