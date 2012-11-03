@@ -17,6 +17,7 @@ Thumbs.db
 *.o
 *.tlog
 *.obj
+*.bak
 
 *.lnk
 
