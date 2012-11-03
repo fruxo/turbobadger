@@ -19,9 +19,6 @@ elements
 			element TBButtonInGroup
 				condition: target: parent, property: skin, value: button_group
 				condition: target: parent, property: axis, value: x
-		overlays
-			element generic_focus_r8
-				state focused
 	TBButton.pressed
 		bitmap button_pressed.png
 		cut 17
@@ -36,9 +33,6 @@ elements
 				state hovered
 			element TBButton.flat.pressed
 				state pressed
-		overlays
-			element generic_focus_r8
-				state focused
 	TBButton.flat.hovered
 		bitmap button_flat_outline.png
 		cut 15
@@ -101,10 +95,10 @@ elements
 		expand 6
 		padding 10
 	TBSectionHeader
-		bitmap TBSectionHeader.png
-		cut 11
-		expand 5
-		padding 2 16
+		bitmap window_mover_bg_tile.png
+		type Tile
+		expand -1
+		padding 3 16
 		children
 			element TBSectionHeader.icon_0
 				condition: target: this, property: value, value: 0
@@ -114,6 +108,14 @@ elements
 				condition: target: this, property: capture, test: !=
 			element TBSectionHeader.icon_pressed
 				condition: target: this, property: capture
+		overlays
+			element TBSectionHeader.overlay
+				state all
+	TBSectionHeader.overlay
+		bitmap window_mover_overlay.png
+		type StretchBorder
+		cut 16
+		expand 3
 	TBSectionHeader.icon_0
 		bitmap toggle_section_icon_up.png
 		type Image
@@ -260,16 +262,16 @@ elements
 	# == TBWindow skin =================================================================================
 	TBWindow
 		bitmap window.png
-		cut 20
-		expand 10
+		cut 16
+		expand 12
 		padding 10
 		overrides
 			element TBWindow.selected
 				state selected
 	TBWindow.selected
 		bitmap window_active.png
-		cut 30
-		expand 15
+		cut 16
+		expand 12
 	TBWindow.close
 		bitmap window_close.png
 		type Image
@@ -280,10 +282,26 @@ elements
 		bitmap window_close_pressed.png
 		type Image
 	TBWindow.mover
-		bitmap mover.png
-		cut 10
-		expand 0
+		text-color #b8b8b8
+		bitmap window_mover_bg_tile.png
+		type Tile
+		expand -1
 		padding 4
+		overrides
+			element TBWindow.mover.active
+				state selected
+		overlays
+			element TBWindow.mover.overlay
+				state all
+	TBWindow.mover.overlay
+		bitmap window_mover_overlay.png
+		type StretchBorder
+		cut 16
+		expand 3
+	TBWindow.mover.active
+		clone TBWindow.mover
+		text-color #fefefe
+		overrides
 
 	# == Misc skins ====================================================================================
 	TBContainer
@@ -417,9 +435,5 @@ elements
 	arrow.down: type: Image, bitmap: arrow_down.png, min-width: 10, min-height: 5
 	generic_focus
 		bitmap focus_r4.png
-		cut 14
-		expand 5
-	generic_focus_r8
-		bitmap focus_r8.png
-		cut 14
+		cut 11
 		expand 4

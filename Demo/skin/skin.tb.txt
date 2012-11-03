@@ -60,3 +60,7 @@ elements
 		img-position-y 0
 		img-ofs-x -10
 		img-ofs-y -14
+	generic_focus_r8
+		bitmap focus_r8.png
+		cut 14
+		expand 4
