@@ -78,7 +78,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       Demo/Demo01.cpp \
       Demo/ListWindow.cpp \
       Demo/ResourceEditWindow.cpp \
-      Demo/port_glut.cpp \
+      Demo/port_glfw.cpp \
       Demo/glfw_extra_linux.cpp \
       Demo/tb_renderer_gl.cpp
 
