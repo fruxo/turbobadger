@@ -35,13 +35,12 @@ elements
 		content-ofs-x 1
 		content-ofs-y 1
 	ImageFrame
-		padding 2
 		overlays
 			element ImageFrame.overlay
 				state all
 	ImageFrame.overlay
 		bitmap image_frame.png
-		cut 25
+		cut 22
 		expand 15
 	Star
 		bitmap star_gray.png
