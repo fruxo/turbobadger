@@ -11,9 +11,20 @@
 
 namespace tinkerbell {
 
+// == Utilities ===================================================================================
+
+static void Ortho2D(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top)
+{
+#ifdef USE_GLES
+	glOrthof(left, right, bottom, top, -1.0, 1.0);
+#else
+	glOrtho(left, right, bottom, top, -1.0, 1.0);
+#endif
+}
+
 // == Batching ====================================================================================
 
-#define VERTEX_BATCH_SIZE 3 * 256
+#define VERTEX_BATCH_SIZE 3 * 4096
 
 #define VER_COL(r, g, b, a) (((a)<<24) + ((b)<<16) + ((g)<<8) + r)
 #define VER_COL_OPACITY(a) (0x00ffffff + (((uint32)a) << 24))
@@ -211,7 +222,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, m_screen_rect.w, m_screen_rect.h, 0, -1.0, 1.0);
+	Ortho2D(0, (GLfloat)m_screen_rect.w, (GLfloat)m_screen_rect.h, 0);
 	glMatrixMode(GL_MODELVIEW);
 	glViewport(0, 0, m_screen_rect.w, m_screen_rect.h);
 	glScissor(0, 0, m_screen_rect.w, m_screen_rect.h);

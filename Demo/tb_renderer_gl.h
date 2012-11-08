@@ -6,7 +6,10 @@
 #ifndef TB_RENDERER_GL_H
 #define TB_RENDERER_GL_H
 
-#ifdef _WIN32
+#ifdef USE_GLES
+#include <EGL/egl.h>
+#include <GLES/gl.h>
+#elif defined(_WIN32)
 #include <windows.h> // make gl.h compile
 #include <GL/gl.h>
 #elif defined(MACOSX)

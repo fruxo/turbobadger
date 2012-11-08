@@ -19,7 +19,7 @@ Application *application = nullptr;
 
 GLFWwindow mainWindow;
 int window_w = 1280;
-int window_h = 740;
+int window_h = 720;
 int mouse_x = 0;
 int mouse_y = 0;
 bool key_alt = false;
