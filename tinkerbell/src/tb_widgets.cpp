@@ -761,7 +761,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	if (skin_element)
 		opacity *= skin_element->opacity;
 	if (state & WIDGET_STATE_DISABLED)
-		opacity *= 0.3f;
+		opacity *= g_tb_skin->GetDefaultDisabledOpacity();
 	if (opacity == 0)
 		return;
 

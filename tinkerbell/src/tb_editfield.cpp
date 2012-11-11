@@ -252,7 +252,7 @@ void TBEditField::OnPaint(const PaintProps &paint_props)
 	if (m_style_edit.IsEmpty())
 	{
 		float old_opacity = g_renderer->GetOpacity();
-		g_renderer->SetOpacity(old_opacity * 0.2f);
+		g_renderer->SetOpacity(old_opacity * g_tb_skin->GetDefaultPlaceholderOpacity());
 		m_placeholder.Paint(this, visible_rect, paint_props.text_color);
 		g_renderer->SetOpacity(old_opacity);
 	}

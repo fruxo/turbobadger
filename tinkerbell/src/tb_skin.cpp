@@ -104,6 +104,8 @@ bool TBSkinCondition::GetCondition(TBSkinConditionContext &context) const
 TBSkin::TBSkin()
 	: m_parent_skin(nullptr)
 	, m_override_skin(nullptr)
+	, m_default_disabled_opacity(0.3f)
+	, m_default_placeholder_opacity(0.2f)
 {
 	g_renderer->AddListener(this);
 
@@ -134,6 +136,10 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 
 	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
 		m_default_text_color.SetFromString(color, strlen(color));
+	m_default_disabled_opacity = node.GetValueFloat("defaults>disabled>opacity",
+		m_default_disabled_opacity);
+	m_default_placeholder_opacity = node.GetValueFloat("defaults>placeholder>opacity",
+		m_default_placeholder_opacity);
 
 	// Iterate through all elements nodes and add skin elements
 	TBNode *elements = node.GetNode("elements");

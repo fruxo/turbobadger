@@ -252,6 +252,12 @@ public:
 	/** Get the default text color for all skin elements */
 	TBColor GetDefaultTextColor() const { return m_default_text_color; }
 
+	/** Get the default disabled opacity for all skin elements */
+	float GetDefaultDisabledOpacity() const { return m_default_disabled_opacity; }
+
+	/** Get the default placeholder opacity for all skin elements */
+	float GetDefaultPlaceholderOpacity() const { return m_default_placeholder_opacity; }
+
 	/** Paint the skin at dst_rect.
 
 		Override skin:
@@ -305,6 +311,8 @@ private:
 	TBSkin *m_override_skin;							///< Override skin (or nullptr)
 	TBBitmapFragmentManager m_frag_manager;				///< Fragment manager (not used for override skins)
 	TBColor m_default_text_color;						///< Default text color for all skin elements
+	float m_default_disabled_opacity;					///< Disabled opacity
+	float m_default_placeholder_opacity;				///< Placeholder opacity
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementImage(const TBRect &dst_rect, TBSkinElement *element);

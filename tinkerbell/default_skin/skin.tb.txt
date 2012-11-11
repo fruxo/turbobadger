@@ -7,6 +7,10 @@ description
 	name Default skin
 defaults
 	text-color #fefefe
+	placeholder
+		opacity 0.2
+	disabled
+		opacity 0.3
 elements
 	TBButton
 		bitmap button.png
