@@ -11,6 +11,7 @@
 #include "tb_widgets_reader.h"
 #include "tb_widget_skin_condition_context.h"
 #include "tb_font_renderer.h"
+#include "tb_skin_util.h"
 
 namespace tinkerbell {
 
@@ -256,11 +257,24 @@ void TBEditField::OnPaint(const PaintProps &paint_props)
 		m_placeholder.Paint(this, visible_rect, paint_props.text_color);
 		g_renderer->SetOpacity(old_opacity);
 	}
-
 	g_renderer->Translate(-trans_x, -trans_y);
 
 	if (clip)
 		g_renderer->SetClipRect(old_clip, false);
+}
+
+void TBEditField::OnPaintChildren(const PaintProps &paint_props)
+{
+	TBWidget::OnPaintChildren(paint_props);
+
+	// Draw fadeout skin at the needed edges.
+	DrawEdgeFadeout(GetVisibleRect(),
+		TBIDC("TBEditField.fadeout_x"),
+		TBIDC("TBEditField.fadeout_y"),
+		m_scrollbar_x.GetValue(),
+		m_scrollbar_y.GetValue(),
+		(int)(m_scrollbar_x.GetMaxValue() - m_scrollbar_x.GetValueDouble()),
+		(int)(m_scrollbar_y.GetMaxValue() - m_scrollbar_y.GetValueDouble()));
 }
 
 void TBEditField::OnAdded()

@@ -27,6 +27,7 @@ TARGET = RunDemo
 SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_scroll_container.cpp \
       tinkerbell/src/tb_skin.cpp \
+      tinkerbell/src/tb_skin_util.cpp \
       tinkerbell/src/tb_bitmap_fragment.cpp \
       tinkerbell/src/tb_inline_select.cpp \
       tinkerbell/src/tb_select.cpp \

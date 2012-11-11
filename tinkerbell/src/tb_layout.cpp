@@ -5,6 +5,7 @@
 
 #include "tb_layout.h"
 #include "tb_system.h"
+#include "tb_skin_util.h"
 #include <assert.h>
 
 namespace tinkerbell {
@@ -434,25 +435,13 @@ void TBLayout::OnPaintChildren(const PaintProps &paint_props)
 	// to the indicate to used that it's overflowed.
 	if (m_overflow && m_packed.paint_overflow_fadeout)
 	{
-		TBSkinElement *skin;
-		if (m_axis == AXIS_X && (skin = g_tb_skin->GetSkinElement(TBIDC("TBLayout.fadeout_x"))))
-		{
-			int bw = skin->bitmap->Width();
-			int bh = skin->bitmap->Height();
-			if (m_overflow_scroll > 0)
-				g_renderer->DrawBitmap(TBRect(padding_rect.x, padding_rect.y, bw, padding_rect.h), TBRect(0, 0, bw, bh), skin->bitmap);
-			if (m_overflow_scroll < m_overflow)
-				g_renderer->DrawBitmap(TBRect(padding_rect.x + padding_rect.w - bw, padding_rect.y, bw, padding_rect.h), TBRect(bw, 0, -bw, bh), skin->bitmap);
-		}
-		else if (m_axis == AXIS_Y && (skin = g_tb_skin->GetSkinElement(TBIDC("TBLayout.fadeout_y"))))
-		{
-			int bw = skin->bitmap->Width();
-			int bh = skin->bitmap->Height();
-			if (m_overflow_scroll > 0)
-				g_renderer->DrawBitmap(TBRect(padding_rect.x, padding_rect.y, padding_rect.w, bh), TBRect(0, 0, bw, bh), skin->bitmap);
-			if (m_overflow_scroll < m_overflow)
-				g_renderer->DrawBitmap(TBRect(padding_rect.x, padding_rect.y + padding_rect.h - bh, padding_rect.w, bh), TBRect(0, bh, bw, -bh), skin->bitmap);
-		}
+		DrawEdgeFadeout(padding_rect,
+			m_axis == AXIS_X ? TBIDC("TBLayout.fadeout_x") : TBID((uint32)0),
+			m_axis == AXIS_Y ? TBIDC("TBLayout.fadeout_y") : TBID((uint32)0),
+			m_overflow_scroll,
+			m_overflow_scroll,
+			m_overflow - m_overflow_scroll,
+			m_overflow - m_overflow_scroll);
 	}
 
 	// Restore clipping

@@ -154,6 +154,7 @@ public:
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnPaint(const PaintProps &paint_props);
+	virtual void OnPaintChildren(const PaintProps &paint_props);
 	virtual void OnAdded();
 	virtual void OnFontChanged();
 	virtual void OnFocusChanged(bool focused);
