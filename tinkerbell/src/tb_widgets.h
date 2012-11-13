@@ -399,6 +399,7 @@ public:
 
 	TBWidget *GetNextDeep() const;
 	TBWidget *GetPrevDeep() const;
+	TBWidget *GetLastLeaf() const;
 	inline TBWidget *GetFirstChild() const { return m_children.GetFirst(); }
 	inline TBWidget *GetLastChild() const { return m_children.GetLast(); }
 

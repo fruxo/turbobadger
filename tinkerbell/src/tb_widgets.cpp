@@ -418,7 +418,7 @@ bool TBWidget::MoveFocus(bool forward)
 		current = forward ? current->GetNextDeep() : current->GetPrevDeep();
 		// Wrap around if we reach the end/beginning
 		if (!current || !root->IsAncestorOf(current))
-			current = forward ? root->GetFirstChild() : root->GetLastChild();
+			current = forward ? root->GetFirstChild() : root->GetLastLeaf();
 		// Break if we reached the origin again (we're not finding anything else)
 		if (current == origin)
 			break;
@@ -447,6 +447,17 @@ TBWidget *TBWidget::GetPrevDeep() const
 	while (widget->m_children.GetLast())
 		widget = widget->GetLastChild();
 	return widget;
+}
+
+TBWidget *TBWidget::GetLastLeaf() const
+{
+	if (TBWidget *widget = GetLastChild())
+	{
+		while (widget->GetLastChild())
+			widget = widget->GetLastChild();
+		return widget;
+	}
+	return nullptr;
 }
 
 WIDGET_HIT_STATUS TBWidget::GetHitStatus(int x, int y)
