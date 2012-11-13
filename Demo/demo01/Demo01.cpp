@@ -666,6 +666,9 @@ bool DemoApplication::Init()
 	if (!Application::Init())
 		return false;
 
+	// Block new animations during Init.
+	AnimationBlocker anim_blocker;
+
 	// Run unit tests
 	int num_failed_tests = TBRunTests();
 
@@ -819,11 +822,7 @@ int app_main()
 	application->GetRoot()->SetSkinBg("background");
 
 	application->Init();
-
-	WidgetsAnimationManager::Init();
 	application->Run();
-	WidgetsAnimationManager::Shutdown();
-
 	application->ShutDown();
 
 	delete application;

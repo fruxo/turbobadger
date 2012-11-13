@@ -28,7 +28,8 @@ public:
 
 	tinkerbell::TBWidget *GetRoot() { return m_backend->GetRoot(); }
 
-	void Run() { m_backend->Run(); }
+	/** Run the message loop. */
+	void Run();
 
 	virtual void OnBackendAttached(ApplicationBackend *backend) { m_backend = backend; }
 	virtual void OnBackendDetached() { m_backend = nullptr; }

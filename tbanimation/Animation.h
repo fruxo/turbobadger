@@ -75,7 +75,7 @@ public:
 
 class AnimationManager
 {
-public:
+private:
 	static TBLinkListOf<AnimationObject> animating_objects;
 public:
 	static void Init();
@@ -87,6 +87,17 @@ public:
 								double animation_duration = ANIMATION_DEFAULT_DURATION,
 								ANIMATION_TIME animation_time = ANIMATION_TIME_FIRST_UPDATE);
 	static void AbortAnimation(AnimationObject *obj);
+
+	/** Return true if new animations are blocked. */
+	static bool IsAnimationsBlocked();
+
+	/** Begin a period of blocking new animations. End the period with EndBlockAnimations.
+		If StartAnimation is called during the blocked period, the animation object will
+		finish the next animation update as it completed normally. */
+	static void BeginBlockAnimations();
+
+	/** End a period of blocking new animations that was started with BeginBlockAnimations. */
+	static void EndBlockAnimations();
 };
 
 // ==============================================================
@@ -134,6 +145,16 @@ public:
 
 	virtual void OnAnimationStart() { AnimatedFloat::OnAnimationStart(); *target_value = GetValue(); }
 	virtual void OnAnimationUpdate(float progress) { AnimatedFloat::OnAnimationUpdate(progress); *target_value = GetValue(); }
+};
+
+/** AnimationBlocker blocks new animations during its lifetime.
+	It's convenient to put on the stack to block new animations
+	within a scope of code. */
+class AnimationBlocker
+{
+public:
+	AnimationBlocker() { AnimationManager::BeginBlockAnimations(); }
+	~AnimationBlocker() { AnimationManager::EndBlockAnimations(); }
 };
 
 }; // namespace tinkerbell

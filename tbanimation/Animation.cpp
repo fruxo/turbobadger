@@ -33,17 +33,21 @@ static float SmoothCurve(float x, float a)
 // == AnimationManager ==============================================
 
 TBLinkListOf<AnimationObject> AnimationManager::animating_objects;
+static int block_animations_counter = 0;
 
+//static
 void AnimationManager::Init()
 {
 }
 
+//static
 void AnimationManager::Shutdown()
 {
 	while (AnimationObject *obj = animating_objects.GetFirst())
 		AbortAnimation(obj);
 }
 
+//static
 void AnimationManager::Update()
 {
 	double time_now = TBSystem::GetTimeMS();
@@ -59,8 +63,13 @@ void AnimationManager::Update()
 		}
 
 		// Calculate current progress
-		float progress = (float)(time_now - obj->animation_start_time) / (float)obj->animation_duration;
-		progress = MIN(progress, 1.0f);
+		// If animation_duration is 0, it should just complete immediately.
+		float progress = 1.0f;
+		if (obj->animation_duration != 0)
+		{
+			progress = (float)(time_now - obj->animation_start_time) / (float)obj->animation_duration;
+			progress = MIN(progress, 1.0f);
+		}
 
 		// Apply animation curve
 		float tmp;
@@ -95,23 +104,28 @@ void AnimationManager::Update()
 	}
 }
 
+//static
 bool AnimationManager::HasAnimationsRunning()
 {
 	return animating_objects.HasLinks();
 }
 
+//static
 void AnimationManager::StartAnimation(AnimationObject *obj, ANIMATION_CURVE animation_curve, double animation_duration, ANIMATION_TIME animation_time)
 {
 	if (obj->IsAnimating())
 		AbortAnimation(obj);
+	if (IsAnimationsBlocked())
+		animation_duration = 0;
 	obj->adjust_start_time = (animation_time == ANIMATION_TIME_FIRST_UPDATE ? true : false);
 	obj->animation_start_time = TBSystem::GetTimeMS();
-	obj->animation_duration = MAX(animation_duration, 1);
+	obj->animation_duration = MAX(animation_duration, 0);
 	obj->animation_curve = animation_curve;
 	obj->OnAnimationStart();
 	animating_objects.AddLast(obj);
 }
 
+//static
 void AnimationManager::AbortAnimation(AnimationObject *obj)
 {
 	if (obj->IsAnimating())
@@ -119,6 +133,25 @@ void AnimationManager::AbortAnimation(AnimationObject *obj)
 		animating_objects.Remove(obj);
 		obj->OnAnimationStop(true);
 	}
+}
+
+//static
+bool AnimationManager::IsAnimationsBlocked()
+{
+	return block_animations_counter > 0;
+}
+
+//static
+void AnimationManager::BeginBlockAnimations()
+{
+	block_animations_counter++;
+}
+
+//static
+void AnimationManager::EndBlockAnimations()
+{
+	assert(block_animations_counter > 0);
+	block_animations_counter--;
 }
 
 }; // namespace tinkerbell
