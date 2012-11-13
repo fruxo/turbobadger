@@ -92,6 +92,7 @@
     <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp" />
     <ClCompile Include="..\..\tbanimation\Animation.cpp" />
     <ClCompile Include="..\..\tbanimation\tb_animation.cpp" />
+    <ClCompile Include="..\Application.cpp" />
     <ClCompile Include="..\Demo01.cpp" />
     <ClCompile Include="..\glfw\src\clipboard.c" />
     <ClCompile Include="..\glfw\src\fullscreen.c" />
@@ -120,6 +121,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\tbanimation\Animation.h" />
     <ClInclude Include="..\..\tbanimation\tb_animation.h" />
+    <ClInclude Include="..\Application.h" />
     <ClInclude Include="..\config.h" />
     <ClInclude Include="..\Demo.h" />
     <ClInclude Include="..\glfw\include\GL\glfw3.h" />

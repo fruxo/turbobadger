@@ -77,6 +77,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tbanimation/Animation.cpp \
       tbanimation/tb_animation.cpp \
       Demo/Demo01.cpp \
+      Demo/Application.cpp \
       Demo/ListWindow.cpp \
       Demo/ResourceEditWindow.cpp \
       Demo/port_glfw.cpp \

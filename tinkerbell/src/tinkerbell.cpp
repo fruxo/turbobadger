@@ -51,7 +51,6 @@ void shutdown_tinkerbell()
 	delete g_tb_skin;
 	delete g_font_manager;
 	delete g_tb_lng;
-	delete g_renderer;
 }
 
 // == TBRect ======================================================

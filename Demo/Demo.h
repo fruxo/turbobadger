@@ -7,35 +7,17 @@
 #include "tb_widgets_listener.h"
 #include "tb_message_window.h"
 #include "tb_msg.h"
+#include "Application.h"
 
 using namespace tinkerbell;
 
-class Application
+class DemoApplication : public Application
 {
 public:
-	Application(TBWidget *root) : m_root(root) {}
-	virtual ~Application() {}
+	DemoApplication() : Application() {}
 
-	static Application *GetApp();
-	TBWidget *GetRoot() { return m_root; }
-
-	virtual bool Init() = 0;
-	virtual void Process() = 0;
-	virtual void RenderFrame(int window_w, int window_h) = 0;
-protected:
-	TBWidget *m_root;
-};
-
-class DemoApplication : public Application, public TBMessageHandler
-{
-public:
-	DemoApplication(TBWidget *root) : Application(root) {}
-	~DemoApplication();
-	bool Init();
-	void Process();
-	void RenderFrame(int window_w, int window_h);
-
-	virtual void OnMessageReceived(TBMessage *msg);
+	virtual bool Init();
+	virtual void RenderFrame(int window_w, int window_h);
 };
 
 class DemoWindow : public TBWindow

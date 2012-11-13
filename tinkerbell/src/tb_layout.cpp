@@ -435,9 +435,13 @@ void TBLayout::OnPaintChildren(const PaintProps &paint_props)
 	// to the indicate to used that it's overflowed.
 	if (m_overflow && m_packed.paint_overflow_fadeout)
 	{
-		DrawEdgeFadeout(padding_rect,
-			m_axis == AXIS_X ? TBIDC("TBLayout.fadeout_x") : TBID((uint32)0),
-			m_axis == AXIS_Y ? TBIDC("TBLayout.fadeout_y") : TBID((uint32)0),
+		TBID skin_x, skin_y;
+		if (m_axis == AXIS_X)
+			skin_x = TBIDC("TBLayout.fadeout_x");
+		else
+			skin_y = TBIDC("TBLayout.fadeout_y");
+
+		DrawEdgeFadeout(padding_rect, skin_x, skin_y,
 			m_overflow_scroll,
 			m_overflow_scroll,
 			m_overflow - m_overflow_scroll,

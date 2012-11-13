@@ -17,6 +17,8 @@
 #include "addons/tbimage/tb_image_manager.h"
 #include "utf8/utf8.h"
 
+static Application *application;
+
 AdvancedItemSource advanced_source;
 TBGenericStringItemSource name_source;
 TBGenericStringItemSource popup_menu_source;
@@ -47,7 +49,7 @@ void const_expr_test()
 
 DemoWindow::DemoWindow()
 {
-	Application::GetApp()->GetRoot()->AddChild(this);
+	application->GetRoot()->AddChild(this);
 }
 
 bool DemoWindow::LoadResourceFile(const char *filename)
@@ -112,7 +114,7 @@ void DemoWindow::Output(const char *format, ...)
 	va_end(ap);
 
 	// Append the text at the last line of the debug field and scroll.
-	if (TBEditField *edit = TBSafeGetByIDInRoot(Application::GetApp()->GetRoot(), TBEditField, "debug_output"))
+	if (TBEditField *edit = TBSafeGetByIDInRoot(application->GetRoot(), TBEditField, "debug_output"))
 	{
 		edit->GetStyleEdit()->AppendText(buf, len, true);
 		edit->GetStyleEdit()->ScrollIfNeeded();
@@ -661,6 +663,9 @@ const char *boy_names[] = {
 
 bool DemoApplication::Init()
 {
+	if (!Application::Init())
+		return false;
+
 	// Run unit tests
 	int num_failed_tests = TBRunTests();
 
@@ -701,35 +706,25 @@ bool DemoApplication::Init()
 
 	new MyToolbarWindow("Demo/ui_resources/test_tabcontainer01.tb.txt");
 
-	WidgetsAnimationManager::Init();
-
 	if (num_failed_tests)
 	{
 		TBStr text;
 		text.SetFormatted("There is %d failed tests!\nCheck the output for details.", num_failed_tests);
-		TBMessageWindow *msg_win = new TBMessageWindow(m_root, TBIDC(""));
+		TBMessageWindow *msg_win = new TBMessageWindow(GetRoot(), TBIDC(""));
 		msg_win->Show("Testing results", text);
 	}
 	return true;
 }
 
-DemoApplication::~DemoApplication()
-{
-	WidgetsAnimationManager::Shutdown();
-}
-
-void DemoApplication::Process()
-{
-	WidgetsAnimationManager::Update();
-	m_root->InvokeProcessStates();
-	m_root->InvokeProcess();
-}
-
 void DemoApplication::RenderFrame(int window_w, int window_h)
 {
+	// Override RenderFrame without calling super, since we want
+	// to inject code between BeginPaint/EndPaint.
+	// Application::RenderFrame(window_w, window_h);
+
 	// Render
 	g_renderer->BeginPaint(window_w, window_h);
-	m_root->InvokePaint(TBWidget::PaintProps());
+	GetRoot()->InvokePaint(TBWidget::PaintProps());
 
 #ifdef _DEBUG
 	// Enable to debug skin bitmap fragments
@@ -765,15 +760,73 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 		str.SetFormatted("FPS: %d Frame %d", fps, frame_counter_total);
 	else
 		str.SetFormatted("Frame %d", frame_counter_total);
-	m_root->GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str);
+	GetRoot()->GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str);
 
 	g_renderer->EndPaint();
 
 	// If we want continous updates or got animations running, reinvalidate immediately
 	if (continuous_repaint || WidgetsAnimationManager::HasAnimationsRunning())
-		m_root->Invalidate();
+		GetRoot()->Invalidate();
 }
 
-void DemoApplication::OnMessageReceived(TBMessage *msg)
+int app_main()
 {
+	application = new DemoApplication();
+
+	ApplicationBackend *application_backend = ApplicationBackend::Create(application, 1280, 720, "Demo");
+	if (!application_backend)
+		return 1;
+
+	init_tinkerbell(application_backend->GetRenderer(), "tinkerbell/lng_en.tb.txt");
+
+	// Register tbbf font renderer
+	void register_tbbf_font_renderer();
+	register_tbbf_font_renderer();
+
+	// Register freetype font renderer - if you compile with tb_font_renderer_freetype.cpp
+	//void register_freetype_font_renderer();
+	//register_freetype_font_renderer();
+
+	// Add a font to the font manager.
+	// If you use the freetype or stb backend, you can add true type files
+	//g_font_manager->AddFontInfo("vera.ttf", "Vera");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/neon.tb.txt", "Neon");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/orangutang.tb.txt", "Orangutang");
+	g_font_manager->AddFontInfo("tinkerbell/default_font/orange.tb.txt", "Orange");
+
+	// Set the default font description for widgets to one of the fonts we just added
+	TBFontDescription fd;
+	fd.SetID(TBIDC("Segoe"));
+	fd.SetSize(14);
+	g_font_manager->SetDefaultFontDescription(fd);
+
+	// Create the font now.
+	TBFontFace *font = g_font_manager->CreateFontFace(g_font_manager->GetDefaultFontDescription());
+
+	// Render some glyphs in one go now since we know we are going to use them. It would work fine
+	// without this since glyphs are rendered when needed, but with some extra updating of the glyph bitmap.
+	if (font)
+		font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~"
+							"â‚¬â€šÆ’â€žâ€¦â€ â€¡Ë†â€°Å â€¹Å’Å½â€˜â€™â€œâ€â€¢â€“â€”Ëœâ„¢Å¡â€ºÅ“Å¾Å¸Â¡Â¢Â£Â¤Â¥Â¦Â§Â¨Â©ÂªÂ«Â¬Â®"
+							"Â¯Â°Â±Â²Â³Â´ÂµÂ¶Â·Â¸Â¹ÂºÂ»Â¼Â½Â¾Â¿Ã€ÃÃ‚ÃƒÃ„Ã…Ã†Ã‡ÃˆÃ‰ÃŠÃ‹ÃŒÃÃŽÃÃÃ‘Ã’Ã“Ã”Ã•Ã–Ã—Ã˜Ã™ÃšÃ›ÃœÃÃžÃŸÃ Ã"
+							"¡Ã¢Ã£Ã¤Ã¥Ã¦Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã°Ã±Ã²Ã³Ã´ÃµÃ¶Ã·Ã¸Ã¹ÃºÃ»Ã¼Ã½Ã¾Ã¿");
+
+	// Load the default skin, and override skin that contains the graphics specific to the demo.
+	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/skin/skin.tb.txt");
+
+	// Give the root widget a background skin
+	application->GetRoot()->SetSkinBg("background");
+
+	application->Init();
+
+	WidgetsAnimationManager::Init();
+	application->Run();
+	WidgetsAnimationManager::Shutdown();
+
+	application->ShutDown();
+
+	delete application;
+
+	return 0;
 }
