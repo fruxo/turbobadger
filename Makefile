@@ -76,13 +76,13 @@ SRC = tinkerbell/src/tb_layout.cpp \
       stb_image/tb_image_loader_stb.cpp \
       tbanimation/Animation.cpp \
       tbanimation/tb_animation.cpp \
-      Demo/Demo01.cpp \
-      Demo/Application.cpp \
-      Demo/ListWindow.cpp \
-      Demo/ResourceEditWindow.cpp \
-      Demo/port_glfw.cpp \
-      Demo/glfw_extra_linux.cpp \
-      Demo/tb_renderer_gl.cpp
+      Demo/demo01/Demo01.cpp \
+      Demo/demo01/ListWindow.cpp \
+      Demo/demo01/ResourceEditWindow.cpp \
+      Demo/platform/Application.cpp \
+      Demo/platform/port_glfw.cpp \
+      Demo/platform/glfw_extra_linux.cpp \
+      Demo/renderers/tb_renderer_gl.cpp
 
 CSRC = Demo/glfw/src/clipboard.c \
        Demo/glfw/src/fullscreen.c \

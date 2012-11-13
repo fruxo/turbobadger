@@ -162,7 +162,7 @@ class EditWindow : public DemoWindow
 public:
 	EditWindow()
 	{
-		LoadResourceFile("Demo/ui_resources/test_textwindow.tb.txt");
+		LoadResourceFile("Demo/demo01/ui_resources/test_textwindow.tb.txt");
 	}
 	virtual void OnProcessStates()
 	{
@@ -371,7 +371,7 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 
 ScrollContainerWindow::ScrollContainerWindow()
 {
-	LoadResourceFile("Demo/ui_resources/test_scrollcontainer.tb.txt");
+	LoadResourceFile("Demo/demo01/ui_resources/test_scrollcontainer.tb.txt");
 
 	if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "name dropdown"))
 		select->SetSource(&name_source);
@@ -457,7 +457,7 @@ void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
 
 AnimationsWindow::AnimationsWindow()
 {
-	LoadResourceFile("Demo/ui_resources/test_animations.tb.txt");
+	LoadResourceFile("Demo/demo01/ui_resources/test_animations.tb.txt");
 	Animate();
 }
 
@@ -499,7 +499,7 @@ bool AnimationsWindow::OnEvent(const TBWidgetEvent &ev)
 
 MainWindow::MainWindow()
 {
-	LoadResourceFile("Demo/ui_resources/test_ui.tb.txt");
+	LoadResourceFile("Demo/demo01/ui_resources/test_ui.tb.txt");
 
 	SetOpacity(0.97f);
 }
@@ -580,18 +580,18 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-layout"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_layout01.tb.txt");
-			new MyToolbarWindow("Demo/ui_resources/test_layout02.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout01.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout02.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-connections"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_connections.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_connections.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-radio-check"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_radio_checkbox.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_radio_checkbox.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-list"))
@@ -601,7 +601,7 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-image"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_image_widget.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_image_widget.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-animations"))
@@ -616,19 +616,19 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-skin-conditions"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_skin_conditions01.tb.txt");
-			new MyToolbarWindow("Demo/ui_resources/test_skin_conditions02.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_skin_conditions01.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_skin_conditions02.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-toggle-container"))
 		{
-			new MyToolbarWindow("Demo/ui_resources/test_toggle_containers.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_toggle_containers.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-resource-edit"))
 		{
 			ResourceEditWindow *res_edit_win = new ResourceEditWindow();
-			res_edit_win->Load("Demo/ui_resources/resource_edit_test.tb.txt");
+			res_edit_win->Load("Demo/demo01/ui_resources/resource_edit_test.tb.txt");
 			GetParent()->AddChild(res_edit_win);
 			return true;
 		}
@@ -704,7 +704,7 @@ bool DemoApplication::Init()
 	AdvancedListWindow *listwindow2 = new AdvancedListWindow(&advanced_source);
 	listwindow2->SetRect(TBRect(950, 50, 300, 300));
 
-	new MyToolbarWindow("Demo/ui_resources/test_tabcontainer01.tb.txt");
+	new MyToolbarWindow("Demo/demo01/ui_resources/test_tabcontainer01.tb.txt");
 
 	if (num_failed_tests)
 	{
@@ -813,7 +813,7 @@ int app_main()
 							"¡Ã¢Ã£Ã¤Ã¥Ã¦Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã°Ã±Ã²Ã³Ã´ÃµÃ¶Ã·Ã¸Ã¹ÃºÃ»Ã¼Ã½Ã¾Ã¿");
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
-	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/skin/skin.tb.txt");
+	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
 
 	// Give the root widget a background skin
 	application->GetRoot()->SetSkinBg("background");

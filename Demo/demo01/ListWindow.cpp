@@ -61,7 +61,7 @@ TBWidget *AdvancedItemSource::CreateItemWidget(int index, TBSelectItemViewer *vi
 
 ListWindow::ListWindow(TBSelectItemSource *source)
 {
-	LoadResourceFile("Demo/ui_resources/test_select.tb.txt");
+	LoadResourceFile("Demo/demo01/ui_resources/test_select.tb.txt");
 	if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
 	{
 		select->SetSource(source);
@@ -85,7 +85,7 @@ bool ListWindow::OnEvent(const TBWidgetEvent &ev)
 AdvancedListWindow::AdvancedListWindow(AdvancedItemSource *source)
 	: m_source(source)
 {
-	LoadResourceFile("Demo/ui_resources/test_select_advanced.tb.txt");
+	LoadResourceFile("Demo/demo01/ui_resources/test_select_advanced.tb.txt");
 	if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
 	{
 		select->SetSource(source);

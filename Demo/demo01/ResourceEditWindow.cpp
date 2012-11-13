@@ -22,7 +22,7 @@ ResourceEditWindow::ResourceEditWindow()
 	// Register as global listener to intercept events in the build container
 	TBGlobalWidgetListener::AddListener(this);
 
-	g_widgets_reader->LoadFile(this, "Demo/ui_resources/resource_edit_window.tb.txt");
+	g_widgets_reader->LoadFile(this, "Demo/demo01/ui_resources/resource_edit_window.tb.txt");
 
 	m_build_container = GetWidgetByID(TBIDC("build_container"));
 	m_build_container = m_build_container->GetContentRoot();

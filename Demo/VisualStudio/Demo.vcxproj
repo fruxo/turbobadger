@@ -92,8 +92,9 @@
     <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp" />
     <ClCompile Include="..\..\tbanimation\Animation.cpp" />
     <ClCompile Include="..\..\tbanimation\tb_animation.cpp" />
-    <ClCompile Include="..\Application.cpp" />
-    <ClCompile Include="..\Demo01.cpp" />
+    <ClCompile Include="..\demo01\Demo01.cpp" />
+    <ClCompile Include="..\demo01\ListWindow.cpp" />
+    <ClCompile Include="..\demo01\ResourceEditWindow.cpp" />
     <ClCompile Include="..\glfw\src\clipboard.c" />
     <ClCompile Include="..\glfw\src\fullscreen.c" />
     <ClCompile Include="..\glfw\src\init.c" />
@@ -112,24 +113,23 @@
     <ClCompile Include="..\glfw\src\win32_time.c" />
     <ClCompile Include="..\glfw\src\win32_window.c" />
     <ClCompile Include="..\glfw\src\window.c" />
-    <ClCompile Include="..\glfw_extra_win.cpp" />
-    <ClCompile Include="..\ListWindow.cpp" />
-    <ClCompile Include="..\ResourceEditWindow.cpp" />
-    <ClCompile Include="..\port_glfw.cpp" />
-    <ClCompile Include="..\tb_renderer_gl.cpp" />
+    <ClCompile Include="..\platform\Application.cpp" />
+    <ClCompile Include="..\platform\glfw_extra_win.cpp" />
+    <ClCompile Include="..\platform\port_glfw.cpp" />
+    <ClCompile Include="..\renderers\tb_renderer_gl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tbanimation\Animation.h" />
     <ClInclude Include="..\..\tbanimation\tb_animation.h" />
-    <ClInclude Include="..\Application.h" />
     <ClInclude Include="..\config.h" />
-    <ClInclude Include="..\Demo.h" />
+    <ClInclude Include="..\demo01\Demo.h" />
+    <ClInclude Include="..\demo01\ListWindow.h" />
+    <ClInclude Include="..\demo01\ResourceEditWindow.h" />
     <ClInclude Include="..\glfw\include\GL\glfw3.h" />
     <ClInclude Include="..\glfw\src\win32_platform.h" />
-    <ClInclude Include="..\glfw_extra.h" />
-    <ClInclude Include="..\ListWindow.h" />
-    <ClInclude Include="..\ResourceEditWindow.h" />
-    <ClInclude Include="..\tb_renderer_gl.h" />
+    <ClInclude Include="..\platform\Application.h" />
+    <ClInclude Include="..\platform\glfw_extra.h" />
+    <ClInclude Include="..\renderers\tb_renderer_gl.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="tinkerbell_static.vcxproj">

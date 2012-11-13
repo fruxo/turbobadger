@@ -7,7 +7,7 @@
 #include "tb_widgets_listener.h"
 #include "tb_message_window.h"
 #include "tb_msg.h"
-#include "Application.h"
+#include "platform/Application.h"
 
 using namespace tinkerbell;
 

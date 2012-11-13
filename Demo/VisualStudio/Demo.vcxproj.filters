@@ -25,11 +25,17 @@
     <Filter Include="Source Files\glfw\src">
       <UniqueIdentifier>{78c12b96-9e82-4995-9b9d-2ddadeb85eda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\demo01">
+      <UniqueIdentifier>{9dabbf50-c352-4aaf-86ab-b678ab8c3136}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\renderers">
+      <UniqueIdentifier>{fbf1da9c-6bd5-40be-977d-d9a1de19032f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platform">
+      <UniqueIdentifier>{bc150975-47f1-41bc-8c1d-039162628f54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Demo01.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tbanimation\Animation.cpp">
       <Filter>Source Files\tbanimation</Filter>
     </ClCompile>
@@ -38,15 +44,6 @@
     </ClCompile>
     <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp">
       <Filter>Source Files\stb_image</Filter>
-    </ClCompile>
-    <ClCompile Include="..\tb_renderer_gl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ResourceEditWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ListWindow.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\glfw\src\clipboard.c">
       <Filter>Source Files\glfw\src</Filter>
@@ -102,34 +99,34 @@
     <ClCompile Include="..\glfw\src\window.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\glfw_extra_win.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\demo01\Demo01.cpp">
+      <Filter>Source Files\demo01</Filter>
     </ClCompile>
-    <ClCompile Include="..\port_glfw.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\demo01\ListWindow.cpp">
+      <Filter>Source Files\demo01</Filter>
     </ClCompile>
-    <ClCompile Include="..\Application.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\demo01\ResourceEditWindow.cpp">
+      <Filter>Source Files\demo01</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\glfw_extra_win.cpp">
+      <Filter>Source Files\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\port_glfw.cpp">
+      <Filter>Source Files\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\platform\Application.cpp">
+      <Filter>Source Files\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\renderers\tb_renderer_gl.cpp">
+      <Filter>Source Files\renderers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Demo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\tbanimation\Animation.h">
       <Filter>Source Files\tbanimation</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tbanimation\tb_animation.h">
       <Filter>Source Files\tbanimation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tb_renderer_gl.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ResourceEditWindow.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ListWindow.h">
-      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\glfw\src\win32_platform.h">
       <Filter>Source Files\glfw\src</Filter>
@@ -137,13 +134,25 @@
     <ClInclude Include="..\glfw\include\GL\glfw3.h">
       <Filter>Source Files\glfw\src</Filter>
     </ClInclude>
-    <ClInclude Include="..\glfw_extra.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\demo01\Demo.h">
+      <Filter>Source Files\demo01</Filter>
+    </ClInclude>
+    <ClInclude Include="..\demo01\ListWindow.h">
+      <Filter>Source Files\demo01</Filter>
+    </ClInclude>
+    <ClInclude Include="..\demo01\ResourceEditWindow.h">
+      <Filter>Source Files\demo01</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\Application.h">
+      <Filter>Source Files\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\platform\glfw_extra.h">
+      <Filter>Source Files\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\renderers\tb_renderer_gl.h">
+      <Filter>Source Files\renderers</Filter>
     </ClInclude>
     <ClInclude Include="..\config.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Application.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,0 +1,18 @@
+WindowInfo
+	title TBImageWidget
+	size 350 500
+TBScrollContainer
+	adapt_content 1
+	TBLayout
+		axis y
+		spacing 20
+		TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt_to_content: 1, text: "Some images shown by TBImageWidget. This test requires linkage with files in addons/tbimage/*\nImages are unloaded when all references are removed (this window is closed)."
+		TBImageWidget: filename: "Demo/demo01/images/image_1.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_2.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_3.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_4.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_5.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_6.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_7.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_8.png", skin: ImageFrame
+		TBImageWidget: filename: "Demo/demo01/images/image_9.png", skin: ImageFrame
