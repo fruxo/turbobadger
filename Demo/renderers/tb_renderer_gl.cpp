@@ -38,7 +38,7 @@ struct Vertex {
 	};
 };
 
-GLuint g_current_texture = 0;
+GLuint g_current_texture = (GLuint)-1;
 class Batch *g_current_batch = 0;
 
 void BindBitmap(TBBitmap *bitmap)
@@ -217,7 +217,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 {
 	m_screen_rect.Set(0, 0, render_target_w, render_target_h);
 	m_clip_rect = m_screen_rect;
-	g_current_texture = 0;
+	g_current_texture = (GLuint)-1;
 	g_current_batch = nullptr;
 
 	glMatrixMode(GL_PROJECTION);
