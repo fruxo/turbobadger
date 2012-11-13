@@ -2,6 +2,7 @@ WindowInfo
 	title TBTabContainer & misc tests
 	position 300 500
 TBTabContainer
+	gravity all
 	id tabcontainer
 	tabs
 		TBButton: text: "Tab with long text"

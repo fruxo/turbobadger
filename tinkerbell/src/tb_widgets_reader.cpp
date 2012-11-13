@@ -120,7 +120,6 @@ TB_WIDGET_FACTORY(TBScrollContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 
 TB_WIDGET_FACTORY(TBTabContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
-	widget->SetGravity(WIDGET_GRAVITY_ALL);
 	const char *axis = info->node->GetValueString("axis", "y");
 	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
 	if (const char *align = info->node->GetValueString("align", nullptr))
