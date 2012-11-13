@@ -212,8 +212,8 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 
 			if (const char *color = n->GetValueString("text-color", nullptr))
 				e->text_color.SetFromString(color, strlen(color));
-			else
-				e->text_color = TBColor(0, 0, 0, 0);
+			if (const char *color = n->GetValueString("background-color", nullptr))
+				e->bg_color.SetFromString(color, strlen(color));
 
 			const char *type = n->GetValueString("type", "StretchBox");
 			if (strcmp(type, "Image") == 0)
@@ -429,6 +429,7 @@ void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SK
 
 void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element)
 {
+	PaintElementBGColor(dst_rect, element);
 	if (!element->bitmap)
 		return;
 	if (element->type == SKIN_ELEMENT_TYPE_IMAGE)
@@ -458,6 +459,13 @@ TBRect TBSkin::GetFlippedRect(const TBRect &src_rect, TBSkinElement *element)
 		tmp_rect.h = -tmp_rect.h;
 	}
 	return tmp_rect;
+}
+
+void TBSkin::PaintElementBGColor(const TBRect &dst_rect, TBSkinElement *element)
+{
+	if (element->bg_color == 0)
+		return;
+	g_renderer->DrawRectFill(dst_rect, element->bg_color);
 }
 
 void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
@@ -572,6 +580,8 @@ TBSkinElement::TBSkinElement()
 	, content_ofs_x(0), content_ofs_y(0)
 	, img_position_x(50), img_position_y(50), img_ofs_x(0), img_ofs_y(0)
 	, flip_x(0), flip_y(0), opacity(1.f)
+	, text_color(0, 0, 0, 0)
+	, bg_color(0, 0, 0, 0)
 {
 }
 
