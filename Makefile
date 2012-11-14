@@ -34,7 +34,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_select_item.cpp \
       tinkerbell/src/tb_editfield.cpp \
       tinkerbell/src/tb_system_linux.cpp \
-      tinkerbell/src/tb_clipboard_dummy.cpp \
+      tinkerbell/src/tb_clipboard_glfw.cpp \
       tinkerbell/src/tb_tab_container.cpp \
       tinkerbell/src/tb_widgets.cpp \
       tinkerbell/src/tb_widgets_common.cpp \
