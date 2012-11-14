@@ -1,7 +1,7 @@
 WindowInfo
 	title Text editing
-	position 300 50
-	size 600 400
+	position 280 50
+	size 450 630
 TBLayout: axis: y, distribution: available
 	TBLayout: distribution: gravity
 		TBButton: id: undo

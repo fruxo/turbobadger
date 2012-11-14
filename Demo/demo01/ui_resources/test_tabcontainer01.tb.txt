@@ -1,6 +1,6 @@
 WindowInfo
 	title TBTabContainer & misc tests
-	position 300 500
+	position 770 430
 TBTabContainer
 	gravity all
 	id tabcontainer

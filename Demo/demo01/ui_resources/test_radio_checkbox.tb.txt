@@ -1,6 +1,5 @@
 WindowInfo
 	title Radiobutton & checkbox
-	position 100 100
 TBLayout: position: left top, axis: y
 	TBTextField: text: "Radiobuttons, anonymous group:"
 	TBLayout: distribution: preferred

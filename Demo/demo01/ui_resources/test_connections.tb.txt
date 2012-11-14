@@ -1,6 +1,5 @@
 WindowInfo
 	title TBWidgetValue connections
-	position 600 300
 TBLayout
 	axis y
 	TBTextField

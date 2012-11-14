@@ -1,5 +1,7 @@
 WindowInfo
 	title Customized list items
+	position 770 50
+	size 300 300
 TBLayout
 	axis y
 	distribution gravity

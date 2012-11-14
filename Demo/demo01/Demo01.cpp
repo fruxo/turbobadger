@@ -702,10 +702,8 @@ bool DemoApplication::Init()
 	TBWindow *textwindow = new EditWindow;
 
 	ListWindow *listwindow = new ListWindow(&name_source);
-	listwindow->SetPosition(TBPoint(730, 500));
 
 	AdvancedListWindow *listwindow2 = new AdvancedListWindow(&advanced_source);
-	listwindow2->SetRect(TBRect(950, 50, 300, 300));
 
 	new MyToolbarWindow("Demo/demo01/ui_resources/test_tabcontainer01.tb.txt");
 
