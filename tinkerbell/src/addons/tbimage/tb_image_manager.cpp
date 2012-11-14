@@ -8,17 +8,7 @@
 
 namespace tinkerbell {
 
-// == TBImageManagerAddonFactory ========================================================
-
-class TBImageManagerAddonFactory : public TBAddonFactory
-{
-public:
-	virtual TBAddon *CreateAddon()
-	{
-		return new TBImageManager();
-	}
-};
-TBImageManagerAddonFactory image_manager_addon_factory;
+TB_ADDON_FACTORY(TBImageManager);
 
 // == TBImageRep ========================================================================
 

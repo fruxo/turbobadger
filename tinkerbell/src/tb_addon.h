@@ -35,7 +35,7 @@ class TBAddonFactory
 public:
 	TBAddonFactory();
 
-	virtual TBAddon *CreateAddon() = 0;
+	virtual TBAddon *Create() = 0;
 
 	TBAddonFactory *next;	///< Next registered addon factory.
 };
@@ -45,6 +45,18 @@ bool TBInitAddons();
 
 /** Shutdown and delete addons. */
 void TBShutdownAddons();
+
+/** This macro creates a new TBAddonFactory for the given class name. */
+#define TB_ADDON_FACTORY(classname) \
+	class classname##AddonFactory : public TBAddonFactory \
+	{ \
+	public: \
+		virtual TBAddon *Create() \
+		{ \
+			return new classname(); \
+		} \
+	}; \
+	static classname##AddonFactory classname##_af;
 
 }; // namespace tinkerbell
 

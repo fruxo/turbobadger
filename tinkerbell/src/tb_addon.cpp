@@ -28,7 +28,7 @@ bool TBInitAddons()
 	TBAddonFactory *f = g_registered_addon_factories;
 	while (f)
 	{
-		TBAddon *addon = f->CreateAddon();
+		TBAddon *addon = f->Create();
 		if (!addon || !addon->Init())
 		{
 			delete addon;
