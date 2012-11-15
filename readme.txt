@@ -121,7 +121,7 @@ easier to get a pull requests accepted:
 Building the demo
 -----------------------------------------------------------------------------------
 
-The demo use GLFW as a submodule for some platform window handling.
+The demo use GLFW as a submodule for some platform window & input handling.
 After the first git clone, you need to run:
 
 	git submodule init
@@ -131,6 +131,8 @@ This will clone GLFW into the right directory.
 
 On Windows, use the project files for Visual Studio 2010 in Demo/VisualStudio.
 On Linux & Mac, simply run make. It will create a executable called RunDemo.
+On Linux & Mac, you can also use the Sublime Text 2 project in the root folder
+that is set up to work with debugging using SublimeGDB.
 
 
 Author

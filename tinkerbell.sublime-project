@@ -1,0 +1,19 @@
+{
+	"folders":
+	[
+		{
+			"path": "./",
+			"folder_exclude_patterns": ["VisualStudio"],
+			"file_exclude_patterns": ["*~", "RunDemo", "*.png"]
+		}
+	],
+	"settings":
+	{
+		"tab_size": 4,
+		"trim_trailing_white_space_on_save": true,
+
+		// Settings for SublimeGDB
+		"sublimegdb_commandline": "gdb --interpreter=mi ./RunDemo",
+		"sublimegdb_workingdir": "${folder:${project_path:RunDemo}}"
+	}
+}
