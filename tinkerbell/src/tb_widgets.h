@@ -48,6 +48,13 @@ enum EVENT_TYPE {
 	EVENT_TYPE_KEY_DOWN,
 	EVENT_TYPE_KEY_UP,
 
+	/** Invoked by the platform when a standard keyboard shortcut is pressed.
+		It's called before InvokeKeyDown (EVENT_TYPE_KEY_DOWN) and if the event
+		is handled (returns true), the KeyDown is canceled.
+		The ref_id will be set to one of the following:
+			"cut", "copy", "paste", "selectall", "undo", "redo". */
+	EVENT_TYPE_SHORTCUT,
+
 	/** Invoked when a context menu should be opened at the event x and y coordinates. */
 	EVENT_TYPE_CONTEXT_MENU
 };

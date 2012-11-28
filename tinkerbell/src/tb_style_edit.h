@@ -316,9 +316,9 @@ public:
 	void SetFont(const TBFontDescription &font_desc);
 
 	void Paint(const TBRect &rect, const TBFontDescription &font_desc, const TBColor &text_color);
-	bool KeyDown(char ascii, uint16 function, uint32 modifierkeys);
-	bool MouseDown(const TBPoint &point, int button, int clicks, uint32 modifierkeys);
-	bool MouseUp(const TBPoint &point, int button, uint32 modifierkeys);
+	bool KeyDown(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys);
+	bool MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys);
+	bool MouseUp(const TBPoint &point, int button, MODIFIER_KEYS modifierkeys);
 	bool MouseMove(const TBPoint &point);
 	void Focus(bool focus);
 

@@ -1574,22 +1574,16 @@ TBBlock *TBStyleEdit::FindBlock(int32 y) const
 	return blocks.GetLast();
 }
 
-// @return Return the upper case of a ascii charcter. Only for shortcut handling.
-int8 toupr_ascii(int8 ascii)
-{
-	if (ascii >= 'a' && ascii <= 'z')
-		return ascii + 'A' - 'a';
-	return ascii;
-}
-
-bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
+bool TBStyleEdit::KeyDown(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys)
 {
 	if (select_state)
 		return false;
 
 	bool handled = true;
-	bool move_caret = function == TB_KEY_LEFT || function == TB_KEY_RIGHT || function == TB_KEY_UP || function == TB_KEY_DOWN ||
-					function == TB_KEY_HOME || function == TB_KEY_END || function == TB_KEY_PAGE_UP || function == TB_KEY_PAGE_DOWN;
+	bool move_caret = special_key == TB_KEY_LEFT || special_key == TB_KEY_RIGHT ||
+						special_key == TB_KEY_UP || special_key == TB_KEY_DOWN ||
+						special_key == TB_KEY_HOME || special_key == TB_KEY_END ||
+						special_key == TB_KEY_PAGE_UP || special_key == TB_KEY_PAGE_DOWN;
 
 	if (!(modifierkeys & TB_SHIFT) && move_caret)
 		selection.SelectNothing();
@@ -1597,83 +1591,54 @@ bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 	TBTextOfs old_caret_pos = caret.pos;
 	TBTextFragment *old_caret_elm = caret.GetFragment();
 
-	if ((function == TB_KEY_UP || function == TB_KEY_DOWN) && (modifierkeys & TB_CTRL))
+	if ((special_key == TB_KEY_UP || special_key == TB_KEY_DOWN) && (modifierkeys & TB_CTRL))
 	{
 		int32 line_height = old_caret_pos.block->CalculateLineHeight(font);
-		int32 new_y = scroll_y + (function == TB_KEY_UP ? -line_height : line_height);
+		int32 new_y = scroll_y + (special_key == TB_KEY_UP ? -line_height : line_height);
 		SetScrollPos(scroll_x, new_y);
 	}
-	else if (function == TB_KEY_LEFT)
-		caret.Move(false, modifierkeys & TB_CTRL);
-	else if (function == TB_KEY_RIGHT)
-		caret.Move(true, modifierkeys & TB_CTRL);
-	else if (function == TB_KEY_UP)
+	else if (special_key == TB_KEY_LEFT)
+		caret.Move(false, (modifierkeys & TB_CTRL) ? true : false);
+	else if (special_key == TB_KEY_RIGHT)
+		caret.Move(true, (modifierkeys & TB_CTRL) ? true : false);
+	else if (special_key == TB_KEY_UP)
 		handled = caret.Place(TBPoint(caret.wanted_x, old_caret_pos.block->ypos + old_caret_elm->line_ypos - 1));
-	else if (function == TB_KEY_DOWN)
+	else if (special_key == TB_KEY_DOWN)
 		handled = caret.Place(TBPoint(caret.wanted_x, old_caret_pos.block->ypos + old_caret_elm->line_ypos + old_caret_elm->line_height + 1));
-	else if (function == TB_KEY_PAGE_UP)
+	else if (special_key == TB_KEY_PAGE_UP)
 		caret.Place(TBPoint(caret.wanted_x, caret.y - layout_height));
-	else if (function == TB_KEY_PAGE_DOWN)
+	else if (special_key == TB_KEY_PAGE_DOWN)
 		caret.Place(TBPoint(caret.wanted_x, caret.y + layout_height + old_caret_elm->line_height));
-	else if (function == TB_KEY_HOME && modifierkeys & TB_CTRL)
+	else if (special_key == TB_KEY_HOME && modifierkeys & TB_CTRL)
 		caret.Place(TBPoint(0, 0));
-	else if (function == TB_KEY_END && modifierkeys & TB_CTRL)
+	else if (special_key == TB_KEY_END && modifierkeys & TB_CTRL)
 		caret.Place(TBPoint(32000, blocks.GetLast()->ypos + blocks.GetLast()->height));
-	else if (function == TB_KEY_HOME)
+	else if (special_key == TB_KEY_HOME)
 		caret.Place(TBPoint(0, caret.y));
-	else if (function == TB_KEY_END)
+	else if (special_key == TB_KEY_END)
 		caret.Place(TBPoint(32000, caret.y));
-	else if (toupr_ascii(ascii) == '8' && (modifierkeys & TB_CTRL))
+	else if (key == '8' && (modifierkeys & TB_CTRL))
 	{
 		packed.show_whitespace = !packed.show_whitespace;
 		listener->Invalidate(TBRect(0, 0, layout_width, layout_height));
 	}
-	else if (toupr_ascii(ascii) == 'A' && (modifierkeys & TB_CTRL))
-		selection.SelectAll();
-	else if (!packed.read_only && (function == TB_KEY_DELETE || function == TB_KEY_BACKSPACE))
+	else if (!packed.read_only && (special_key == TB_KEY_DELETE || special_key == TB_KEY_BACKSPACE))
 	{
 		if (!selection.IsSelected())
 		{
-			caret.Move(function == TB_KEY_DELETE, modifierkeys & TB_CTRL);
+			caret.Move(special_key == TB_KEY_DELETE, (modifierkeys & TB_CTRL) ? true : false);
 			selection.SelectToCaret(old_caret_pos.block, old_caret_pos.ofs);
 		}
 		selection.RemoveContent();
 	}
-	else if ((toupr_ascii(ascii) == 'Z' && (modifierkeys & TB_CTRL)) ||
-			(toupr_ascii(ascii) == 'Y' && (modifierkeys & TB_CTRL)))
-	{
-		if (!packed.read_only)
-		{
-			bool undo = toupr_ascii(ascii) == 'Z';
-			if (modifierkeys & TB_SHIFT)
-				undo = !undo;
-			if (undo)
-				undoredo.Undo(this);
-			else
-				undoredo.Redo(this);
-		}
-	}
-	else if (!packed.read_only && (toupr_ascii(ascii) == 'X' && (modifierkeys & TB_CTRL)))
-	{
-		Cut();
-	}
-	else if ((toupr_ascii(ascii) == 'C' || function == TB_KEY_INSERT) && (modifierkeys & TB_CTRL))
-	{
-		Copy();
-	}
-	else if (!packed.read_only && ((toupr_ascii(ascii) == 'V' && (modifierkeys & TB_CTRL)) ||
-								(function == TB_KEY_INSERT && (modifierkeys & TB_SHIFT))))
-	{
-		Paste();
-	}
-	else if (!packed.read_only && !(modifierkeys & TB_SHIFT) && (function == TB_KEY_TAB && packed.multiline_on))
+	else if (!packed.read_only && !(modifierkeys & TB_SHIFT) && (special_key == TB_KEY_TAB && packed.multiline_on))
 		InsertText("\t", 1);
-	else if (!packed.read_only && (function == TB_KEY_ENTER && packed.multiline_on) && !(modifierkeys & TB_CTRL))
+	else if (!packed.read_only && (special_key == TB_KEY_ENTER && packed.multiline_on) && !(modifierkeys & TB_CTRL))
 		InsertBreak();
-	else if (!packed.read_only && (ascii && !(modifierkeys & TB_CTRL)) && function != TB_KEY_ENTER)
+	else if (!packed.read_only && (key && !(modifierkeys & TB_CTRL)) && special_key != TB_KEY_ENTER)
 	{
 		char utf8[8];
-		int len = utf8::encode((unsigned char)ascii, utf8);
+		int len = utf8::encode(key, utf8);
 		InsertText(utf8, len);
 	}
 	else
@@ -1682,7 +1647,8 @@ bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 	if ((modifierkeys & TB_SHIFT) && move_caret)
 		selection.SelectToCaret(old_caret_pos.block, old_caret_pos.ofs);
 
-	if (!(function == TB_KEY_UP || function == TB_KEY_DOWN || function == TB_KEY_PAGE_UP || function == TB_KEY_PAGE_DOWN))
+	if (!(special_key == TB_KEY_UP || special_key == TB_KEY_DOWN ||
+		special_key == TB_KEY_PAGE_UP || special_key == TB_KEY_PAGE_DOWN))
 		caret.UpdateWantedX();
 
 	caret.ResetBlink();
@@ -1690,7 +1656,7 @@ bool TBStyleEdit::KeyDown(char ascii, uint16 function, uint32 modifierkeys)
 	// Hooks
 	if (!move_caret)
 		listener->OnChange();
-	if (function == TB_KEY_ENTER && !(modifierkeys & TB_CTRL))
+	if (special_key == TB_KEY_ENTER && !(modifierkeys & TB_CTRL))
 	{
 		if (listener->OnEnter())
 			handled = true;
@@ -1706,7 +1672,7 @@ void TBStyleEdit::Cut()
 	if (packed.password_on)
 		return;
 	Copy();
-	KeyDown(0, TB_KEY_DELETE, 0);
+	KeyDown(0, TB_KEY_DELETE, TB_MODIFIER_NONE);
 }
 
 void TBStyleEdit::Copy()
@@ -1735,7 +1701,7 @@ void TBStyleEdit::Delete()
 	}
 }
 
-bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, uint32 modifierkeys)
+bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys)
 {
 	if (button != 1)
 		return false;
@@ -1763,7 +1729,7 @@ bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, uint32
 	return true;
 }
 
-bool TBStyleEdit::MouseUp(const TBPoint &point, int button, uint32 modifierkeys)
+bool TBStyleEdit::MouseUp(const TBPoint &point, int button, MODIFIER_KEYS modifierkeys)
 {
 	if (button != 1)
 		return false;

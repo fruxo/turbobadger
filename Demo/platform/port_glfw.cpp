@@ -68,10 +68,62 @@ MODIFIER_KEYS GetModifierKeys()
 	return code;
 }
 
+// @return Return the upper case of a ascii charcter. Only for shortcut handling.
+static int toupr_ascii(int ascii)
+{
+	if (ascii >= 'a' && ascii <= 'z')
+		return ascii + 'A' - 'a';
+	return ascii;
+}
+
+static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
+{
+	if (!TBWidget::focused_widget || !down)
+		return false;
+#ifdef MACOSX
+	bool shortcut_key = (modifierkeys & TB_ALT) ? true : false;
+#else
+	bool shortcut_key = (modifierkeys & TB_CTRL) ? true : false;
+#endif
+	bool reverse_key = (modifierkeys & TB_SHIFT) ? true : false;
+	TBID id;
+	if (toupr_ascii(key) == 'X' && shortcut_key)
+		id = TBIDC("cut");
+	else if ((toupr_ascii(key) == 'C' || special_key == TB_KEY_INSERT) && shortcut_key)
+		id = TBIDC("copy");
+	else if (((toupr_ascii(key) == 'V' && shortcut_key) ||
+			(special_key == TB_KEY_INSERT && reverse_key)))
+		id = TBIDC("paste");
+	else if (toupr_ascii(key) == 'A' && shortcut_key)
+		id = TBIDC("selectall");
+	else if ((toupr_ascii(key) == 'Z' && shortcut_key) ||
+			(toupr_ascii(key) == 'Y' && shortcut_key))
+	{
+		bool undo = toupr_ascii(key) == 'Z';
+		if (reverse_key)
+			undo = !undo;
+		id = undo ? TBIDC("undo") : TBIDC("redo");
+	}
+	else
+		return false;
+
+	TBWidgetEvent ev(EVENT_TYPE_SHORTCUT, 0, 0, modifierkeys);
+	ev.ref_id = id;
+	return TBWidget::focused_widget->InvokeEvent(ev);
+}
+
+static bool InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
+{
+	if (InvokeShortcut(key, TB_KEY_UNDEFINED, modifierkeys, down))
+		return true;
+	g_backend->GetRoot()->InvokeKey(key, special_key, modifierkeys, down);
+	return true;
+}
+
 static void char_callback(GLFWwindow window, int character)
 {
-	g_backend->GetRoot()->InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), true);
-	g_backend->GetRoot()->InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), false);
+	InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), true);
+	InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), false);
 }
 
 static void key_callback(GLFWwindow window, int key, int action)
@@ -80,32 +132,32 @@ static void key_callback(GLFWwindow window, int key, int action)
 	bool down = (action == GLFW_PRESS);
 	switch (key)
 	{
-	case GLFW_KEY_F1:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F1, modifier, down); break;
-	case GLFW_KEY_F2:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F2, modifier, down); break;
-	case GLFW_KEY_F3:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F3, modifier, down); break;
-	case GLFW_KEY_F4:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F4, modifier, down); break;
-	case GLFW_KEY_F5:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F5, modifier, down); break;
-	case GLFW_KEY_F6:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F6, modifier, down); break;
-	case GLFW_KEY_F7:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F7, modifier, down); break;
-	case GLFW_KEY_F8:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F8, modifier, down); break;
-	case GLFW_KEY_F9:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F9, modifier, down); break;
-	case GLFW_KEY_F10:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F10, modifier, down); break;
-	case GLFW_KEY_F11:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F11, modifier, down); break;
-	case GLFW_KEY_F12:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_F12, modifier, down); break;
-	case GLFW_KEY_LEFT:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_LEFT, modifier, down); break;
-	case GLFW_KEY_UP:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_UP, modifier, down); break;
-	case GLFW_KEY_RIGHT:		g_backend->GetRoot()->InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
-	case GLFW_KEY_DOWN:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
-	case GLFW_KEY_PAGEUP:		g_backend->GetRoot()->InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
-	case GLFW_KEY_PAGEDOWN:		g_backend->GetRoot()->InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
-	case GLFW_KEY_HOME:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_HOME, modifier, down); break;
-	case GLFW_KEY_END:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_END, modifier, down); break;
-	case GLFW_KEY_INSERT:		g_backend->GetRoot()->InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
-	case GLFW_KEY_TAB:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_TAB, modifier, down); break;
-	case GLFW_KEY_DEL:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
-	case GLFW_KEY_BACKSPACE:	g_backend->GetRoot()->InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
-	case GLFW_KEY_ENTER:		g_backend->GetRoot()->InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
-	case GLFW_KEY_ESC:			g_backend->GetRoot()->InvokeKey(0, TB_KEY_ESC, modifier, down); break;
+	case GLFW_KEY_F1:			InvokeKey(0, TB_KEY_F1, modifier, down); break;
+	case GLFW_KEY_F2:			InvokeKey(0, TB_KEY_F2, modifier, down); break;
+	case GLFW_KEY_F3:			InvokeKey(0, TB_KEY_F3, modifier, down); break;
+	case GLFW_KEY_F4:			InvokeKey(0, TB_KEY_F4, modifier, down); break;
+	case GLFW_KEY_F5:			InvokeKey(0, TB_KEY_F5, modifier, down); break;
+	case GLFW_KEY_F6:			InvokeKey(0, TB_KEY_F6, modifier, down); break;
+	case GLFW_KEY_F7:			InvokeKey(0, TB_KEY_F7, modifier, down); break;
+	case GLFW_KEY_F8:			InvokeKey(0, TB_KEY_F8, modifier, down); break;
+	case GLFW_KEY_F9:			InvokeKey(0, TB_KEY_F9, modifier, down); break;
+	case GLFW_KEY_F10:			InvokeKey(0, TB_KEY_F10, modifier, down); break;
+	case GLFW_KEY_F11:			InvokeKey(0, TB_KEY_F11, modifier, down); break;
+	case GLFW_KEY_F12:			InvokeKey(0, TB_KEY_F12, modifier, down); break;
+	case GLFW_KEY_LEFT:			InvokeKey(0, TB_KEY_LEFT, modifier, down); break;
+	case GLFW_KEY_UP:			InvokeKey(0, TB_KEY_UP, modifier, down); break;
+	case GLFW_KEY_RIGHT:		InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
+	case GLFW_KEY_DOWN:			InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
+	case GLFW_KEY_PAGEUP:		InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
+	case GLFW_KEY_PAGEDOWN:		InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
+	case GLFW_KEY_HOME:			InvokeKey(0, TB_KEY_HOME, modifier, down); break;
+	case GLFW_KEY_END:			InvokeKey(0, TB_KEY_END, modifier, down); break;
+	case GLFW_KEY_INSERT:		InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
+	case GLFW_KEY_TAB:			InvokeKey(0, TB_KEY_TAB, modifier, down); break;
+	case GLFW_KEY_DEL:			InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
+	case GLFW_KEY_BACKSPACE:	InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
+	case GLFW_KEY_ENTER:		InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
+	case GLFW_KEY_ESC:			InvokeKey(0, TB_KEY_ESC, modifier, down); break;
 	case GLFW_KEY_MENU:
 		if (TBWidget::focused_widget && !down)
 		{
@@ -130,7 +182,7 @@ static void key_callback(GLFWwindow window, int key, int action)
 		// At least the windows implementation of glfw calls KeyboardSpecial
 		// when pressing a character while ctrl is also pressed.
 		if (key_ctrl && !key_alt && key >= 32 && key <= 255)
-			g_backend->GetRoot()->InvokeKey(key, TB_KEY_UNDEFINED, modifier, down);
+			InvokeKey(key, TB_KEY_UNDEFINED, modifier, down);
 #endif // WIN32
 		break;
 	}

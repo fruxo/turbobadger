@@ -174,7 +174,9 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_POINTER_DOWN && ev.target == this)
 	{
 		TBRect padding_rect = GetPaddingRect();
-		if (m_style_edit.MouseDown(TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y), 1, ev.count, 0))
+		if (m_style_edit.MouseDown(
+			TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y),
+			1, ev.count, TB_MODIFIER_NONE))
 		{
 			// Post a message to start selection scroll
 			PostMessageDelayed(TBIDC("selscroll"), nullptr, SELECTION_SCROLL_DELAY);
@@ -189,7 +191,7 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_POINTER_UP && ev.target == this)
 	{
 		TBRect padding_rect = GetPaddingRect();
-		return m_style_edit.MouseUp(TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y), 1, 0);
+		return m_style_edit.MouseUp(TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y), 1, TB_MODIFIER_NONE);
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN)
 	{
@@ -199,7 +201,8 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 	{
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("popupmenu"))
+	else if ((ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("popupmenu")) ||
+			(ev.type == EVENT_TYPE_SHORTCUT))
 	{
 		if (ev.ref_id == TBIDC("cut") && !m_style_edit.packed.read_only)
 			m_style_edit.Cut();
@@ -209,8 +212,15 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 			m_style_edit.Paste();
 		else if (ev.ref_id == TBIDC("delete") && !m_style_edit.packed.read_only)
 			m_style_edit.Delete();
+		else if (ev.ref_id == TBIDC("undo") && !m_style_edit.packed.read_only)
+			m_style_edit.undoredo.Undo(&m_style_edit);
+		else if (ev.ref_id == TBIDC("redo") && !m_style_edit.packed.read_only)
+			m_style_edit.undoredo.Redo(&m_style_edit);
 		else if (ev.ref_id == TBIDC("selectall"))
 			m_style_edit.selection.SelectAll();
+		else
+			return false;
+		return true;
 	}
 	else if (ev.type == EVENT_TYPE_CONTEXT_MENU && ev.target == this)
 	{
