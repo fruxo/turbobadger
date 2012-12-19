@@ -246,7 +246,8 @@ void TBWindow::OnResized(int old_w, int old_h)
 	// FIX: Put a layout in the TBMover so we can add things there nicely.
 	int title_height = GetTitleHeight();
 	m_mover.SetRect(TBRect(0, 0, GetRect().w, title_height));
-	m_resizer.SetRect(TBRect(GetRect().w - 20, GetRect().h - 20, 20, 20));
+	PreferredSize ps = m_resizer.GetPreferredSize();
+	m_resizer.SetRect(TBRect(GetRect().w - ps.pref_w, GetRect().h - ps.pref_h, ps.pref_w, ps.pref_h));
 	TBRect mover_rect = m_mover.GetPaddingRect();
 	int button_size = mover_rect.h;
 	m_close_button.SetRect(TBRect(mover_rect.x + mover_rect.w - button_size, mover_rect.y, button_size, button_size));
