@@ -11,7 +11,7 @@
 namespace tinkerbell {
 
 /** This means the spacing should be the default, read from the skin. */
-#define SPACING_FROM_SKIN 5555
+#define SPACING_FROM_SKIN TB_INVALID_DIMENSION
 
 /** Specifies which height widgets in a AXIS_X layout should have,
 	or which width widgets in a AXIS_Y layout should have.

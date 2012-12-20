@@ -42,6 +42,17 @@ int TBSystem::GetPixelsPerLine()
 	return 40;
 }
 
+int TBSystem::GetDPI()
+{
+	HDC hdc = GetDC(nullptr);
+	int DPI_x = GetDeviceCaps(hdc, LOGPIXELSX);
+	ReleaseDC(nullptr, hdc);
+#if 0 // TEST CODE!
+	DPI_x *= 2;
+#endif
+	return DPI_x;
+}
+
 // == TBFile =====================================
 
 class TBWinFile : public TBFile

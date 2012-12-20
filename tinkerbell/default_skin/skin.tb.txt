@@ -5,6 +5,10 @@
 # see tinkerbell.h.
 description
 	name Default skin
+	# Dimensions (padding and such) and bitmaps are specified for this DPI.
+	base_dpi 96
+	# The skin also has graphics available in these DPI modes
+	supported_dpi 96 192
 defaults
 	text-color #fefefe
 	placeholder
@@ -316,7 +320,7 @@ elements
 		padding 10
 	TBCheckBox
 		bitmap checkbox.png
-		cut 15
+		cut 19
 		expand 7
 		children
 			element TBCheckBox.selected
@@ -332,7 +336,7 @@ elements
 		type Image
 	TBRadioButton
 		bitmap radio.png
-		cut 15
+		cut 19
 		expand 7
 		children
 			element TBRadioButton.selected
@@ -364,7 +368,7 @@ elements
 		clone TBWindow
 		padding 2
 	TBSelectItem
-		padding 2 5
+		padding 4 10
 		children
 			element TBSelectItem.hovered
 				state hovered

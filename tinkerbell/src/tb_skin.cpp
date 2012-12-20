@@ -36,50 +36,61 @@ SKIN_STATE StringToState(const char *state_str)
 	return state;
 }
 
+SKIN_ELEMENT_TYPE StringToType(const char *type_str)
+{
+	if (strcmp(type_str, "StretchBox") == 0)
+		return SKIN_ELEMENT_TYPE_STRETCH_BOX;
+	else if (strcmp(type_str, "Image") == 0)
+		return SKIN_ELEMENT_TYPE_IMAGE;
+	else if (strcmp(type_str, "Stretch Image") == 0)
+		return SKIN_ELEMENT_TYPE_STRETCH_IMAGE;
+	else if (strcmp(type_str, "Tile") == 0)
+		return SKIN_ELEMENT_TYPE_TILE;
+	else if (strcmp(type_str, "StretchBorder") == 0)
+		return SKIN_ELEMENT_TYPE_STRETCH_BORDER;
+	TBDebugOut("Skin error: Unknown skin type!\n");
+	return SKIN_ELEMENT_TYPE_STRETCH_BOX;
+}
+
 TBSkinCondition::TARGET StringToTarget(const char *target_str)
 {
-	TBSkinCondition::TARGET target = TBSkinCondition::TARGET_THIS;
 	if (strcmp(target_str, "this") == 0)
-		target = TBSkinCondition::TARGET_THIS;
+		return TBSkinCondition::TARGET_THIS;
 	else if (strcmp(target_str, "parent") == 0)
-		target = TBSkinCondition::TARGET_PARENT;
+		return TBSkinCondition::TARGET_PARENT;
 	else if (strcmp(target_str, "ancestors") == 0)
-		target = TBSkinCondition::TARGET_ANCESTORS;
+		return TBSkinCondition::TARGET_ANCESTORS;
 	else if (strcmp(target_str, "prev sibling") == 0)
-		target = TBSkinCondition::TARGET_PREV_SIBLING;
+		return TBSkinCondition::TARGET_PREV_SIBLING;
 	else if (strcmp(target_str, "next sibling") == 0)
-		target = TBSkinCondition::TARGET_NEXT_SIBLING;
-	else
-		TBDebugOut("Skin error: Unknown target in condition!\n");
-	return target;
+		return TBSkinCondition::TARGET_NEXT_SIBLING;
+	TBDebugOut("Skin error: Unknown target in condition!\n");
+	return TBSkinCondition::TARGET_THIS;
 }
 
 TBSkinCondition::PROPERTY StringToProperty(const char *prop_str)
 {
-	TBSkinCondition::PROPERTY prop = TBSkinCondition::PROPERTY_SKIN;
 	if (strcmp(prop_str, "skin") == 0)
-		prop = TBSkinCondition::PROPERTY_SKIN;
+		return TBSkinCondition::PROPERTY_SKIN;
 	else if (strcmp(prop_str, "window active") == 0)
-		prop = TBSkinCondition::PROPERTY_WINDOW_ACTIVE;
+		return TBSkinCondition::PROPERTY_WINDOW_ACTIVE;
 	else if (strcmp(prop_str, "axis") == 0)
-		prop = TBSkinCondition::PROPERTY_AXIS;
+		return TBSkinCondition::PROPERTY_AXIS;
 	else if (strcmp(prop_str, "align") == 0)
-		prop = TBSkinCondition::PROPERTY_ALIGN;
+		return TBSkinCondition::PROPERTY_ALIGN;
 	else if (strcmp(prop_str, "id") == 0)
-		prop = TBSkinCondition::PROPERTY_ID;
+		return TBSkinCondition::PROPERTY_ID;
 	else if (strcmp(prop_str, "state") == 0)
-		prop = TBSkinCondition::PROPERTY_STATE;
+		return TBSkinCondition::PROPERTY_STATE;
 	else if (strcmp(prop_str, "value") == 0)
-		prop = TBSkinCondition::PROPERTY_VALUE;
+		return TBSkinCondition::PROPERTY_VALUE;
 	else if (strcmp(prop_str, "hover") == 0)
-		prop = TBSkinCondition::PROPERTY_HOVER;
+		return TBSkinCondition::PROPERTY_HOVER;
 	else if (strcmp(prop_str, "capture") == 0)
-		prop = TBSkinCondition::PROPERTY_CAPTURE;
+		return TBSkinCondition::PROPERTY_CAPTURE;
 	else if (strcmp(prop_str, "focus") == 0)
-		prop = TBSkinCondition::PROPERTY_FOCUS;
-	else
-		prop = TBSkinCondition::PROPERTY_CUSTOM;
-	return prop;
+		return TBSkinCondition::PROPERTY_FOCUS;
+	return TBSkinCondition::PROPERTY_CUSTOM;
 }
 
 // == TBSkinCondition =======================================================
@@ -134,12 +145,38 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 	if (!skin_path.AppendPath(skin_file))
 		return false;
 
+	// Check which DPI mode the dimension converter should use.
+	// The base_dpi is the dpi in which the padding, spacing (and so on)
+	// is specified in. If the skin supports a different DPI that is
+	// closer to the screen DPI, all such dimensions will be scaled.
+	int base_dpi = node.GetValueInt("description>base_dpi", 96);
+	int supported_dpi = base_dpi;
+	if (TBNode *supported_dpi_node = node.GetNode("description>supported_dpi"))
+	{
+		assert(supported_dpi_node->GetValue().IsArray() || supported_dpi_node->GetValue().GetInt() == base_dpi);
+		if (TBValueArray *arr = supported_dpi_node->GetValue().GetArray())
+		{
+			int screen_dpi = TBSystem::GetDPI();
+			int best_supported_dpi = 0;
+			for (int i = 0; i < arr->GetLength(); i++)
+			{
+				int candidate_dpi = arr->GetValue(i)->GetInt();
+				if (!best_supported_dpi || ABS(candidate_dpi - screen_dpi) < ABS(best_supported_dpi - screen_dpi))
+					best_supported_dpi = candidate_dpi;
+			}
+			supported_dpi = best_supported_dpi;
+		}
+	}
+	m_dim_conv.SetDPI(base_dpi, supported_dpi);
+
+	// Read skin constants
 	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
 		m_default_text_color.SetFromString(color, strlen(color));
 	m_default_disabled_opacity = node.GetValueFloat("defaults>disabled>opacity",
 		m_default_disabled_opacity);
 	m_default_placeholder_opacity = node.GetValueFloat("defaults>placeholder>opacity",
 		m_default_placeholder_opacity);
+	m_default_spacing.SetDP(m_dim_conv, node.GetValueInt("defaults>spacing", 5));
 
 	// Iterate through all elements nodes and add skin elements
 	TBNode *elements = node.GetNode("elements");
@@ -181,31 +218,36 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 				TBValue &val = padding_node->GetValue();
 				if (val.GetArrayLength() == 4)
 				{
-					e->padding_top = val.GetArray()->GetValue(0)->GetInt();
-					e->padding_right = val.GetArray()->GetValue(1)->GetInt();
-					e->padding_bottom = val.GetArray()->GetValue(2)->GetInt();
-					e->padding_left = val.GetArray()->GetValue(3)->GetInt();
+					e->padding_top.SetDP(m_dim_conv, val.GetArray()->GetValue(0)->GetInt());
+					e->padding_right.SetDP(m_dim_conv, val.GetArray()->GetValue(1)->GetInt());
+					e->padding_bottom.SetDP(m_dim_conv, val.GetArray()->GetValue(2)->GetInt());
+					e->padding_left.SetDP(m_dim_conv, val.GetArray()->GetValue(3)->GetInt());
 				}
 				else if (val.GetArrayLength() == 2)
 				{
-					e->padding_top = e->padding_bottom = val.GetArray()->GetValue(0)->GetInt();
-					e->padding_left = e->padding_right = val.GetArray()->GetValue(1)->GetInt();
+					e->padding_top.SetDP(m_dim_conv, val.GetArray()->GetValue(0)->GetInt());
+					e->padding_left.SetDP(m_dim_conv, val.GetArray()->GetValue(1)->GetInt());
+					e->padding_bottom = e->padding_top;
+					e->padding_right = e->padding_left;
 				}
 				else
-					e->padding_top = e->padding_right = e->padding_bottom = e->padding_left = val.GetInt();
+				{
+					e->padding_top.SetDP(m_dim_conv, val.GetInt());
+					e->padding_right = e->padding_bottom = e->padding_left = e->padding_top;
+				}
 			}
 
-			e->min_width = n->GetValueInt("min-width", SKIN_VALUE_NOT_SPECIFIED);
-			e->min_height = n->GetValueInt("min-height", SKIN_VALUE_NOT_SPECIFIED);
-			e->max_width = n->GetValueInt("max-width", SKIN_VALUE_NOT_SPECIFIED);
-			e->max_height = n->GetValueInt("max-height", SKIN_VALUE_NOT_SPECIFIED);
-			e->spacing = n->GetValueInt("spacing", SKIN_DEFAULT_SPACING);
-			e->content_ofs_x = n->GetValueInt("content-ofs-x", 0);
-			e->content_ofs_y = n->GetValueInt("content-ofs-y", 0);
+			e->min_width.SetDP(m_dim_conv, n->GetValueInt("min-width", SKIN_VALUE_NOT_SPECIFIED));
+			e->min_height.SetDP(m_dim_conv, n->GetValueInt("min-height", SKIN_VALUE_NOT_SPECIFIED));
+			e->max_width.SetDP(m_dim_conv, n->GetValueInt("max-width", SKIN_VALUE_NOT_SPECIFIED));
+			e->max_height.SetDP(m_dim_conv, n->GetValueInt("max-height", SKIN_VALUE_NOT_SPECIFIED));
+			e->spacing.SetDP(m_dim_conv, n->GetValueInt("spacing", SKIN_VALUE_NOT_SPECIFIED));
+			e->content_ofs_x.SetDP(m_dim_conv, n->GetValueInt("content-ofs-x", 0));
+			e->content_ofs_y.SetDP(m_dim_conv, n->GetValueInt("content-ofs-y", 0));
 			e->img_position_x = n->GetValueInt("img-position-x", 50);
 			e->img_position_y = n->GetValueInt("img-position-y", 50);
-			e->img_ofs_x = n->GetValueInt("img-ofs-x", 0);
-			e->img_ofs_y = n->GetValueInt("img-ofs-y", 0);
+			e->img_ofs_x.SetDP(m_dim_conv, n->GetValueInt("img-ofs-x", 0));
+			e->img_ofs_y.SetDP(m_dim_conv, n->GetValueInt("img-ofs-y", 0));
 			e->flip_x = n->GetValueInt("flip-x", 0);
 			e->flip_y = n->GetValueInt("flip-y", 0);
 			e->opacity = n->GetValueFloat("opacity", 1.f);
@@ -215,17 +257,7 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 			if (const char *color = n->GetValueString("background-color", nullptr))
 				e->bg_color.SetFromString(color, strlen(color));
 
-			const char *type = n->GetValueString("type", "StretchBox");
-			if (strcmp(type, "Image") == 0)
-				e->type = SKIN_ELEMENT_TYPE_IMAGE;
-			else if (strcmp(type, "Stretch Image") == 0)
-				e->type = SKIN_ELEMENT_TYPE_STRETCH_IMAGE;
-			else if (strcmp(type, "Tile") == 0)
-				e->type = SKIN_ELEMENT_TYPE_TILE;
-			else if (strcmp(type, "StretchBorder") == 0)
-				e->type = SKIN_ELEMENT_TYPE_STRETCH_BORDER;
-			else
-				e->type = SKIN_ELEMENT_TYPE_STRETCH_BOX;
+			e->type = StringToType(n->GetValueString("type", "StretchBox"));
 
 			// Create all state elements
 			e->m_override_elements.Load(n->GetNode("overrides"));
@@ -285,15 +317,40 @@ bool TBSkin::ReloadBitmapsInternal()
 	// Let override skins use the same fragment manager as the parent
 	// skin so we will pack their fragments into the same maps.
 	TBBitmapFragmentManager *frag_man = m_parent_skin ? &m_parent_skin->m_frag_manager : &m_frag_manager;
+	TBTempBuffer filename_dst_DPI;
 	bool success = true;
 	TBHashTableIteratorOf<TBSkinElement> it(&m_elements);
 	while (TBSkinElement *element = it.GetNextContent())
 	{
 		if (!element->bitmap_file.IsEmpty())
 		{
+			assert(!element->bitmap);
+
 			// FIX: dedicated_map is not needed for all backends (only deprecated fixed function GL)
 			bool dedicated_map = element->type == SKIN_ELEMENT_TYPE_TILE;
-			element->bitmap = frag_man->GetFragmentFromFile(element->bitmap_file, dedicated_map);
+
+			// Try to load bitmap fragment in the destination DPI (F.ex "foo.png" becomes "foo@192.png")
+			int bitmap_dpi = m_dim_conv.GetSrcDPI();
+			if (m_dim_conv.NeedConversion())
+			{
+				int dot_pos = 0;
+				for (dot_pos = element->bitmap_file.Length() - 1; dot_pos > 0; dot_pos--)
+					if (element->bitmap_file[dot_pos] == '.')
+						break;
+				filename_dst_DPI.ResetAppendPos();
+				filename_dst_DPI.Append(element->bitmap_file, dot_pos);
+				filename_dst_DPI.AppendString(m_dim_conv.GetDstDPIStr());
+				filename_dst_DPI.AppendString(element->bitmap_file.CStr() + dot_pos);
+				element->bitmap = frag_man->GetFragmentFromFile(filename_dst_DPI.GetData(), dedicated_map);
+				if (element->bitmap)
+					bitmap_dpi = m_dim_conv.GetDstDPI();
+			}
+			element->SetBitmapDPI(m_dim_conv, bitmap_dpi);
+
+			// If we still have no bitmap fragment, load from default file.
+			if (!element->bitmap)
+				element->bitmap = frag_man->GetFragmentFromFile(element->bitmap_file, dedicated_map);
+
 			if (!element->bitmap)
 				success = false;
 		}
@@ -573,20 +630,49 @@ void TBSkin::OnContextRestored()
 TBSkinElement::TBSkinElement()
 	: bitmap(nullptr), cut(0), expand(0), type(SKIN_ELEMENT_TYPE_STRETCH_BOX)
 	, is_painting(false), is_getting(false)
-	, padding_left(0), padding_top(0), padding_right(0), padding_bottom(0)
-	, min_width(SKIN_VALUE_NOT_SPECIFIED), min_height(SKIN_VALUE_NOT_SPECIFIED)
-	, max_width(SKIN_VALUE_NOT_SPECIFIED), max_height(SKIN_VALUE_NOT_SPECIFIED)
-	, spacing(SKIN_DEFAULT_SPACING)
-	, content_ofs_x(0), content_ofs_y(0)
-	, img_position_x(50), img_position_y(50), img_ofs_x(0), img_ofs_y(0)
+	, min_width(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED)), min_height(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED))
+	, max_width(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED)), max_height(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED))
+	, spacing(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED))
+	, img_position_x(50), img_position_y(50)
 	, flip_x(0), flip_y(0), opacity(1.f)
 	, text_color(0, 0, 0, 0)
 	, bg_color(0, 0, 0, 0)
+	, bitmap_dpi(0)
 {
 }
 
 TBSkinElement::~TBSkinElement()
 {
+}
+
+void TBSkinElement::SetBitmapDPI(const TBDimensionConverter &dim_conv, int bitmap_dpi)
+{
+	if (this->bitmap_dpi)
+	{
+		// We have already applied the modifications so abort. This may
+		// happen when we reload bitmaps without reloading the skin.
+		return;
+	}
+	if (dim_conv.NeedConversion())
+	{
+		if (bitmap_dpi == dim_conv.GetDstDPI())
+		{
+			// The bitmap was loaded in a different DPI than the base DPI so
+			// we must scale the bitmap properties.
+			expand = expand * dim_conv.GetDstDPI() / dim_conv.GetSrcDPI();
+			cut = cut * dim_conv.GetDstDPI() / dim_conv.GetSrcDPI();
+		}
+		else
+		{
+			// The bitmap was loaded in the base DPI and we need to scale it.
+			// Apply the DPI conversion to the skin element scale factor.
+			// FIX: For this to work well, we would need to apply scale to both
+			//      image and all the other types of drawing too.
+			// scale_x = scale_x * dim_conv.GetDstDPI() / dim_conv.GetSrcDPI();
+			// scale_y = scale_y * dim_conv.GetDstDPI() / dim_conv.GetSrcDPI();
+		}
+	}
+	this->bitmap_dpi = bitmap_dpi;
 }
 
 bool TBSkinElement::HasState(SKIN_STATE state, TBSkinConditionContext &context)

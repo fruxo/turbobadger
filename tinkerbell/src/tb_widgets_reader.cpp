@@ -62,7 +62,8 @@ TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
 	const char *axis = info->node->GetValueString("axis", "x");
 	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-	widget->SetSpacing(info->node->GetValueInt("spacing", SPACING_FROM_SKIN));
+	int spacing_dp = info->node->GetValueInt("spacing", SPACING_FROM_SKIN);
+	widget->SetSpacing(g_tb_skin->GetDimensionConverter()->DpToPx(spacing_dp));
 	widget->SetGravity(WIDGET_GRAVITY_ALL);
 	if (const char *size = info->node->GetValueString("size", nullptr))
 	{

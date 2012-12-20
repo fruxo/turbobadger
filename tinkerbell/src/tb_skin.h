@@ -18,10 +18,7 @@ class TBNode;
 class TBSkinConditionContext;
 
 /** Used for some values in TBSkinElement if they has not been specified in the skin. */
-#define SKIN_VALUE_NOT_SPECIFIED -1
-
-/** Default spacing for layout. */
-#define SKIN_DEFAULT_SPACING 5
+#define SKIN_VALUE_NOT_SPECIFIED TB_INVALID_DIMENSION
 
 /** Skin state types (may be combined).
 	NOTE: This should exactly match WIDGET_STATE in tb_widgets.h! */
@@ -175,31 +172,38 @@ public:
 	TBStr name;			///< Name of the skin element, f.ex "TBSelectDropdown.arrow"
 	TBStr bitmap_file;	///< File name of the bitmap (might be empty)
 	TBBitmapFragment *bitmap;///< Bitmap fragment containing the graphics, or nullptr.
-	uint8 cut;			///< How the bitmap should be sliced using StretchBox
+	uint8 cut;			///< How the bitmap should be sliced using StretchBox.
 	int16 expand;		///< How much the skin should expand outside the widgets rect.
 	SKIN_ELEMENT_TYPE type;///< Skin element type
 	bool is_painting;	///< If the skin is being painted (avoiding eternal recursing)
 	bool is_getting;	///< If the skin is being got (avoiding eternal recursion)
-	int8 padding_left;	///< Left padding for any content in the element
-	int8 padding_top;	///< Top padding for any content in the element
-	int8 padding_right;	///< Right padding for any content in the element
-	int8 padding_bottom;///< Bottom padding for any content in the element
-	int16 min_width;	///< Minimum width or SKIN_VALUE_NOT_SPECIFIED
-	int16 min_height;	///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
-	int16 max_width;	///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
-	int16 max_height;	///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
-	int8 spacing;		///< Spacing used on layout. SKIN_DEFAULT_SPACING by default.
-	int8 content_ofs_x;	///< X offset of the content in the widget.
-	int8 content_ofs_y;	///< Y offset of the content in the widget.
-	int8 img_position_x;///< Horizontal position for type image. 0-100 (left to right).
-	int8 img_position_y;///< Vertical position for type image. 0-100 (top to bottom).
-	int8 img_ofs_x;		///< X offset for type image. Relative to the x position (img_position_x)
-	int8 img_ofs_y;		///< Y offset for type image. Relative to the y position (img_position_y)
-	int8 flip_x;		///< The skin is flipped horizontally
-	int8 flip_y;		///< The skin is flipped vertically
-	float opacity;		///< Opacity that should be used for the whole widget (0.f - 1.f).
-	TBColor text_color;	///< Color of the text in the widget.
-	TBColor bg_color;	///< Color of the background in the widget.
+	TBPx16 padding_left;		///< Left padding for any content in the element
+	TBPx16 padding_top;		///< Top padding for any content in the element
+	TBPx16 padding_right;	///< Right padding for any content in the element
+	TBPx16 padding_bottom;	///< Bottom padding for any content in the element
+	TBPx16 min_width;		///< Minimum width or SKIN_VALUE_NOT_SPECIFIED
+	TBPx16 min_height;		///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
+	TBPx16 max_width;		///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
+	TBPx16 max_height;		///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
+	TBPx16 spacing;			///< Spacing used on layout or SKIN_VALUE_NOT_SPECIFIED.
+	TBPx16 content_ofs_x;	///< X offset of the content in the widget.
+	TBPx16 content_ofs_y;	///< Y offset of the content in the widget.
+	TBPx16 img_ofs_x;		///< X offset for type image. Relative to image position (img_position_x).
+	TBPx16 img_ofs_y;		///< Y offset for type image. Relative to image position (img_position_y).
+	int8 img_position_x;	///< Horizontal position for type image. 0-100 (left to
+							///< right in available space). Default 50.
+	int8 img_position_y;	///< Vertical position for type image. 0-100 (top to bottom
+							///< in available space). Default 50.
+	int8 flip_x;			///< The skin is flipped horizontally
+	int8 flip_y;			///< The skin is flipped vertically
+	float opacity;			///< Opacity that should be used for the whole widget (0.f - 1.f).
+	TBColor text_color;		///< Color of the text in the widget.
+	TBColor bg_color;		///< Color of the background in the widget.
+	int16 bitmap_dpi;		///< The DPI of the bitmap that was loaded.
+
+	/** Set the DPI that the bitmap was loaded in. This may modify properties
+		to compensate for the bitmap resolution. */
+	void SetBitmapDPI(const TBDimensionConverter &dim_conv, int bitmap_dpi);
 
 	/** List of override elements (See TBSkin::PaintSkin) */
 	TBSkinElementStateList m_override_elements;
@@ -239,6 +243,10 @@ public:
 		are loaded before loading new ones. */
 	bool ReloadBitmaps();
 
+	/** Get the dimension converter used for the current skin. This dimension converter
+		converts to px by the same factor as the skin (based on the skin DPI settings). */
+	const TBDimensionConverter *GetDimensionConverter() const { return &m_dim_conv; }
+
 	/** Get the skin element with the given id.
 		It will return a skin element from the override_skin (if set and there is a match).
 		Returns nullptr if there's no match. */
@@ -258,6 +266,9 @@ public:
 
 	/** Get the default placeholder opacity for all skin elements */
 	float GetDefaultPlaceholderOpacity() const { return m_default_placeholder_opacity; }
+
+	/** Get the default layout spacing in pixels. */
+	int GetDefaultSpacing() const { return m_default_spacing; }
 
 	/** Paint the skin at dst_rect.
 
@@ -311,9 +322,11 @@ private:
 	TBSkin *m_parent_skin;								///< Parent skin (set to the default skin for for the override skins)
 	TBSkin *m_override_skin;							///< Override skin (or nullptr)
 	TBBitmapFragmentManager m_frag_manager;				///< Fragment manager (not used for override skins)
+	TBDimensionConverter m_dim_conv;					///< Dimension converter
 	TBColor m_default_text_color;						///< Default text color for all skin elements
 	float m_default_disabled_opacity;					///< Disabled opacity
 	float m_default_placeholder_opacity;				///< Placeholder opacity
+	TBPx16 m_default_spacing;							///< Default layout spacing
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementBGColor(const TBRect &dst_rect, TBSkinElement *element);

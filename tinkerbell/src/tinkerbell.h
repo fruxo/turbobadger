@@ -264,6 +264,74 @@ private:
 	};
 };
 
+/** Dimensions <= this value will be untouched by conversion in TBDimensionConverter.
+	To preserve special constants, those must be <= this value. */
+#define TB_INVALID_DIMENSION -5555
+
+/** TBDimensionConverter converts device independant points
+	to pixels, based on two DPI values.
+	Dimensions tinkerbell are normally in pixels (if not specified differently)
+	and conversion normally take place when loading skin. */
+class TBDimensionConverter
+{
+	int m_src_dpi; ///< The source DPI (Normally the base_dpi from skin).
+	int m_dst_dpi; ///< The destination DPI (Normally the supported skin DPI nearest to TBSystem::GetDPI).
+	TBStr m_dst_dpi_str; ///< The file suffix that should be used to load bitmaps in destinatin DPI.
+public:
+	TBDimensionConverter() : m_src_dpi(100), m_dst_dpi(100) {}
+
+	/** Set the source and destination DPI that will affect the conversion. */
+	void SetDPI(int src_dpi, int dst_dpi);
+
+	/** Get the source DPI. */
+	int GetSrcDPI() const { return m_src_dpi; }
+
+	/** Get the destination DPI. */
+	int GetDstDPI() const { return m_dst_dpi; }
+
+	/** Get the file name suffix that should be used to load bitmaps in the destination DPI.
+		Examples: "@96", "@196" */
+	const char *GetDstDPIStr() const { return m_dst_dpi_str; }
+
+	/** Return true if the source and destinatin DPI are different. */
+	bool NeedConversion() const { return m_src_dpi != m_dst_dpi; }
+
+	/** Convert device independant point to pixel. */
+	int DpToPx(int dp) const;
+};
+
+/** TBPx16 stores a single dimension in pixels.
+	It may be set from other formats which will immediately be converted to px. */
+class TBPx16
+{
+	int16 px;
+	TBPx16(int16 px) : px(px)						{ }
+public:
+	TBPx16() : px(0)								{ }
+	TBPx16(const TBPx16 &src)						{ px = src.px; }
+	const TBPx16& operator = (const TBPx16 &src)	{ px = src.px; return *this; }
+	operator int16 () const							{ return px; }
+
+	/** Set the pixel value from string in any of the following formats:
+
+		Pixel value:					"1", "1px"
+		Device independent point:		"1dp"
+		*/
+	// void SetFromString(const TBDimensionConverter &converter, const char *str, int len);
+
+	/** Set the pixel value from a device independant point. */
+	void SetDP(const TBDimensionConverter &converter, int dp);
+
+	/** Set the pixel value. */
+	void SetPx(int16 px) { this->px = px; }
+
+	/** Initialize a TBPx16 from a pixel value. The constructor is intentionally
+		hidden to enforce being specific about which type that is set. */
+	static TBPx16 FromPx(int16 px) { return TBPx16(px); }
+};
+
+typedef TBPx16 TBPx;
+
 class TBRenderer;
 class TBSkin;
 class TBWidgetsReader;

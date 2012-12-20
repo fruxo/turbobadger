@@ -1,5 +1,7 @@
 description
 	name Demo skin override (contains some additions for the demo)
+	base_dpi 96
+	supported_dpi 96 192
 elements
 	Icon16
 		bitmap icon16.png
@@ -15,6 +17,9 @@ elements
 	background
 		bitmap bg_tile.png
 		type Tile
+	background_solid
+		background-color #3b3b3b
+		padding 10
 	SpecialButton
 		bitmap special_button.png
 		cut 17

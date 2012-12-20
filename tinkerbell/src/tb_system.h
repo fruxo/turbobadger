@@ -37,6 +37,9 @@ public:
 	/** Get how many pixels a typical line is: The length that should be scrolled when turning a mouse
 		wheel one notch. */
 	static int GetPixelsPerLine();
+
+	/** Get Dots Per Inch for the main screen. */
+	static int GetDPI();
 };
 
 /** TBClipboard is a porting interface for the clipboard. */
@@ -68,7 +71,7 @@ public:
 	virtual long Size() = 0;
 	virtual size_t Read(void *buf, size_t elemSize, size_t count) = 0;
 };
-	
+
 }; // namespace tinkerbell
 
 #endif // TB_SYSTEM_H

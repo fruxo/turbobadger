@@ -780,6 +780,9 @@ int app_main()
 
 	init_tinkerbell(application_backend->GetRenderer(), "tinkerbell/lng_en.tb.txt");
 
+	// Load the default skin, and override skin that contains the graphics specific to the demo.
+	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
+
 	// Register tbbf font renderer
 	void register_tbbf_font_renderer();
 	register_tbbf_font_renderer();
@@ -799,7 +802,7 @@ int app_main()
 	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;
 	fd.SetID(TBIDC("Segoe"));
-	fd.SetSize(14);
+	fd.SetSize(g_tb_skin->GetDimensionConverter()->DpToPx(14));
 	g_font_manager->SetDefaultFontDescription(fd);
 
 	// Create the font now.
@@ -812,9 +815,6 @@ int app_main()
 							"â‚¬â€šÆ’â€žâ€¦â€ â€¡Ë†â€°Å â€¹Å’Å½â€˜â€™â€œâ€â€¢â€“â€”Ëœâ„¢Å¡â€ºÅ“Å¾Å¸Â¡Â¢Â£Â¤Â¥Â¦Â§Â¨Â©ÂªÂ«Â¬Â®"
 							"Â¯Â°Â±Â²Â³Â´ÂµÂ¶Â·Â¸Â¹ÂºÂ»Â¼Â½Â¾Â¿Ã€ÃÃ‚ÃƒÃ„Ã…Ã†Ã‡ÃˆÃ‰ÃŠÃ‹ÃŒÃÃŽÃÃÃ‘Ã’Ã“Ã”Ã•Ã–Ã—Ã˜Ã™ÃšÃ›ÃœÃÃžÃŸÃ Ã"
 							"¡Ã¢Ã£Ã¤Ã¥Ã¦Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã°Ã±Ã²Ã³Ã´ÃµÃ¶Ã·Ã¸Ã¹ÃºÃ»Ã¼Ã½Ã¾Ã¿");
-
-	// Load the default skin, and override skin that contains the graphics specific to the demo.
-	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
 
 	// Give the root widget a background skin
 	application->GetRoot()->SetSkinBg("background");

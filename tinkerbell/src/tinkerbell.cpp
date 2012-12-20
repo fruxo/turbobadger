@@ -108,7 +108,7 @@ const char *stristr(const char *arg1, const char *arg2)
 		a = arg1;
 		b = arg2;
 		while(toupper(*a++) == toupper(*b++))
-			if(!*b) 
+			if(!*b)
 				return arg1;
 	}
 	return nullptr;
@@ -320,6 +320,40 @@ void TBColor::SetFromString(const char *str, int len)
 		Set(TBColor(r + (r << 4), g + (g << 4), b + (b << 4)));
 	else
 		Set(TBColor());
+}
+
+// == TBDimensionConverter ==================================================================================
+
+void TBDimensionConverter::SetDPI(int src_dpi, int dst_dpi)
+{
+	m_src_dpi = src_dpi;
+	m_dst_dpi = dst_dpi;
+	m_dst_dpi_str.Clear();
+	if (NeedConversion())
+		m_dst_dpi_str.SetFormatted("@%d", m_dst_dpi);
+}
+
+int TBDimensionConverter::DpToPx(int dp) const
+{
+	if (dp <= TB_INVALID_DIMENSION || dp == 0)
+		return dp;
+	if (dp > 0)
+	{
+		dp = dp * m_dst_dpi / m_src_dpi;
+		return MAX(dp, 1);
+	}
+	else
+	{
+		dp = dp * m_dst_dpi / m_src_dpi;
+		return MIN(dp, -1);
+	}
+}
+
+// == TBPx ==================================================================================================
+
+void TBPx::SetDP(const TBDimensionConverter &converter, int dp)
+{
+	px = converter.DpToPx(dp);
 }
 
 }; // namespace tinkerbell

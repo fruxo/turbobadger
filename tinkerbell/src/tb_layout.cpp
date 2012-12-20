@@ -212,8 +212,10 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	int spacing = m_spacing;
 	if (spacing == SPACING_FROM_SKIN)
 	{
-		TBSkinElement *e = GetSkinBgElement();
-		spacing = e ? e->spacing : SKIN_DEFAULT_SPACING;
+		if (TBSkinElement *e = GetSkinBgElement())
+			spacing = e->spacing;
+		if (spacing == SPACING_FROM_SKIN /*|| spacing == SKIN_VALUE_NOT_SPECIFIED*/)
+			spacing = g_tb_skin->GetDefaultSpacing();
 	}
 
 	TBRect layout_rect = RotRect(GetPaddingRect(), m_axis);
