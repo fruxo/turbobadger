@@ -34,12 +34,12 @@ double TBSystem::GetTimeMS()
 
 int TBSystem::GetPanThreshold()
 {
-	return 5;
+	return 5 * GetDPI() / 96;
 }
 
 int TBSystem::GetPixelsPerLine()
 {
-	return 40;
+	return 40 * GetDPI() / 96;
 }
 
 int TBSystem::GetDPI()
