@@ -371,10 +371,7 @@ TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filen
 	// Load the file
 	TBImageLoader *img = TBImageLoader::CreateFromFile(filename);
 	if (!img)
-	{
-		TBDebugOut("TBBitmapFragmentManager::GetFragmentFromFile : Failed to load image!");
 		return nullptr;
-	}
 
 	frag = CreateNewFragment(id, dedicated_map, img->Width(), img->Height(), img->Width(), img->Data());
 	delete img;
