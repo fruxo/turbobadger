@@ -101,6 +101,8 @@ public:
 	state				TBWidget::SetState		string (disabled)
 	skin				TBWidget::SetSkinBg		TBID (string or int)
 	autofocus			The TBWidget will be focused automatically the first time its TBWindow is activated.
+	font>name			Font name
+	font>size			Font size
 */
 class TBWidgetsReader
 {

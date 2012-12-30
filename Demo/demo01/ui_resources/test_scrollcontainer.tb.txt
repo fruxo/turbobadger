@@ -9,6 +9,17 @@ TBLayout
 		TBLayout
 			position left top
 			axis y
+			TBTextField: text: Buttons with different fonts:
+			TBLayout
+				TBButton
+					text: "Orange"
+					font: name: Orange
+				TBButton
+					text: "Segoe 14"
+					font: size: 14px
+				TBButton
+					text: "Segoe 28"
+					font: size: 28px
 			TBTextField: text: TBButton containing TBSkinImage:
 			TBLayout
 				TBButton

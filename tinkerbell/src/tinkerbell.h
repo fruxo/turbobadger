@@ -317,7 +317,7 @@ public:
 		Pixel value:					"1", "1px"
 		Device independent point:		"1dp"
 		*/
-	// void SetFromString(const TBDimensionConverter &converter, const char *str, int len);
+	void SetFromString(const TBDimensionConverter &converter, const char *str);
 
 	/** Set the pixel value from a device independant point. */
 	void SetDP(const TBDimensionConverter &converter, int dp);

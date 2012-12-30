@@ -12,6 +12,7 @@
 #include "tb_editfield.h"
 #include "tb_language.h"
 #include "parser/TBNodeTree.h"
+#include "tb_font_renderer.h"
 
 namespace tinkerbell {
 
@@ -371,7 +372,23 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 		new_widget->SetSkinBg(skin);
 	}
 
+	// Add the new widget to the hiearchy
 	target->GetContentRoot()->AddChild(new_widget, add_child_z);
+
+	// Read the font now when the widget is in the hiearchy so inheritance works.
+	if (TBNode *font = node->GetNode("font"))
+	{
+		TBFontDescription fd = new_widget->GetCalculatedFontDescription();
+		if (const char *size = font->GetValueString("size", nullptr))
+		{
+			TBPx16 px;
+			px.SetFromString(*g_tb_skin->GetDimensionConverter(), size);
+			fd.SetSize(px);
+		}
+		if (const char *name = font->GetValueString("name", nullptr))
+			fd.SetID(name);
+		new_widget->SetFontDescription(fd);
+	}
 
 	// Iterate through all nodes and create widgets
 	for (TBNode *n = node->GetFirstChild(); n; n = n->GetNext())

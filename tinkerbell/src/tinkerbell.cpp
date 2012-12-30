@@ -351,6 +351,18 @@ int TBDimensionConverter::DpToPx(int dp) const
 
 // == TBPx ==================================================================================================
 
+void TBPx::SetFromString(const TBDimensionConverter &converter, const char *str)
+{
+	if (!str || !isdigit(*str))
+		return;
+	int len = strlen(str);
+	int val = atoi(str);
+	if (len > 2 && stricmp(str + len - 2, "dp") == 0)
+		px = converter.DpToPx(val);
+	else
+		px = val;
+}
+
 void TBPx::SetDP(const TBDimensionConverter &converter, int dp)
 {
 	px = converter.DpToPx(dp);
