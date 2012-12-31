@@ -322,7 +322,7 @@ void TBProgressSpinner::OnMessageReceived(TBMessage *msg)
 	m_frame++;
 	Invalidate();
 	// Keep animation running
-	PostMessageOnTime(TBID(1), nullptr, msg->GetFireTime() + spin_speed);
+	PostMessageDelayed(TBID(1), nullptr, spin_speed);
 }
 
 // == TBRadioCheckBox =======================================
