@@ -14,9 +14,13 @@
 #include <GL/gl.h>
 #elif defined(MACOSX)
 #include <OpenGL/gl.h>
+#elif defined(ANDROID)
+#include <GLES/gl.h>
+//#include <GLES2/gl2.h>
+//#include <GLES2/gl2ext.h>
 #else
 #include <GL/gl.h>
-#endif // _WIN32
+#endif
 
 #include "tb_renderer.h"
 

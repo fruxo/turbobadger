@@ -14,6 +14,10 @@
 #ifdef WIN32
 # define tb_qsort(base, num, width, cb, context) qsort_s(base, num, width, cb, context)
 # define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
+#elif defined(ANDROID)
+// FIX: There's no sort on android! Implement!
+# define tb_qsort(base, num, width, cb, context)
+# define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
 #elif defined(LINUX)
 # define tb_qsort(base, num, width, cb, context) qsort_r(base, num, width, cb, context)
 # define tb_sort_cb(context, a, b) int select_list_sort_cb(const void *a, const void *b, void *context)

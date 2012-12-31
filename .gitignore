@@ -28,6 +28,9 @@ Thumbs.db
 Debug
 Release
 ipch
+obj
+bin
+gen
 * gitignore
 
 documentation

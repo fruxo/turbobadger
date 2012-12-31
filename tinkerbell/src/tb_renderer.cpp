@@ -9,13 +9,15 @@ namespace tinkerbell {
 
 void TBRenderer::InvokeContextLost()
 {
-	for (TBRendererListener *listener = m_listeners.GetFirst(); listener; listener = listener->GetNext())
+	TBLinkListOf<TBRendererListener>::Iterator iter = m_listeners.IterateForward();
+	while (TBRendererListener *listener = iter.GetAndStep())
 		listener->OnContextLost();
 }
 
 void TBRenderer::InvokeContextRestored()
 {
-	for (TBRendererListener *listener = m_listeners.GetFirst(); listener; listener = listener->GetNext())
+	TBLinkListOf<TBRendererListener>::Iterator iter = m_listeners.IterateForward();
+	while (TBRendererListener *listener = iter.GetAndStep())
 		listener->OnContextRestored();
 }
 

@@ -3,11 +3,13 @@
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
-#include "tinkerbell/src/tb_bitmap_fragment.h"
+#include "tb_bitmap_fragment.h"
+#include "tb_system.h"
 
 namespace tinkerbell {
 
 // Remove image formats we don't use to limit binary size.
+#define STBI_NO_STDIO
 #define STBI_NO_FAILURE_STRINGS
 #define STBI_NO_HDR
 #define STBI_NO_JPG
@@ -38,7 +40,8 @@ public:
 
 TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
 {
-	int w, h, comp;
+	// Load directly from file
+	/*int w, h, comp;
 	if (unsigned char *data = stbi_load(filename, &w, &h, &comp, 4))
 	{
 		if (STBI_Loader *img = new STBI_Loader())
@@ -50,6 +53,34 @@ TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
 		}
 		else
 			stbi_image_free(data);
+	}
+	return nullptr;*/
+	if (TBFile *file = TBFile::Open(filename, TBFile::MODE_READ))
+	{
+		long size = file->Size();
+		if (unsigned char *data = new unsigned char[size])
+		{
+			size = file->Read(data, 1, size);
+
+			int w, h, comp;
+			if (unsigned char *img_data = stbi_load_from_memory(data, size, &w, &h, &comp, 4))
+			{
+				if (STBI_Loader *img = new STBI_Loader())
+				{
+					img->width = w;
+					img->height = h;
+					img->data = img_data;
+					delete data;
+					delete file;
+					return img;
+				}
+				else
+					stbi_image_free(img_data);
+			}
+
+			delete data;
+		}
+		delete file;
 	}
 	return nullptr;
 }

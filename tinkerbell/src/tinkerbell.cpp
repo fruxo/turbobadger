@@ -357,7 +357,7 @@ void TBPx::SetFromString(const TBDimensionConverter &converter, const char *str)
 		return;
 	int len = strlen(str);
 	int val = atoi(str);
-	if (len > 2 && stricmp(str + len - 2, "dp") == 0)
+	if (len > 2 && strcmp(str + len - 2, "dp") == 0)
 		px = converter.DpToPx(val);
 	else
 		px = val;

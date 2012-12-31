@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include "tb_renderer_gl.h"
 #include "tb_bitmap_fragment.h"
-#include "tb_font_renderer.h"
 
 namespace tinkerbell {
 
