@@ -333,14 +333,7 @@ bool TBSkin::ReloadBitmapsInternal()
 			int bitmap_dpi = m_dim_conv.GetSrcDPI();
 			if (m_dim_conv.NeedConversion())
 			{
-				int dot_pos = 0;
-				for (dot_pos = element->bitmap_file.Length() - 1; dot_pos > 0; dot_pos--)
-					if (element->bitmap_file[dot_pos] == '.')
-						break;
-				filename_dst_DPI.ResetAppendPos();
-				filename_dst_DPI.Append(element->bitmap_file, dot_pos);
-				filename_dst_DPI.AppendString(m_dim_conv.GetDstDPIStr());
-				filename_dst_DPI.AppendString(element->bitmap_file.CStr() + dot_pos);
+				m_dim_conv.GetDstDPIFilename(element->bitmap_file, &filename_dst_DPI);
 				element->bitmap = frag_man->GetFragmentFromFile(filename_dst_DPI.GetData(), dedicated_map);
 				if (element->bitmap)
 					bitmap_dpi = m_dim_conv.GetDstDPI();
