@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of Tinker Bell UI Toolkit. (C) 2011-2012, Emil Segerås ==
+// == This file is a part of Tinker Bell UI Toolkit. (C) 2011-2013, Emil Segerås ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
