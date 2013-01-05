@@ -115,7 +115,7 @@ public:
 public:
 	AnimatedFloat(	float initial_value,
 					ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
-					unsigned int animation_duration = ANIMATION_DEFAULT_DURATION)
+					double animation_duration = ANIMATION_DEFAULT_DURATION)
 		: src_val(initial_value), dst_val(initial_value), current_progress(0)
 	{
 		AnimationObject::animation_curve = animation_curve;
@@ -140,7 +140,7 @@ public:
 public:
 	FloatAnimator(	float *target_value,
 					ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
-					unsigned int animation_duration = ANIMATION_DEFAULT_DURATION)
+					double animation_duration = ANIMATION_DEFAULT_DURATION)
 		: AnimatedFloat(*target_value), target_value(target_value) {}
 
 	virtual void OnAnimationStart() { AnimatedFloat::OnAnimationStart(); *target_value = GetValue(); }
