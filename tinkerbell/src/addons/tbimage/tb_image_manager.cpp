@@ -5,6 +5,7 @@
 
 #include "addons/tbimage/tb_image_manager.h"
 #include "tb_system.h"
+#include "tb_tempbuffer.h"
 
 namespace tinkerbell {
 
@@ -125,7 +126,17 @@ TBImage TBImageManager::GetImage(const char *filename)
 	TBImageRep *image_rep = m_image_rep_hash.Get(hash_key);
 	if (!image_rep)
 	{
-		TBBitmapFragment *fragment = m_frag_manager.GetFragmentFromFile(filename, false);
+		// Load a fragment. Load a destination DPI bitmap if available.
+		TBBitmapFragment *fragment = nullptr;
+		if (g_tb_skin->GetDimensionConverter()->NeedConversion())
+		{
+			TBTempBuffer filename_dst_DPI;
+			g_tb_skin->GetDimensionConverter()->GetDstDPIFilename(filename, &filename_dst_DPI);
+			fragment = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(), false);
+		}
+		if (!fragment)
+			fragment = m_frag_manager.GetFragmentFromFile(filename, false);
+
 		image_rep = new TBImageRep(this, fragment, hash_key);
 		if (!image_rep || !fragment || !m_image_rep_hash.Add(hash_key, image_rep))
 		{
