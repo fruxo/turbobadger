@@ -19,6 +19,7 @@ TBLayout
 				TBClickLabel: text: "Radio button"
 					TBRadioButton
 				TBTextField: text: "Misc stuff:"
+				TBInlineSelect
 				TBProgressSpinner
 					value 1
 				TBSlider
