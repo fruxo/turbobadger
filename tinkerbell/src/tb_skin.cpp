@@ -113,9 +113,7 @@ bool TBSkinCondition::GetCondition(TBSkinConditionContext &context) const
 // == TBSkin ================================================================
 
 TBSkin::TBSkin()
-	: m_parent_skin(nullptr)
-	, m_override_skin(nullptr)
-	, m_default_disabled_opacity(0.3f)
+	: m_default_disabled_opacity(0.3f)
 	, m_default_placeholder_opacity(0.2f)
 {
 	g_renderer->AddListener(this);
@@ -126,17 +124,15 @@ TBSkin::TBSkin()
 
 bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 {
-	if (override_skin_file)
-	{
-		// Create and load the override skin first.
-		m_override_skin = new TBSkin;
-		if (m_override_skin)
-		{
-			m_override_skin->m_parent_skin = this;
-			m_override_skin->Load(override_skin_file);
-		}
-	}
+	if (!LoadInternal(skin_file))
+		return false;
+	if (override_skin_file && !LoadInternal(override_skin_file))
+		return false;
+	return ReloadBitmaps();
+}
 
+bool TBSkin::LoadInternal(const char *skin_file)
+{
 	TBNode node;
 	if (!node.ReadFile(skin_file))
 		return false;
@@ -145,29 +141,32 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 	if (!skin_path.AppendPath(skin_file))
 		return false;
 
-	// Check which DPI mode the dimension converter should use.
-	// The base_dpi is the dpi in which the padding, spacing (and so on)
-	// is specified in. If the skin supports a different DPI that is
-	// closer to the screen DPI, all such dimensions will be scaled.
-	int base_dpi = node.GetValueInt("description>base_dpi", 96);
-	int supported_dpi = base_dpi;
-	if (TBNode *supported_dpi_node = node.GetNode("description>supported_dpi"))
+	if (node.GetNode("description"))
 	{
-		assert(supported_dpi_node->GetValue().IsArray() || supported_dpi_node->GetValue().GetInt() == base_dpi);
-		if (TBValueArray *arr = supported_dpi_node->GetValue().GetArray())
+		// Check which DPI mode the dimension converter should use.
+		// The base_dpi is the dpi in which the padding, spacing (and so on)
+		// is specified in. If the skin supports a different DPI that is
+		// closer to the screen DPI, all such dimensions will be scaled.
+		int base_dpi = node.GetValueInt("description>base_dpi", 96);
+		int supported_dpi = base_dpi;
+		if (TBNode *supported_dpi_node = node.GetNode("description>supported_dpi"))
 		{
-			int screen_dpi = TBSystem::GetDPI();
-			int best_supported_dpi = 0;
-			for (int i = 0; i < arr->GetLength(); i++)
+			assert(supported_dpi_node->GetValue().IsArray() || supported_dpi_node->GetValue().GetInt() == base_dpi);
+			if (TBValueArray *arr = supported_dpi_node->GetValue().GetArray())
 			{
-				int candidate_dpi = arr->GetValue(i)->GetInt();
-				if (!best_supported_dpi || ABS(candidate_dpi - screen_dpi) < ABS(best_supported_dpi - screen_dpi))
-					best_supported_dpi = candidate_dpi;
+				int screen_dpi = TBSystem::GetDPI();
+				int best_supported_dpi = 0;
+				for (int i = 0; i < arr->GetLength(); i++)
+				{
+					int candidate_dpi = arr->GetValue(i)->GetInt();
+					if (!best_supported_dpi || ABS(candidate_dpi - screen_dpi) < ABS(best_supported_dpi - screen_dpi))
+						best_supported_dpi = candidate_dpi;
+				}
+				supported_dpi = best_supported_dpi;
 			}
-			supported_dpi = best_supported_dpi;
 		}
+		m_dim_conv.SetDPI(base_dpi, supported_dpi);
 	}
-	m_dim_conv.SetDPI(base_dpi, supported_dpi);
 
 	// Read skin constants
 	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
@@ -176,9 +175,10 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 		m_default_disabled_opacity);
 	m_default_placeholder_opacity = node.GetValueFloat("defaults>placeholder>opacity",
 		m_default_placeholder_opacity);
-	m_default_spacing.SetDP(m_dim_conv, node.GetValueInt("defaults>spacing", 5));
+	LoadDimensionIfSpecified(&m_default_spacing, m_dim_conv, node.GetNode("defaults>spacing"));
 
-	// Iterate through all elements nodes and add skin elements
+	// Iterate through all elements nodes and add skin elements or patch already
+	// existing elements.
 	TBNode *elements = node.GetNode("elements");
 	if (elements)
 	{
@@ -197,95 +197,29 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 
 				delete clone;
 			}
-			TBSkinElement *e = new TBSkinElement;
+
+			// If the skin element already exist, we will call Load on it again.
+			// This will patch the element with any new data from the node.
+			TBID element_id(n->GetName());
+			TBSkinElement *e = GetSkinElement(element_id);
 			if (!e)
-				return false;
-
-			const char *bitmap = n->GetValueString("bitmap", nullptr);
-			if (bitmap)
 			{
-				e->bitmap_file.Append(skin_path.GetData());
-				e->bitmap_file.Append(bitmap);
+				e = new TBSkinElement;
+				if (!e)
+					return false;
+				m_elements.Add(element_id, e);
 			}
 
-			e->cut = n->GetValueInt("cut", 0);
-			e->expand = n->GetValueInt("expand", 0);
-			e->name.Set(n->GetName());
-			e->id.Set(n->GetName());
+			e->Load(n, m_dim_conv, skin_path.GetData());
 
-			if (TBNode *padding_node = n->GetNode("padding"))
-			{
-				TBValue &val = padding_node->GetValue();
-				if (val.GetArrayLength() == 4)
-				{
-					e->padding_top.SetDP(m_dim_conv, val.GetArray()->GetValue(0)->GetInt());
-					e->padding_right.SetDP(m_dim_conv, val.GetArray()->GetValue(1)->GetInt());
-					e->padding_bottom.SetDP(m_dim_conv, val.GetArray()->GetValue(2)->GetInt());
-					e->padding_left.SetDP(m_dim_conv, val.GetArray()->GetValue(3)->GetInt());
-				}
-				else if (val.GetArrayLength() == 2)
-				{
-					e->padding_top.SetDP(m_dim_conv, val.GetArray()->GetValue(0)->GetInt());
-					e->padding_left.SetDP(m_dim_conv, val.GetArray()->GetValue(1)->GetInt());
-					e->padding_bottom = e->padding_top;
-					e->padding_right = e->padding_left;
-				}
-				else
-				{
-					e->padding_top.SetDP(m_dim_conv, val.GetInt());
-					e->padding_right = e->padding_bottom = e->padding_left = e->padding_top;
-				}
-			}
-
-			e->min_width.SetDP(m_dim_conv, n->GetValueInt("min-width", SKIN_VALUE_NOT_SPECIFIED));
-			e->min_height.SetDP(m_dim_conv, n->GetValueInt("min-height", SKIN_VALUE_NOT_SPECIFIED));
-			e->max_width.SetDP(m_dim_conv, n->GetValueInt("max-width", SKIN_VALUE_NOT_SPECIFIED));
-			e->max_height.SetDP(m_dim_conv, n->GetValueInt("max-height", SKIN_VALUE_NOT_SPECIFIED));
-			e->spacing.SetDP(m_dim_conv, n->GetValueInt("spacing", SKIN_VALUE_NOT_SPECIFIED));
-			e->content_ofs_x.SetDP(m_dim_conv, n->GetValueInt("content-ofs-x", 0));
-			e->content_ofs_y.SetDP(m_dim_conv, n->GetValueInt("content-ofs-y", 0));
-			e->img_position_x = n->GetValueInt("img-position-x", 50);
-			e->img_position_y = n->GetValueInt("img-position-y", 50);
-			e->img_ofs_x.SetDP(m_dim_conv, n->GetValueInt("img-ofs-x", 0));
-			e->img_ofs_y.SetDP(m_dim_conv, n->GetValueInt("img-ofs-y", 0));
-			e->flip_x = n->GetValueInt("flip-x", 0);
-			e->flip_y = n->GetValueInt("flip-y", 0);
-			e->opacity = n->GetValueFloat("opacity", 1.f);
-
-			if (const char *color = n->GetValueString("text-color", nullptr))
-				e->text_color.SetFromString(color, strlen(color));
-			if (const char *color = n->GetValueString("background-color", nullptr))
-				e->bg_color.SetFromString(color, strlen(color));
-
-			e->type = StringToType(n->GetValueString("type", "StretchBox"));
-
-			// Create all state elements
-			e->m_override_elements.Load(n->GetNode("overrides"));
-			e->m_strong_override_elements.Load(n->GetNode("strong-overrides"));
-			e->m_child_elements.Load(n->GetNode("children"));
-			e->m_overlay_elements.Load(n->GetNode("overlays"));
-
-#ifdef _DEBUG
-			if (TBSkinElement *other = GetSkinElement(TBID(e->name)))
-			{
-				assert(other->name.Equals(e->name)); // You have a duplicate in the skin!
-				assert(!other->name.Equals(e->name)); // You have two different skin names which hashes collide!
-			}
-#endif
-			m_elements.Add(e->id, e);
 			n = n->GetNext();
 		}
 	}
-	if (m_parent_skin)
-		return true; // ReloadBitmaps() is done by parent skin.
-	return ReloadBitmaps();
+	return true;
 }
 
 void TBSkin::UnloadBitmaps()
 {
-	if (m_override_skin)
-		m_override_skin->UnloadBitmaps();
-
 	// Unset all bitmap pointers.
 	TBHashTableIteratorOf<TBSkinElement> it(&m_elements);
 	while (TBSkinElement *element = it.GetNextContent())
@@ -314,9 +248,6 @@ bool TBSkin::ReloadBitmaps()
 bool TBSkin::ReloadBitmapsInternal()
 {
 	// Load all bitmap files into new bitmap fragments.
-	// Let override skins use the same fragment manager as the parent
-	// skin so we will pack their fragments into the same maps.
-	TBBitmapFragmentManager *frag_man = m_parent_skin ? &m_parent_skin->m_frag_manager : &m_frag_manager;
 	TBTempBuffer filename_dst_DPI;
 	bool success = true;
 	TBHashTableIteratorOf<TBSkinElement> it(&m_elements);
@@ -334,7 +265,7 @@ bool TBSkin::ReloadBitmapsInternal()
 			if (m_dim_conv.NeedConversion())
 			{
 				m_dim_conv.GetDstDPIFilename(element->bitmap_file, &filename_dst_DPI);
-				element->bitmap = frag_man->GetFragmentFromFile(filename_dst_DPI.GetData(), dedicated_map);
+				element->bitmap = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(), dedicated_map);
 				if (element->bitmap)
 					bitmap_dpi = m_dim_conv.GetDstDPI();
 			}
@@ -342,20 +273,17 @@ bool TBSkin::ReloadBitmapsInternal()
 
 			// If we still have no bitmap fragment, load from default file.
 			if (!element->bitmap)
-				element->bitmap = frag_man->GetFragmentFromFile(element->bitmap_file, dedicated_map);
+				element->bitmap = m_frag_manager.GetFragmentFromFile(element->bitmap_file, dedicated_map);
 
 			if (!element->bitmap)
 				success = false;
 		}
 	}
-	if (m_override_skin && !m_override_skin->ReloadBitmapsInternal())
-		success = false;
 	return success;
 }
 
 TBSkin::~TBSkin()
 {
-	delete m_override_skin;
 	g_renderer->RemoveListener(this);
 }
 
@@ -363,14 +291,6 @@ TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id) const
 {
 	if (!skin_id)
 		return nullptr;
-
-	// First see if the override skin can paint this element
-	if (m_override_skin)
-	{
-		if (TBSkinElement *element = m_override_skin->GetSkinElement(skin_id))
-			return element;
-	}
-
 	return m_elements.Get(skin_id);
 }
 
@@ -605,17 +525,20 @@ void TBSkin::OnContextLost()
 	// would be recreated automatically when needed. But because it's easy,
 	// we unload everything so we save some memory (by not keeping any image
 	// data around).
-	// Override skins are handled recursively, so ignore skins having a parent skin.
-	if (!m_parent_skin)
-		UnloadBitmaps();
+	UnloadBitmaps();
 }
 
 void TBSkin::OnContextRestored()
 {
 	// Reload bitmaps (since we unloaded everything in OnContextLost())
-	// Override skins are handled recursively, so ignore skins having a parent skin.
-	if (!m_parent_skin)
-		ReloadBitmaps();
+	ReloadBitmaps();
+}
+
+//static
+void TBSkin::LoadDimensionIfSpecified(TBPx16 *dst, const TBDimensionConverter &dim_conv, TBNode *n)
+{
+	if (n)
+		dst->SetDP(dim_conv, n->GetValue().GetInt());
 }
 
 // == TBSkinElement =========================================================
@@ -675,6 +598,75 @@ bool TBSkinElement::HasState(SKIN_STATE state, TBSkinConditionContext &context)
 			m_overlay_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE);
 }
 
+void TBSkinElement::Load(TBNode *n, const TBDimensionConverter &dim_conv, const char *skin_path)
+{
+	if (const char *bitmap = n->GetValueString("bitmap", nullptr))
+	{
+		bitmap_file.Clear();
+		bitmap_file.Append(skin_path);
+		bitmap_file.Append(bitmap);
+	}
+
+	cut = n->GetValueInt("cut", cut);
+	expand = n->GetValueInt("expand", expand);
+	name.Set(n->GetName());
+	id.Set(n->GetName());
+
+	if (TBNode *padding_node = n->GetNode("padding"))
+	{
+		TBValue &val = padding_node->GetValue();
+		if (val.GetArrayLength() == 4)
+		{
+			padding_top.SetDP(dim_conv, val.GetArray()->GetValue(0)->GetInt());
+			padding_right.SetDP(dim_conv, val.GetArray()->GetValue(1)->GetInt());
+			padding_bottom.SetDP(dim_conv, val.GetArray()->GetValue(2)->GetInt());
+			padding_left.SetDP(dim_conv, val.GetArray()->GetValue(3)->GetInt());
+		}
+		else if (val.GetArrayLength() == 2)
+		{
+			padding_top.SetDP(dim_conv, val.GetArray()->GetValue(0)->GetInt());
+			padding_left.SetDP(dim_conv, val.GetArray()->GetValue(1)->GetInt());
+			padding_bottom = padding_top;
+			padding_right = padding_left;
+		}
+		else
+		{
+			padding_top.SetDP(dim_conv, val.GetInt());
+			padding_right = padding_bottom = padding_left = padding_top;
+		}
+	}
+
+	TBSkin::LoadDimensionIfSpecified(&min_width, dim_conv, n->GetNode("min-width"));
+	TBSkin::LoadDimensionIfSpecified(&min_height, dim_conv, n->GetNode("min-height"));
+	TBSkin::LoadDimensionIfSpecified(&max_width, dim_conv, n->GetNode("max-width"));
+	TBSkin::LoadDimensionIfSpecified(&max_height, dim_conv, n->GetNode("max-height"));
+	TBSkin::LoadDimensionIfSpecified(&spacing, dim_conv, n->GetNode("spacing"));
+	TBSkin::LoadDimensionIfSpecified(&content_ofs_x, dim_conv, n->GetNode("content-ofs-x"));
+	TBSkin::LoadDimensionIfSpecified(&content_ofs_y, dim_conv, n->GetNode("content-ofs-y"));
+	img_position_x = n->GetValueInt("img-position-x", img_position_x);
+	img_position_y = n->GetValueInt("img-position-y", img_position_y);
+	TBSkin::LoadDimensionIfSpecified(&img_ofs_x, dim_conv, n->GetNode("img-ofs-x"));
+	TBSkin::LoadDimensionIfSpecified(&img_ofs_y, dim_conv, n->GetNode("img-ofs-y"));
+	flip_x = n->GetValueInt("flip-x", flip_x);
+	flip_y = n->GetValueInt("flip-y", flip_y);
+	opacity = n->GetValueFloat("opacity", opacity);
+
+	if (const char *color = n->GetValueString("text-color", nullptr))
+		text_color.SetFromString(color, strlen(color));
+
+	if (const char *color = n->GetValueString("background-color", nullptr))
+		bg_color.SetFromString(color, strlen(color));
+
+	if (const char *type_str = n->GetValueString("type", nullptr))
+		type = StringToType(type_str);
+
+	// Create all state elements
+	m_override_elements.Load(n->GetNode("overrides"));
+	m_strong_override_elements.Load(n->GetNode("strong-overrides"));
+	m_child_elements.Load(n->GetNode("children"));
+	m_overlay_elements.Load(n->GetNode("overlays"));
+}
+
 // == TBSkinElementState ====================================================
 
 bool TBSkinElementState::IsMatch(SKIN_STATE state, TBSkinConditionContext &context, MATCH_RULE rule) const
@@ -705,7 +697,7 @@ bool TBSkinElementState::IsExactMatch(SKIN_STATE state, TBSkinConditionContext &
 	return false;
 }
 
-// == TBSkinElement =========================================================
+// == TBSkinElementStateList ==================================================
 
 TBSkinElementStateList::~TBSkinElementStateList()
 {

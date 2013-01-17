@@ -166,7 +166,7 @@ class TBSkinElement
 public:
 	TBSkinElement();
 	~TBSkinElement();
-public:
+
 	// Skin properties
 	TBID id;			///< ID of the skin element
 	TBStr name;			///< Name of the skin element, f.ex "TBSelectDropdown.arrow"
@@ -221,6 +221,8 @@ public:
 		override, child or overlay element list.
 		State elements with state "all" will be ignored. */
 	bool HasState(SKIN_STATE state, TBSkinConditionContext &context);
+
+	void Load(TBNode *n, const TBDimensionConverter &dim_conv, const char *skin_path);
 };
 
 /** TBSkin contains a list of TBSkinElement. */
@@ -231,8 +233,12 @@ public:
 	~TBSkin();
 
 	/** Load the skin file and the bitmaps it refers to.
-		If override_skin_file is specified, it will also load that skin and use it
-		as override skin.
+
+		If override_skin_file is specified, it will also be loaded into this skin after
+		loading skin_file. Elements using the same name will override any previosly
+		read data for the same element. Known limitation: Clone can currently only
+		clone elements in the same file!
+
 		Returns true on success, and all bitmaps referred to also loaded successfully. */
 	bool Load(const char *skin_file, const char *override_skin_file = nullptr);
 
@@ -248,7 +254,6 @@ public:
 	const TBDimensionConverter *GetDimensionConverter() const { return &m_dim_conv; }
 
 	/** Get the skin element with the given id.
-		It will return a skin element from the override_skin (if set and there is a match).
 		Returns nullptr if there's no match. */
 	TBSkinElement *GetSkinElement(const TBID &skin_id) const;
 
@@ -271,9 +276,6 @@ public:
 	int GetDefaultSpacing() const { return m_default_spacing; }
 
 	/** Paint the skin at dst_rect.
-
-		Override skin:
-		-It will first try with the override_skin (if set).
 
 		Strong override elements:
 		-Strong override elements are like override elements, but they don't only apply
@@ -298,7 +300,7 @@ public:
 		 widgets has been painted). As with child elements, all overlay elements that match
 		 the current state will be painted in the order they are specified in the skin.
 
-		Return the skin element used (after following override elements or override skins),
+		Return the skin element used (after following override elements),
 		or nullptr if no skin element was found matching the skin_id. */
 	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context);
 
@@ -319,14 +321,13 @@ public:
 	virtual void OnContextRestored();
 private:
 	TBHashTableAutoDeleteOf<TBSkinElement> m_elements;	///< All skin elements for this skin.
-	TBSkin *m_parent_skin;								///< Parent skin (set to the default skin for for the override skins)
-	TBSkin *m_override_skin;							///< Override skin (or nullptr)
-	TBBitmapFragmentManager m_frag_manager;				///< Fragment manager (not used for override skins)
+	TBBitmapFragmentManager m_frag_manager;				///< Fragment manager
 	TBDimensionConverter m_dim_conv;					///< Dimension converter
 	TBColor m_default_text_color;						///< Default text color for all skin elements
 	float m_default_disabled_opacity;					///< Disabled opacity
 	float m_default_placeholder_opacity;				///< Placeholder opacity
 	TBPx16 m_default_spacing;							///< Default layout spacing
+	bool LoadInternal(const char *skin_file);
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementBGColor(const TBRect &dst_rect, TBSkinElement *element);
@@ -335,6 +336,8 @@ private:
 	void PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center);
 	TBRect GetFlippedRect(const TBRect &src_rect, TBSkinElement *element);
+public:
+	static void LoadDimensionIfSpecified(TBPx16 *dst, const TBDimensionConverter &dim_conv, TBNode *n);
 };
 
 }; // namespace tinkerbell

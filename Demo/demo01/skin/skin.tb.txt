@@ -1,7 +1,4 @@
-description
-	name Demo skin override (contains some additions for the demo)
-	base_dpi 96
-	supported_dpi 96 192
+# Demo skin override (contains some additions for the demo)
 elements
 	Icon16
 		bitmap icon16.png
