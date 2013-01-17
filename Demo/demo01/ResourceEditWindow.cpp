@@ -88,7 +88,7 @@ void ResourceEditWindow::UpdateWidgetList(bool immediately)
 {
 	if (!immediately)
 	{
-		TBID id("update_widget_list");
+		TBID id = TBIDC("update_widget_list");
 		if (!GetMessageByID(id))
 			PostMessage(id, nullptr);
 	}
@@ -133,12 +133,12 @@ ResourceEditWindow::ITEM_INFO ResourceEditWindow::GetItemFromWidget(TBWidget *wi
 	return item_info;
 }
 
-TBWidget *ResourceEditWindow::GetSelectedWidget()
+void ResourceEditWindow::SetSelectedWidget(TBWidget *widget)
 {
-	int index = m_widget_list->GetValue();
-	if (index >= 0 && index < m_widget_list_source.GetNumItems())
-		return m_widget_list_source.GetItem(index)->GetWidget();
-	return nullptr;
+	m_selected_widget.Set(widget);
+	ITEM_INFO item_info = GetItemFromWidget(widget);
+	if (item_info.item)
+		m_widget_list->SetValue(item_info.index);
 }
 
 bool ResourceEditWindow::OnEvent(const TBWidgetEvent &ev)
@@ -147,6 +147,12 @@ bool ResourceEditWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		m_widget_list->SetFilter(ev.target->GetText());
 		return true;
+	}
+	else if (ev.type == EVENT_TYPE_CHANGED && ev.target == m_widget_list)
+	{
+		if (m_widget_list->GetValue() >= 0 && m_widget_list->GetValue() < m_widget_list_source.GetNumItems())
+			if (ResourceItem *item = m_widget_list_source.GetItem(m_widget_list->GetValue()))
+				SetSelectedWidget(item->GetWidget());
 	}
 	else if (ev.type == EVENT_TYPE_CHANGED && ev.target == m_source_edit)
 	{
@@ -197,11 +203,7 @@ bool ResourceEditWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 	{
 		// Select widget when clicking
 		if (ev.type == EVENT_TYPE_POINTER_DOWN)
-		{
-			ITEM_INFO item_info = GetItemFromWidget(ev.target);
-			if (item_info.item)
-				m_widget_list->SetValue(item_info.index);
-		}
+			SetSelectedWidget(ev.target);
 		return true;
 	}
 	return false;

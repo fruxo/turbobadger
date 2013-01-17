@@ -35,7 +35,8 @@ public:
 		int index;
 	};
 	ITEM_INFO GetItemFromWidget(TBWidget *widget);
-	TBWidget *GetSelectedWidget();
+	TBWidget *GetSelectedWidget() { return m_selected_widget.Get(); }
+	void SetSelectedWidget(TBWidget *widget);
 
 	void Load(const char *resource_file);
 	void RefreshFromSource();
@@ -57,6 +58,7 @@ private:
 	TBWidget *m_build_container;
 	TBEditField *m_source_edit;
 	TBStr m_resource_filename;
+	TBWidgetSafePointer m_selected_widget;
 	void AddWidgetListItemsRecursive(TBWidget *widget, int depth);
 };
 
