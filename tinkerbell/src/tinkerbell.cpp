@@ -347,7 +347,7 @@ void TBDimensionConverter::GetDstDPIFilename(const char *filename, TBTempBuffer 
 
 int TBDimensionConverter::DpToPx(int dp) const
 {
-	if (dp <= TB_INVALID_DIMENSION || dp == 0)
+	if (dp <= TB_INVALID_DIMENSION || dp == 0 || !NeedConversion())
 		return dp;
 	if (dp > 0)
 	{
