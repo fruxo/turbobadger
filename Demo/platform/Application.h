@@ -5,8 +5,6 @@
 int app_main();
 
 class Application;
-class tinkerbell::TBWidget;
-class tinkerbell::TBRenderer;
 
 /** Backend interface that handles platform window & creating the renderer. */
 class ApplicationBackend

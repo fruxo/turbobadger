@@ -18,6 +18,9 @@ ResourceItem::ResourceItem(TBWidget *widget, const char *str)
 // == ResourceEditWindow ==============================================================================
 
 ResourceEditWindow::ResourceEditWindow()
+	: m_widget_list(nullptr)
+	, m_build_container(nullptr)
+	, m_source_edit(nullptr)
 {
 	// Register as global listener to intercept events in the build container
 	TBGlobalWidgetListener::AddListener(this);
@@ -211,12 +214,12 @@ bool ResourceEditWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
 
 void ResourceEditWindow::OnWidgetAdded(TBWidget *widget)
 {
-	if (m_build_container->IsAncestorOf(widget))
+	if (m_build_container && m_build_container->IsAncestorOf(widget))
 		UpdateWidgetList(false);
 }
 
 void ResourceEditWindow::OnWidgetRemove(TBWidget *widget)
 {
-	if (m_build_container->IsAncestorOf(widget))
+	if (m_build_container && m_build_container->IsAncestorOf(widget))
 		UpdateWidgetList(false);
 }

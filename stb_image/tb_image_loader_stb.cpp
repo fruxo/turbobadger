@@ -70,7 +70,7 @@ TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
 					img->width = w;
 					img->height = h;
 					img->data = img_data;
-					delete data;
+					delete [] data;
 					delete file;
 					return img;
 				}
