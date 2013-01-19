@@ -30,6 +30,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_list.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_message_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_msg.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_object.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_renderer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_scroll_container.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_select.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\tb_test.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_color.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_object.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_parser.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_px.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_space_allocator.cpp" />
@@ -81,6 +83,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_list.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_message_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_msg.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_object.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_renderer.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_scroll_container.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_select.h" />

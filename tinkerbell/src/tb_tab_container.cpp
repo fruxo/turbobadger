@@ -21,7 +21,7 @@ int TBTabLayout::GetIndexFromChild(TBWidget *child)
 
 void TBTabLayout::OnChildAdded(TBWidget *child)
 {
-	if (TBButton *button = TBSafeCast(TBButton, child))
+	if (TBButton *button = TBSafeCast<TBButton>(child))
 	{
 		button->SetSqueezable(true);
 		button->SetSkinBg("TBTabContainer.tab");

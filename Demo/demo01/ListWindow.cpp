@@ -37,7 +37,7 @@ AdcanvedItemWidget::AdcanvedItemWidget(AdvancedItem *item, AdvancedItemSource *s
 
 bool AdcanvedItemWidget::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_CLICK && ev.target->IsOfType("TBCheckBox"))
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->IsOfType<TBCheckBox>())
 	{
 		AdvancedItem *item = m_source->GetItem(m_index);
 		item->SetChecked(ev.target->GetValue() ? true : false);
@@ -62,7 +62,7 @@ TBWidget *AdvancedItemSource::CreateItemWidget(int index, TBSelectItemViewer *vi
 ListWindow::ListWindow(TBSelectItemSource *source)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_select.tb.txt");
-	if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
+	if (TBSelectList *select = GetWidgetByIDAndType<TBSelectList>("list"))
 	{
 		select->SetSource(source);
 		select->GetScrollContainer()->SetScrollMode(SCROLL_MODE_Y_AUTO);
@@ -73,7 +73,7 @@ bool ListWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("filter"))
 	{
-		if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
+		if (TBSelectList *select = GetWidgetByIDAndType<TBSelectList>("list"))
 			select->SetFilter(ev.target->GetText());
 		return true;
 	}
@@ -86,7 +86,7 @@ AdvancedListWindow::AdvancedListWindow(AdvancedItemSource *source)
 	: m_source(source)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_select_advanced.tb.txt");
-	if (TBSelectList *select = TBSafeGetByID(TBSelectList, "list"))
+	if (TBSelectList *select = GetWidgetByIDAndType<TBSelectList>("list"))
 	{
 		select->SetSource(source);
 		select->GetScrollContainer()->SetScrollMode(SCROLL_MODE_X_AUTO_Y_AUTO);
@@ -95,7 +95,7 @@ AdvancedListWindow::AdvancedListWindow(AdvancedItemSource *source)
 
 bool AdvancedListWindow::OnEvent(const TBWidgetEvent &ev)
 {
-	TBSelectList *select = TBSafeGetByID(TBSelectList, "list");
+	TBSelectList *select = GetWidgetByIDAndType<TBSelectList>("list");
 	if (select && ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("filter"))
 	{
 		select->SetFilter(ev.target->GetText());

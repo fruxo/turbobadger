@@ -152,14 +152,14 @@ void WidgetsAnimationManager::OnWidgetDelete(TBWidget *widget)
 bool WidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 {
 	bool handled = false;
-	if (TBWindow *window = TBSafeCast(TBWindow, widget))
+	if (TBWindow *window = TBSafeCast<TBWindow>(widget))
 	{
 		// Fade out dying windows
 		if (AnimationObject *anim = new WidgetAnimationOpacity(window, 1.f, ALMOST_ZERO_OPACITY, true))
 			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 		handled = true;
 	}
-	if (TBMessageWindow *window = TBSafeCast(TBMessageWindow, widget))
+	if (TBMessageWindow *window = TBSafeCast<TBMessageWindow>(widget))
 	{
 		// Move out dying message windows
 		if (!window->GetRect().IsEmpty())
@@ -171,7 +171,7 @@ bool WidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 		}
 		handled = true;
 	}
-	if (TBDimmer *dimmer = TBSafeCast(TBDimmer, widget))
+	if (TBDimmer *dimmer = TBSafeCast<TBDimmer>(widget))
 	{
 		// Fade out dying dim layers
 		if (AnimationObject *anim = new WidgetAnimationOpacity(dimmer, 1.f, ALMOST_ZERO_OPACITY, true))
@@ -183,13 +183,13 @@ bool WidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 
 void WidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
 {
-	if (TBWindow *window = TBSafeCast(TBWindow, widget))
+	if (TBWindow *window = TBSafeCast<TBWindow>(widget))
 	{
 		// Fade in new windows
 		if (AnimationObject *anim = new WidgetAnimationOpacity(window, ALMOST_ZERO_OPACITY, 1.f, false))
 			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 	}
-	if (TBMessageWindow *window = TBSafeCast(TBMessageWindow, widget))
+	if (TBMessageWindow *window = TBSafeCast<TBMessageWindow>(widget))
 	{
 		// Move in new message windows
 		if (!window->GetRect().IsEmpty())
@@ -200,7 +200,7 @@ void WidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
 				AnimationManager::StartAnimation(anim);
 		}
 	}
-	if (TBDimmer *dimmer = TBSafeCast(TBDimmer, widget))
+	if (TBDimmer *dimmer = TBSafeCast<TBDimmer>(widget))
 	{
 		// Fade in dim layer
 		if (AnimationObject *anim = new WidgetAnimationOpacity(dimmer, ALMOST_ZERO_OPACITY, 1.f, false))

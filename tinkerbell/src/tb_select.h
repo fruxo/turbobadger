@@ -27,7 +27,7 @@ class TBSelectList : public TBWidget, public TBSelectItemViewer
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSelectList", TBWidget);
+	TBOBJECT_SUBCLASS(TBSelectList, TBWidget);
 
 	TBSelectList();
 	~TBSelectList();
@@ -115,7 +115,7 @@ class TBSelectDropdown : public TBButton, public TBSelectItemViewer
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSelectDropdown", TBButton);
+	TBOBJECT_SUBCLASS(TBSelectDropdown, TBButton);
 
 	TBSelectDropdown();
 	~TBSelectDropdown();
@@ -161,7 +161,7 @@ class TBMenuWindow : public TBWindow, private TBWidgetSafePointer
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBMenuWindow", TBWindow);
+	TBOBJECT_SUBCLASS(TBMenuWindow, TBWindow);
 
 	TBMenuWindow(TBWidget *target, TBID id);
 

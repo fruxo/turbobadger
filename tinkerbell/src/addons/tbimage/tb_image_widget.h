@@ -19,7 +19,7 @@ class TBImageWidget : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBImageWidget", TBWidget);
+	TBOBJECT_SUBCLASS(TBImageWidget, TBWidget);
 
 	TBImageWidget() {}
 

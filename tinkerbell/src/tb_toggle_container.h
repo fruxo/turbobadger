@@ -19,7 +19,7 @@ class TBToggleContainer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBToggleContainer", TBWidget);
+	TBOBJECT_SUBCLASS(TBToggleContainer, TBWidget);
 
 	TBToggleContainer();
 
@@ -62,7 +62,7 @@ class TBSectionHeader : public TBButton
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSectionHeader", TBButton);
+	TBOBJECT_SUBCLASS(TBSectionHeader, TBButton);
 
 	TBSectionHeader();
 
@@ -84,7 +84,7 @@ class TBSection : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSection", TBWidget);
+	TBOBJECT_SUBCLASS(TBSection, TBWidget);
 
 	TBSection();
 	~TBSection();

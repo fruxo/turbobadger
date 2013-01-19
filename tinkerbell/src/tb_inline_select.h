@@ -23,7 +23,7 @@ class TBInlineSelect : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBInlineSelect", TBWidget);
+	TBOBJECT_SUBCLASS(TBInlineSelect, TBWidget);
 
 	TBInlineSelect();
 	~TBInlineSelect();

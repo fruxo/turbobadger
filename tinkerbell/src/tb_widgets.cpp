@@ -12,6 +12,9 @@
 #include "tb_system.h"
 #include "tb_font_renderer.h"
 #include <assert.h>
+#ifdef TB_ALWAYS_SHOW_EDIT_FOCUS
+#include "tb_editfield.h"
+#endif // TB_ALWAYS_SHOW_EDIT_FOCUS
 
 namespace tinkerbell {
 
@@ -115,13 +118,13 @@ void TBWidget::Die()
 	}
 }
 
-TBWidget *TBWidget::GetWidgetByID(const TBID &id, const char *classname)
+TBWidget *TBWidget::GetWidgetByIDInternal(const TBID &id, const void *type_id)
 {
-	if (m_id == id && (!classname || IsOfType(classname)))
+	if (m_id == id && (!type_id || IsOfTypeId(type_id)))
 		return this;
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
 	{
-		if (TBWidget *sub_child = child->GetWidgetByID(id, classname))
+		if (TBWidget *sub_child = child->GetWidgetByIDInternal(id, type_id))
 			return sub_child;
 	}
 	return nullptr;
@@ -164,7 +167,7 @@ WIDGET_STATE TBWidget::GetAutoState() const
 	if (this == focused_widget && show_focus_state)
 		state |= WIDGET_STATE_FOCUSED;
 #ifdef TB_ALWAYS_SHOW_EDIT_FOCUS
-	else if (this == focused_widget && IsOfType("TBEditField"))
+	else if (this == focused_widget && IsOfType<TBEditField>())
 		state |= WIDGET_STATE_FOCUSED;
 #endif
 	return state;
@@ -528,7 +531,7 @@ TBWidget *TBWidget::GetParentRoot()
 TBWindow *TBWidget::GetParentWindow()
 {
 	TBWidget *tmp = this;
-	while (tmp && !tmp->IsOfType("TBWindow"))
+	while (tmp && !tmp->IsOfType<TBWindow>())
 		tmp = tmp->m_parent;
 	return static_cast<TBWindow *>(tmp);
 }

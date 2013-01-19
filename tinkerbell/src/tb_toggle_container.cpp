@@ -24,7 +24,7 @@ bool TBSectionHeader::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.target == this && ev.type == EVENT_TYPE_CHANGED && GetParent()->GetParent())
 	{
-		if (TBSection *section = TBSafeCast(TBSection, GetParent()->GetParent()))
+		if (TBSection *section = TBSafeCast<TBSection>(GetParent()->GetParent()))
 		{
 			section->GetContainer()->SetValue(GetValue());
 

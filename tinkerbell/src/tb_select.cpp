@@ -310,7 +310,7 @@ bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 			// That way events in submenus will reach the caller properly, and seem like it was
 			// invoked on the top menu.
 			TBWindow *window = GetParentWindow();
-			while (TBMenuWindow *menu_win = TBSafeCast(TBMenuWindow, window))
+			while (TBMenuWindow *menu_win = TBSafeCast<TBMenuWindow>(window))
 			{
 				target_list = menu_win->GetList();
 				window = menu_win->GetEventDestination()->GetParentWindow();
@@ -427,7 +427,7 @@ void TBSelectDropdown::OpenWindow()
 
 TBMenuWindow *TBSelectDropdown::GetMenuIfOpen() const
 {
-	return TBSafeCast(TBMenuWindow, m_window_pointer.Get());
+	return TBSafeCast<TBMenuWindow>(m_window_pointer.Get());
 }
 
 bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)

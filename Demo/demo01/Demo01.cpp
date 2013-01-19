@@ -114,7 +114,7 @@ void DemoWindow::Output(const char *format, ...)
 	va_end(ap);
 
 	// Append the text at the last line of the debug field and scroll.
-	if (TBEditField *edit = TBSafeGetByIDInRoot(application->GetRoot(), TBEditField, "debug_output"))
+	if (TBEditField *edit = application->GetRoot()->GetWidgetByIDAndType<TBEditField>(TBIDC("debug_output")))
 	{
 		edit->GetStyleEdit()->AppendText(buf, len, true);
 		edit->GetStyleEdit()->ScrollIfNeeded();
@@ -168,13 +168,13 @@ public:
 	{
 		// Update the disabled state of undo/redo buttons, and caret info.
 
-		if (TBEditField *edit = TBSafeGetByID(TBEditField, "editfield"))
+		if (TBEditField *edit = GetWidgetByIDAndType<TBEditField>(TBIDC("editfield")))
 		{
 			if (TBWidget *undo = GetWidgetByID("undo"))
 				undo->SetState(WIDGET_STATE_DISABLED, !edit->GetStyleEdit()->CanUndo());
 			if (TBWidget *redo = GetWidgetByID("redo"))
 				redo->SetState(WIDGET_STATE_DISABLED, !edit->GetStyleEdit()->CanRedo());
-			if (TBTextField *info = TBSafeGetByID(TBTextField, "info"))
+			if (TBTextField *info = GetWidgetByIDAndType<TBTextField>(TBIDC("info")))
 			{
 				TBStr text;
 				text.SetFormatted("Caret ofs: %d", edit->GetStyleEdit()->caret.GetGlobalOfs());
@@ -186,7 +186,7 @@ public:
 	{
 		if (ev.type == EVENT_TYPE_CLICK)
 		{
-			TBEditField *edit = TBSafeGetByID(TBEditField, "editfield");
+			TBEditField *edit = GetWidgetByIDAndType<TBEditField>(TBIDC("editfield"));
 			if (!edit)
 				return false;
 
@@ -297,10 +297,10 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("select position"))
 	{
 		LAYOUT_POSITION pos = LAYOUT_POSITION_CENTER;
-		if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "select position"))
+		if (TBSelectDropdown *select = GetWidgetByIDAndType<TBSelectDropdown>(TBIDC("select position")))
 			pos = static_cast<LAYOUT_POSITION>(select->GetValue());
 		for (int i = 0; i < 3; i++)
-			if (TBLayout *layout = TBSafeGetByID(TBLayout, i + 1))
+			if (TBLayout *layout = GetWidgetByIDAndType<TBLayout>(i + 1))
 				layout->SetLayoutPosition(pos);
 		return true;
 	}
@@ -308,17 +308,17 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		static AXIS axis = AXIS_Y;
 		for (int i = 0; i < 3; i++)
-			if (TBLayout *layout = TBSafeGetByID(TBLayout, i + 1))
+			if (TBLayout *layout = GetWidgetByIDAndType<TBLayout>(i + 1))
 				layout->SetAxis(axis);
 		axis = axis == AXIS_X ? AXIS_Y : AXIS_X;
-		if (TBLayout *layout = TBSafeGetByID(TBLayout, 10))
+		if (TBLayout *layout = GetWidgetByIDAndType<TBLayout>(TBIDC("switch_layout")))
 			layout->SetAxis(axis);
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 		return true;
 	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("set_align"))
 	{
-		if (TBTabContainer *tc = TBSafeGetByID(TBTabContainer, "tabcontainer"))
+		if (TBTabContainer *tc = GetWidgetByIDAndType<TBTabContainer>(TBIDC("tabcontainer")))
 			tc->SetAlignment(static_cast<TB_ALIGN>(ev.target->m_data));
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 	}
@@ -326,7 +326,7 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		static AXIS axis = AXIS_Y;
 		axis = axis == AXIS_X ? AXIS_Y : AXIS_X;
-		if (TBTabContainer *tc = TBSafeGetByID(TBTabContainer, "tabcontainer"))
+		if (TBTabContainer *tc = GetWidgetByIDAndType<TBTabContainer>(TBIDC("tabcontainer")))
 			tc->SetAxis(axis);
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 	}
@@ -334,11 +334,11 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		static AXIS axis = AXIS_X;
 		axis = axis == AXIS_X ? AXIS_Y : AXIS_X;
-		if (TBTabContainer *tc = TBSafeGetByID(TBTabContainer, "tabcontainer"))
+		if (TBTabContainer *tc = GetWidgetByIDAndType<TBTabContainer>(TBIDC("tabcontainer")))
 		{
 			for (TBWidget *child = tc->GetTabLayout()->GetFirstChild(); child; child = child->GetNext())
 			{
-				if (TBButton *button = TBSafeCast(TBButton, child))
+				if (TBButton *button = TBSafeCast<TBButton>(child))
 					button->SetAxis(axis);
 			}
 		}
@@ -346,12 +346,12 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("start_spinner"))
 	{
-		if (TBProgressSpinner *spinner = TBSafeGetByID(TBProgressSpinner, TBIDC("spinner")))
+		if (TBProgressSpinner *spinner = GetWidgetByIDAndType<TBProgressSpinner>(TBIDC("spinner")))
 			spinner->SetValue(1);
 	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("stop_spinner"))
 	{
-		if (TBProgressSpinner *spinner = TBSafeGetByID(TBProgressSpinner, TBIDC("spinner")))
+		if (TBProgressSpinner *spinner = GetWidgetByIDAndType<TBProgressSpinner>(TBIDC("spinner")))
 			spinner->SetValue(0);
 	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("reset-master-volume"))
@@ -373,7 +373,7 @@ ScrollContainerWindow::ScrollContainerWindow()
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_scrollcontainer.tb.txt");
 
-	if (TBSelectDropdown *select = TBSafeGetByID(TBSelectDropdown, "name dropdown"))
+	if (TBSelectDropdown *select = GetWidgetByIDAndType<TBSelectDropdown>(TBIDC("name dropdown")))
 		select->SetSource(&name_source);
 }
 
@@ -383,7 +383,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		if (ev.target->GetID() == TBIDC("add img"))
 		{
-			TBButton *button = TBSafeCast(TBButton, ev.target);
+			TBButton *button = TBSafeCast<TBButton>(ev.target);
 			TBSkinImage *skin_image = new TBSkinImage;
 			skin_image->SetSkinBg("Icon16");
 			button->GetContentRoot()->AddChild(skin_image, WIDGET_Z_BOTTOM);
@@ -470,11 +470,11 @@ void AnimationsWindow::Animate()
 	double duration = 500;
 	bool fade = true;
 
-	if (TBSelectList *curve_select = TBSafeGetByID(TBSelectList, "curve"))
+	if (TBSelectList *curve_select = GetWidgetByIDAndType<TBSelectList>("curve"))
 		curve = static_cast<ANIMATION_CURVE>(curve_select->GetValue());
-	if (TBInlineSelect *duration_select = TBSafeGetByID(TBInlineSelect, "duration"))
+	if (TBInlineSelect *duration_select = GetWidgetByIDAndType<TBInlineSelect>("duration"))
 		duration = duration_select->GetValueDouble();
-	if (TBCheckBox *fade_check = TBSafeGetByID(TBCheckBox, "fade"))
+	if (TBCheckBox *fade_check = GetWidgetByIDAndType<TBCheckBox>("fade"))
 		fade = fade_check->GetValue() ? true : false;
 
 	// Start move animation

@@ -43,7 +43,7 @@ class TBMessageWindow : public TBWindow, private TBWidgetSafePointer
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBMessageWindow", TBWindow);
+	TBOBJECT_SUBCLASS(TBMessageWindow, TBWindow);
 
 	TBMessageWindow(TBWidget *target, TBID id);
 	virtual ~TBMessageWindow();

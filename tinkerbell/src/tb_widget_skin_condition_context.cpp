@@ -51,7 +51,7 @@ bool TBWidgetSkinConditionContext::GetCondition(TBWidget *widget, const TBSkinCo
 	case TBSkinCondition::PROPERTY_AXIS:
 		return TBID(widget->GetAxis() == AXIS_X ? "x" : "y") == info.value;
 	case TBSkinCondition::PROPERTY_ALIGN:
-		if (TBTabContainer *tc = TBSafeCast(TBTabContainer, widget))
+		if (TBTabContainer *tc = TBSafeCast<TBTabContainer>(widget))
 		{
 			TBID widget_align;
 			if (tc->GetAlignment() == TB_ALIGN_LEFT)				widget_align = TBIDC("left");

@@ -34,7 +34,7 @@ class TBWindow : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBWindow", TBWidget);
+	TBOBJECT_SUBCLASS(TBWindow, TBWidget);
 
 	TBWindow();
 	~TBWindow();

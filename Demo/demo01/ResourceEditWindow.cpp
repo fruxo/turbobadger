@@ -29,9 +29,9 @@ ResourceEditWindow::ResourceEditWindow()
 
 	m_build_container = GetWidgetByID(TBIDC("build_container"));
 	m_build_container = m_build_container->GetContentRoot();
-	m_source_edit = TBSafeGetByID(TBEditField, TBIDC("source_edit"));
+	m_source_edit = GetWidgetByIDAndType<TBEditField>(TBIDC("source_edit"));
 
-	m_widget_list = TBSafeGetByID(TBSelectList, "widget_list");
+	m_widget_list = GetWidgetByIDAndType<TBSelectList>(TBIDC("widget_list"));
 	m_widget_list->SetSource(&m_widget_list_source);
 
 	SetRect(TBRect(100, 100, 900, 600));

@@ -16,7 +16,7 @@ class TBTabLayout : public TBLayout
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBTabLayout", TBLayout);
+	TBOBJECT_SUBCLASS(TBTabLayout, TBLayout);
 
 	/** Get the index (in the list of children) of the given child, or -1 if not found. */
 	int GetIndexFromChild(TBWidget *child);
@@ -30,7 +30,7 @@ class TBTabContainer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBTabContainer", TBWidget);
+	TBOBJECT_SUBCLASS(TBTabContainer, TBWidget);
 
 	TBTabContainer();
 	~TBTabContainer();

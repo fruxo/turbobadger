@@ -183,6 +183,12 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_px.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_object.cpp">
+      <Filter>Source Files\tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">
@@ -306,6 +312,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_skin_util.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_object.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

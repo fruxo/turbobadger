@@ -74,7 +74,7 @@ TBWindow *TBWindow::GetTopMostOtherWindow(bool only_activable_windows)
 	while (sibling && !other_window)
 	{
 		if (sibling != this)
-			other_window = TBSafeCast(TBWindow, sibling);
+			other_window = TBSafeCast<TBWindow>(sibling);
 
 		if (only_activable_windows && other_window && !(other_window->m_settings & WINDOW_SETTINGS_CAN_ACTIVATE))
 			other_window = nullptr;

@@ -16,7 +16,7 @@ TBLayout
 			text Toggle axis
 			id toggle axis
 	TBLayout
-		id 10
+		id switch_layout
 		axis y
 		TBTextField
 			text size: preferred

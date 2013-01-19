@@ -10,6 +10,7 @@
 #include "tb_skin.h"
 #include "tb_linklist.h"
 #include "tb_widget_value.h"
+#include "tb_object.h"
 
 namespace tinkerbell {
 
@@ -200,28 +201,20 @@ enum WIDGET_HIT_STATUS {
 	WIDGET_HIT_STATUS_HIT_NO_CHILDREN		///< The widget was hit, no children should be hit.
 };
 
-/** Implement the methods for safe typecasting without requiring RTTI */
-#define WIDGET_SUBCLASS(classname, baseclass) \
-	virtual const char *GetClassName() const { return classname; } \
-	virtual bool IsOfType(const char *name) const { return strcmp(name, classname) == 0 ? true : baseclass::IsOfType(name); }
-
-/** Macro definition for casting a widget to the given type. Will return nullptr if the widget is of the wrong type. */
-#define TBSafeCast(classname, widget) (static_cast<classname *>((widget && widget->IsOfType(#classname)) ? widget : nullptr))
-
-/** Call GetWidgetByID and cast. Will return nullptr if the widget is of the wrong type, or if it was not found.  */
-#define TBSafeGetByID(classname, id) (static_cast<classname *>(GetWidgetByID(id, #classname)))
-
-/** Call GetWidgetByID on root and cast. Will return nullptr if the widget is of the wrong type, or if it was not found.  */
-#define TBSafeGetByIDInRoot(root, classname, id) (static_cast<classname *>(root->GetWidgetByID(id, #classname)))
-
 /** The base TBWidget class.
 	Make a subclass to implement UI controls.
 	Each widget has a background skin (no skin specified by default) which will be used to
-	calculate the default size preferences and padding around the preferred content size. */
+	calculate the default size preferences and padding around the preferred content size.
 
-class TBWidget : public TBLinkOf<TBWidget>
+	Note: When you subclass a widget, use the TBOBJECT_SUBCLASS macro to define the type
+	casting functions instead of implementing those manually. */
+
+class TBWidget : public TBTypedObject, public TBLinkOf<TBWidget>
 {
 public:
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(TBWidget, TBTypedObject);
+
 	TBWidget();
 	virtual ~TBWidget();
 
@@ -271,7 +264,11 @@ public:
 	TBID &GetGroupID() { return m_group_id; }
 
 	/** Get this widget or any child widget with a matching id, or nullptr if none is found. */
-	TBWidget *GetWidgetByID(const TBID &id, const char *classname = nullptr);
+	TBWidget *GetWidgetByID(const TBID &id) { return GetWidgetByIDInternal(id); }
+
+	/** Get this widget or any child widget with a matching id and type, or nullptr if none is found. */
+	template<class T> T *GetWidgetByIDAndType(const TBID &id)
+		{ return (T*) GetWidgetByIDInternal(id, GetTypeId<T>()); }
 
 	/** Enable or disable the given state(s). The state affects which skin state is used when drawing.
 		Some states are set automatically on interaction. See GetAutoState(). */
@@ -591,16 +588,6 @@ public:
 	/** Unconnect, if this widget is connected to a TBWidgetValue. */
 	void Unconnect() { m_connection.Unconnect(); }
 
-	/** Get the classname of this TBWidget.
-		Note: When you subclass a widget, use the WIDGET_SUBCLASS macro
-		instead of overriding this function, and IsOfType manually. */
-	virtual const char *GetClassName() const { return ""; }
-
-	/** Return true if this widget can safely be casted to the given class name.
-		Note: When you subclass a widget, use the WIDGET_SUBCLASS macro
-		instead of overriding this function, and GetClassName manually. */
-	virtual bool IsOfType(const char *name) const { return false; }
-
 	/** Get the rectangle inside any padding, relative to this widget. This is the
 		rectangle in which the content should be rendered. */
 	virtual TBRect GetPaddingRect();
@@ -749,6 +736,7 @@ public:
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 private:
+	TBWidget *GetWidgetByIDInternal(const TBID &id, const void *type_id = nullptr);
 	void InvokeSkinUpdatesInternal();
 	void InvokeProcessInternal();
 	void SetHoveredWidget(TBWidget *widget);

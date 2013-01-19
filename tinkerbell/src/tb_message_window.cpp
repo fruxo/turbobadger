@@ -50,9 +50,9 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 
 	SetText(title);
 
-	TBSafeGetByID(TBSkinImage, 2)->SetSkinBg(settings->icon_skin);
+	GetWidgetByIDAndType<TBSkinImage>(2)->SetSkinBg(settings->icon_skin);
 
-	TBEditField *editfield = TBSafeGetByID(TBEditField, 1);
+	TBEditField *editfield = GetWidgetByIDAndType<TBEditField>(1);
 	editfield->SetStyling(settings->styling);
 	editfield->SetText(message);
 	editfield->SetSkinBg("");
@@ -100,7 +100,7 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 
 void TBMessageWindow::AddButton(TBID id, bool focused)
 {
-	TBLayout *layout = TBSafeGetByID(TBLayout, 3);
+	TBLayout *layout = GetWidgetByIDAndType<TBLayout>(3);
 	if (!layout)
 		return;
 	if (TBButton *btn = new TBButton)
@@ -115,7 +115,7 @@ void TBMessageWindow::AddButton(TBID id, bool focused)
 
 bool TBMessageWindow::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_CLICK && ev.target->IsOfType("TBButton"))
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->IsOfType<TBButton>())
 	{
 		TBWidgetSafePointer this_widget(this);
 

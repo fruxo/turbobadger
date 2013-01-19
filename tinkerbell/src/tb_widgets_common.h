@@ -49,7 +49,7 @@ class TBTextField : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBTextField", TBWidget);
+	TBOBJECT_SUBCLASS(TBTextField, TBWidget);
 
 	TBTextField();
 
@@ -85,7 +85,7 @@ class TBButton : public TBWidget, protected TBMessageHandler
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBButton", TBWidget);
+	TBOBJECT_SUBCLASS(TBButton, TBWidget);
 
 	TBButton();
 	~TBButton();
@@ -141,7 +141,7 @@ class TBClickLabel : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBClickLabel", TBWidget);
+	TBOBJECT_SUBCLASS(TBClickLabel, TBWidget);
 
 	TBClickLabel();
 	~TBClickLabel();
@@ -173,7 +173,7 @@ class TBSkinImage : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSkinImage", TBWidget);
+	TBOBJECT_SUBCLASS(TBSkinImage, TBWidget);
 
 	TBSkinImage() {}
 	TBSkinImage(TBID skin_bg) { SetSkinBg(skin_bg); }
@@ -187,7 +187,7 @@ class TBSeparator : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSeparator", TBWidget);
+	TBOBJECT_SUBCLASS(TBSeparator, TBWidget);
 
 // FIX: Should take base skin, and add .x or .y depending on parent AXIS!
 	TBSeparator() { SetState(WIDGET_STATE_DISABLED, true); }
@@ -199,7 +199,7 @@ class TBProgressSpinner : public TBWidget, protected TBMessageHandler
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBProgressSpinner", TBWidget);
+	TBOBJECT_SUBCLASS(TBProgressSpinner, TBWidget);
 
 	TBProgressSpinner();
 
@@ -232,7 +232,7 @@ class TBRadioCheckBox : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBRadioCheckBox", TBWidget);
+	TBOBJECT_SUBCLASS(TBRadioCheckBox, TBWidget);
 
 	TBRadioCheckBox();
 
@@ -252,7 +252,7 @@ class TBCheckBox : public TBRadioCheckBox
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBCheckBox", TBRadioCheckBox);
+	TBOBJECT_SUBCLASS(TBCheckBox, TBRadioCheckBox);
 
 	TBCheckBox() { SetSkinBg("TBCheckBox", WIDGET_INVOKE_INFO_NO_CALLBACKS); }
 };
@@ -264,7 +264,7 @@ class TBRadioButton : public TBRadioCheckBox
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBRadioButton", TBRadioCheckBox);
+	TBOBJECT_SUBCLASS(TBRadioButton, TBRadioCheckBox);
 
 	TBRadioButton() { SetSkinBg("TBRadioButton", WIDGET_INVOKE_INFO_NO_CALLBACKS); }
 };
@@ -275,7 +275,7 @@ class TBScrollBar : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBScrollBar", TBWidget);
+	TBOBJECT_SUBCLASS(TBScrollBar, TBWidget);
 
 	TBScrollBar();
 	~TBScrollBar();
@@ -323,7 +323,7 @@ class TBSlider : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBSlider", TBWidget);
+	TBOBJECT_SUBCLASS(TBSlider, TBWidget);
 
 	TBSlider();
 	~TBSlider();
@@ -364,7 +364,7 @@ class TBContainer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBContainer", TBWidget);
+	TBOBJECT_SUBCLASS(TBContainer, TBWidget);
 
 	TBContainer();
 };
@@ -374,7 +374,7 @@ class TBMover : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBMover", TBWidget);
+	TBOBJECT_SUBCLASS(TBMover, TBWidget);
 
 	TBMover();
 
@@ -386,7 +386,7 @@ class TBResizer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBResizer", TBWidget);
+	TBOBJECT_SUBCLASS(TBResizer, TBWidget);
 
 	TBResizer();
 	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
@@ -398,7 +398,7 @@ class TBDimmer : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBDimmer", TBWidget);
+	TBOBJECT_SUBCLASS(TBDimmer, TBWidget);
 
 	TBDimmer();
 

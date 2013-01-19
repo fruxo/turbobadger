@@ -51,7 +51,7 @@ class TBScrollContainer : public TBWidget
 friend class TBScrollContainerRoot;
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBScrollContainer", TBWidget);
+	TBOBJECT_SUBCLASS(TBScrollContainer, TBWidget);
 
 	TBScrollContainer();
 	~TBScrollContainer();

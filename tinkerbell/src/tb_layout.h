@@ -78,7 +78,7 @@ class TBLayout : public TBWidget
 {
 public:
 	// For safe typecasting
-	WIDGET_SUBCLASS("TBLayout", TBWidget);
+	TBOBJECT_SUBCLASS(TBLayout, TBWidget);
 
 	TBLayout(AXIS axis = AXIS_X);
 
