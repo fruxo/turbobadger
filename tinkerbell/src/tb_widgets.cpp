@@ -118,7 +118,7 @@ void TBWidget::Die()
 	}
 }
 
-TBWidget *TBWidget::GetWidgetByIDInternal(const TBID &id, const void *type_id)
+TBWidget *TBWidget::GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_id)
 {
 	if (m_id == id && (!type_id || IsOfTypeId(type_id)))
 		return this;

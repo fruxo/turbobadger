@@ -736,7 +736,7 @@ public:
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 private:
-	TBWidget *GetWidgetByIDInternal(const TBID &id, const void *type_id = nullptr);
+	TBWidget *GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_id = nullptr);
 	void InvokeSkinUpdatesInternal();
 	void InvokeProcessInternal();
 	void SetHoveredWidget(TBWidget *widget);
