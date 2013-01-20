@@ -67,6 +67,7 @@ What features does it have
 	• Text editing widget (With clipboard, undo/redo, styling functionality,
 	  embedded content (for read only text flow)...)
 	• Extendable skin system with automatic runtime atlas creation,
+	  Expand (shadows & glow without nasty margin hacks),
 	  conditions (simple selectors), overrides, overlays, children, multiple
 	  pixel density support etc.
 	• Automatic widget layout (No need to specify widget dimensions by pixels)
