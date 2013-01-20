@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "parser/TBParser.h"
+#include "tb_object.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -106,6 +107,9 @@ TBValue::TBValue(TYPE type)
 	case TYPE_INT:
 		SetInt(0);
 		break;
+	case TYPE_OBJECT:
+		SetObject(nullptr);
+		break;
 	case TYPE_ARRAY:
 		if (TBValueArray *arr = new TBValueArray())
 			SetArray(arr, SET_TAKE_OWNERSHIP);
@@ -133,6 +137,12 @@ TBValue::TBValue(const char *value)
 	SetString(value, SET_NEW_COPY);
 }
 
+TBValue::TBValue(TBTypedObject *object)
+	: m_packed_init(0)
+{
+	SetObject(object);
+}
+
 TBValue::~TBValue()
 {
 	SetNull();
@@ -155,6 +165,11 @@ void TBValue::Copy(const TBValue &source_value)
 		SetString(source_value.val_str, SET_NEW_COPY);
 	else if (source_value.m_packed.type == TYPE_ARRAY)
 		SetArray(source_value.val_arr, SET_NEW_COPY);
+	else if (source_value.m_packed.type == TYPE_OBJECT)
+	{
+		assert(!"We can't copy objects! The value will be nulled!");
+		SetObject(nullptr);
+	}
 	else
 	{
 		// Assumes we are a POD, which we should be
@@ -166,6 +181,8 @@ void TBValue::SetNull()
 {
 	if (m_packed.type == TYPE_STRING && m_packed.allocated)
 		free(val_str);
+	else if (m_packed.type == TYPE_OBJECT && m_packed.allocated)
+		delete val_obj;
 	else if (m_packed.type == TYPE_ARRAY && m_packed.allocated)
 		delete val_arr;
 	m_packed.type = TYPE_NULL;
@@ -196,6 +213,13 @@ void TBValue::SetString(const char *val, SET set)
 	}
 	else if (val_str = strdup(val))
 		m_packed.type = TYPE_STRING;
+}
+
+void TBValue::SetObject(TBTypedObject *object)
+{
+	SetNull();
+	m_packed.allocated = true;
+	val_obj = object;
 }
 
 void TBValue::SetArray(TBValueArray *arr, SET set)
@@ -272,8 +296,6 @@ int TBValue::GetInt()
 		SetInt(atoi(val_str));
 	else if (m_packed.type == TYPE_FLOAT)
 		return (int) val_float;
-	else if (m_packed.type == TYPE_ARRAY)
-		return 0;
 	return m_packed.type == TYPE_INT ? val_int : 0;
 }
 
@@ -283,8 +305,6 @@ float TBValue::GetFloat()
 		SetFloat((float)atof(val_str));
 	else if (m_packed.type == TYPE_INT)
 		return (float) val_int;
-	else if (m_packed.type == TYPE_ARRAY)
-		return 0;
 	return m_packed.type == TYPE_FLOAT ? val_float : 0;
 }
 
@@ -302,8 +322,8 @@ const char *TBValue::GetString()
 		sprintf(tmp, "%f", val_float);
 		SetString(tmp, SET_NEW_COPY);
 	}
-	else if (m_packed.type == TYPE_ARRAY)
-		return "";
+	else if (m_packed.type == TYPE_OBJECT)
+		return val_obj ? val_obj->GetClassName() : "";
 	return m_packed.type == TYPE_STRING ? val_str : "";
 }
 
