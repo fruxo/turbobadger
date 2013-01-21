@@ -1688,6 +1688,7 @@ void TBStyleEdit::Paste()
 	if (TBClipboard::HasText() && TBClipboard::GetText(text))
 	{
 		InsertText(text, text.Length());
+		ScrollIfNeeded(true, true);
 		listener->OnChange();
 	}
 }
@@ -1957,6 +1958,7 @@ void TBUndoRedoStack::Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse)
 		if (text_len > 1)
 			styledit->selection.Select(e->gofs, e->gofs + text_len);
 	}
+	styledit->ScrollIfNeeded(true, true);
 	applying = false;
 }
 
