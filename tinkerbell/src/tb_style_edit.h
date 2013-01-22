@@ -352,8 +352,8 @@ public:
 	void Paste();
 	void Delete();
 
-	void Undo() { undoredo.Undo(this); }
-	void Redo() { undoredo.Redo(this); }
+	void Undo();
+	void Redo();
 	bool CanUndo() const { return undoredo.undos.GetNumItems() ? true : false; }
 	bool CanRedo() const { return undoredo.redos.GetNumItems() ? true : false; }
 

@@ -1702,6 +1702,24 @@ void TBStyleEdit::Delete()
 	}
 }
 
+void TBStyleEdit::Undo()
+{
+	if (CanUndo())
+	{
+		undoredo.Undo(this);
+		listener->OnChange();
+	}
+}
+
+void TBStyleEdit::Redo()
+{
+	if (CanRedo())
+	{
+		undoredo.Redo(this);
+		listener->OnChange();
+	}
+}
+
 bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys)
 {
 	if (button != 1)

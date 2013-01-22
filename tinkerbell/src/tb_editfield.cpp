@@ -213,9 +213,9 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 		else if (ev.ref_id == TBIDC("delete") && !m_style_edit.packed.read_only)
 			m_style_edit.Delete();
 		else if (ev.ref_id == TBIDC("undo") && !m_style_edit.packed.read_only)
-			m_style_edit.undoredo.Undo(&m_style_edit);
+			m_style_edit.Undo();
 		else if (ev.ref_id == TBIDC("redo") && !m_style_edit.packed.read_only)
-			m_style_edit.undoredo.Redo(&m_style_edit);
+			m_style_edit.Redo();
 		else if (ev.ref_id == TBIDC("selectall"))
 			m_style_edit.selection.SelectAll();
 		else
