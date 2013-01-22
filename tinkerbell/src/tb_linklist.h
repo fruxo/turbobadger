@@ -117,10 +117,10 @@ class TBLinkListOf
 {
 public:
 	/** Remove link from this linklist. */
-	void Remove(T *link)			{ m_linklist.Remove((TBLinkOf<T>*)link); }
+	void Remove(T *link)			{ m_linklist.Remove(static_cast<TBLinkOf<T>*>(link)); }
 
 	/** Remove link from this linklist and delete it. */
-	void Delete(T *link)			{ m_linklist.Remove((TBLinkOf<T>*)link); delete link; }
+	void Delete(T *link)			{ m_linklist.Remove(static_cast<TBLinkOf<T>*>(link)); delete link; }
 
 	/** Remove all links without deleting them. */
 	void RemoveAll()				{ m_linklist.RemoveAll(); }
@@ -129,25 +129,25 @@ public:
 	void DeleteAll()				{ while (T *t = GetFirst()) Delete(t); }
 
 	/** Add link first in this linklist. */
-	void AddFirst(T *link)			{ m_linklist.AddFirst((TBLinkOf<T>*)link); }
+	void AddFirst(T *link)			{ m_linklist.AddFirst(static_cast<TBLinkOf<T>*>(link)); }
 
 	/** Add link last in this linklist. */
-	void AddLast(T *link)			{ m_linklist.AddLast((TBLinkOf<T>*)link); }
+	void AddLast(T *link)			{ m_linklist.AddLast(static_cast<TBLinkOf<T>*>(link)); }
 
 	/** Add link before the reference link (which must be added to this linklist). */
-	void AddBefore(T *link, T *reference) { m_linklist.AddBefore((TBLinkOf<T>*)link, reference); }
+	void AddBefore(T *link, T *reference) { m_linklist.AddBefore(static_cast<TBLinkOf<T>*>(link), reference); }
 
 	/** Add link after the reference link (which must be added to this linklist). */
-	void AddAfter(T *link, T *reference) { m_linklist.AddAfter((TBLinkOf<T>*)link, reference); }
+	void AddAfter(T *link, T *reference) { m_linklist.AddAfter(static_cast<TBLinkOf<T>*>(link), reference); }
 
 	/** Return true if the link is currently added to this linklist. */
-	bool ContainsLink(T *link) const { return m_linklist.ContainsLink((TBLinkOf<T>*)link); }
+	bool ContainsLink(T *link) const { return m_linklist.ContainsLink(static_cast<TBLinkOf<T>*>(link)); }
 
 	/** Get the first link, or nullptr. */
-	T *GetFirst() const { return (T *) (TBLinkOf<T>*) m_linklist.first; }
+	T *GetFirst() const { return (T *) static_cast<TBLinkOf<T>*>(m_linklist.first); }
 
 	/** Get the last link, or nullptr. */
-	T *GetLast() const { return (T *) (TBLinkOf<T>*) m_linklist.last; }
+	T *GetLast() const { return (T *) static_cast<TBLinkOf<T>*>(m_linklist.last); }
 
 	/** Return true if this linklist contains any links. */
 	bool HasLinks() const { return m_linklist.first ? true : false; }
@@ -160,9 +160,9 @@ public:
 	{
 	public:
 		Iterator(TBLinkListOf<T> *linklistof, bool forward) : TBLinkListIterator(&linklistof->m_linklist, forward) {}
-		inline T *Get() const { return (T *) (TBLinkOf<T>*) TBLinkListIterator::Get(); }
-		inline T *GetAndStep() { return (T *) (TBLinkOf<T>*) TBLinkListIterator::GetAndStep(); }
-		inline operator T *() const { return (T *) (TBLinkOf<T>*) Get(); }
+		inline T *Get() const { return (T *) static_cast<TBLinkOf<T>*>(TBLinkListIterator::Get()); }
+		inline T *GetAndStep() { return (T *) static_cast<TBLinkOf<T>*>(TBLinkListIterator::GetAndStep()); }
+		inline operator T *() const { return (T *) static_cast<TBLinkOf<T>*>(Get()); }
 	};
 
 	/** Get a forward iterator that starts with the first link. */

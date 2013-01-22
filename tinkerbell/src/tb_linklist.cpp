@@ -160,9 +160,9 @@ void TBLinkList::Remove(TBLink *link)
 		first = link->next;
 	if (last == link)
 		last = link->prev;
-	link->linklist = 0;
-	link->prev = 0;
-	link->next = 0;
+	link->linklist = nullptr;
+	link->prev = nullptr;
+	link->next = nullptr;
 }
 
 void TBLinkList::RemoveAll()
@@ -179,13 +179,13 @@ void TBLinkList::RemoveAll()
 	while (link)
 	{
 		TBLink *next = link->next;
-		link->linklist = 0;
-		link->prev = 0;
-		link->next = 0;
+		link->linklist = nullptr;
+		link->prev = nullptr;
+		link->next = nullptr;
 		link = next;
 	}
-	first = 0;
-	last = 0;
+	first = nullptr;
+	last = nullptr;
 }
 
 int TBLinkList::CountLinks() const
