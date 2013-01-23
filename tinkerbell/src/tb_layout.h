@@ -127,6 +127,7 @@ public:
 	virtual void OnPaintChildren(const PaintProps &paint_props);
 	virtual void OnProcess() { ValidateLayout(); }
 	virtual void OnResized(int old_w, int old_h);
+	virtual void OnInflateChild(TBWidget *child);
 	virtual void GetChildTranslation(int &x, int &y) const;
 	virtual void ScrollIntoView(const TBRect &rect);
 	virtual void ScrollBy(int &dx, int &dy);

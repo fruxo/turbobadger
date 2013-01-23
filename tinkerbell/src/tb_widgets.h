@@ -497,6 +497,12 @@ public:
 		The default implementation move and resize all children according to their gravity. */
 	virtual void OnResized(int old_w, int old_h);
 
+	/** Called just before a child is inflated into this widget.
+		The default implementation will resize the child to it's preferred size
+		and position it according to the gravity. If you implement a layouting
+		widget, you should override this to prevent doing unnecessary measuring. */
+	virtual void OnInflateChild(TBWidget *child);
+
 	/** Get hit status tests if this widget should be hit at the given coordinate.
 		The default implementation checks the visibility, ignored input flag, rectangle,
 		and disabled status. */

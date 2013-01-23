@@ -568,9 +568,6 @@ TBTextFragmentContent *TBEditFieldContentFactory::CreateFragmentContent(const ch
 		{
 			g_widgets_reader->LoadData(widget, text + 8, text_len - 9);
 
-			if (widget->GetFirstChild())
-				widget->GetFirstChild()->SetGravity(WIDGET_GRAVITY_ALL);
-
 			if (TBTextFragmentContentWidget *cw = new TBTextFragmentContentWidget(editfield, widget))
 				return cw;
 			delete widget;

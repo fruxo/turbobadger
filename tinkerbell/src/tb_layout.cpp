@@ -461,6 +461,11 @@ void TBLayout::OnResized(int old_w, int old_h)
 	ValidateLayout();
 }
 
+void TBLayout::OnInflateChild(TBWidget *child)
+{
+	// Do nothing since we're going to layout the child soon.
+}
+
 void TBLayout::GetChildTranslation(int &x, int &y) const
 {
 	if (m_axis == AXIS_X)

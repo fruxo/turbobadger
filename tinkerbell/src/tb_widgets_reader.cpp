@@ -316,11 +316,6 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	// Read generic properties
 
-	// FIX: Would be better to NOT do this if we're adding to a layouter anyway. 
-	// otherwise we're causing unnecessary reformat of text and layout.
-	// We should also support setting pixel rects?
-	new_widget->SetRect(target->GetContentRoot()->GetPaddingRect());
-
 	SetIDFromNode(new_widget->GetID(), node->GetNode("id"));
 
 	SetIDFromNode(new_widget->GetGroupID(), node->GetNode("group_id"));
@@ -371,6 +366,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 	{
 		new_widget->SetSkinBg(skin);
 	}
+
+	target->GetContentRoot()->OnInflateChild(new_widget);
 
 	// Add the new widget to the hiearchy
 	target->GetContentRoot()->AddChild(new_widget, add_child_z);

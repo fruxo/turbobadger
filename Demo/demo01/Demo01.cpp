@@ -582,6 +582,7 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		{
 			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout01.tb.txt");
 			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout02.tb.txt");
+			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout03.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-connections"))

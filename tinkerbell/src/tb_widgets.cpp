@@ -604,6 +604,34 @@ void TBWidget::OnResized(int old_w, int old_h)
 	}
 }
 
+void TBWidget::OnInflateChild(TBWidget *child)
+{
+	// If the child pull towards only one edge (per axis), stick to that edge
+	// and use the preferred size. Otherwise fill up all available space.
+	TBRect padding_rect = GetPaddingRect();
+	TBRect child_rect = padding_rect;
+	WIDGET_GRAVITY gravity = child->GetGravity();
+	bool fill_x = (gravity & WIDGET_GRAVITY_LEFT) && (gravity & WIDGET_GRAVITY_RIGHT);
+	bool fill_y = (gravity & WIDGET_GRAVITY_TOP) && (gravity & WIDGET_GRAVITY_BOTTOM);
+	if (!fill_x || !fill_y)
+	{
+		PreferredSize ps = child->GetPreferredSize();
+		if (!fill_x)
+		{
+			child_rect.w = ps.pref_w;
+			if (gravity & WIDGET_GRAVITY_RIGHT)
+				child_rect.x = padding_rect.x + padding_rect.w - child_rect.w;
+		}
+		if (!fill_y)
+		{
+			child_rect.h = ps.pref_h;
+			if (gravity & WIDGET_GRAVITY_BOTTOM)
+				child_rect.y = padding_rect.y + padding_rect.h - child_rect.h;
+		}
+	}
+	child->SetRect(child_rect);
+}
+
 TBRect TBWidget::GetPaddingRect()
 {
 	TBRect padding_rect(0, 0, m_rect.w, m_rect.h);
