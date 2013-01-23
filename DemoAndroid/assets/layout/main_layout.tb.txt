@@ -28,6 +28,7 @@ TBLayout
 					TBImageWidget: filename: "images/tb_logo.png"
 					TBImageWidget: filename: "images/tb_logo.png"
 				TBImageWidget: filename: "images/image_1.png", skin: ImageFrame
+					TBTextField: skin: "ImageCaption", text: "Road", gravity: bottom left right
 			TBLayout: axis: y
 				TBTextField: text: Testing high DPI skin positioning.
 				TBTextField: text: Layout with skin "Starry buttons":

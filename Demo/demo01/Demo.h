@@ -42,6 +42,13 @@ public:
 	virtual void OnMessageReceived(TBMessage *msg);
 };
 
+class ImageWindow : public DemoWindow
+{
+public:
+	ImageWindow();
+	virtual bool OnEvent(const TBWidgetEvent &ev);
+};
+
 class AnimationsWindow : public DemoWindow
 {
 public:

@@ -453,6 +453,25 @@ void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
 	}
 }
 
+// == ImageWindow =============================================================
+
+ImageWindow::ImageWindow()
+{
+	LoadResourceFile("Demo/demo01/ui_resources/test_image_widget.tb.txt");
+}
+
+bool ImageWindow::OnEvent(const TBWidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("remove"))
+	{
+		TBWidget *image = ev.target->GetParent();
+		image->GetParent()->RemoveChild(image);
+		delete image;
+		return true;
+	}
+	return DemoWindow::OnEvent(ev);
+}
+
 // == AnimationsWindow ========================================================
 
 AnimationsWindow::AnimationsWindow()
@@ -602,7 +621,7 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-image"))
 		{
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_image_widget.tb.txt");
+			new ImageWindow();
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-animations"))

@@ -1,5 +1,5 @@
 WindowInfo
-	title Layout distribution
+	title TBLayout distribution
 	position 100 100
 TBLayout: position: left top, axis: y
 	TBTextField: text: "distribution: preferred"

@@ -1,5 +1,5 @@
 WindowInfo
-	title Layout size & gravity
+	title TBLayout size & gravity
 	position 100 240
 TBLayout
 	axis y

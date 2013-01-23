@@ -36,6 +36,8 @@ elements
 		expand 7
 		content-ofs-x 1
 		content-ofs-y 1
+	ImageCaption
+		background-color #00000066
 	ImageFrame
 		overlays
 			element ImageFrame.overlay
@@ -44,6 +46,10 @@ elements
 		bitmap image_frame.png
 		cut 22
 		expand 15
+	Remove
+		bitmap remove.png
+		type Image
+		padding 5
 	Star
 		bitmap star_gray.png
 		type Image
