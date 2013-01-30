@@ -153,6 +153,10 @@ public:
 	TBFragmentSpaceAllocator *m_row;
 	TBFragmentSpaceAllocator::Space *m_space;
 	TBID m_id;
+
+	/** This uint32 is reserved for batching renderer backends. It's not used
+		internally, but always initialized to 0xffffffff for all new fragments. */
+	uint32 m_batch_id;
 };
 
 /** TBBitmapFragmentManager manages loading bitmaps of arbitrary size,

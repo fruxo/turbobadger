@@ -23,7 +23,7 @@ static void Ortho2D(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top)
 
 // == Batching ====================================================================================
 
-#define VERTEX_BATCH_SIZE 3 * 4096
+#define VERTEX_BATCH_SIZE 6 * 2048
 
 #define VER_COL(r, g, b, a) (((a)<<24) + ((b)<<16) + ((g)<<8) + r)
 #define VER_COL_OPACITY(a) (0x00ffffff + (((uint32)a) << 24))
@@ -53,7 +53,7 @@ void BindBitmap(TBBitmap *bitmap)
 class Batch
 {
 public:
-	Batch() : vertex_count(0), bitmap(nullptr), fragment(nullptr), is_flushing(false) {}
+	Batch() : vertex_count(0), bitmap(nullptr), fragment(nullptr), is_flushing(false), batch_id(0) {}
 	void Flush();
 	void AddVertex(int x, int y, float u, float v, uint32 color);
 //private:
@@ -63,6 +63,7 @@ public:
 	TBBitmap *bitmap;
 	TBBitmapFragment *fragment;
 	bool is_flushing;
+	uint32 batch_id;
 };
 
 void Batch::Flush()
@@ -95,6 +96,8 @@ void Batch::Flush()
 	// Flush
 	glDrawArrays(GL_TRIANGLES, 0, vertex_count);
 	vertex_count = 0;
+
+	batch_id++; // Will overflow eventually, but that doesn't really matter.
 
 	is_flushing = false;
 }
@@ -140,6 +143,10 @@ public:
 		batch.AddVertex(dst_rect.x, dst_rect.y, u, v, color);
 		batch.AddVertex(dst_rect.x + dst_rect.w, dst_rect.y + dst_rect.h, uu, vv, color);
 		batch.AddVertex(dst_rect.x + dst_rect.w, dst_rect.y, uu, v, color);
+
+		// Update fragments batch id (See FlushBitmapFragment)
+		if (fragment)
+			fragment->m_batch_id = batch.batch_id;
 	}
 	void Flush()
 	{
@@ -153,8 +160,12 @@ public:
 	}
 	void FlushBitmapFragment(TBBitmapFragment *bitmap_fragment)
 	{
-		// Flush the batch if it's using this fragment (that is about to change or be deleted)
-		if (batch.vertex_count && bitmap_fragment == batch.fragment)
+		// Flush the batch if it is using this fragment (that is about to change or be deleted)
+		// We know if it is in use in the current batch if its batch_id matches the current
+		// batch_id in our (one and only) batch.
+		// If we switch to a more advance batching system with multiple batches, we need to
+		// solve this a bit differently.
+		if (batch.vertex_count && bitmap_fragment->m_batch_id == batch.batch_id)
 			batch.Flush();
 	}
 private:

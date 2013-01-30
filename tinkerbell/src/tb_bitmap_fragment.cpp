@@ -254,6 +254,7 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 			frag->m_row = best_row;
 			frag->m_space = space;
 			frag->m_rect.Set(space->x + border, best_row->y + border, frag_w, frag_h);
+			frag->m_batch_id = 0xffffffff;
 			CopyData(frag, data_stride, frag_data, border);
 			m_need_update = true;
 			m_allocated_pixels += frag->m_space->width * frag->m_row->height;
