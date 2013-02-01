@@ -356,7 +356,8 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 	{
 		window->SetLastFocus(this);
 		// If not active, just return. We should get focus when the window is activated.
-		if (!window->IsActive())
+		// Exception for windows that doesn't activate. They may contain focusable widgets.
+		if (!window->IsActive() && (window->GetSettings() & WINDOW_SETTINGS_CAN_ACTIVATE))
 			return true;
 	}
 

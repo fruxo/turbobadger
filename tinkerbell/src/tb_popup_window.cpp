@@ -85,9 +85,20 @@ TBRect TBPopupWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
 	return TBRect(x, y, w, h);
 }
 
+bool TBPopupWindow::OnEvent(const TBWidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_KEY_DOWN && ev.special_key == TB_KEY_ESC)
+	{
+		Close();
+		return true;
+	}
+	return TBWindow::OnEvent(ev);
+}
+
 void TBPopupWindow::OnWidgetFocusChanged(TBWidget *widget, bool focused)
 {
-	Close();
+	if (focused && !IsEventDestinationFor(widget))
+		Close();
 }
 
 bool TBPopupWindow::OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev)
@@ -107,8 +118,8 @@ void TBPopupWindow::OnWidgetDelete(TBWidget *widget)
 
 bool TBPopupWindow::OnWidgetDying(TBWidget *widget)
 {
-	// If the target widget is deleted, close!
-	if (widget == m_target.Get())
+	// If the target widget or an ancestor of it is dying, close!
+	if (widget == m_target.Get() || widget->IsAncestorOf(m_target.Get()))
 		Close();
 	return false;
 }

@@ -29,6 +29,8 @@ public:
 	TBRect GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align);
 
 	virtual TBWidget *GetEventDestination() { return m_target.Get(); }
+
+	virtual bool OnEvent(const TBWidgetEvent &ev);
 private:
 	TBWidgetSafePointer m_target;
 	// TBGlobalWidgetListener
