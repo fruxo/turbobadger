@@ -49,7 +49,7 @@ public:
 	virtual void OnMessageReceived(TBMessage *msg);
 
 	// == TBGlobalWidgetListener ========================================================
-	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev);
+	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev);
 	virtual void OnWidgetAdded(TBWidget *widget);
 	virtual void OnWidgetRemove(TBWidget *widget);
 private:

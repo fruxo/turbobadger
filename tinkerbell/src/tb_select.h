@@ -154,32 +154,6 @@ protected:
 	TBWidgetSafePointer m_window_pointer; ///< Points to the dropdown window if opened
 };
 
-/** TBMenuWindow is a popup window that shows a list of items (TBSelectList).
-	When selected it will invoke the click on the item and then close itself.
-	It may open sub items as new windows at the same time as this window is open. */
-class TBMenuWindow : public TBWindow, private TBWidgetSafePointer
-{
-public:
-	// For safe typecasting
-	TBOBJECT_SUBCLASS(TBMenuWindow, TBWindow);
-
-	TBMenuWindow(TBWidget *target, TBID id);
-
-	bool Show(TBSelectItemSource *source, int initial_value = -1, const TBPoint *pos_in_root = nullptr, TB_ALIGN align = TB_ALIGN_BOTTOM);
-	TBRect GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align);
-
-	TBSelectList *GetList() { return m_select_list; }
-
-	virtual TBWidget *GetEventDestination() { return Get(); }
-
-	virtual bool OnEvent(const TBWidgetEvent &ev);
-private:
-	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused);
-	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev);
-	virtual void OnWidgetDelete(TBWidget *widget);
-	TBSelectList *m_select_list;
-};
-
 }; // namespace tinkerbell
 
 #endif // TB_SELECT_H

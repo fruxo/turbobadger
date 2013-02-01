@@ -366,10 +366,12 @@ elements
 	TBSelectDropdown.arrow
 		clone arrow.down
 	TBSelectDropdown.window
-		clone TBMenuWindow
-	TBMenuWindow
+		clone TBPopupWindow
+	TBPopupWindow
 		clone TBWindow
 		padding 2
+	TBMenuWindow
+		clone TBPopupWindow
 	TBSelectItem
 		padding 4 10
 		children

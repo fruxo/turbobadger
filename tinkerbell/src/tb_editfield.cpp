@@ -5,6 +5,7 @@
 
 #include "tb_editfield.h"
 #include "tb_select.h"
+#include "tb_menu_window.h"
 #include "tb_system.h"
 #include "tb_language.h"
 #include "tb_style_edit_content.h"

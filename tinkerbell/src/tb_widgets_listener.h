@@ -51,7 +51,7 @@ public:
 	/** Called when a event is about to be invoked on a widget. This make it possible
 		to intercept a events before they are handled, and block it (by returning true).
 		Note, if returning true, other global listeners will still also be notified. */
-	virtual bool OnWidgetInvokeEvent(const TBWidgetEvent &ev) { return false; }
+	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev) { return false; }
 private:
 	friend class TBWidget;
 	static void InvokeWidgetDelete(TBWidget *widget);
@@ -59,7 +59,7 @@ private:
 	static void InvokeWidgetAdded(TBWidget *widget);
 	static void InvokeWidgetRemove(TBWidget *widget);
 	static void InvokeWidgetFocusChanged(TBWidget *widget, bool focused);
-	static bool InvokeWidgetInvokeEvent(const TBWidgetEvent &ev);
+	static bool InvokeWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev);
 };
 
 /** TBWidgetSafePointer keeps a pointer to a widget that will be set to

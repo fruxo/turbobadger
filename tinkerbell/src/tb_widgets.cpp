@@ -850,7 +850,7 @@ bool TBWidget::InvokeEvent(TBWidgetEvent &ev)
 	// Who knows, maybe some listener will block the event or cause us
 	// to be deleted.
 	TBWidgetSafePointer this_widget(this);
-	if (TBGlobalWidgetListener::InvokeWidgetInvokeEvent(ev))
+	if (TBGlobalWidgetListener::InvokeWidgetInvokeEvent(this, ev))
 		return true;
 
 	if (!this_widget.Get())

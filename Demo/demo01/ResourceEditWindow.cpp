@@ -199,7 +199,7 @@ void ResourceEditWindow::OnMessageReceived(TBMessage *msg)
 		UpdateWidgetList(true);
 }
 
-bool ResourceEditWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
+bool ResourceEditWindow::OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev)
 {
 	// Intercept all events to widgets in the build container
 	if (m_build_container->IsAncestorOf(ev.target))

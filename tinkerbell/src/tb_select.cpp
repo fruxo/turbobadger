@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "tb_select.h"
+#include "tb_menu_window.h"
 #include "tb_widgets_listener.h"
 #include "tb_language.h"
 #include <assert.h>
@@ -465,133 +466,6 @@ bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)
 		}
 	}
 	return false;
-}
-
-// == TBMenuWindow ==========================================
-
-TBMenuWindow::TBMenuWindow(TBWidget *target, TBID id)
-	: TBWidgetSafePointer(target)
-	, m_select_list(nullptr)
-{
-	SetID(id);
-	SetSkinBg("TBMenuWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-}
-
-bool TBMenuWindow::Show(TBSelectItemSource *source, int initial_value, const TBPoint *pos_in_root, TB_ALIGN align)
-{
-	SetSettings(WINDOW_SETTINGS_NONE);
-
-	if (m_select_list = new TBSelectList)
-	{
-		m_select_list->SetIsFocusable(false); ///< Avoid it autoclosing its window on click
-		m_select_list->SetSkinBg("");
-		m_select_list->GetScrollContainer()->SetAdaptToContentSize(true);
-		m_select_list->SetValue(initial_value);
-		m_select_list->SetSource(source);
-		m_select_list->SetRect(GetPaddingRect());
-		m_select_list->SetGravity(WIDGET_GRAVITY_ALL);
-		m_select_list->ValidateList();
-		AddChild(m_select_list);
-	}
-
-	// Calculate and set a good size for the dropdown window
-	SetRect(GetAlignedRect(pos_in_root, align));
-
-	TBWidget *root = Get()->GetParentRoot();
-	root->AddChild(this);
-	return true;
-}
-
-TBRect TBMenuWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
-{
-	TBWidget *target = Get();
-	TBWidget *root = Get()->GetParentRoot();
-	PreferredSize ps = GetPreferredSize();
-
-	TBRect target_rect;
-	TBPoint pos;
-	int w = MIN(ps.pref_w, root->GetRect().w);
-	int h = MIN(ps.pref_h, root->GetRect().h);
-	if (pos_in_root)
-	{
-		pos = *pos_in_root;
-	}
-	else
-	{
-		target->ConvertToRoot(pos.x, pos.y);
-		// FIX: add a minimum_width! This would shrink it for every submenu!
-		//w = CLAMP(ps.pref_w, target->m_rect.w, root->m_rect.w);
-
-		// If the menu is aligned top or bottom, limit its height to the worst case available height.
-		// Being in the center of the root, that is half the root height minus the target rect.
-		if (align == TB_ALIGN_TOP || align == TB_ALIGN_BOTTOM)
-			h = MIN(h, root->GetRect().h / 2 - target->GetRect().h);
-		target_rect = target->GetRect();
-	}
-
-	int x, y;
-	if (align == TB_ALIGN_BOTTOM)
-	{
-		x = pos.x;
-		y = pos.y + target_rect.h + h > root->GetRect().h ? pos.y - h : pos.y + target_rect.h;
-	}
-	else if (align == TB_ALIGN_TOP)
-	{
-		x = pos.x;
-		y = pos.y - h < 0 ? pos.y + target_rect.h : pos.y - h;
-	}
-	else if (align == TB_ALIGN_RIGHT)
-	{
-		x = pos.x + target_rect.w + w > root->GetRect().w ? pos.x - w : pos.x + target_rect.w;
-		y = MIN(pos.y, root->GetRect().h - h);
-	}
-	else //if (align == TB_ALIGN_LEFT)
-	{
-		x = pos.x - w < 0 ? pos.x + target_rect.w : pos.x - w;
-		y = MIN(pos.y, root->GetRect().h - h);
-	}
-
-	return TBRect(x, y, w, h);
-}
-
-bool TBMenuWindow::OnEvent(const TBWidgetEvent &ev)
-{
-	if (ev.type == EVENT_TYPE_CLICK && m_select_list == ev.target)
-	{
-		TBWidgetSafePointer this_widget(this);
-
-		// Invoke the click on the target
-		TBWidgetEvent target_ev(EVENT_TYPE_CLICK);
-		target_ev.ref_id = ev.ref_id;
-		InvokeEvent(target_ev);
-
-		// If target got deleted, close
-		if (this_widget.Get())
-			Close();
-		return true;
-	}
-	return TBWindow::OnEvent(ev);
-}
-
-void TBMenuWindow::OnWidgetFocusChanged(TBWidget *widget, bool focused)
-{
-	Close();
-}
-
-bool TBMenuWindow::OnWidgetInvokeEvent(const TBWidgetEvent &ev)
-{
-	if ((ev.type == EVENT_TYPE_POINTER_DOWN || ev.type == EVENT_TYPE_CONTEXT_MENU) &&
-		!IsEventDestinationFor(ev.target))
-		Close();
-	return false;
-}
-
-void TBMenuWindow::OnWidgetDelete(TBWidget *widget)
-{
-	TBWidgetSafePointer::OnWidgetDelete(widget);
-	// If the target widget is deleted, close!
-	if (!Get())
-		Close();
 }
 
 }; // namespace tinkerbell
