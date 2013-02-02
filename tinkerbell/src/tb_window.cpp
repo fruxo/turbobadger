@@ -86,8 +86,15 @@ TBWindow *TBWindow::GetTopMostOtherWindow(bool only_activable_windows)
 
 void TBWindow::Activate()
 {
-	if (!GetParent() || IsActive() || !(m_settings & WINDOW_SETTINGS_CAN_ACTIVATE))
+	if (!GetParent() || !(m_settings & WINDOW_SETTINGS_CAN_ACTIVATE))
 		return;
+	if (IsActive())
+	{
+		// Already active, but we may still have lost focus,
+		// so ensure it comes back to us.
+		EnsureFocus();
+		return;
+	}
 
 	// Deactivate currently active window
 	TBWindow *active_window = GetTopMostOtherWindow(true);
