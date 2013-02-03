@@ -299,18 +299,20 @@ elements
 		overrides
 			element TBWindow.mover.active
 				state selected
-		overlays
+		children
 			element TBWindow.mover.overlay
 				state all
 	TBWindow.mover.overlay
 		bitmap window_mover_overlay.png
-		type StretchBorder
-		cut 16
+		type Stretch
+		cut 12
 		expand 3
 	TBWindow.mover.active
 		clone TBWindow.mover
 		text-color #fefefe
 		overrides
+		overlays
+		children
 
 	# == Misc skins ====================================================================================
 	TBContainer
