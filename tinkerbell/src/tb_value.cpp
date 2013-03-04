@@ -16,15 +16,26 @@
 
 namespace tinkerbell {
 
-// FIX: Floating point string conversions might be locale dependant. Force "." as decimal!
+// FIX: ## Floating point string conversions might be locale dependant. Force "." as decimal!
 
 // == Helper functions ============================
 
-bool is_number(const char *str)
+bool is_start_of_number(const char *str)
 {
-	if (*str == '-' || *str == '.')
+	if (*str == '-')
+		str++;
+	if (*str == '.')
 		str++;
 	return *str >= '0' && *str <= '9';
+}
+
+bool is_number_only(const char *s)
+{
+	if (!s || *s == 0 || *s == ' ')
+		return 0;
+	char *p;
+	strtod (s, &p);
+	return *p == '\0';
 }
 
 bool is_number_float(const char *str)
@@ -239,33 +250,33 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 {
 	if (!str)
 		SetNull();
-	else if (is_number(str))
+	else if (is_number_only(str))
 	{
-		// If the number has spaces, we'll assume a list of numbers (example: "10 -4 3.5")
-		if (strstr(str, " "))
-		{
-			SetNull();
-			if (TBValueArray *arr = new TBValueArray)
-			{
-				TBStr tmpstr;
-				char *s3;
-				if (tmpstr.Set(str))
-				{
-					char * pch = strtok_r(tmpstr, ", ", &s3);
-					while (pch)
-					{
-						if (TBValue *new_val = arr->AddValue())
-							new_val->SetFromStringAuto(pch, SET_NEW_COPY);
-						pch = strtok_r(NULL, ", ", &s3);
-					}
-				}
-				SetArray(arr, SET_TAKE_OWNERSHIP);
-			}
-		}
-		else if (is_number_float(str))
+		if (is_number_float(str))
 			SetFloat((float)atof(str));
 		else
 			SetInt(atoi(str));
+	}
+	else if (is_start_of_number(str) && strstr(str, " "))
+	{
+		// If the number has spaces, we'll assume a list of numbers (example: "10 -4 3.5")
+		SetNull();
+		if (TBValueArray *arr = new TBValueArray)
+		{
+			TBStr tmpstr;
+			char *s3;
+			if (tmpstr.Set(str))
+			{
+				char * pch = strtok_r(tmpstr, ", ", &s3);
+				while (pch)
+				{
+					if (TBValue *new_val = arr->AddValue())
+						new_val->SetFromStringAuto(pch, SET_NEW_COPY);
+					pch = strtok_r(NULL, ", ", &s3);
+				}
+			}
+			SetArray(arr, SET_TAKE_OWNERSHIP);
+		}
 	}
 	else if (*str == '[')
 	{
@@ -290,19 +301,19 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 	}
 }
 
-int TBValue::GetInt()
+int TBValue::GetInt() const
 {
 	if (m_packed.type == TYPE_STRING)
-		SetInt(atoi(val_str));
+		return atoi(val_str);
 	else if (m_packed.type == TYPE_FLOAT)
 		return (int) val_float;
 	return m_packed.type == TYPE_INT ? val_int : 0;
 }
 
-float TBValue::GetFloat()
+float TBValue::GetFloat() const
 {
 	if (m_packed.type == TYPE_STRING)
-		SetFloat((float)atof(val_str));
+		return (float) atof(val_str);
 	else if (m_packed.type == TYPE_INT)
 		return (float) val_int;
 	return m_packed.type == TYPE_FLOAT ? val_float : 0;

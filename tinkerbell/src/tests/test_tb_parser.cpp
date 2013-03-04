@@ -45,8 +45,28 @@ TB_TEST_GROUP(tb_parser)
 
 	TB_TEST(numbers_compact)
 	{
-		TB_VERIFY(node.GetValueInt("numbers_compact>integer", 0) == -10);
-		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float", 0), 1.0);
+		TB_VERIFY(node.GetValueInt("numbers_compact>integer1", 0) == -10);
+		TB_VERIFY(node.GetValueInt("numbers_compact>integer2", 0) == -10);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float1", 0), 1.0);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float2", 0), -1.0);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float3", 0), -.2);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float4", 0), -.2);
+	}
+
+	TB_TEST(numbers_with_unit)
+	{
+		TB_VERIFY(node.GetValueInt("numbers_with_unit>number1", 0) == 10);
+		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number1", ""), "10px");
+		TB_VERIFY(node.GetValueInt("numbers_with_unit>number2", 0) == -10);
+		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number2", ""), "-10px");
+		TB_VERIFY(node.GetValueInt("numbers_with_unit>number3", 0) == 10);
+		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number3", ""), "10px");
+		TB_VERIFY(node.GetValueInt("numbers_with_unit>number4", 0) == -10);
+		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number4", ""), "-10px");
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_with_unit>number5", 0), -2.1);
+		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number5", ""), "-2.1px");
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_with_unit>number6", 0), -.1);
+		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number6", ""), "-.1px");
 	}
 
 	TB_TEST(compact_with_children)

@@ -361,23 +361,30 @@ int TBDimensionConverter::DpToPx(int dp) const
 	}
 }
 
-// == TBPx ==================================================================================================
-
-void TBPx::SetFromString(const TBDimensionConverter &converter, const char *str)
+int TBDimensionConverter::GetPxFromString(const char *str, int def_value) const
 {
 	if (!str || !isdigit(*str))
-		return;
+		return def_value;
 	int len = strlen(str);
 	int val = atoi(str);
-	if (len > 2 && strcmp(str + len - 2, "dp") == 0)
-		px = converter.DpToPx(val);
+	// "dp" and unspecified unit is dp.
+	if ((len > 0 && isdigit(str[len - 1])) ||
+		(len > 2 && strcmp(str + len - 2, "dp") == 0))
+		return DpToPx(val);
 	else
-		px = val;
+		return val;
 }
 
-void TBPx::SetDP(const TBDimensionConverter &converter, int dp)
+int TBDimensionConverter::GetPxFromValue(TBValue *value, int def_value) const
 {
-	px = converter.DpToPx(dp);
+	if (!value)
+		return def_value;
+	if (value->GetType() == TBValue::TYPE::TYPE_INT)
+		return DpToPx(value->GetInt());
+	else if (value->GetType() == TBValue::TYPE::TYPE_FLOAT)
+		// FIX: We might want float versions of all dimension functions.
+		return DpToPx((int)value->GetFloat());
+	return GetPxFromString(value->GetString(), def_value);
 }
 
 }; // namespace tinkerbell

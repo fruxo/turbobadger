@@ -115,6 +115,7 @@ bool TBSkinCondition::GetCondition(TBSkinConditionContext &context) const
 TBSkin::TBSkin()
 	: m_default_disabled_opacity(0.3f)
 	, m_default_placeholder_opacity(0.2f)
+	, m_default_spacing(0)
 {
 	g_renderer->AddListener(this);
 
@@ -175,7 +176,7 @@ bool TBSkin::LoadInternal(const char *skin_file)
 		m_default_disabled_opacity);
 	m_default_placeholder_opacity = node.GetValueFloat("defaults>placeholder>opacity",
 		m_default_placeholder_opacity);
-	LoadDimensionIfSpecified(&m_default_spacing, m_dim_conv, node.GetNode("defaults>spacing"));
+	m_default_spacing = GetPxFromNode(node.GetNode("defaults>spacing"), m_default_spacing);
 
 	// Iterate through all elements nodes and add skin elements or patch already
 	// existing elements.
@@ -210,7 +211,7 @@ bool TBSkin::LoadInternal(const char *skin_file)
 				m_elements.Add(element_id, e);
 			}
 
-			e->Load(n, m_dim_conv, skin_path.GetData());
+			e->Load(n, this, skin_path.GetData());
 
 			n = n->GetNext();
 		}
@@ -414,7 +415,7 @@ void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element)
 		PaintElementStretchBox(dst_rect, element, true);
 }
 
-TBRect TBSkin::GetFlippedRect(const TBRect &src_rect, TBSkinElement *element)
+TBRect TBSkin::GetFlippedRect(const TBRect &src_rect, TBSkinElement *element) const
 {
 	// Turning the source rect "inside out" will flip the result when rendered.
 	TBRect tmp_rect = src_rect;
@@ -534,11 +535,9 @@ void TBSkin::OnContextRestored()
 	ReloadBitmaps();
 }
 
-//static
-void TBSkin::LoadDimensionIfSpecified(TBPx16 *dst, const TBDimensionConverter &dim_conv, TBNode *n)
+int TBSkin::GetPxFromNode(TBNode *node, int def_value) const
 {
-	if (n)
-		dst->SetDP(dim_conv, n->GetValue().GetInt());
+	return node ? m_dim_conv.GetPxFromValue(&node->GetValue(), def_value) : def_value;
 }
 
 // == TBSkinElement =========================================================
@@ -546,9 +545,12 @@ void TBSkin::LoadDimensionIfSpecified(TBPx16 *dst, const TBDimensionConverter &d
 TBSkinElement::TBSkinElement()
 	: bitmap(nullptr), cut(0), expand(0), type(SKIN_ELEMENT_TYPE_STRETCH_BOX)
 	, is_painting(false), is_getting(false)
-	, min_width(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED)), min_height(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED))
-	, max_width(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED)), max_height(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED))
-	, spacing(TBPx::FromPx(SKIN_VALUE_NOT_SPECIFIED))
+	, padding_left(0), padding_top(0), padding_right(0), padding_bottom(0)
+	, min_width(SKIN_VALUE_NOT_SPECIFIED), min_height(SKIN_VALUE_NOT_SPECIFIED)
+	, max_width(SKIN_VALUE_NOT_SPECIFIED), max_height(SKIN_VALUE_NOT_SPECIFIED)
+	, spacing(SKIN_VALUE_NOT_SPECIFIED)
+	, content_ofs_x(0), content_ofs_y(0)
+	, img_ofs_x(0), img_ofs_y(0)
 	, img_position_x(50), img_position_y(50)
 	, flip_x(0), flip_y(0), opacity(1.f)
 	, text_color(0, 0, 0, 0)
@@ -598,7 +600,7 @@ bool TBSkinElement::HasState(SKIN_STATE state, TBSkinConditionContext &context)
 			m_overlay_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE);
 }
 
-void TBSkinElement::Load(TBNode *n, const TBDimensionConverter &dim_conv, const char *skin_path)
+void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 {
 	if (const char *bitmap = n->GetValueString("bitmap", nullptr))
 	{
@@ -607,46 +609,47 @@ void TBSkinElement::Load(TBNode *n, const TBDimensionConverter &dim_conv, const 
 		bitmap_file.Append(bitmap);
 	}
 
+	// Note: Always read cut and expand as pixels. These values might later be
+	//       recalculated depending on the DPI the bitmaps are available in.
 	cut = n->GetValueInt("cut", cut);
 	expand = n->GetValueInt("expand", expand);
+
 	name.Set(n->GetName());
 	id.Set(n->GetName());
+
+	const TBDimensionConverter *dim_conv = skin->GetDimensionConverter();
 
 	if (TBNode *padding_node = n->GetNode("padding"))
 	{
 		TBValue &val = padding_node->GetValue();
 		if (val.GetArrayLength() == 4)
 		{
-			padding_top.SetDP(dim_conv, val.GetArray()->GetValue(0)->GetInt());
-			padding_right.SetDP(dim_conv, val.GetArray()->GetValue(1)->GetInt());
-			padding_bottom.SetDP(dim_conv, val.GetArray()->GetValue(2)->GetInt());
-			padding_left.SetDP(dim_conv, val.GetArray()->GetValue(3)->GetInt());
+			padding_top = dim_conv->GetPxFromValue(val.GetArray()->GetValue(0), 0);
+			padding_right = dim_conv->GetPxFromValue(val.GetArray()->GetValue(1), 0);
+			padding_bottom = dim_conv->GetPxFromValue(val.GetArray()->GetValue(2), 0);
+			padding_left = dim_conv->GetPxFromValue(val.GetArray()->GetValue(3), 0);
 		}
 		else if (val.GetArrayLength() == 2)
 		{
-			padding_top.SetDP(dim_conv, val.GetArray()->GetValue(0)->GetInt());
-			padding_left.SetDP(dim_conv, val.GetArray()->GetValue(1)->GetInt());
-			padding_bottom = padding_top;
-			padding_right = padding_left;
+			padding_top = padding_bottom = dim_conv->GetPxFromValue(val.GetArray()->GetValue(0), 0);
+			padding_left = padding_right = dim_conv->GetPxFromValue(val.GetArray()->GetValue(1), 0);
 		}
 		else
 		{
-			padding_top.SetDP(dim_conv, val.GetInt());
-			padding_right = padding_bottom = padding_left = padding_top;
+			padding_top = padding_right = padding_bottom = padding_left = dim_conv->GetPxFromValue(&val, 0);
 		}
 	}
-
-	TBSkin::LoadDimensionIfSpecified(&min_width, dim_conv, n->GetNode("min-width"));
-	TBSkin::LoadDimensionIfSpecified(&min_height, dim_conv, n->GetNode("min-height"));
-	TBSkin::LoadDimensionIfSpecified(&max_width, dim_conv, n->GetNode("max-width"));
-	TBSkin::LoadDimensionIfSpecified(&max_height, dim_conv, n->GetNode("max-height"));
-	TBSkin::LoadDimensionIfSpecified(&spacing, dim_conv, n->GetNode("spacing"));
-	TBSkin::LoadDimensionIfSpecified(&content_ofs_x, dim_conv, n->GetNode("content-ofs-x"));
-	TBSkin::LoadDimensionIfSpecified(&content_ofs_y, dim_conv, n->GetNode("content-ofs-y"));
+	min_width = skin->GetPxFromNode(n->GetNode("min-width"), min_width);
+	min_height = skin->GetPxFromNode(n->GetNode("min_height"), min_height);
+	max_width = skin->GetPxFromNode(n->GetNode("max-width"), max_width);
+	max_height = skin->GetPxFromNode(n->GetNode("max-height"), max_height);
+	spacing = skin->GetPxFromNode(n->GetNode("spacing"), spacing);
+	content_ofs_x = skin->GetPxFromNode(n->GetNode("content-ofs-x"), content_ofs_x);
+	content_ofs_y = skin->GetPxFromNode(n->GetNode("content-ofs-y"), content_ofs_y);
 	img_position_x = n->GetValueInt("img-position-x", img_position_x);
 	img_position_y = n->GetValueInt("img-position-y", img_position_y);
-	TBSkin::LoadDimensionIfSpecified(&img_ofs_x, dim_conv, n->GetNode("img-ofs-x"));
-	TBSkin::LoadDimensionIfSpecified(&img_ofs_y, dim_conv, n->GetNode("img-ofs-y"));
+	img_ofs_x = skin->GetPxFromNode(n->GetNode("img-ofs-x"), img_ofs_x);
+	img_ofs_y = skin->GetPxFromNode(n->GetNode("img-ofs-y"), img_ofs_y);
 	flip_x = n->GetValueInt("flip-x", flip_x);
 	flip_y = n->GetValueInt("flip-y", flip_y);
 	opacity = n->GetValueFloat("opacity", opacity);

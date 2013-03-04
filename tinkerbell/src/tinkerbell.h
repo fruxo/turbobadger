@@ -269,6 +269,7 @@ private:
 #define TB_INVALID_DIMENSION -5555
 
 class TBTempBuffer;
+class TBValue;
 
 /** TBDimensionConverter converts device independant points
 	to pixels, based on two DPI values.
@@ -304,39 +305,23 @@ public:
 
 	/** Convert device independant point to pixel. */
 	int DpToPx(int dp) const;
-};
 
-/** TBPx16 stores a single dimension in pixels.
-	It may be set from other formats which will immediately be converted to px. */
-class TBPx16
-{
-	int16 px;
-	TBPx16(int16 px) : px(px)						{ }
-public:
-	TBPx16() : px(0)								{ }
-	TBPx16(const TBPx16 &src)						{ px = src.px; }
-	const TBPx16& operator = (const TBPx16 &src)	{ px = src.px; return *this; }
-	operator int16 () const							{ return px; }
+	/** Get a pixel value from string in any of the following formats:
+		str may be nullptr. def_value is returned on fail.
 
-	/** Set the pixel value from string in any of the following formats:
-
-		Pixel value:					"1", "1px"
-		Device independent point:		"1dp"
+		Device independent point:		"1", "1dp"
+		Pixel value:					"1px"
 		*/
-	void SetFromString(const TBDimensionConverter &converter, const char *str);
+	int GetPxFromString(const char *str, int def_value) const;
 
-	/** Set the pixel value from a device independant point. */
-	void SetDP(const TBDimensionConverter &converter, int dp);
+	/** Get a pixel value from TBValue.
+		value may be nullptr. def_value is returned on fail.
 
-	/** Set the pixel value. */
-	void SetPx(int16 px) { this->px = px; }
-
-	/** Initialize a TBPx16 from a pixel value. The constructor is intentionally
-		hidden to enforce being specific about which type that is set. */
-	static TBPx16 FromPx(int16 px) { return TBPx16(px); }
+		Number formats are treated as dp.
+		String format is treated like for GetPxFromString.
+		*/
+	int GetPxFromValue(TBValue *value, int def_value) const;
 };
-
-typedef TBPx16 TBPx;
 
 class TBRenderer;
 class TBSkin;

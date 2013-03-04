@@ -177,19 +177,19 @@ public:
 	SKIN_ELEMENT_TYPE type;///< Skin element type
 	bool is_painting;	///< If the skin is being painted (avoiding eternal recursing)
 	bool is_getting;	///< If the skin is being got (avoiding eternal recursion)
-	TBPx16 padding_left;		///< Left padding for any content in the element
-	TBPx16 padding_top;		///< Top padding for any content in the element
-	TBPx16 padding_right;	///< Right padding for any content in the element
-	TBPx16 padding_bottom;	///< Bottom padding for any content in the element
-	TBPx16 min_width;		///< Minimum width or SKIN_VALUE_NOT_SPECIFIED
-	TBPx16 min_height;		///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
-	TBPx16 max_width;		///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
-	TBPx16 max_height;		///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
-	TBPx16 spacing;			///< Spacing used on layout or SKIN_VALUE_NOT_SPECIFIED.
-	TBPx16 content_ofs_x;	///< X offset of the content in the widget.
-	TBPx16 content_ofs_y;	///< Y offset of the content in the widget.
-	TBPx16 img_ofs_x;		///< X offset for type image. Relative to image position (img_position_x).
-	TBPx16 img_ofs_y;		///< Y offset for type image. Relative to image position (img_position_y).
+	int16 padding_left;		///< Left padding for any content in the element
+	int16 padding_top;		///< Top padding for any content in the element
+	int16 padding_right;	///< Right padding for any content in the element
+	int16 padding_bottom;	///< Bottom padding for any content in the element
+	int16 min_width;		///< Minimum width or SKIN_VALUE_NOT_SPECIFIED
+	int16 min_height;		///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
+	int16 max_width;		///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
+	int16 max_height;		///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
+	int16 spacing;			///< Spacing used on layout or SKIN_VALUE_NOT_SPECIFIED.
+	int16 content_ofs_x;	///< X offset of the content in the widget.
+	int16 content_ofs_y;	///< Y offset of the content in the widget.
+	int16 img_ofs_x;		///< X offset for type image. Relative to image position (img_position_x).
+	int16 img_ofs_y;		///< Y offset for type image. Relative to image position (img_position_y).
 	int8 img_position_x;	///< Horizontal position for type image. 0-100 (left to
 							///< right in available space). Default 50.
 	int8 img_position_y;	///< Vertical position for type image. 0-100 (top to bottom
@@ -222,7 +222,7 @@ public:
 		State elements with state "all" will be ignored. */
 	bool HasState(SKIN_STATE state, TBSkinConditionContext &context);
 
-	void Load(TBNode *n, const TBDimensionConverter &dim_conv, const char *skin_path);
+	void Load(TBNode *n, TBSkin *skin, const char *skin_path);
 };
 
 /** TBSkin contains a list of TBSkinElement. */
@@ -320,13 +320,14 @@ public:
 	virtual void OnContextLost();
 	virtual void OnContextRestored();
 private:
+	friend class TBSkinElement;
 	TBHashTableAutoDeleteOf<TBSkinElement> m_elements;	///< All skin elements for this skin.
 	TBBitmapFragmentManager m_frag_manager;				///< Fragment manager
 	TBDimensionConverter m_dim_conv;					///< Dimension converter
 	TBColor m_default_text_color;						///< Default text color for all skin elements
 	float m_default_disabled_opacity;					///< Disabled opacity
 	float m_default_placeholder_opacity;				///< Placeholder opacity
-	TBPx16 m_default_spacing;							///< Default layout spacing
+	int16 m_default_spacing;							///< Default layout spacing
 	bool LoadInternal(const char *skin_file);
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);
@@ -335,9 +336,8 @@ private:
 	void PaintElementTile(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center);
-	TBRect GetFlippedRect(const TBRect &src_rect, TBSkinElement *element);
-public:
-	static void LoadDimensionIfSpecified(TBPx16 *dst, const TBDimensionConverter &dim_conv, TBNode *n);
+	TBRect GetFlippedRect(const TBRect &src_rect, TBSkinElement *element) const;
+	int GetPxFromNode(TBNode *node, int def_value) const;
 };
 
 }; // namespace tinkerbell

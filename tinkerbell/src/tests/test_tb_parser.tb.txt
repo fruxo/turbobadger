@@ -30,8 +30,20 @@ strings_compact
 	string12: @language_string_token
 
 numbers_compact
-	integer: -10
-	float: 1.0
+	integer1: -10
+	integer2: -10, something_else: "foo"
+	float1: 1.0
+	float2: -1.0
+	float3: -.2
+	float4: -.2, something_else: "foo"
+
+numbers_with_unit
+	number1 10px
+	number2 -10px
+	number3: 10px
+	number4: -10px
+	number5: -2.1px
+	number6: -.1px, something_else: "foo"
 
 compact_with_children
 	string: "A string", child1: "Child 1", child2: "Child 2"

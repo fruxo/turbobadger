@@ -14,8 +14,14 @@ namespace tinkerbell {
 class TBValue;
 class TBTypedObject;
 
-/** Return true if the given string starts with a number. */
-bool is_number(const char *str);
+/** Return true if the given string starts with a number.
+	Ex: 100, -.2, 1.0E-8, 5px will all return true. */
+bool is_start_of_number(const char *str);
+
+/** Return true if the string can be represented as a number.
+	Ex: 100, -.2 will return true.
+	Ex: 1.0E-8, 5px will return false. */
+bool is_number_only(const char *str);
 
 /** Return true if the given number string is a float number.
 	Should only be called when you've verified it's a number with is_number(). */
@@ -100,8 +106,8 @@ public:
 	/** Set the value either as a string, number or array of numbers, depending of the string syntax. */
 	void SetFromStringAuto(const char *str, SET set);
 
-	int GetInt();
-	float GetFloat();
+	int GetInt() const;
+	float GetFloat() const;
 	const char *GetString();
 	TBTypedObject *GetObject() const { return IsObject() ? val_obj : nullptr; }
 	TBValueArray *GetArray() const { return IsArray() ? val_arr : nullptr; }

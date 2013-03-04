@@ -78,7 +78,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tests/test_tb_tempbuffer.cpp \
       tinkerbell/src/tests/test_tb_test.cpp \
       tinkerbell/src/tests/test_tb_color.cpp \
-      tinkerbell/src/tests/test_tb_px.cpp \
+      tinkerbell/src/tests/test_tb_dimension.cpp \
       stb_image/tb_image_loader_stb.cpp \
       tbanimation/Animation.cpp \
       tbanimation/tb_animation.cpp \

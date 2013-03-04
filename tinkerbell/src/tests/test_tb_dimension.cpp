@@ -10,7 +10,7 @@
 
 using namespace tinkerbell;
 
-TB_TEST_GROUP(tb_px)
+TB_TEST_GROUP(tb_dimension_converter)
 {
 	TBDimensionConverter dim_conv;
 
@@ -21,20 +21,19 @@ TB_TEST_GROUP(tb_px)
 
 	TB_TEST(set_from_string_unspecified)
 	{
-		TBPx px;
-		px.SetFromString(dim_conv, "50");
-		TB_VERIFY(px == 50);
+		int px = dim_conv.GetPxFromString("50", 0);
+		TB_VERIFY(px == 50 * 2);
 	}
+
 	TB_TEST(set_from_string_px)
 	{
-		TBPx px;
-		px.SetFromString(dim_conv, "50px");
+		int px = dim_conv.GetPxFromString("50px", 0);
 		TB_VERIFY(px == 50);
 	}
+
 	TB_TEST(set_from_string_dp)
 	{
-		TBPx px;
-		px.SetFromString(dim_conv, "50dp");
+		int px = dim_conv.GetPxFromString("50dp", 0);
 		TB_VERIFY(px == 50 * 2);
 	}
 }

@@ -378,9 +378,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 		TBFontDescription fd = new_widget->GetCalculatedFontDescription();
 		if (const char *size = font->GetValueString("size", nullptr))
 		{
-			TBPx16 px;
-			px.SetFromString(*g_tb_skin->GetDimensionConverter(), size);
-			fd.SetSize(px);
+			int new_size = g_tb_skin->GetDimensionConverter()->GetPxFromString(size, fd.GetSize());
+			fd.SetSize(new_size);
 		}
 		if (const char *name = font->GetValueString("name", nullptr))
 			fd.SetID(name);
