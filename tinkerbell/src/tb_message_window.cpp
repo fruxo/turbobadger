@@ -14,13 +14,15 @@ namespace tinkerbell {
 // == TBMessageWindow =======================================================================================
 
 TBMessageWindow::TBMessageWindow(TBWidget *target, TBID id)
-	: TBWidgetSafePointer(target)
+	: m_target(target)
 {
+	TBGlobalWidgetListener::AddListener(this);
 	SetID(id);
 }
 
 TBMessageWindow::~TBMessageWindow()
 {
+	TBGlobalWidgetListener::RemoveListener(this);
 	if (TBWidget *dimmer = m_dimmer.Get())
 	{
 		dimmer->GetParent()->RemoveChild(dimmer);
@@ -30,7 +32,7 @@ TBMessageWindow::~TBMessageWindow()
 
 bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWindowSettings *settings)
 {
-	TBWidget *target = Get();
+	TBWidget *target = m_target.Get();
 	if (!target)
 		return false;
 
@@ -146,10 +148,17 @@ void TBMessageWindow::OnDie()
 
 void TBMessageWindow::OnWidgetDelete(TBWidget *widget)
 {
-	TBWidgetSafePointer::OnWidgetDelete(widget);
 	// If the target widget is deleted, close!
-	if (!Get())
+	if (!m_target.Get())
 		Close();
+}
+
+bool TBMessageWindow::OnWidgetDying(TBWidget *widget)
+{
+	// If the target widget or an ancestor of it is dying, close!
+	if (widget == m_target.Get() || widget->IsAncestorOf(m_target.Get()))
+		Close();
+	return false;
 }
 
 }; // namespace tinkerbell

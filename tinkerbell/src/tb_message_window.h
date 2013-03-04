@@ -39,7 +39,7 @@ public:
 
 	If the target widget is deleted while this window is alive, the
 	window will delete itself. */
-class TBMessageWindow : public TBWindow, private TBWidgetSafePointer
+class TBMessageWindow : public TBWindow, private TBGlobalWidgetListener
 {
 public:
 	// For safe typecasting
@@ -50,14 +50,17 @@ public:
 
 	bool Show(const char *title, const char *message, TBMessageWindowSettings *settings = nullptr);
 
-	virtual TBWidget *GetEventDestination() { return Get(); }
+	virtual TBWidget *GetEventDestination() { return m_target.Get(); }
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnDie();
 private:
 	void AddButton(TBID id, bool focused);
+	// TBGlobalWidgetListener
 	virtual void OnWidgetDelete(TBWidget *widget);
+	virtual bool OnWidgetDying(TBWidget *widget);
 	TBWidgetSafePointer m_dimmer;
+	TBWidgetSafePointer m_target;
 };
 
 }; // namespace tinkerbell
