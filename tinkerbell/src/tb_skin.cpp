@@ -640,7 +640,7 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 		}
 	}
 	min_width = skin->GetPxFromNode(n->GetNode("min-width"), min_width);
-	min_height = skin->GetPxFromNode(n->GetNode("min_height"), min_height);
+	min_height = skin->GetPxFromNode(n->GetNode("min-height"), min_height);
 	max_width = skin->GetPxFromNode(n->GetNode("max-width"), max_width);
 	max_height = skin->GetPxFromNode(n->GetNode("max-height"), max_height);
 	spacing = skin->GetPxFromNode(n->GetNode("spacing"), spacing);
