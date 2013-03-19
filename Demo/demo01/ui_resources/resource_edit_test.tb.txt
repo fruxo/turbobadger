@@ -16,5 +16,5 @@ TBLayout
 		readonly 1
 	TBEditField
 		text Hello world\nHello world
-		adapt_to_content 1
+		adapt-to-content 1
 		multiline 1

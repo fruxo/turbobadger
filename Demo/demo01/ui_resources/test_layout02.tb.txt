@@ -29,7 +29,7 @@ TBLayout: position: left top, axis: y
 		TBButton: text: tab 2
 		TBButton: text: tab 3
 		TBButton: text: tab 4
-		TBLayout: gravity: left right, distribution_position: right bottom
+		TBLayout: gravity: left right, distribution-position: right bottom
 			TBEditField: placeholder: @search, type: "search"
 	TBTextField: text: "gravity + mixed gravity"
 	TBLayout: distribution: gravity

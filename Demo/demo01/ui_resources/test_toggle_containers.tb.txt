@@ -1,7 +1,7 @@
 WindowInfo
 	title TBToggleContainer
 TBLayout: axis: y
-	TBEditField: adapt_to_content: 1, multiline: 1, readonly: 1, skin: 0, virtual_width: 400
+	TBEditField: adapt-to-content: 1, multiline: 1, readonly: 1, skin: 0, virtual-width: 400
 		text: "TBToggleContainer used with TBWidgetValue connections to automatically toggle a group of items (no programming needed)."
 
 	TBLayout: position: top left
@@ -14,9 +14,9 @@ TBLayout: axis: y
 				TBToggleContainer: connection: toggle_demo_1, toggle: enabled
 					TBLayout: axis: y
 						TBClickLabel: text: "Option 1"
-							TBRadioButton: group_id: group1, value: 1
+							TBRadioButton: group-id: group1, value: 1
 						TBClickLabel: text: "Option 2"
-							TBRadioButton: group_id: group1
+							TBRadioButton: group-id: group1
 
 				TBClickLabel: text: "Check to disable stuff:"
 					TBCheckBox: connection: toggle_demo_2
@@ -25,9 +25,9 @@ TBLayout: axis: y
 				TBToggleContainer: connection: toggle_demo_2, toggle: enabled, invert: 1
 					TBLayout: axis: y
 						TBClickLabel: text: "Option 1"
-							TBRadioButton: group_id: group2, value: 1
+							TBRadioButton: group-id: group2, value: 1
 						TBClickLabel: text: "Option 2"
-							TBRadioButton: group_id: group2
+							TBRadioButton: group-id: group2
 
 		TBContainer
 			TBLayout: axis: y
@@ -38,9 +38,9 @@ TBLayout: axis: y
 				TBToggleContainer: connection: toggle_demo_3, toggle: opacity
 					TBLayout: axis: y
 						TBClickLabel: text: "Option 1"
-							TBRadioButton: group_id: group3, value: 1
+							TBRadioButton: group-id: group3, value: 1
 						TBClickLabel: text: "Option 2"
-							TBRadioButton: group_id: group3
+							TBRadioButton: group-id: group3
 
 				TBClickLabel: text: "Check to expand stuff:"
 					TBCheckBox: connection: toggle_demo_4
@@ -49,6 +49,6 @@ TBLayout: axis: y
 				TBToggleContainer: connection: toggle_demo_4, toggle: expanded
 					TBLayout: axis: y
 						TBClickLabel: text: "Option 1"
-							TBRadioButton: group_id: group4, value: 1
+							TBRadioButton: group-id: group4, value: 1
 						TBClickLabel: text: "Option 2"
-							TBRadioButton: group_id: group4
+							TBRadioButton: group-id: group4

@@ -6,16 +6,16 @@ TBLayout: position: left top, axis: y
 		TBRadioButton
 		TBRadioButton
 		TBRadioButton: state: disabled
-	TBTextField: text: "Radiobuttons, group_id: 'R1'":
+	TBTextField: text: "Radiobuttons, group-id: 'R1'":
 	TBLayout: distribution: preferred
-		TBRadioButton: group_id: R1
-		TBRadioButton: group_id: R1
-		TBRadioButton: group_id: R1, state: disabled
-	TBTextField: text: "Radiobuttons, group_id: 'R2' value set":
+		TBRadioButton: group-id: R1
+		TBRadioButton: group-id: R1
+		TBRadioButton: group-id: R1, state: disabled
+	TBTextField: text: "Radiobuttons, group-id: 'R2' value set":
 	TBLayout: distribution: preferred
-		TBRadioButton: group_id: R2, value: 1
-		TBRadioButton: group_id: R2
-		TBRadioButton: group_id: R2, state: disabled
+		TBRadioButton: group-id: R2, value: 1
+		TBRadioButton: group-id: R2
+		TBRadioButton: group-id: R2, state: disabled
 	TBTextField: text: "Checkboxes"
 	TBLayout: distribution: preferred
 		TBCheckBox

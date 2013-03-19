@@ -43,8 +43,8 @@ TB_WIDGET_FACTORY(TBEditField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
 	widget->SetStyling(info->node->GetValueInt("styling", 0) ? true : false);
 	widget->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
 	widget->SetWrapping(info->node->GetValueInt("wrap", widget->GetWrapping()) ? true : false);
-	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt_to_content", widget->GetAdaptToContentSize()) ? true : false);
-	widget->SetVirtualWidth(info->node->GetValueInt("virtual_width", widget->GetVirtualWidth()));
+	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt-to-content", widget->GetAdaptToContentSize()) ? true : false);
+	widget->SetVirtualWidth(info->node->GetValueInt("virtual-width", widget->GetVirtualWidth()));
 	if (const char *text = info->reader->GetTranslatableString(info->node, "placeholder", nullptr))
 		widget->SetPlaceholderText(text);
 	if (const char *type = info->node->GetValueString("type", nullptr))
@@ -102,7 +102,7 @@ TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 			ld = LAYOUT_DISTRIBUTION_GRAVITY;
 		widget->SetLayoutDistribution(ld);
 	}
-	if (const char *dist = info->node->GetValueString("distribution_position", nullptr))
+	if (const char *dist = info->node->GetValueString("distribution-position", nullptr))
 	{
 		LAYOUT_DISTRIBUTION_POSITION ld = LAYOUT_DISTRIBUTION_POSITION_CENTER;
 		if (strstr(dist, "left") || strstr(dist, "top"))
@@ -116,8 +116,8 @@ TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 TB_WIDGET_FACTORY(TBScrollContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
 	widget->SetGravity(WIDGET_GRAVITY_ALL);
-	widget->SetAdaptContentSize(info->node->GetValueInt("adapt_content", widget->GetAdaptContentSize()) ? true : false);
-	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt_to_content", widget->GetAdaptToContentSize()) ? true : false);
+	widget->SetAdaptContentSize(info->node->GetValueInt("adapt-content", widget->GetAdaptContentSize()) ? true : false);
+	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt-to-content", widget->GetAdaptToContentSize()) ? true : false);
 }
 
 TB_WIDGET_FACTORY(TBTabContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
@@ -318,7 +318,7 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	SetIDFromNode(new_widget->GetID(), node->GetNode("id"));
 
-	SetIDFromNode(new_widget->GetGroupID(), node->GetNode("group_id"));
+	SetIDFromNode(new_widget->GetGroupID(), node->GetNode("group-id"));
 
 	if (wc->sync_type == TBValue::TYPE_FLOAT)
 		new_widget->SetValueDouble(node->GetValueFloat("value", 0));

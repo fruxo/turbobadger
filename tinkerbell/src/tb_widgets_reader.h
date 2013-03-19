@@ -92,7 +92,7 @@ public:
 	Resource name:		TBWidget property:		Values:
 
 	id					TBWidget::m_id			TBID (string or int)
-	group_id			TBWidget::m_group_id	TBID (string or int)
+	group-id			TBWidget::m_group_id	TBID (string or int)
 	value				TBWidget::SetValue		integer
 	data				TBWidget::m_data		integer
 	text				TBWidget::SetText		string (translatable using @string)

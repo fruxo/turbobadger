@@ -4,7 +4,7 @@ TBLayout
 	TBLayout
 		gravity top bottom
 		distribution available
-		distribution_position top left
+		distribution-position top left
 		size available
 		axis y
 		TBLayout

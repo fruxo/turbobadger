@@ -11,7 +11,7 @@ TBLayout: axis: y, distribution: available
 		TBButton: text: Clear, id: clear
 		TBLayout
 			gravity left right
-			distribution_position right bottom
+			distribution-position right bottom
 			TBTextField: id: info
 			TBButton: id: menu
 				TBSkinImage: skin: arrow.down

@@ -145,12 +145,12 @@ bool TBSkin::LoadInternal(const char *skin_file)
 	if (node.GetNode("description"))
 	{
 		// Check which DPI mode the dimension converter should use.
-		// The base_dpi is the dpi in which the padding, spacing (and so on)
+		// The base-dpi is the dpi in which the padding, spacing (and so on)
 		// is specified in. If the skin supports a different DPI that is
 		// closer to the screen DPI, all such dimensions will be scaled.
-		int base_dpi = node.GetValueInt("description>base_dpi", 96);
+		int base_dpi = node.GetValueInt("description>base-dpi", 96);
 		int supported_dpi = base_dpi;
-		if (TBNode *supported_dpi_node = node.GetNode("description>supported_dpi"))
+		if (TBNode *supported_dpi_node = node.GetNode("description>supported-dpi"))
 		{
 			assert(supported_dpi_node->GetValue().IsArray() || supported_dpi_node->GetValue().GetInt() == base_dpi);
 			if (TBValueArray *arr = supported_dpi_node->GetValue().GetArray())

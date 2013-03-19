@@ -1,7 +1,7 @@
 WindowInfo
 	title TinkerBell demo
 	position 10 50
-TBLayout: axis: y, distribution_position: left top
+TBLayout: axis: y, distribution-position: left top
 	TBButton
 		text Close with dim & alert
 		id TBWindow.close
