@@ -391,6 +391,12 @@ elements
 	TBSeparator
 		bitmap item_separator_x.png
 		type Stretch Image
+		overrides
+			element TBSeparator.y
+				condition: target: parent, property: axis, value: x
+	TBSeparator.y
+		bitmap item_separator_y.png
+		type Stretch Image
 
 	TBScrollBarBgX
 		bitmap scroll_bg_x.png
