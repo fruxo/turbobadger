@@ -379,9 +379,9 @@ int TBDimensionConverter::GetPxFromValue(TBValue *value, int def_value) const
 {
 	if (!value)
 		return def_value;
-	if (value->GetType() == TBValue::TYPE::TYPE_INT)
+	if (value->GetType() == TBValue::TYPE_INT)
 		return DpToPx(value->GetInt());
-	else if (value->GetType() == TBValue::TYPE::TYPE_FLOAT)
+	else if (value->GetType() == TBValue::TYPE_FLOAT)
 		// FIX: We might want float versions of all dimension functions.
 		return DpToPx((int)value->GetFloat());
 	return GetPxFromString(value->GetString(), def_value);
