@@ -723,12 +723,13 @@ private:
 			uint16 click_by_key : 1;
 			uint16 has_key_pressed_state : 1;
 			uint16 ignore_input : 1;
-			uint16 is_dying: 1;
+			uint16 is_dying : 1;
 		} m_packed;
 		uint16 m_packed_init;
 	};
 public:
-	uint32 m_data;					///< Additional generic data (depends on widget). Initially 0.
+	/** This value is free to use for anything. It's not used by TBWidget itself. Initially TYPE_NULL. */
+	TBValue data;
 
 	// TBWidget related globals
 	static TBWidget *hovered_widget;		///< The currently hovered widget, or nullptr.

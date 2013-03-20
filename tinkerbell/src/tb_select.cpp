@@ -201,7 +201,7 @@ void TBSelectList::ValidateList()
 			widget->SetSkinBg(TBIDC("TBList.header"));
 			widget->SetState(WIDGET_STATE_DISABLED, true);
 			widget->SetGravity(WIDGET_GRAVITY_ALL);
-			widget->m_data = (uint32)-1;
+			widget->data.SetInt(-1);
 			m_layout.GetContentRoot()->AddChild(widget);
 		}
 	}
@@ -222,7 +222,7 @@ TBWidget *TBSelectList::CreateAndAddItemAfter(int index, TBWidget *reference)
 	if (TBWidget *widget = m_source->CreateItemWidget(index, this))
 	{
 		// Use item data as widget to index lookup
-		widget->m_data = index;
+		widget->data.SetInt(index);
 		m_layout.GetContentRoot()->AddChildRelative(widget, WIDGET_Z_REL_AFTER, reference);
 		return widget;
 	}
@@ -256,7 +256,7 @@ TBWidget *TBSelectList::GetItemWidget(int index)
 	if (index == -1)
 		return nullptr;
 	for (TBWidget *tmp = m_layout.GetContentRoot()->GetFirstChild(); tmp; tmp = tmp->GetNext())
-		if (tmp->m_data == index)
+		if (tmp->data.GetInt() == index)
 			return tmp;
 	return nullptr;
 }
@@ -299,7 +299,7 @@ bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 		// the dropdown menu. We want to sent another event, so ensure we're still around.
 		TBWidgetSafePointer this_widget(this);
 
-		int index = ev.target->m_data;
+		int index = ev.target->data.GetInt();
 		SetValue(index);
 
 		// If we're still around, invoke the click event too.
@@ -364,7 +364,7 @@ bool TBSelectList::ChangeValue(SPECIAL_KEY key)
 	// Select and focus what we found
 	if (current)
 	{
-		SetValue(current->m_data);
+		SetValue(current->data.GetInt());
 		return true;
 	}
 	return false;

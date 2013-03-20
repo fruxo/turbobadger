@@ -325,7 +325,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 	else
 		new_widget->SetValue(node->GetValueInt("value", 0));
 
-	new_widget->m_data = node->GetValueInt("data", 0);
+	if (TBNode *data_node = node->GetNode("data"))
+		new_widget->data.Copy(data_node->GetValue());
 
 	if (const char *text = GetTranslatableString(node, "text", nullptr))
 		new_widget->SetText(text);

@@ -320,7 +320,7 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("set_align"))
 	{
 		if (TBTabContainer *tc = GetWidgetByIDAndType<TBTabContainer>(TBIDC("tabcontainer")))
-			tc->SetAlignment(static_cast<TB_ALIGN>(ev.target->m_data));
+			tc->SetAlignment(static_cast<TB_ALIGN>(ev.target->data.GetInt()));
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("toggle_axis"))
@@ -392,7 +392,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("new buttons"))
 		{
-			for(uint32 i = 0; i < ev.target->m_data; i++)
+			for(int i = 0; i < ev.target->data.GetInt(); i++)
 			{
 				TBStr str;
 				str.SetFormatted("Remove %d", i);
@@ -405,7 +405,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("new buttons delayed"))
 		{
-			for(uint32 i = 0; i < ev.target->m_data; i++)
+			for(int i = 0; i < ev.target->data.GetInt(); i++)
 			{
 				TBMessageData *data = new TBMessageData();
 				data->id1 = ev.target->GetParent()->GetID();

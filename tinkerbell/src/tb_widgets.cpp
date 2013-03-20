@@ -47,7 +47,6 @@ TBWidget::TBWidget()
 	, m_state(WIDGET_STATE_NONE)
 	, m_gravity(WIDGET_GRAVITY_DEFAULT)
 	, m_packed_init(0)
-	, m_data(0)
 {
 }
 
