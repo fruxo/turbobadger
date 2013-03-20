@@ -267,6 +267,12 @@ PreferredSize TBSkinImage::GetPreferredSize()
 
 // == TBSeparator ===========================================
 
+TBSeparator::TBSeparator()
+{
+	SetSkinBg("TBSeparator", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetState(WIDGET_STATE_DISABLED, true);
+}
+
 // == TBProgressSpinner =====================================
 
 // FIX: Add spin_speed to skin!

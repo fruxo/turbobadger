@@ -386,6 +386,9 @@ elements
 		cut 7
 		bitmap item_hover.png
 	TBSelectItem.separator
+		clone TBSeparator
+
+	TBSeparator
 		bitmap item_separator_x.png
 		type Stretch Image
 

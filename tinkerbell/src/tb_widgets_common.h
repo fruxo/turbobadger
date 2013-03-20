@@ -189,8 +189,7 @@ public:
 	// For safe typecasting
 	TBOBJECT_SUBCLASS(TBSeparator, TBWidget);
 
-// FIX: Should take base skin, and add .x or .y depending on parent AXIS!
-	TBSeparator() { SetState(WIDGET_STATE_DISABLED, true); }
+	TBSeparator();
 };
 
 /** TBProgressSpinner is a animation that is running while its value is 1.
