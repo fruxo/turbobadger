@@ -306,6 +306,9 @@ public:
 	/** Convert device independant point to pixel. */
 	int DpToPx(int dp) const;
 
+	/** Convert millimeter to pixel. */
+	int MmToPx(int mm) const;
+
 	/** Get a pixel value from string in any of the following formats:
 		str may be nullptr. def_value is returned on fail.
 

@@ -9,6 +9,7 @@
 #include "tb_language.h"
 #include "tb_font_renderer.h"
 #include "tb_addon.h"
+#include "tb_system.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <stdarg.h>
@@ -361,6 +362,14 @@ int TBDimensionConverter::DpToPx(int dp) const
 	}
 }
 
+int TBDimensionConverter::MmToPx(int mm) const
+{
+	if (mm <= TB_INVALID_DIMENSION || mm == 0)
+		return mm;
+
+	return (int) (mm * TBSystem::GetDPI() / 25.4f + 0.5);
+}
+
 int TBDimensionConverter::GetPxFromString(const char *str, int def_value) const
 {
 	if (!str || !isdigit(*str))
@@ -371,6 +380,8 @@ int TBDimensionConverter::GetPxFromString(const char *str, int def_value) const
 	if ((len > 0 && isdigit(str[len - 1])) ||
 		(len > 2 && strcmp(str + len - 2, "dp") == 0))
 		return DpToPx(val);
+	else if (len > 2 && strcmp(str + len - 2, "mm") == 0)
+		return MmToPx(val);
 	else
 		return val;
 }
