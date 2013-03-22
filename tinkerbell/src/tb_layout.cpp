@@ -487,13 +487,15 @@ void TBLayout::ScrollIntoView(const TBRect &rect)
 												TBRect(0, m_overflow_scroll, m_rect.w, m_rect.h);
 	int new_x = visible_rect.x;
 	int new_y = visible_rect.y;
-	if (rect.y < visible_rect.y)
+
+	if (rect.y <= visible_rect.y)
 		new_y = rect.y;
-	if (rect.x < visible_rect.x)
-		new_x = rect.x;
-	if (rect.y + rect.h > visible_rect.y + visible_rect.h)
+	else if (rect.y + rect.h > visible_rect.y + visible_rect.h)
 		new_y = rect.y + rect.h - visible_rect.h;
-	if (rect.x + rect.w > visible_rect.x + visible_rect.w)
+
+	if (rect.x <= visible_rect.x)
+		new_x = rect.x;
+	else if (rect.x + rect.w > visible_rect.x + visible_rect.w)
 		new_x = rect.x + rect.w - visible_rect.w;
 
 	SetOverflowScroll(m_axis == AXIS_X ? new_x : new_y);
