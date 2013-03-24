@@ -387,7 +387,7 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 		if (focused_widget && focused_widget == this)
 			focused_widget->OnFocusChanged(true);
 		if (focused_widget && focused_widget == this)
-			TBGlobalWidgetListener::InvokeWidgetFocusChanged(focused_widget, false);
+			TBGlobalWidgetListener::InvokeWidgetFocusChanged(focused_widget, true);
 	}
 	return true;
 }
