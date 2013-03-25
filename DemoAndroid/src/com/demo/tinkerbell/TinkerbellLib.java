@@ -1,6 +1,7 @@
 package com.demo.tinkerbell;
 
 import android.content.res.AssetManager;
+import com.demo.tinkerbell.TinkerbellView;
 
 public class TinkerbellLib
 {
@@ -30,4 +31,9 @@ public class TinkerbellLib
 	public static native void OnSurfaceResized(int width, int height);
 
 	public static native void RunSlice();
+
+	// Methods called from the C++ code
+	public static void ShowKeyboard(int show) {
+		TinkerbellView.ShowKeyboard(show);
+	}
 }

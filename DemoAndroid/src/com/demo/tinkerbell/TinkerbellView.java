@@ -3,9 +3,11 @@ package com.demo.tinkerbell;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
-import android.view.View;
-import android.view.SurfaceHolder;
+import android.view.inputmethod.InputMethodManager;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.View;
+import android.view.WindowManager;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -41,8 +43,16 @@ class EventRunnable implements Runnable {
 
 class TinkerbellView extends GLSurfaceView
 {
+	private static TinkerbellView instance;
+	private static boolean show_keyboard;
+
 	public TinkerbellView(Context context) {
 		super(context);
+
+		instance = this;
+
+		// Make focusable so the keyboard works.
+		setFocusableInTouchMode(true);
 
 		// FIX: Use this when i have timer code in place, for correct scheduleing.
 		// setRenderMode(RENDERMODE_WHEN_DIRTY);
@@ -121,5 +131,23 @@ class TinkerbellView extends GLSurfaceView
 			}
 			TinkerbellLib.OnSurfaceResized(width, height);
 		}
+	}
+
+	public static void ShowKeyboard(int show) {
+		// Post to the view instance so we run on the correct thread.
+		// Use some delay to prevent flickering the keyboard off/on
+		// when moving from one editable field to another.
+		show_keyboard = show == 1;
+		instance.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				InputMethodManager imm = (InputMethodManager)instance.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+				if (show_keyboard)
+					imm.showSoftInput(instance, 0);
+				else
+					imm.hideSoftInputFromWindow(instance.getWindowToken(), 0);
+				Log.d("tinkerbell", show_keyboard ? "ShowKeyboard" : "HideKeyboard");
+			}
+		}, 20);
 	}
 }

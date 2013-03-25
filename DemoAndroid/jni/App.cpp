@@ -11,6 +11,7 @@
 #include "tb_widgets_reader.h"
 #include "tb_window.h"
 #include "tb_message_window.h"
+#include "tb_editfield.h"
 
 using namespace tinkerbell;
 
@@ -83,12 +84,33 @@ public:
 	}
 };
 
+// == LISTEN TO KEYBOARD FOCUS TO CALL ANDROID KEYBOARD ON JAVA SIDE ====================
+
+class EditListener : public TBGlobalWidgetListener
+{
+public:
+	// == TBGlobalWidgetListener ========================================================
+	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused)
+	{
+		if (TBEditField *edit = TBSafeCast<TBEditField>(widget))
+			if (!edit->GetReadOnly())
+				ShowKeyboard(focused);
+	}
+};
+
+EditListener edit_listener;
+
+// == CALLS FROM JAVA TO NATIVE =========================================================
+
 void Init(unsigned int width, unsigned int height)
 {
 	renderer = new TBRendererGL();
 	init_tinkerbell(renderer, "language/lng_en.tb.txt");
 	root = new AppRoot();
 	Resize(width, height);
+
+	// Start listening to keyboard focus
+	TBGlobalWidgetListener::AddListener(&edit_listener);
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
 	g_tb_skin->Load("skin/skin.tb.txt", "demo_skin/skin.tb.txt");
@@ -169,6 +191,7 @@ void Render()
 void Shutdown()
 {
 	delete root;
+	TBGlobalWidgetListener::RemoveListener(&edit_listener);
 	shutdown_tinkerbell();
 	delete renderer;
 }
