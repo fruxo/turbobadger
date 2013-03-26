@@ -109,7 +109,7 @@ void TBLayout::InvalidateLayout(INVALIDATE_LAYOUT il)
 	TBWidget::InvalidateLayout(il);
 }
 
-PreferredSize RotPreferredSize(const PreferredSize ps, AXIS axis)
+PreferredSize RotPreferredSize(const PreferredSize &ps, AXIS axis)
 {
 	if (axis == AXIS_X)
 		return ps;
@@ -189,7 +189,6 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	//  Instead of duplicating the layout code for both AXIS_X and AXIS_Y, we simply
 	//  rotate the in data (rect, gravity, preferred size) and the outdata (rect).
 
-	// FIX: We can cache preferred size, so we don't have to ask all children every time.
 	// FIX: Overflow Wrap (multi-row/col)
 	// FIX: Overflow scroll (scroll buttons)
 	// FIX: ShrinkToFit (For layouts that should not grow more than its childrens preferred size,
@@ -214,6 +213,8 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	{
 		if (TBSkinElement *e = GetSkinBgElement())
 			spacing = e->spacing;
+
+		assert(SPACING_FROM_SKIN == SKIN_VALUE_NOT_SPECIFIED);
 		if (spacing == SPACING_FROM_SKIN /*|| spacing == SKIN_VALUE_NOT_SPECIFIED*/)
 			spacing = g_tb_skin->GetDefaultSpacing();
 	}
@@ -283,6 +284,8 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 		*calculate_ps = RotPreferredSize(*calculate_ps, m_axis);
 		return;
 	}
+
+	TB_IF_LAYOUT_DEBUG(last_layout_time = TBSystem::GetTimeMS());
 
 	// Pre Layout step (calculate distribution position)
 	int missing_space = MAX(total_preferred_w - layout_rect.w, 0);
@@ -384,7 +387,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	SetOverflowScroll(m_overflow_scroll);
 }
 
-PreferredSize TBLayout::GetPreferredContentSize()
+PreferredSize TBLayout::OnCalculatePreferredContentSize()
 {
 	// Do a layout pass (without layouting) to check childrens preferences.
 	PreferredSize ps;

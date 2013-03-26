@@ -315,7 +315,7 @@ void TBEditField::OnResized(int old_w, int old_h)
 	UpdateScrollbars();
 }
 
-PreferredSize TBEditField::GetPreferredContentSize()
+PreferredSize TBEditField::OnCalculatePreferredContentSize()
 {
 	int font_height = GetFont()->GetHeight();
 	PreferredSize ps;
@@ -347,6 +347,7 @@ PreferredSize TBEditField::GetPreferredContentSize()
 		//ps.min_w = ps.pref_w /*= ps.max_w*/ = width; // should go with the hack above.
 		ps.min_w = ps.pref_w = ps.max_w = width;
 		ps.min_h = ps.pref_h = ps.max_h = height;
+		ps.constraints_dependant = true;
 	}
 	else
 	{

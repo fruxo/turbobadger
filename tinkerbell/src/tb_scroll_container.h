@@ -76,7 +76,7 @@ public:
 
 	virtual void InvalidateLayout(INVALIDATE_LAYOUT il);
 
-	virtual PreferredSize GetPreferredContentSize();
+	virtual PreferredSize OnCalculatePreferredContentSize();
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnProcess();

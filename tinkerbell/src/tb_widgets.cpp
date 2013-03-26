@@ -48,6 +48,8 @@ TBWidget::TBWidget()
 	, m_gravity(WIDGET_GRAVITY_DEFAULT)
 	, m_packed_init(0)
 {
+	TB_IF_LAYOUT_DEBUG(last_measure_time = TBSystem::GetTimeMS());
+	TB_IF_LAYOUT_DEBUG(last_layout_time = TBSystem::GetTimeMS());
 }
 
 TBWidget::~TBWidget()
@@ -645,7 +647,7 @@ TBRect TBWidget::GetPaddingRect()
 	return padding_rect;
 }
 
-PreferredSize TBWidget::GetPreferredContentSize()
+PreferredSize TBWidget::OnCalculatePreferredContentSize()
 {
 	// The default preferred size is calculated to satisfy the children
 	// in the best way. Since this is the default, it's probably not a
@@ -676,14 +678,15 @@ PreferredSize TBWidget::GetPreferredContentSize()
 			ps.max_w = MAX(ps.max_w, child_ps.max_w);
 		if (apply_max_h)
 			ps.max_h = MAX(ps.max_h, child_ps.max_h);
+		ps.constraints_dependant |= child_ps.constraints_dependant;
 	}
 
 	return ps;
 }
 
-PreferredSize TBWidget::GetPreferredSize()
+PreferredSize TBWidget::OnCalculatePreferredSize()
 {
-	PreferredSize ps = GetPreferredContentSize();
+	PreferredSize ps = OnCalculatePreferredContentSize();
 	assert(ps.pref_w >= ps.min_w);
 	assert(ps.pref_h >= ps.min_h);
 
@@ -741,6 +744,23 @@ PreferredSize TBWidget::GetPreferredSize()
 	return ps;
 }
 
+PreferredSize TBWidget::GetPreferredSize()
+{
+	if (m_packed.is_cached_ps_valid)
+		return m_cached_ps;
+	TB_IF_LAYOUT_DEBUG(last_measure_time = TBSystem::GetTimeMS());
+	m_packed.is_cached_ps_valid = 1;
+	m_cached_ps = OnCalculatePreferredSize();
+	return m_cached_ps;
+}
+
+void TBWidget::InvalidateLayout(INVALIDATE_LAYOUT il)
+{
+	m_packed.is_cached_ps_valid = 0;
+	if (il == INVALIDATE_LAYOUT_RECURSIVE && m_parent)
+		m_parent->InvalidateLayout(il);
+}
+
 void TBWidget::InvokeProcess()
 {
 	InvokeSkinUpdatesInternal();
@@ -759,6 +779,8 @@ void TBWidget::InvokeSkinUpdatesInternal()
 		{
 			OnSkinChanged();
 			m_skin_bg_expected = skin_elm->id;
+			// FIX: We should probably invalidate layout here automatically!
+			// InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 		}
 	}
 
@@ -834,6 +856,24 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 
 	// Paint children
 	OnPaintChildren(paint_props);
+
+#ifdef TB_LAYOUT_DEBUGGING
+	// Layout debug painting. Paint recently layouted widgets with red and
+	// recently measured widgets with yellow.
+	// Invalidate to keep repainting until we've timed out (so it's removed).
+	const double debug_time = 300;
+	const double now = TBSystem::GetTimeMS();
+	if (now < last_layout_time + debug_time)
+	{
+		g_renderer->DrawRect(local_rect, TBColor(255, 30, 30, 200));
+		Invalidate();
+	}
+	if (now < last_measure_time + debug_time)
+	{
+		g_renderer->DrawRect(local_rect.Shrink(1, 1), TBColor(255, 255, 30, 200));
+		Invalidate();
+	}
+#endif // TB_LAYOUT_DEBUGGING
 
 	if (used_element)
 		g_renderer->Translate(-used_element->content_ofs_x, -used_element->content_ofs_y);

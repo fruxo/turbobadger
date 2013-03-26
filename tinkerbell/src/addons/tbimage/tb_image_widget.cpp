@@ -17,12 +17,9 @@ TB_WIDGET_FACTORY(TBImageWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 
 // == TBImageWidget =======================================
 
-PreferredSize TBImageWidget::GetPreferredSize()
+PreferredSize TBImageWidget::OnCalculatePreferredContentSize()
 {
-	PreferredSize ps;
-	ps.min_w = ps.max_w = ps.pref_w = m_image.Width();
-	ps.min_h = ps.max_h = ps.pref_h = m_image.Height();
-	return ps;
+	return PreferredSize(m_image.Width(), m_image.Height());
 }
 
 void TBImageWidget::OnPaint(const PaintProps &paint_props)

@@ -26,7 +26,7 @@ public:
 	void SetImage(const TBImage &image) { m_image = image; }
 	void SetImage(const char *filename) { m_image = g_image_manager->GetImage(filename); }
 
-	virtual PreferredSize GetPreferredSize();
+	virtual PreferredSize OnCalculatePreferredContentSize();
 
 	virtual void OnPaint(const PaintProps &paint_props);
 private:

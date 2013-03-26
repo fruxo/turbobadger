@@ -152,6 +152,16 @@ enum AXIS {
 	AXIS_Y, ///< Vertical layout
 };
 
+class SizeConstraints
+{
+public:
+	static const int NO_RESTRICTION = 10000;
+
+	SizeConstraints() : available_w(NO_RESTRICTION), available_h(NO_RESTRICTION) {}
+
+	int available_w, available_h;
+};
+
 /** PreferredSize contains size preferences for a TBWidget.
 	This is what decides how layout in TBLayout will be. */
 
@@ -160,14 +170,17 @@ class PreferredSize
 public:
 	PreferredSize() : min_w(0), min_h(0)
 					, max_w(10000), max_h(10000)
-					, pref_w(0), pref_h(0) {}
+					, pref_w(0), pref_h(0)
+					, constraints_dependant(false) {}
 	PreferredSize(int w, int h) : min_w(w), min_h(h)
 								, max_w(w), max_h(h)
-								, pref_w(w), pref_h(h) {}
+								, pref_w(w), pref_h(h)
+								, constraints_dependant(false) {}
 
 	int min_w, min_h;			///< The minimal preferred width and height.
 	int max_w, max_h;			///< The maximum preferred width and height.
 	int pref_w, pref_h;			///< The preferred width and height.
+	bool constraints_dependant;
 };
 
 /** Defines widget z level, used with TBWidget::SetZ, TBWidget::AddChild. */
@@ -598,15 +611,19 @@ public:
 		rectangle in which the content should be rendered. */
 	virtual TBRect GetPaddingRect();
 
-	/** Get the preferred content size for this widget. This is the size of the actual
+	/** Calculate the preferred content size for this widget. This is the size of the actual
 		content. Don't care about padding or other decoration. */
-	virtual PreferredSize GetPreferredContentSize();
+	virtual PreferredSize OnCalculatePreferredContentSize();
 
-	/** Get the preferred size for this widget. This is the full size of the widget,
-		content + padding + eventual other decoration. This is the size that should be used
-		for layouting a widget.
+	/** Calculate the preferred size for this widget. This is the full size of the widget,
+		content + padding + eventual other decoration (but not skin expansion).
+		This is the size that should be used for layouting a widget.
 		The returned PreferredSize also contains minimal size and maximum size. */
-	virtual PreferredSize GetPreferredSize();
+	virtual PreferredSize OnCalculatePreferredSize();
+
+	/** Get the PreferredSize for this widget.
+		This returns cached data if valid, or calls OnCalculatePreferredSize if needed. */
+	PreferredSize GetPreferredSize();
 
 	/** Type used for InvalidateLayout */
 	enum INVALIDATE_LAYOUT {
@@ -625,7 +642,7 @@ public:
 		  it should be called with INVALIDATE_LAYOUT_TARGET_ONLY to avoid recursing back up to parents when
 		  already recursing down, to avoid unnecessary computation.
 		*/
-	virtual void InvalidateLayout(INVALIDATE_LAYOUT il) { if (il == INVALIDATE_LAYOUT_RECURSIVE && m_parent) m_parent->InvalidateLayout(il); }
+	virtual void InvalidateLayout(INVALIDATE_LAYOUT il);
 
 	// == Misc methods for invoking events. Should normally be called only on the root widget ===============
 
@@ -716,6 +733,7 @@ private:
 	WIDGET_STATE m_state;			///< The widget state (excluding any auto states)
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
 	TBFontDescription m_font_desc;	///< The font description.
+	PreferredSize m_cached_ps;		///< Cached preferred size.
 	union {
 		struct {
 			uint16 is_group_root : 1;
@@ -724,12 +742,17 @@ private:
 			uint16 has_key_pressed_state : 1;
 			uint16 ignore_input : 1;
 			uint16 is_dying : 1;
+			uint16 is_cached_ps_valid : 1;
 		} m_packed;
 		uint16 m_packed_init;
 	};
 public:
 	/** This value is free to use for anything. It's not used by TBWidget itself. Initially TYPE_NULL. */
 	TBValue data;
+
+	// Debugging
+	TB_IF_LAYOUT_DEBUG(double last_measure_time);
+	TB_IF_LAYOUT_DEBUG(double last_layout_time);
 
 	// TBWidget related globals
 	static TBWidget *hovered_widget;		///< The currently hovered widget, or nullptr.

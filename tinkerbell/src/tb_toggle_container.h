@@ -47,7 +47,7 @@ public:
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
 
-	virtual PreferredSize GetPreferredSize();
+	virtual PreferredSize OnCalculatePreferredSize();
 private:
 	void UpdateInternal();
 	TOGGLE m_toggle;

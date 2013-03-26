@@ -171,7 +171,7 @@ void TBScrollContainer::InvalidateLayout(INVALIDATE_LAYOUT il)
 	// No recursion up to parents here.
 }
 
-PreferredSize TBScrollContainer::GetPreferredContentSize()
+PreferredSize TBScrollContainer::OnCalculatePreferredContentSize()
 {
 	PreferredSize ps;
 	ps.pref_w = ps.pref_h = 100;
