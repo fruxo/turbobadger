@@ -46,6 +46,7 @@ TBWidget::TBWidget()
 	, m_opacity(1.f)
 	, m_state(WIDGET_STATE_NONE)
 	, m_gravity(WIDGET_GRAVITY_DEFAULT)
+	, m_layout_params(nullptr)
 	, m_packed_init(0)
 {
 	TB_IF_LAYOUT_DEBUG(last_measure_time = TBSystem::GetTimeMS());
@@ -71,6 +72,8 @@ TBWidget::~TBWidget()
 		RemoveChild(child);
 		delete child;
 	}
+
+	delete m_layout_params;
 }
 
 void TBWidget::SetRect(const TBRect &rect)
@@ -751,7 +754,37 @@ PreferredSize TBWidget::GetPreferredSize()
 	TB_IF_LAYOUT_DEBUG(last_measure_time = TBSystem::GetTimeMS());
 	m_packed.is_cached_ps_valid = 1;
 	m_cached_ps = OnCalculatePreferredSize();
+
+	// Override the calculated ps with any specified layout parameter.
+	if (m_layout_params)
+	{
+		#define LP_OVERRIDE(param)	if (m_layout_params->param != LayoutParams::UNSPECIFIED) \
+										m_cached_ps.param = m_layout_params->param;
+		LP_OVERRIDE(min_w);
+		LP_OVERRIDE(min_h);
+		LP_OVERRIDE(max_w);
+		LP_OVERRIDE(max_h);
+		LP_OVERRIDE(pref_w);
+		LP_OVERRIDE(pref_h);
+
+		// Sanitize results
+		m_cached_ps.max_w = MAX(m_cached_ps.max_w, m_cached_ps.min_w);
+		m_cached_ps.max_h = MAX(m_cached_ps.max_h, m_cached_ps.min_h);
+		m_cached_ps.pref_w = MAX(m_cached_ps.pref_w, m_cached_ps.min_w);
+		m_cached_ps.pref_h = MAX(m_cached_ps.pref_h, m_cached_ps.min_h);
+	}
 	return m_cached_ps;
+}
+
+void TBWidget::SetLayoutParams(const LayoutParams &lp)
+{
+	if (!m_layout_params)
+		m_layout_params = new LayoutParams;
+	if (!m_layout_params)
+		return;
+	*m_layout_params = lp;
+	m_packed.is_cached_ps_valid = 0;
+	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 }
 
 void TBWidget::InvalidateLayout(INVALIDATE_LAYOUT il)

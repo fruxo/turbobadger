@@ -163,7 +163,8 @@ public:
 };
 
 /** PreferredSize contains size preferences for a TBWidget.
-	This is what decides how layout in TBLayout will be. */
+	This is calculated during layout for each widget from
+	the current skin, widget preferences and LayoutParams. */
 
 class PreferredSize
 {
@@ -181,6 +182,28 @@ public:
 	int max_w, max_h;			///< The maximum preferred width and height.
 	int pref_w, pref_h;			///< The preferred width and height.
 	bool constraints_dependant;
+};
+
+/** LayoutParams defines size preferences for a TBWidget that
+	are set on the widget to override size preferences from
+	skin and widget. */
+class LayoutParams
+{
+public:
+	static const int UNSPECIFIED = TB_INVALID_DIMENSION;
+	LayoutParams() : min_w(UNSPECIFIED), min_h(UNSPECIFIED)
+					, max_w(UNSPECIFIED), max_h(UNSPECIFIED)
+					, pref_w(UNSPECIFIED), pref_h(UNSPECIFIED) {}
+
+	/** Set both min max and preferred width to the given width. */
+	void SetWidth(int width) { min_w = max_w = pref_w = width; }
+
+	/** Set both min max and preferred height to the given height. */
+	void SetHeight(int height) { min_h = max_h = pref_h = height; }
+
+	int min_w, min_h;			///< The minimal preferred width and height.
+	int max_w, max_h;			///< The maximum preferred width and height.
+	int pref_w, pref_h;			///< The preferred width and height.
 };
 
 /** Defines widget z level, used with TBWidget::SetZ, TBWidget::AddChild. */
@@ -644,6 +667,14 @@ public:
 		*/
 	virtual void InvalidateLayout(INVALIDATE_LAYOUT il);
 
+	/** Set layout params. Calls InvalidateLayout. */
+	void SetLayoutParams(const LayoutParams &lp);
+
+	/** Get layout params, or nullptr if not specified.
+		Note: The layout params has already been applied to the PreferredSize returned
+		from GetPreferredSize so you normally don't need to check these params. */
+	const LayoutParams *GetLayoutParams() const { return m_layout_params; }
+
 	// == Misc methods for invoking events. Should normally be called only on the root widget ===============
 
 	/** Invoke OnProcess and OnProcessAfterChildren on this widget and its children. */
@@ -734,6 +765,7 @@ private:
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
 	TBFontDescription m_font_desc;	///< The font description.
 	PreferredSize m_cached_ps;		///< Cached preferred size.
+	LayoutParams *m_layout_params;	///< Layout params, or nullptr.
 	union {
 		struct {
 			uint16 is_group_root : 1;

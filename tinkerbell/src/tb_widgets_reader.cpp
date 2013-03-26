@@ -368,6 +368,29 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 		new_widget->SetSkinBg(skin);
 	}
 
+	if (TBNode *lp = node->GetNode("lp"))
+	{
+		LayoutParams layout_params;
+		const TBDimensionConverter *dc = g_tb_skin->GetDimensionConverter();
+		if (const char *str = lp->GetValueString("width", nullptr))
+			layout_params.SetWidth(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
+		if (const char *str = lp->GetValueString("height", nullptr))
+			layout_params.SetHeight(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
+		if (const char *str = lp->GetValueString("min-width", nullptr))
+			layout_params.min_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("max-width", nullptr))
+			layout_params.max_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("pref-width", nullptr))
+			layout_params.pref_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("min-height", nullptr))
+			layout_params.min_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("max-height", nullptr))
+			layout_params.max_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("pref-height", nullptr))
+			layout_params.pref_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		new_widget->SetLayoutParams(layout_params);
+	}
+
 	target->GetContentRoot()->OnInflateChild(new_widget);
 
 	// Add the new widget to the hiearchy
