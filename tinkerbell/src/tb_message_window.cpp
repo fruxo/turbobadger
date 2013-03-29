@@ -46,7 +46,7 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 							"	TBLayout: distribution: available, size: available\n"
 							"		TBSkinImage: id: 2\n"
 							"		TBEditField: multiline: 1, readonly: 1, id: 1\n"
-							"	TBLayout: distribution_position: right bottom, id: 3\n";
+							"	TBLayout: distribution-position: right bottom, id: 3\n";
 	if (!g_widgets_reader->LoadData(GetContentRoot(), source))
 		return false;
 
