@@ -204,6 +204,11 @@ bool ResourceEditWindow::OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEve
 	// Intercept all events to widgets in the build container
 	if (m_build_container->IsAncestorOf(ev.target))
 	{
+		// Let events through if alt is pressed so we can test some
+		// functionality right in the editor (like toggle hidden UI).
+		if (ev.modifierkeys & TB_ALT)
+			return false;
+
 		// Select widget when clicking
 		if (ev.type == EVENT_TYPE_POINTER_DOWN)
 			SetSelectedWidget(ev.target);
