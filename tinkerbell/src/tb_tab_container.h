@@ -19,7 +19,7 @@ public:
 	TBOBJECT_SUBCLASS(TBTabLayout, TBLayout);
 
 	/** Get the index (in the list of children) of the given child, or -1 if not found. */
-	int GetIndexFromChild(TBWidget *child);
+	int GetIndexFromChild(TBWidget *child) const;
 
 	virtual void OnChildAdded(TBWidget *child);
 };

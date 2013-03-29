@@ -10,7 +10,7 @@ namespace tinkerbell {
 
 // == TBTabLayout =======================================================================
 
-int TBTabLayout::GetIndexFromChild(TBWidget *child)
+int TBTabLayout::GetIndexFromChild(TBWidget *child) const
 {
 	int index = 0;
 	for (TBWidget *tmp = GetFirstChild(); tmp; tmp = tmp->GetNext(), index++)
