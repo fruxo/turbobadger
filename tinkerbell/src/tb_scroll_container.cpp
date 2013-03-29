@@ -26,6 +26,9 @@ TBScrollBarVisibility TBScrollBarVisibility::Solve(SCROLL_MODE mode, int content
 		visibility.visible_w -= scrollbar_y_w;
 		visibility.visible_h -= scrollbar_x_h;
 	}
+	else if (mode == SCROLL_MODE_OFF)
+	{
+	}
 	else if (mode == SCROLL_MODE_Y)
 	{
 		visibility.y_on = true;
@@ -41,7 +44,6 @@ TBScrollBarVisibility TBScrollBarVisibility::Solve(SCROLL_MODE mode, int content
 	}
 	else if (mode == SCROLL_MODE_X_AUTO_Y_AUTO)
 	{
-		int thickness = 16;
 		if (content_w > visibility.visible_w)
 		{
 			visibility.x_on = true;

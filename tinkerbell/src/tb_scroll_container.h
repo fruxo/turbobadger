@@ -11,10 +11,11 @@
 namespace tinkerbell {
 
 enum SCROLL_MODE {
-	SCROLL_MODE_X_Y,			///< X and Y always
-	SCROLL_MODE_Y,				///< Y always (X never)
-	SCROLL_MODE_Y_AUTO,			///< Y auto (X never)
-	SCROLL_MODE_X_AUTO_Y_AUTO	///< X auto, Y auto
+	SCROLL_MODE_X_Y,			///< X and Y always			scroll-mode: xy
+	SCROLL_MODE_Y,				///< Y always (X never)		scroll-mode: y
+	SCROLL_MODE_Y_AUTO,			///< Y auto (X never)		scroll-mode: y-auto
+	SCROLL_MODE_X_AUTO_Y_AUTO,	///< X auto, Y auto			scroll-mode: auto
+	SCROLL_MODE_OFF				///< X any Y never			scroll-mode: off
 };
 
 /** TBScrollContainerRoot - Internal for TBScrollContainer */

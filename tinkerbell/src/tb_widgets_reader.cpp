@@ -118,6 +118,14 @@ TB_WIDGET_FACTORY(TBScrollContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 	widget->SetGravity(WIDGET_GRAVITY_ALL);
 	widget->SetAdaptContentSize(info->node->GetValueInt("adapt-content", widget->GetAdaptContentSize()) ? true : false);
 	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt-to-content", widget->GetAdaptToContentSize()) ? true : false);
+	if (const char *mode = info->node->GetValueString("scroll-mode", nullptr))
+	{
+		if (!strcmp(mode, "xy"))				widget->SetScrollMode(SCROLL_MODE_X_Y);
+		if (!strcmp(mode, "y"))					widget->SetScrollMode(SCROLL_MODE_Y);
+		if (!strcmp(mode, "y-auto"))			widget->SetScrollMode(SCROLL_MODE_Y_AUTO);
+		if (!strcmp(mode, "auto"))				widget->SetScrollMode(SCROLL_MODE_X_AUTO_Y_AUTO);
+		if (!strcmp(mode, "off"))				widget->SetScrollMode(SCROLL_MODE_OFF);
+	}
 }
 
 TB_WIDGET_FACTORY(TBTabContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP)
