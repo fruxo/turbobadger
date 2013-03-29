@@ -67,8 +67,19 @@ TBScrollBarVisibility TBScrollBarVisibility::Solve(SCROLL_MODE mode, int content
 
 void TBScrollContainerRoot::OnPaintChildren(const PaintProps &paint_props)
 {
-	TBRect old_clip_rect = g_renderer->SetClipRect(GetPaddingRect(), true);
+	// We only want clipping in one axis (the overflowing one) so we
+	// don't damage any expanded skins on the other axis. Add some fluff.
+	const int fluff = 100;
+	TBScrollContainer *sc = static_cast<TBScrollContainer *>(GetParent());
+	TBRect clip_rect = GetPaddingRect().Expand(sc->m_scrollbar_x.CanScrollNegative() ? 0 : fluff,
+												sc->m_scrollbar_y.CanScrollNegative() ? 0 : fluff,
+												sc->m_scrollbar_x.CanScrollPositive() ? 0 : fluff,
+												sc->m_scrollbar_y.CanScrollPositive() ? 0 : fluff);
+
+	TBRect old_clip_rect = g_renderer->SetClipRect(clip_rect, true);
+
 	TBWidget::OnPaintChildren(paint_props);
+
 	g_renderer->SetClipRect(old_clip_rect, false);
 }
 
