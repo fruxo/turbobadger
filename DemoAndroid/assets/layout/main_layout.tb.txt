@@ -1,19 +1,22 @@
 TBLayout
-	axis y
 	distribution available
-	TBLayout
-		distribution available
-		TBTabContainer
-			tabs
-				TBButton: text: "Misc stuff"
-				TBButton: text: "Skin DPI test"
-				TBButton: text: "Edit types"
+	size available
+	TBTabContainer
+		tabs
+			TBButton: text: "Misc"
+			TBButton: text: "Skin"
+			TBButton: text: "Edit"
+		TBScrollContainer: scroll-mode: y-auto
 			TBLayout: axis: y
 				TBLayout
 					TBLayout: skin: button_group
 						TBButton: text: Foo
 						TBButton: text: Bar
 					TBButton: text: Foo Bar
+					TBSeparator: gravity: all
+					TBButton: text: "3cm wide"
+						lp: width: 30mm
+				TBSeparator: gravity: all
 				TBClickLabel: text: "Check box"
 					TBCheckBox
 				TBClickLabel: text: "Radio button"
@@ -23,20 +26,28 @@ TBLayout
 				TBProgressSpinner
 					value 1
 				TBSlider
+				TBSelectDropdown
+					text Dropdown
+					items
+						item: text: "Item 1"
+						item: text: "Item 2"
+						item: text: "Item 3"
+						item: text: "Item 4"
 				TBLayout
 					TBImageWidget: filename: "images/tb_logo.png"
 					TBImageWidget: filename: "images/tb_logo.png"
 					TBImageWidget: filename: "images/tb_logo.png"
 				TBImageWidget: filename: "images/image_1.png", skin: ImageFrame
-					TBTextField: skin: "ImageCaption", text: "Road", gravity: bottom left right
-			TBLayout: axis: y
-				TBTextField: text: Testing high DPI skin positioning.
-				TBTextField: text: Layout with skin "Starry buttons":
-				TBContainer
-					TBLayout: skin: Starry buttons
-						TBButton: text: "  A  ", skin: "SpecialButton"
-						TBButton: text: "  B  ", skin: "SpecialButton"
-						TBButton: text: "  C  ", skin: "SpecialButton"
+					TBTextField: skin: "ImageCaption", text: "Öland", gravity: bottom left right
+		TBLayout: axis: y
+			TBTextField: text: Testing high DPI skin positioning.
+			TBTextField: text: Layout with skin "Starry buttons":
+			TBContainer
+				TBLayout: skin: Starry buttons
+					TBButton: text: "  A  ", skin: "SpecialButton"
+					TBButton: text: "  B  ", skin: "SpecialButton"
+					TBButton: text: "  C  ", skin: "SpecialButton"
+		TBScrollContainer: scroll-mode: y-auto
 			TBLayout: axis: y, size: available
 				TBTextField: text: Input is not supported yet!
 				TBEditField: placeholder: "text", type: "text"
@@ -46,12 +57,10 @@ TBLayout
 				TBEditField: placeholder: "phone", type: "phone"
 				TBEditField: placeholder: "url", type: "url"
 				TBEditField: placeholder: "number", type: "number"
-	TBLayout: distribution: available, axis: y
-		TBEditField
-			readonly 1
-			multiline 1
-			gravity all
-			styling 1
-			text: "<color #0794f8>Android test stuff</color>\n" \
-					"This is a multiline textfield.\n" \
-					"Editing is not yet supported.\n"
+				TBEditField
+					readonly 1
+					multiline 1
+					gravity all
+					styling 1
+					text: "<color #0794f8>Android test stuff</color>\n" \
+							"This is a read-only multiline textfield with styling enabled.\n"

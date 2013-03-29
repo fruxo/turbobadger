@@ -19,10 +19,10 @@ TBScrollContainer
 			TBButton: skin: "Remove", id: "remove", gravity: right
 		TBImageWidget: filename: "Demo/demo01/images/image_6.png", skin: ImageFrame
 			TBButton: skin: "Remove", id: "remove", gravity: right
-			TBTextField: skin: "ImageCaption", text: "Gotland", gravity: bottom left right
+			TBTextField: skin: "ImageCaption", text: "Öland", gravity: bottom left right
 		TBImageWidget: filename: "Demo/demo01/images/image_7.png", skin: ImageFrame
 			TBButton: skin: "Remove", id: "remove", gravity: right
-			TBTextField: skin: "ImageCaption", text: "Gotland", gravity: bottom left right
+			TBTextField: skin: "ImageCaption", text: "Öland", gravity: bottom left right
 		TBImageWidget: filename: "Demo/demo01/images/image_8.png", skin: ImageFrame
 			TBButton: skin: "Remove", id: "remove", gravity: right
 			TBTextField: skin: "ImageCaption", text: "Örebro", gravity: bottom left right
