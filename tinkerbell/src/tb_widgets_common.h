@@ -292,6 +292,12 @@ public:
 	/** Return true if the scrollbar has anywhere to go with the current limits. */
 	bool CanScroll() const { return m_visible > 0; }
 
+	/** Return true if the scrollbar can scroll in the positive direction with its current limits. */
+	bool CanScrollPositive() const { return m_value < m_max; }
+
+	/** Return true if the scrollbar can scroll in the negative direction with its current limits. */
+	bool CanScrollNegative() const { return m_value > m_min; }
+
 	double GetMinValue() const { return m_min; }
 	double GetMaxValue() const { return m_max; }
 	double GetVisible() const { return m_visible; }
