@@ -80,7 +80,7 @@ bool TBSimpleLayoutItemWidget::OnEvent(const TBWidgetEvent &ev)
 			if (TBMenuWindow *menu = new TBMenuWindow(this, TBIDC("submenu")))
 			{
 				m_window_pointer.Set(menu);
-				menu->Show(m_source, -1, nullptr, TB_ALIGN_RIGHT);
+				menu->Show(m_source, TBPopupAlignment(TB_ALIGN_RIGHT), -1);
 			}
 		}
 		return true;

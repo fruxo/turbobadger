@@ -11,6 +11,39 @@
 
 namespace tinkerbell {
 
+/** TBPopupAlignment describes the preferred alignment of a popup
+	relative to a target widget or a given point.
+
+	It calculates the rect to be used to match these preferences
+	for any given popup and target. */
+class TBPopupAlignment
+{
+public:
+	static const int UNSPECIFIED = TB_INVALID_DIMENSION;
+
+	/** Align relative to the target widget. */
+	TBPopupAlignment(TB_ALIGN align = TB_ALIGN_BOTTOM)
+		: pos_in_root(UNSPECIFIED, UNSPECIFIED)
+		, align(align)
+		, expand_to_target_width(true) {}
+
+	/** Align relative to the given position (coordinates relative to the root widget). */
+	TBPopupAlignment(const TBPoint &pos_in_root, TB_ALIGN align = TB_ALIGN_BOTTOM)
+		: pos_in_root(pos_in_root)
+		, align(align)
+		, expand_to_target_width(true) {}
+
+	/** Calculate a good rect for the given popup window using its preferred size and
+		the preferred alignment information stored in this class. */
+	TBRect GetAlignedRect(TBWidget *popup, TBWidget *target) const;
+
+	TBPoint pos_in_root;
+	TB_ALIGN align;
+	/** If true, the width of the popup will be at least the same as the target widget
+		if the alignment is TB_ALIGN_TOP or TB_ALIGN_BOTTOM. */
+	bool expand_to_target_width;
+};
+
 /** TBPopupWindow is a popup window that redirects any child widgets events
 	through the given target. It will automatically close on click events that
 	are not sent through this popup. */
@@ -24,9 +57,7 @@ public:
 	TBPopupWindow(TBWidget *target);
 	~TBPopupWindow();
 
-	bool Show(const TBPoint *pos_in_root = nullptr, TB_ALIGN align = TB_ALIGN_BOTTOM);
-
-	TBRect GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align);
+	bool Show(const TBPopupAlignment &alignment);
 
 	virtual TBWidget *GetEventDestination() { return m_target.Get(); }
 

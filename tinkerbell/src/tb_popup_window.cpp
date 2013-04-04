@@ -8,55 +8,35 @@
 
 namespace tinkerbell {
 
-// == TBPopupWindow ==========================================
+// == TBPopupAlignment ======================================================================================
 
-TBPopupWindow::TBPopupWindow(TBWidget *target)
-	: m_target(target)
+TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 {
-	TBGlobalWidgetListener::AddListener(this);
-	SetSkinBg("TBPopupWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-	SetSettings(WINDOW_SETTINGS_NONE);
-}
-
-TBPopupWindow::~TBPopupWindow()
-{
-	TBGlobalWidgetListener::RemoveListener(this);
-}
-
-bool TBPopupWindow::Show(const TBPoint *pos_in_root, TB_ALIGN align)
-{
-	// Calculate and set a good size for the popup window
-	SetRect(GetAlignedRect(pos_in_root, align));
-
-	TBWidget *root = m_target.Get()->GetParentRoot();
-	root->AddChild(this);
-	return true;
-}
-
-TBRect TBPopupWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
-{
-	TBWidget *target = m_target.Get();
 	TBWidget *root = target->GetParentRoot();
-	PreferredSize ps = GetPreferredSize();
+	PreferredSize ps = popup->GetPreferredSize();
 
 	TBRect target_rect;
 	TBPoint pos;
 	int w = MIN(ps.pref_w, root->GetRect().w);
 	int h = MIN(ps.pref_h, root->GetRect().h);
-	if (pos_in_root)
+	if (pos_in_root.x != UNSPECIFIED &&
+		pos_in_root.y != UNSPECIFIED)
 	{
-		pos = *pos_in_root;
+		pos = pos_in_root;
 	}
 	else
 	{
 		target->ConvertToRoot(pos.x, pos.y);
-		// FIX: add a minimum_width! This would shrink it for every submenu!
-		//w = CLAMP(ps.pref_w, target->m_rect.w, root->m_rect.w);
 
-		// If the menu is aligned top or bottom, limit its height to the worst case available height.
-		// Being in the center of the root, that is half the root height minus the target rect.
 		if (align == TB_ALIGN_TOP || align == TB_ALIGN_BOTTOM)
+		{
+			if (expand_to_target_width)
+				w = MAX(w, target->GetRect().w);
+
+			// If the menu is aligned top or bottom, limit its height to the worst case available height.
+			// Being in the center of the root, that is half the root height minus the target rect.
 			h = MIN(h, root->GetRect().h / 2 - target->GetRect().h);
+		}
 		target_rect = target->GetRect();
 	}
 
@@ -83,6 +63,31 @@ TBRect TBPopupWindow::GetAlignedRect(const TBPoint *pos_in_root, TB_ALIGN align)
 	}
 
 	return TBRect(x, y, w, h);
+}
+
+// == TBPopupWindow =========================================================================================
+
+TBPopupWindow::TBPopupWindow(TBWidget *target)
+	: m_target(target)
+{
+	TBGlobalWidgetListener::AddListener(this);
+	SetSkinBg("TBPopupWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSettings(WINDOW_SETTINGS_NONE);
+}
+
+TBPopupWindow::~TBPopupWindow()
+{
+	TBGlobalWidgetListener::RemoveListener(this);
+}
+
+bool TBPopupWindow::Show(const TBPopupAlignment &alignment)
+{
+	// Calculate and set a good size for the popup window
+	SetRect(alignment.GetAlignedRect(this, m_target.Get()));
+
+	TBWidget *root = m_target.Get()->GetParentRoot();
+	root->AddChild(this);
+	return true;
 }
 
 bool TBPopupWindow::OnEvent(const TBWidgetEvent &ev)

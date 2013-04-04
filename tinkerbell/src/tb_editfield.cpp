@@ -237,7 +237,7 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 			source->AddItem(new TBGenericStringItem("-"));
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("selectall")), TBIDC("selectall")));
 			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu")))
-				menu->Show(source, -1, &pos_in_root);
+				menu->Show(source, TBPopupAlignment(pos_in_root), -1);
 		}
 		return true;
 	}

@@ -28,13 +28,13 @@ TBMenuWindow::~TBMenuWindow()
 	RemoveChild(&m_select_list);
 }
 
-bool TBMenuWindow::Show(TBSelectItemSource *source, int initial_value, const TBPoint *pos_in_root, TB_ALIGN align)
+bool TBMenuWindow::Show(TBSelectItemSource *source, const TBPopupAlignment &alignment, int initial_value)
 {
 	m_select_list.SetValue(initial_value);
 	m_select_list.SetSource(source);
 	m_select_list.ValidateList();
 
-	return TBPopupWindow::Show(pos_in_root, align);
+	return TBPopupWindow::Show(alignment);
 }
 
 bool TBMenuWindow::OnEvent(const TBWidgetEvent &ev)

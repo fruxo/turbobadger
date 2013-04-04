@@ -27,7 +27,7 @@ public:
 	TBMenuWindow(TBWidget *target, TBID id);
 	~TBMenuWindow();
 
-	bool Show(TBSelectItemSource *source, int initial_value = -1, const TBPoint *pos_in_root = nullptr, TB_ALIGN align = TB_ALIGN_BOTTOM);
+	bool Show(TBSelectItemSource *source, const TBPopupAlignment &alignment, int initial_value = -1);
 
 	TBSelectList *GetList() { return &m_select_list; }
 

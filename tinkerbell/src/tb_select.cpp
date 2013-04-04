@@ -422,7 +422,7 @@ void TBSelectDropdown::OpenWindow()
 	{
 		m_window_pointer.Set(window);
 		window->SetSkinBg("TBSelectDropdown.window");
-		window->Show(m_source, GetValue());
+		window->Show(m_source, TBPopupAlignment(), GetValue());
 	}
 }
 

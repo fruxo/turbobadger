@@ -227,7 +227,7 @@ public:
 				}
 
 				if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popup_menu")))
-					menu->Show(&source);
+					menu->Show(&source, TBPopupAlignment());
 				return true;
 			}
 			else if (ev.target->GetID() == TBIDC("popup_menu"))
@@ -423,7 +423,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))
 		{
 			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu1")))
-				menu->Show(&popup_menu_source);
+				menu->Show(&popup_menu_source, TBPopupAlignment());
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("popupmenu1"))
