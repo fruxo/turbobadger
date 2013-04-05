@@ -21,10 +21,8 @@ Thumbs.db
 
 *.lnk
 
+*.sublime-workspace
 
-
-# Can also ignore all directories and files in a directory.
-# tmp/**/* 
 Debug
 Release
 ipch
@@ -34,3 +32,9 @@ gen
 * gitignore
 
 documentation
+
+DemoAndroid/libs
+DemoAndroid/assets/demo_skin
+DemoAndroid/assets/font
+DemoAndroid/assets/language
+DemoAndroid/assets/skin
