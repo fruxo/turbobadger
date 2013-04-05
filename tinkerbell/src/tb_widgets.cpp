@@ -1078,7 +1078,7 @@ void TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS
 	}
 }
 
-void TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
+bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
 	bool handled = false;
 	if (focused_widget)
@@ -1129,11 +1129,13 @@ void TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifie
 	// Move focus between widgets
 	if (down && !handled && special_key == TB_KEY_TAB)
 	{
-		MoveFocus(!(modifierkeys & TB_SHIFT));
+		handled = MoveFocus(!(modifierkeys & TB_SHIFT));
 
 		// Show the focus when we move it by keyboard
-		SetAutoFocusState(true);
+		if (handled)
+			SetAutoFocusState(true);
 	}
+	return handled;
 }
 
 void TBWidget::ReleaseCapture()

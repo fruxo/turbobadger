@@ -713,7 +713,7 @@ public:
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */
-	void InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down);
+	bool InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down);
 
 	/** A widget that receive a EVENT_TYPE_POINTER_DOWN event, will stay "captured" until EVENT_TYPE_POINTER_UP
 		is received. While captured, all EVENT_TYPE_POINTER_MOVE are sent to it. This method can force release the capture,
