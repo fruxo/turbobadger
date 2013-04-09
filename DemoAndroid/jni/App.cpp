@@ -10,6 +10,7 @@
 
 #include "tb_widgets_reader.h"
 #include "tb_window.h"
+#include "tb_message_window.h"
 
 using namespace tinkerbell;
 
@@ -17,11 +18,76 @@ TBRendererGL *renderer;
 TBWidget *root;
 int g_width, g_height;
 
+class AppRoot : public TBWidget
+{
+public:
+	enum TEST {
+		TEST_INFLATE,
+		TEST_RESIZE
+	};
+	void TestSpeed(TEST test)
+	{
+		const char *title = "";
+		const int iteration_count = 300;
+		double total_time;
+
+		if (test == TEST_INFLATE)
+		{
+			title = "Inflate + layout speed";
+			double start_time = TBSystem::GetTimeMS();
+			for(int i = 0; i < iteration_count; i++)
+			{
+				TBWindow *win = new TBWindow;
+				g_widgets_reader->LoadFile(win, "layout/main_layout.tb.txt");
+				win->SetText(title);
+				win->SetSize(100 + i, 100 + i);
+				win->Close();
+			}
+			total_time = TBSystem::GetTimeMS() - start_time;
+		}
+		else
+		{
+			title = "Resizing layout speed";
+			TBWindow *win = new TBWindow;
+			win->SetText(title);
+			g_widgets_reader->LoadFile(win, "layout/main_layout.tb.txt");
+
+			double start_time = TBSystem::GetTimeMS();
+			for(int i = 0; i < iteration_count; i++)
+				win->SetSize(100 + i, 100 + i);
+			total_time = TBSystem::GetTimeMS() - start_time;
+
+			win->Close();
+		}
+
+		TBStr text;
+		text.SetFormatted(	"Total time for %d iterations:\n"
+							"%dms\n"
+							"Average time per iteration:\n"
+							"%.2fms",
+							iteration_count, (int)(total_time), (float)(total_time) / (float)iteration_count);
+		TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBIDC(""));
+		msg_win->Show(title, text);
+	}
+
+	virtual bool OnEvent(const TBWidgetEvent &ev)
+	{
+		if (ev.type != EVENT_TYPE_CLICK)
+			return false;
+
+		if (ev.target->GetID() == TBIDC("speed test inflate"))
+			TestSpeed(TEST_INFLATE);
+		else if (ev.target->GetID() == TBIDC("speed test resize"))
+			TestSpeed(TEST_RESIZE);
+		return true;
+	}
+};
+
 void Init(unsigned int width, unsigned int height)
 {
 	renderer = new TBRendererGL();
 	init_tinkerbell(renderer, "language/lng_en.tb.txt");
-	root = new TBWidget();
+	root = new AppRoot();
 	Resize(width, height);
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
@@ -48,11 +114,6 @@ void Init(unsigned int width, unsigned int height)
 	root->SetSkinBg("background_solid");
 
 	g_widgets_reader->LoadFile(root, "layout/main_layout.tb.txt");
-
-	TBWindow *win = new TBWindow;
-	win->SetRect(TBRect(20, 150, 200, 200));
-	win->SetText("Foo bar");
-	root->AddChild(win);
 }
 
 void Resize(unsigned int width, unsigned int height)

@@ -6,17 +6,18 @@ TBLayout
 			TBButton: text: "Misc"
 			TBButton: text: "Skin"
 			TBButton: text: "Edit"
+			TBButton: text: "Speed"
 		TBScrollContainer: scroll-mode: y-auto
 			TBLayout: axis: y
 				TBLayout
 					TBLayout: skin: button_group
 						TBButton: text: Foo
 						TBButton: text: Bar
-					TBButton: text: Foo Bar
 					TBSeparator: gravity: all
-					TBButton: text: "3cm wide"
-						lp: width: 30mm
+					TBButton: text: Foo Bar
 				TBSeparator: gravity: all
+				TBButton: text: "3cm wide"
+					lp: width: 30mm
 				TBClickLabel: text: "Check box"
 					TBCheckBox
 				TBClickLabel: text: "Radio button"
@@ -64,3 +65,8 @@ TBLayout
 					styling 1
 					text: "<color #0794f8>Android test stuff</color>\n" \
 							"This is a read-only multiline textfield with styling enabled.\n"
+		TBLayout: axis: y
+			TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt-to-content: 1
+				text: "Some speed tests on the layout used in this demo:"
+			TBButton: text: "Inflate, layout, close", id: "speed test inflate"
+			TBButton: text: "Resize", id: "speed test resize"
