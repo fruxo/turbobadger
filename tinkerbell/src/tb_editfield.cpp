@@ -109,7 +109,7 @@ void TBEditField::SetMultiline(bool multiline)
 {
 	UpdateScrollbarVisibility(multiline);
 	m_style_edit.SetMultiline(multiline);
-	m_style_edit.SetWrapping(multiline);
+	SetWrapping(multiline);
 }
 
 void TBEditField::SetStyling(bool styling)
@@ -124,7 +124,14 @@ void TBEditField::SetReadOnly(bool readonly)
 
 void TBEditField::SetWrapping(bool wrapping)
 {
+	if (wrapping == GetWrapping())
+		return;
+
 	m_style_edit.SetWrapping(wrapping);
+
+	// Invalidate the layout when the wrap mode change and we should adapt our size to it
+	if (m_adapt_to_content_size)
+		InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 }
 
 void TBEditField::SetEditType(EDIT_TYPE type)
