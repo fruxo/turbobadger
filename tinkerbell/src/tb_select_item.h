@@ -91,6 +91,9 @@ public:
 	/** Get the skin image to be painted before the text for this item. */
 	virtual TBID GetItemImage(int index) { return TBID(); }
 
+	/** Get the if of the item. */
+	virtual TBID GetItemID(int index) { return TBID(); }
+
 	/** Create the item representation widget(s). By default, it will create
 		a TBTextField for string-only items, and other types for items that
 		also has image or submenu. */
@@ -126,13 +129,14 @@ public:
 	virtual const char *GetItemString(int index)		{ return GetItem(index)->str; }
 	virtual TBSelectItemSource *GetItemSubSource(int index){ return GetItem(index)->sub_source; }
 	virtual TBID GetItemImage(int index)				{ return GetItem(index)->skin_image; }
+	virtual TBID GetItemID(int index)					{ return GetItem(index)->id; }
 	virtual int GetNumItems()							{ return m_items.GetNumItems(); }
 	virtual TBWidget *CreateItemWidget(int index, TBSelectItemViewer *viewer)
 	{
 		if (TBWidget *widget = TBSelectItemSource::CreateItemWidget(index, viewer))
 		{
 			T *item = m_items[index];
-			widget->GetID().Set(item->id);
+			widget->SetID(item->id);
 			return widget;
 		}
 		return nullptr;

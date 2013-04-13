@@ -245,6 +245,13 @@ void TBSelectList::SetValue(int value)
 	InvokeEvent(ev);
 }
 
+TBID TBSelectList::GetSelectedItemID()
+{
+	if (m_source && m_value >= 0 && m_value < m_source->GetNumItems())
+		return m_source->GetItemID(m_value);
+	return TBID();
+}
+
 void TBSelectList::SelectItem(int index, bool selected)
 {
 	if (TBWidget *widget = GetItemWidget(index))
@@ -411,6 +418,13 @@ void TBSelectDropdown::SetValue(int value)
 
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
 	InvokeEvent(ev);
+}
+
+TBID TBSelectDropdown::GetSelectedItemID()
+{
+	if (m_source && m_value >= 0 && m_value < m_source->GetNumItems())
+		return m_source->GetItemID(m_value);
+	return TBID();
 }
 
 void TBSelectDropdown::OpenWindow()

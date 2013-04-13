@@ -63,6 +63,9 @@ public:
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
 
+	/** Get the ID of the selected item, or 0 if there is no item selected. */
+	TBID GetSelectedItemID();
+
 	/** Change the value to a non disabled item that is visible with the current
 		filter. Returns true if it successfully found another item.
 		Valid keys:
@@ -132,6 +135,9 @@ public:
 	/** Set the selected item. */
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
+
+	/** Get the ID of the selected item, or 0 if there is no item selected. */
+	TBID GetSelectedItemID();
 
 	/** Open the window if the model has items. */
 	void OpenWindow();
