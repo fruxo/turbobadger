@@ -23,11 +23,11 @@ elements
 		expand 7
 		padding 6 8
 		overrides
-			element TBButton.pressed
-				state pressed
 			element TBButtonInGroup
 				condition: target: parent, property: skin, value: button_group
 				condition: target: parent, property: axis, value: x
+			element TBButton.pressed
+				state pressed
 	TBButton.pressed
 		bitmap button_pressed.png
 		cut 17
@@ -57,12 +57,12 @@ elements
 		expand 7
 		padding 6 8
 		overrides
-			element TBButtonInGroup.pressed
-				state pressed
 			element TBButtonInGroup.first
 				condition: target: prev sibling, property: skin, value: TBButton, test: !=
 			element TBButtonInGroup.last
 				condition: target: next sibling, property: skin, value: TBButton, test: !=
+			element TBButtonInGroup.pressed
+				state pressed
 	TBButtonInGroup.pressed
 		clone TBButtonInGroup
 		bitmap button_grouped_x_middle_down.png
