@@ -201,7 +201,17 @@ TB_WIDGET_FACTORY(TBSelectDropdown, TBValue::TYPE_INT, WIDGET_Z_TOP)
 
 TB_WIDGET_FACTORY(TBCheckBox, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBRadioButton, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
-TB_WIDGET_FACTORY(TBTextField, TBValue::TYPE_STRING, WIDGET_Z_TOP) {}
+
+TB_WIDGET_FACTORY(TBTextField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
+{
+	if (const char *text_align = info->node->GetValueString("text-align", nullptr))
+	{
+		if (!strcmp(text_align, "left"))		widget->SetTextAlign(TB_TEXT_ALIGN_LEFT);
+		else if (!strcmp(text_align, "center"))	widget->SetTextAlign(TB_TEXT_ALIGN_CENTER);
+		else if (!strcmp(text_align, "right"))	widget->SetTextAlign(TB_TEXT_ALIGN_RIGHT);
+	}
+}
+
 TB_WIDGET_FACTORY(TBSkinImage, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBSeparator, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBProgressSpinner, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
@@ -335,6 +345,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	if (TBNode *data_node = node->GetNode("data"))
 		new_widget->data.Copy(data_node->GetValue());
+
+	new_widget->SetIgnoreInput(node->GetValueInt("ignore-input", new_widget->GetIgnoreInput()) ? true : false);
 
 	if (const char *text = GetTranslatableString(node, "text", nullptr))
 		new_widget->SetText(text);

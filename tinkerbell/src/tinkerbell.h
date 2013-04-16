@@ -132,7 +132,7 @@ public:
 /** TBStr is a simple string class.
 	It's a compact wrapper for a char array, and doesn't do any storage magic to
 	avoid buffer copying or remember its length. It is intended as "final storage"
-	of strings since it's buffer is compact.
+	of strings since its buffer is compact.
 
 	Serious work on strings is better done using TBTempBuffer and then set on a TBStr for
 	final storage (since TBTempBuffer is optimized for speed rather than being compact).

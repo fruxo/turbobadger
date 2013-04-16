@@ -19,7 +19,7 @@ enum TB_TEXT_ALIGN {
 	TB_TEXT_ALIGN_CENTER	///< Aligned center
 };
 
-/** TBWidgetString shows a one line string with the set alignment. */
+/** TBWidgetString holds a string that can be painted as one line with the set alignment. */
 class TBWidgetString
 {
 public:
