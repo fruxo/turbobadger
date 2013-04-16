@@ -1,6 +1,6 @@
 WindowInfo
 	title TBScrollContainer with misc widgets
-	size 400 400
+	size 500 500
 TBLayout
 	gravity all
 	distribution available
@@ -41,6 +41,9 @@ TBLayout
 				TBSelectDropdown
 					text Dropdown
 					id name dropdown
+				TBSelectDropdown
+					text Customized items in Dropdown
+					id advanced dropdown
 			TBLayout
 				overflow scroll
 				TBRadioButton

@@ -376,6 +376,9 @@ ScrollContainerWindow::ScrollContainerWindow()
 
 	if (TBSelectDropdown *select = GetWidgetByIDAndType<TBSelectDropdown>(TBIDC("name dropdown")))
 		select->SetSource(&name_source);
+
+	if (TBSelectDropdown *select = GetWidgetByIDAndType<TBSelectDropdown>(TBIDC("advanced dropdown")))
+		select->SetSource(&advanced_source);
 }
 
 bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
@@ -698,15 +701,15 @@ bool DemoApplication::Init()
 	// and improve performance. Then you don't have to populate each instance with its own set of items,
 	// for widgets that occur many times in a UI, always with the same items.
 	// Here we prepare the name source, that is used in a few places.
-	int i = 0;
-	while (boy_names[i])
-		advanced_source.AddItem(new AdvancedItem(boy_names[i++], TBIDC("boy_item")));
-	i = 0;
-	while (girl_names[i])
+	for (int i = 0; boy_names[i]; i++)
+		advanced_source.AddItem(new AdvancedItem(boy_names[i++], TBIDC("boy_item"), true));
+	for (int i = 0; girl_names[i]; i++)
+		advanced_source.AddItem(new AdvancedItem(girl_names[i++], TBIDC("girl_item"), false));
+	for (int i = 0; girl_names[i]; i++)
 		name_source.AddItem(new TBGenericStringItem(girl_names[i++], TBIDC("girl_item")));
-	i = 0;
-	while (boy_names[i])
+	for (int i = 0; boy_names[i]; i++)
 		name_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
+	advanced_source.SetSort(TB_SORT_ASCENDING);
 	name_source.SetSort(TB_SORT_ASCENDING);
 
 	// Prepare a source with submenus (with eternal recursion) so we can test sub menu support.

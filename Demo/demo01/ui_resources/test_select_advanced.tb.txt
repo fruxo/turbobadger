@@ -19,15 +19,12 @@ TBLayout
 	TBLayout
 		distribution gravity
 		TBEditField
-			id name
+			id add_name
 			gravity left right
 			placeholder Name
 		TBButton
 			id add
 			text Add
-		TBButton
-			id delete
-			text Delete
 		TBButton
 			id delete all
 			text Delete all

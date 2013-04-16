@@ -1,43 +1,31 @@
 #include "ListWindow.h"
 
-// == AdcanvedItemWidget ======================================================
+// == AdvancedItemWidget ======================================================
 
-AdcanvedItemWidget::AdcanvedItemWidget(AdvancedItem *item, AdvancedItemSource *source,
+AdvancedItemWidget::AdvancedItemWidget(AdvancedItem *item, AdvancedItemSource *source,
 										TBSelectItemViewer *source_viewer, int index)
 	: m_source(source)
 	, m_source_viewer(source_viewer)
 	, m_index(index)
 {
 	SetSkinBg("TBSelectItem");
-	SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
+	SetLayoutDistribution(LAYOUT_DISTRIBUTION_GRAVITY);
+	SetLayoutDistributionPosition(LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP);
 	SetPaintOverflowFadeout(false);
 
-	if (TBSkinImage *image = new TBSkinImage)
-	{
-		image->SetSkinBg("Icon48");
-		image->SetIgnoreInput(true);
-		AddChild(image);
-	}
-
-	if (TBTextField *textfield = new TBTextField)
-	{
-		textfield->SetText(item->str);
-		textfield->SetTextAlign(TB_TEXT_ALIGN_LEFT);
-		textfield->SetIgnoreInput(true);
-		AddChild(textfield);
-	}
-
-	if (TBCheckBox *checkbox = new TBCheckBox)
-	{
-		checkbox->SetValue(item->GetChecked() ? true : false);
-		checkbox->GetID().Set("check");
-		AddChild(checkbox);
-	}
+	g_widgets_reader->LoadFile(GetContentRoot(), "Demo/demo01/ui_resources/test_list_item.tb.txt");
+	TBSkinImage *icon = GetWidgetByIDAndType<TBSkinImage>(TBIDC("icon"));
+	TBCheckBox *checkbox = GetWidgetByIDAndType<TBCheckBox>(TBIDC("check"));
+	TBTextField *name = GetWidgetByIDAndType<TBTextField>(TBIDC("name"));
+	TBTextField *info = GetWidgetByIDAndType<TBTextField>(TBIDC("info"));
+	checkbox->SetValue(item->GetChecked() ? true : false);
+	name->SetText(item->str);
+	info->SetText(item->GetMale() ? "Male" : "Female");
 }
 
-bool AdcanvedItemWidget::OnEvent(const TBWidgetEvent &ev)
+bool AdvancedItemWidget::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_CLICK && ev.target->IsOfType<TBCheckBox>())
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("check"))
 	{
 		AdvancedItem *item = m_source->GetItem(m_index);
 		item->SetChecked(ev.target->GetValue() ? true : false);
@@ -45,14 +33,30 @@ bool AdcanvedItemWidget::OnEvent(const TBWidgetEvent &ev)
 		m_source->InvokeItemChanged(m_index, m_source_viewer);
 		return true;
 	}
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("delete"))
+	{
+		m_source->DeleteItem(m_index);
+		return true;
+	}
 	return TBLayout::OnEvent(ev);
 }
 
 // == AdvancedItemSource ======================================================
 
+bool AdvancedItemSource::Filter(int index, const char *filter)
+{
+	// Override this method so we can return hits for our extra data too.
+
+	if (TBSelectItemSource::Filter(index, filter))
+		return true;
+
+	AdvancedItem *item = GetItem(index);
+	return stristr(item->GetMale() ? "Male" : "Female", filter) ? true : false;
+}
+
 TBWidget *AdvancedItemSource::CreateItemWidget(int index, TBSelectItemViewer *viewer)
 {
-	if (TBLayout *layout = new AdcanvedItemWidget(GetItem(index), this, viewer, index))
+	if (TBLayout *layout = new AdvancedItemWidget(GetItem(index), this, viewer, index))
 		return layout;
 	return nullptr;
 }
@@ -103,15 +107,9 @@ bool AdvancedListWindow::OnEvent(const TBWidgetEvent &ev)
 	}
 	else if (select && ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("add"))
 	{
-		TBStr name = GetTextByID(TBIDC("name"));
+		TBStr name = GetTextByID(TBIDC("add_name"));
 		if (!name.IsEmpty())
-			m_source->AddItem(new AdvancedItem(name, TBIDC("boy_item")));
-		return true;
-	}
-	else if (select && ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("delete"))
-	{
-		if (select->GetValue() >= 0 && select->GetValue() < m_source->GetNumItems())
-			m_source->DeleteItem(select->GetValue());
+			m_source->AddItem(new AdvancedItem(name, TBIDC("boy_item"), true));
 		return true;
 	}
 	else if (select && ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("delete all"))

@@ -28,29 +28,35 @@ private:
 class AdvancedItem : public TBGenericStringItem
 {
 public:
-	AdvancedItem(const char *str, const TBID &id) : TBGenericStringItem(str, id), m_checked(false) {}
+	AdvancedItem(const char *str, const TBID &id, bool male)
+		: TBGenericStringItem(str, id)
+		, m_checked(false)
+		, m_male(male) {}
 	void SetChecked(bool checked) { m_checked = checked; }
 	bool GetChecked() const { return m_checked; }
+	bool GetMale() const { return m_male; }
 private:
 	TBStr m_info;
 	bool m_checked;
+	bool m_male;
 };
 
 /** AdvancedItemSource provides items of type AdvancedItem and makes sure
-	the viewer is populated with the advanced widget for each item. */
+	the viewer is populated with the customized widget for each item. */
 class AdvancedItemSource : public TBSelectItemSourceList<AdvancedItem>
 {
 public:
+	virtual bool Filter(int index, const char *filter);
 	virtual TBWidget *CreateItemWidget(int index, TBSelectItemViewer *viewer);
 };
 
-/** AdcanvedItemWidget is the widget representing a AdvancedItem.
+/** AdvancedItemWidget is the widget representing a AdvancedItem.
 	On changes to the item, it calls InvokeItemChanged on the source, so that all
 	viewers of the source are updated to reflect the change. */
-class AdcanvedItemWidget : public TBLayout
+class AdvancedItemWidget : public TBLayout
 {
 public:
-	AdcanvedItemWidget(AdvancedItem *item, AdvancedItemSource *source, TBSelectItemViewer *source_viewer, int index);
+	AdvancedItemWidget(AdvancedItem *item, AdvancedItemSource *source, TBSelectItemViewer *source_viewer, int index);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 private:
 	AdvancedItemSource *m_source;
