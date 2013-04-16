@@ -33,6 +33,11 @@ TBLayout
 					id add img
 					TBSkinImage
 						skin Icon16
+			TBTextField: text: "TBButton containing TBEditField:"
+			TBLayout
+				TBButton
+					TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt-to-content: 1
+						text: "A button with text that is able to wrap to multiple lines."
 			TBTextField: text: "Showing menu manually, and TBSelectDropdown:"
 			TBLayout
 				TBButton
