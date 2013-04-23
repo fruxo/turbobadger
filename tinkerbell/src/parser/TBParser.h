@@ -16,8 +16,8 @@ class ParserTarget
 public:
 	virtual ~ParserTarget() {}
 	virtual void OnError(int line_nr, const char *error) = 0;
-	virtual void OnComment(const char *comment) = 0;
-	virtual void OnToken(const char *name, TBValue &value) = 0;
+	virtual void OnComment(int line_nr, const char *comment) = 0;
+	virtual void OnToken(int line_nr, const char *name, TBValue &value) = 0;
 	virtual void Enter() = 0;
 	virtual void Leave() = 0;
 };

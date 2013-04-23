@@ -150,6 +150,14 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY(node.GetValueInt("comments_and_space>two", 0) == 2);
 		TB_VERIFY(node.GetValueInt("comments_and_space>three", 0) == 3);
 	}
+
+	TB_TEST(file)
+	{
+		TB_VERIFY_STR(node.GetValueString("included>file1>something1", ""), "Chocolate");
+		TB_VERIFY_STR(node.GetValueString("included>file1>something2", ""), "Cake");
+		TB_VERIFY_STR(node.GetValueString("included>file2>something1", ""), "Chocolate");
+		TB_VERIFY_STR(node.GetValueString("included>file2>something2", ""), "Cake");
+	}
 }
 
 #endif // TB_UNIT_TESTING

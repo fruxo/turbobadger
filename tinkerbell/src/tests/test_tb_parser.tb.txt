@@ -1,4 +1,3 @@
-
 # Test file for the text node system and its parser
 # Everything is a tree of nodes with a name and value.
 # The values may be strings, numbers or arrays.
@@ -84,3 +83,9 @@ comments_and_space
 	   
 	# There was some dangling space before this line
 	three 3
+
+included
+	file1
+		@file test_tb_parser_included.tb.txt
+	file2
+		@file: "test_tb_parser_included.tb.txt"

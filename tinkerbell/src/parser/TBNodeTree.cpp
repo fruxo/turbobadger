@@ -8,6 +8,7 @@
 #include <string.h>
 #include <assert.h>
 #include "tb_system.h"
+#include "tb_tempbuffer.h"
 
 namespace tinkerbell {
 
@@ -141,18 +142,31 @@ private:
 class TBNodeTarget : public ParserTarget
 {
 public:
-	TBNodeTarget(TBNode *root) { m_root_node = m_target_node = root; }
+	TBNodeTarget(TBNode *root, const char *filename)
+	{
+		m_root_node = m_target_node = root;
+		m_filename = filename;
+	}
 	virtual void OnError(int line_nr, const char *error)
 	{
+#ifdef _DEBUG
+		TBStr err;
+		err.SetFormatted("%s(%d):Parse error: %s\n", m_filename, line_nr, error);
+		TBDebugOut(err);
+#endif // _DEBUG
 	}
-	virtual void OnComment(const char *comment)
+	virtual void OnComment(int line_nr, const char *comment)
 	{
 	}
-	virtual void OnToken(const char *name, TBValue &value)
+	virtual void OnToken(int line_nr, const char *name, TBValue &value)
 	{
 		if (!m_target_node)
 			return;
-		if (TBNode *n = TBNode::Create(name))
+		if (strcmp(name, "@file") == 0)
+		{
+			IncludeFile(line_nr, value.GetString());
+		}
+		else if (TBNode *n = TBNode::Create(name))
 		{
 			n->m_value.TakeOver(value);
 			m_target_node->Add(n);
@@ -169,16 +183,40 @@ public:
 		if (m_target_node)
 			m_target_node = m_target_node->m_parent;
 	}
+	void IncludeFile(int line_nr, const char *filename)
+	{
+		// Read the included file into a new TBNode and then
+		// move all the children to m_target_node.
+		TBTempBuffer include_filename;
+		include_filename.AppendPath(m_filename);
+		include_filename.AppendString(filename);
+		TBNode content;
+		if (content.ReadFile(include_filename.GetData()))
+		{
+			while (TBNode *content_n = content.GetFirstChild())
+			{
+				content.Remove(content_n);
+				m_target_node->Add(content_n);
+			}
+		}
+		else
+		{
+			TBStr err;
+			err.SetFormatted("Referenced file \"%s\" was not found!", include_filename.GetData());
+			OnError(line_nr, err);
+		}
+	}
 private:
 	TBNode *m_root_node;
 	TBNode *m_target_node;
+	const char *m_filename;
 };
 
 bool TBNode::ReadFile(const char *filename)
 {
 	Clear();
 	FileParser p;
-	TBNodeTarget t(this);
+	TBNodeTarget t(this, filename);
 	return p.Read(filename, &t);
 }
 
@@ -191,7 +229,7 @@ void TBNode::ReadData(const char *data, int data_len)
 {
 	Clear();
 	DataParser p;
-	TBNodeTarget t(this);
+	TBNodeTarget t(this, "{data}");
 	p.Read(data, data_len, &t);
 }
 

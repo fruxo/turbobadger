@@ -164,7 +164,7 @@ void Parser::OnLine(char *line, ParserTarget *target)
 	if (is_space_or_comment(line))
 	{
 		if (*line == '#')
-			target->OnComment(line + 1);
+			target->OnComment(current_line_nr, line + 1);
 		return;
 	}
 	if (pending_multiline)
@@ -241,7 +241,7 @@ void Parser::OnLine(char *line, ParserTarget *target)
 			UnescapeString(line);
 			value.SetFromStringAuto(line, TBValue::SET_AS_STATIC);
 		}
-		target->OnToken(token, value);
+		target->OnToken(current_line_nr, token, value);
 
 		if (is_compact_line)
 			OnCompactLine(line, target);
@@ -295,7 +295,7 @@ void Parser::OnCompactLine(char *line, ParserTarget *target)
 		}
 
 		// Ready
-		target->OnToken(token, v);
+		target->OnToken(current_line_nr, token, v);
 	}
 
 	target->Leave();
@@ -314,7 +314,7 @@ void Parser::OnMultiline(char *line, ParserTarget *target)
 	{
 		// Ready with all lines
 		value.SetString(multi_line_value.GetData(), TBValue::SET_AS_STATIC);
-		target->OnToken(multi_line_token, value);
+		target->OnToken(current_line_nr, multi_line_token, value);
 
 		if (multi_line_sub_level)
 			target->Leave();
