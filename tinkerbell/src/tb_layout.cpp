@@ -483,35 +483,25 @@ void TBLayout::GetChildTranslation(int &x, int &y) const
 	}
 }
 
-void TBLayout::ScrollIntoView(const TBRect &rect)
+void TBLayout::ScrollTo(int x, int y)
 {
-	TBRect m_rect = GetRect();
-	TBRect visible_rect = m_axis == AXIS_X ?	TBRect(m_overflow_scroll, 0, m_rect.w, m_rect.h) :
-												TBRect(0, m_overflow_scroll, m_rect.w, m_rect.h);
-	int new_x = visible_rect.x;
-	int new_y = visible_rect.y;
-
-	if (rect.y <= visible_rect.y)
-		new_y = rect.y;
-	else if (rect.y + rect.h > visible_rect.y + visible_rect.h)
-		new_y = rect.y + rect.h - visible_rect.h;
-
-	if (rect.x <= visible_rect.x)
-		new_x = rect.x;
-	else if (rect.x + rect.w > visible_rect.x + visible_rect.w)
-		new_x = rect.x + rect.w - visible_rect.w;
-
-	SetOverflowScroll(m_axis == AXIS_X ? new_x : new_y);
+	SetOverflowScroll(m_axis == AXIS_X ? x : y);
 }
 
-void TBLayout::ScrollBy(int &dx, int &dy)
+TBWidget::ScrollInfo TBLayout::GetScrollInfo()
 {
-	int old_overflow_scroll = m_overflow_scroll;
-	SetOverflowScroll(m_axis == AXIS_X ? m_overflow_scroll + dx : m_overflow_scroll + dy);
+	ScrollInfo info;
 	if (m_axis == AXIS_X)
-		dx -= m_overflow_scroll - old_overflow_scroll;
+	{
+		info.max_x = m_overflow;
+		info.x = m_overflow_scroll;
+	}
 	else
-		dy -= m_overflow_scroll - old_overflow_scroll;
+	{
+		info.max_y = m_overflow;
+		info.y = m_overflow_scroll;
+	}
+	return info;
 }
 
 }; // namespace tinkerbell

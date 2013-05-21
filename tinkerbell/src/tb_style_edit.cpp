@@ -1720,12 +1720,16 @@ void TBStyleEdit::Redo()
 	}
 }
 
-bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys)
+bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys, bool touch)
 {
 	if (button != 1)
 		return false;
 
-	if (packed.selection_on)
+	if (touch)
+	{
+		mousedown_point = TBPoint(point.x + scroll_x, point.y + scroll_y);
+	}
+	else if (packed.selection_on)
 	{
 		//if (modifierkeys & P_SHIFT) // Select to new caretpos
 		//{
@@ -1748,12 +1752,21 @@ bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, MODIFI
 	return true;
 }
 
-bool TBStyleEdit::MouseUp(const TBPoint &point, int button, MODIFIER_KEYS modifierkeys)
+bool TBStyleEdit::MouseUp(const TBPoint &point, int button, MODIFIER_KEYS modifierkeys, bool touch)
 {
 	if (button != 1)
 		return false;
+
+	if (touch && !TBWidget::cancel_click)
+	{
+		selection.SelectNothing();
+		caret.Place(mousedown_point);
+		caret.UpdateWantedX();
+		caret.ResetBlink();
+	}
+
 	select_state = 0;
-	if (caret.pos.block)
+	if (caret.pos.block && !TBWidget::cancel_click)
 	{
 		TBTextFragment *fragment = caret.pos.block->FindFragment(point.x + scroll_x, point.y + scroll_y - caret.pos.block->ypos);
 		if (fragment && fragment == mousedown_fragment)

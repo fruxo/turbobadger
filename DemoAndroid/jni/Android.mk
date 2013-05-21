@@ -27,6 +27,7 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/tb_msg.cpp \
                    ../../tinkerbell/src/tb_object.cpp \
                    ../../tinkerbell/src/tb_renderer.cpp \
+                   ../../tinkerbell/src/tb_scroller.cpp \
                    ../../tinkerbell/src/tb_scroll_container.cpp \
                    ../../tinkerbell/src/tb_select.cpp \
                    ../../tinkerbell/src/tb_select_item.cpp \

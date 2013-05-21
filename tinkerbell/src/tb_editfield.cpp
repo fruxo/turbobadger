@@ -161,6 +161,28 @@ bool TBEditField::GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &
 	return false;
 }
 
+void TBEditField::ScrollTo(int x, int y)
+{
+	int old_x = m_scrollbar_x.GetValue();
+	int old_y = m_scrollbar_y.GetValue();
+	m_style_edit.SetScrollPos(x, y);
+	if (old_x != m_scrollbar_x.GetValue() ||
+		old_y != m_scrollbar_y.GetValue())
+		TBWidget::Invalidate();
+}
+
+TBWidget::ScrollInfo TBEditField::GetScrollInfo()
+{
+	ScrollInfo info;
+	info.min_x = static_cast<int>(m_scrollbar_x.GetMinValue());
+	info.min_y = static_cast<int>(m_scrollbar_y.GetMinValue());
+	info.max_x = static_cast<int>(m_scrollbar_x.GetMaxValue());
+	info.max_y = static_cast<int>(m_scrollbar_y.GetMaxValue());
+	info.x = m_scrollbar_x.GetValue();
+	info.y = m_scrollbar_y.GetValue();
+	return info;
+}
+
 bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target == &m_scrollbar_x)
@@ -184,7 +206,7 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 		TBRect padding_rect = GetPaddingRect();
 		if (m_style_edit.MouseDown(
 			TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y),
-			1, ev.count, TB_MODIFIER_NONE))
+			1, ev.count, TB_MODIFIER_NONE, ev.touch))
 		{
 			// Post a message to start selection scroll
 			PostMessageDelayed(TBIDC("selscroll"), nullptr, SELECTION_SCROLL_DELAY);
@@ -199,7 +221,8 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.type == EVENT_TYPE_POINTER_UP && ev.target == this)
 	{
 		TBRect padding_rect = GetPaddingRect();
-		return m_style_edit.MouseUp(TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y), 1, TB_MODIFIER_NONE);
+		return m_style_edit.MouseUp(TBPoint(ev.target_x - padding_rect.x, ev.target_y - padding_rect.y),
+										1, TB_MODIFIER_NONE, ev.touch);
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN)
 	{
@@ -407,7 +430,7 @@ void TBEditField::OnChange()
 
 	//FIX: some of theese in tinkerbell doesn't check if the widget is removed afterwards!
 	//     it's not unlikely that it might result in the widget to be removed.
-	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 }
 

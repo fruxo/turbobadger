@@ -17,6 +17,7 @@ namespace tinkerbell {
 class TBWindow;
 class TBWidget;
 class TBFontFace;
+class TBScroller;
 
 // == Generic widget stuff =================================================
 
@@ -93,13 +94,16 @@ public:
 	SPECIAL_KEY special_key;
 	MODIFIER_KEYS modifierkeys;
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
+	bool touch;			///< Set for pointer events. True if the event is a touch event (finger or pen on screen)
+						///< False if mouse or other cursor input.
 
 	TBWidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta_x(0), delta_y(0), count(1),
-											key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(TB_MODIFIER_NONE) {}
+											key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(TB_MODIFIER_NONE), touch(false) {}
 
-	TBWidgetEvent(EVENT_TYPE type, int x, int y, MODIFIER_KEYS modifierkeys = TB_MODIFIER_NONE) :
+	TBWidgetEvent(EVENT_TYPE type, int x, int y, bool touch, MODIFIER_KEYS modifierkeys = TB_MODIFIER_NONE) :
 											target(nullptr), type(type), target_x(x), target_y(y), delta_x(0), delta_y(0),
-											count(1), key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(modifierkeys) {}
+											count(1), key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(modifierkeys),
+											touch(touch) {}
 
 	/** The count value may be 1 to infinity. If you f.ex want to see which count it is for something
 		handling click and double click, call GetCountCycle(2). If you also handle triple click, call
@@ -568,26 +572,66 @@ public:
 
 	/** Return translation the children should have. Any scrolling of child widgets
 		should be done with this method, by returning the wanted translation.
-		When implementing this, also consider implementing ScrollIntoView so it will
-		scroll automatically f.ex when focusing widgets that's not in view, and
-		ScrollBy so dragging will automatically scroll this view. */
+
+		When implementing this, you must also implement ScrollTo and GetScrollInfo
+		so focus-scroll and panning will work automatically when dragging this or
+		any child widget. Note: You can apply the translation on one widget and
+		implement those methods on a parent, by returning this widget from the
+		parents GetScrollRoot(). */
 	virtual void GetChildTranslation(int &x, int &y) const { x = y = 0; }
 
 	/** If this is a widget that scroll children (see GetChildTranslation), it should
-		scroll so that rect is visible. Rect is relative to this view. */
-	virtual void ScrollIntoView(const TBRect &rect) {}
+		scroll to the coordinates x, y. */
+	virtual void ScrollTo(int x, int y) {}
 
-	/** If this is a widget that scroll children (see GetChildTranslation), it should
-		scroll by delta dx, dy relative to its current position.
-		It must also deduct dx and dy with the amount scrolled, so the remaining
-		delta (if any) can be scrolled in another view. */
-	virtual void ScrollBy(int &dx, int &dy) {}
+	/** Start the TBScroller for this widget and scroll it to the given position.
+		Will cancel any on going smooth scroll operation. */
+	void ScrollToSmooth(int x, int y);
 
-	/** Scroll this widget and/or any parent widgets by the given delta. */
+	/** If this is a widget that scroll children (see GetChildTranslation), it will
+		scroll by delta dx, dy relative to its current position. */
+	void ScrollBy(int dx, int dy);
+
+	/** Start the TBScroller for this widget and scroll it by the given delta.
+		Consecutive calls will accumulate the scroll speed. */
+	void ScrollBySmooth(int dx, int dy);
+
+	/** Information about scrolling for a widget at the time of calling GetScrollInfo. */
+	class ScrollInfo
+	{
+	public:
+		ScrollInfo() : min_x(0), min_y(0), max_x(0), max_y(0), x(0), y(0) {}
+		bool CanScrollX() const { return max_x > min_x; }
+		bool CanScrollY() const { return max_y > min_y; }
+		bool CanScroll() const { return CanScrollX() || CanScrollY(); }
+		int min_x, min_y;	///< Minimum x and y scroll position.
+		int max_x, max_y;	///< Maximum x and y scroll position.
+		int x, y;			///< Current x and y scroll position.
+	};
+
+	/** If this is a widget that scroll children (see GetChildTranslation),
+		it should return the current scroll information. */
+	virtual ScrollInfo GetScrollInfo() { return ScrollInfo(); }
+
+	/** If this widget is implementing ScrollTo and GetScrollInfo but
+		the corresponding GetChildTranslation is implemented on a child,
+		you should return that child from this method. */
+	virtual TBWidget *GetScrollRoot() { return this; }
+
+	/** Scroll this widget and/or any parent widgets by the given delta.
+		dx and dy will be reduced by the amount that was successfully
+		scrolled. */
 	void ScrollByRecursive(int &dx, int &dy);
 
 	/** Make this widget visible by calling ScrollIntoView on all parent widgets */
 	void ScrollIntoViewRecursive();
+
+	/** If this is a widget that scroll children (see GetChildTranslation), it will
+		scroll so that rect is visible. Rect is relative to this widget. */
+	void ScrollIntoView(const TBRect &rect);
+
+	/** Return the TBScroller set up for this widget, or nullptr if creation failed. */
+	TBScroller *GetScroller();
 
 	// == Setter shared for many types of widgets ============
 
@@ -631,7 +675,10 @@ public:
 	void Unconnect() { m_connection.Unconnect(); }
 
 	/** Get the rectangle inside any padding, relative to this widget. This is the
-		rectangle in which the content should be rendered. */
+		rectangle in which the content should be rendered.
+
+		This may be overridden to f.ex deduct space allocated by visible scrollbars
+		managed by this widget. Anything that removes space from the content area. */
 	virtual TBRect GetPaddingRect();
 
 	/** Calculate the preferred content size for this widget. This is the size of the actual
@@ -706,9 +753,9 @@ public:
 		this call and are not sure what the event will cause, use TBWidgetSafePointer to detect self deletion. */
 	bool InvokeEvent(TBWidgetEvent &ev);
 
-	void InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys);
-	void InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys);
-	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys);
+	void InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch);
+	void InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
+	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
 	void InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
@@ -766,6 +813,7 @@ private:
 	TBFontDescription m_font_desc;	///< The font description.
 	PreferredSize m_cached_ps;		///< Cached preferred size.
 	LayoutParams *m_layout_params;	///< Layout params, or nullptr.
+	TBScroller *m_scroller;
 	union {
 		struct {
 			uint16 is_group_root : 1;
@@ -775,6 +823,8 @@ private:
 			uint16 ignore_input : 1;
 			uint16 is_dying : 1;
 			uint16 is_cached_ps_valid : 1;
+			uint16 no_automatic_hover_state : 1;
+			uint16 is_panning : 1;
 		} m_packed;
 		uint16 m_packed_init;
 	};
@@ -796,15 +846,20 @@ public:
 	static int pointer_down_widget_y;	///< Pointer y position on down event, relative to the captured widget.
 	static int pointer_move_widget_x;	///< Pointer x position on last pointer event, relative to the captured widget (if any) or hovered widget.
 	static int pointer_move_widget_y;	///< Pointer y position on last pointer event, relative to the captured widget (if any) or hovered widget.
-	static bool is_panning;				///< true if currently panning scrollable widgets. Pointer up should not generate a click event.
+	static bool cancel_click;			///< true if the pointer up event should not generate a click event.
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 private:
+	/** Return this widget or the nearest parent that is scrollable
+		in the given axis, or nullptr if there is none. */
+	TBWidget *FindScrollableWidget(bool scroll_x, bool scroll_y);
+	TBScroller *FindStartedScroller();
+	TBScroller *GetReadyScroller(bool scroll_x, bool scroll_y);
 	TBWidget *GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_id = nullptr);
 	void InvokeSkinUpdatesInternal();
 	void InvokeProcessInternal();
-	void SetHoveredWidget(TBWidget *widget);
-	void SetCapturedWidget(TBWidget *widget);
+	static void SetHoveredWidget(TBWidget *widget, bool touch);
+	static void SetCapturedWidget(TBWidget *widget);
 	void HandlePanningOnMove(int x, int y);
 };
 

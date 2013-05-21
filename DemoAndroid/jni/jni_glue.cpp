@@ -185,11 +185,11 @@ JNI_VOID_TINKERBELL(OnPointer)(JNIEnv *env, jobject obj, jfloat x, jfloat y, jin
 	set_jnienv(env);
 	//TBDebugOut("OnPointer");
 
-	int counter = 0;
+	int counter = 1;
 	if (down)
-		root->InvokePointerDown(x, y, counter, TB_MODIFIER_NONE);
+		root->InvokePointerDown(x, y, counter, TB_MODIFIER_NONE, true);
 	else
-		root->InvokePointerUp(x, y, TB_MODIFIER_NONE);
+		root->InvokePointerUp(x, y, TB_MODIFIER_NONE, true);
 }
 
 JNI_VOID_TINKERBELL(OnPointer2)(JNIEnv *env, jobject obj, jfloat x, jfloat y, jint down)
@@ -203,5 +203,5 @@ JNI_VOID_TINKERBELL(OnPointerMove)(JNIEnv *env, jobject obj, jfloat x, jfloat y,
 	set_jnienv(env);
 	//TBDebugOut("OnPointerMove");
 
-	root->InvokePointerMove(x, y, TB_MODIFIER_NONE);
+	root->InvokePointerMove(x, y, TB_MODIFIER_NONE, true);
 }

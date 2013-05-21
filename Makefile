@@ -25,6 +25,7 @@ endif
 
 TARGET = RunDemo
 SRC = tinkerbell/src/tb_layout.cpp \
+      tinkerbell/src/tb_scroller.cpp \
       tinkerbell/src/tb_scroll_container.cpp \
       tinkerbell/src/tb_skin.cpp \
       tinkerbell/src/tb_skin_util.cpp \

@@ -129,8 +129,8 @@ public:
 	virtual void OnResized(int old_w, int old_h);
 	virtual void OnInflateChild(TBWidget *child);
 	virtual void GetChildTranslation(int &x, int &y) const;
-	virtual void ScrollIntoView(const TBRect &rect);
-	virtual void ScrollBy(int &dx, int &dy);
+	virtual void ScrollTo(int x, int y);
+	virtual TBWidget::ScrollInfo GetScrollInfo();
 protected:
 	AXIS m_axis;
 	int m_spacing;

@@ -65,7 +65,7 @@ public:
 /** TBEditField is a one line or multi line textfield that is editable or
 	read-only. It can also be a passwordfield by calling
 	SetEditType(EDIT_TYPE_PASSWORD).
-	
+
 	It may perform styling of text and contain custom embedded content,
 	if enabled by SetStyling(true). Disabled by default.
 */
@@ -151,6 +151,10 @@ public:
 	/** Set the placeholder text. It will be visible only when the textfield is empty. */
 	virtual bool SetPlaceholderText(const char *text) { return m_placeholder.SetText(text); }
 	virtual bool GetPlaceholderText(TBStr &text) { return m_placeholder.GetText(text); }
+
+	virtual void ScrollTo(int x, int y);
+	virtual TBWidget::ScrollInfo GetScrollInfo();
+	virtual TBWidget *GetScrollRoot() { return &m_root; }
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnPaint(const PaintProps &paint_props);

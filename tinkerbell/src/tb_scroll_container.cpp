@@ -129,17 +129,6 @@ void TBScrollContainer::SetScrollMode(SCROLL_MODE mode)
 	InvalidateLayout(INVALIDATE_LAYOUT_TARGET_ONLY);
 }
 
-TBRect TBScrollContainer::GetVisibleRect()
-{
-	int visible_w = GetRect().w;
-	int visible_h = GetRect().h;
-	if (m_scrollbar_x.GetOpacity())
-		visible_h -= m_scrollbar_x.GetPreferredSize().pref_h;
-	if (m_scrollbar_y.GetOpacity())
-		visible_w -= m_scrollbar_y.GetPreferredSize().pref_w;
-	return TBRect(m_scrollbar_x.GetValue(), m_scrollbar_y.GetValue(), visible_w, visible_h);
-}
-
 void TBScrollContainer::ScrollTo(int x, int y)
 {
 	int old_x = m_scrollbar_x.GetValue();
@@ -151,39 +140,33 @@ void TBScrollContainer::ScrollTo(int x, int y)
 		Invalidate();
 }
 
-void TBScrollContainer::ScrollIntoView(const TBRect &rect)
+TBWidget::ScrollInfo TBScrollContainer::GetScrollInfo()
 {
-	TBRect visible_rect = GetVisibleRect();
-	int new_x = m_scrollbar_x.GetValue();
-	int new_y = m_scrollbar_y.GetValue();
-
-	if (rect.y <= visible_rect.y)
-		new_y = rect.y;
-	else if (rect.y + rect.h > visible_rect.y + visible_rect.h)
-		new_y = rect.y + rect.h - visible_rect.h;
-
-	if (rect.x <= visible_rect.x)
-		new_x = rect.x;
-	else if (rect.x + rect.w > visible_rect.x + visible_rect.w)
-		new_x = rect.x + rect.w - visible_rect.w;
-
-	ScrollTo(new_x, new_y);
-}
-
-void TBScrollContainer::ScrollBy(int &dx, int &dy)
-{
-	int old_x = m_scrollbar_x.GetValue();
-	int old_y = m_scrollbar_y.GetValue();
-	ScrollTo(m_scrollbar_x.GetValue() + dx,
-			 m_scrollbar_y.GetValue() + dy);
-	dx -= m_scrollbar_x.GetValue() - old_x;
-	dy -= m_scrollbar_y.GetValue() - old_y;
+	ScrollInfo info;
+	info.min_x = static_cast<int>(m_scrollbar_x.GetMinValue());
+	info.min_y = static_cast<int>(m_scrollbar_y.GetMinValue());
+	info.max_x = static_cast<int>(m_scrollbar_x.GetMaxValue());
+	info.max_y = static_cast<int>(m_scrollbar_y.GetMaxValue());
+	info.x = m_scrollbar_x.GetValue();
+	info.y = m_scrollbar_y.GetValue();
+	return info;
 }
 
 void TBScrollContainer::InvalidateLayout(INVALIDATE_LAYOUT il)
 {
 	m_layout_is_invalid = true;
 	// No recursion up to parents here.
+}
+
+TBRect TBScrollContainer::GetPaddingRect()
+{
+	int visible_w = GetRect().w;
+	int visible_h = GetRect().h;
+	if (m_scrollbar_x.GetOpacity())
+		visible_h -= m_scrollbar_x.GetPreferredSize().pref_h;
+	if (m_scrollbar_y.GetOpacity())
+		visible_w -= m_scrollbar_y.GetPreferredSize().pref_w;
+	return TBRect(0, 0, visible_w, visible_h);
 }
 
 PreferredSize TBScrollContainer::OnCalculatePreferredContentSize()
@@ -225,6 +208,28 @@ bool TBScrollContainer::OnEvent(const TBWidgetEvent &ev)
 		double old_val = m_scrollbar_y.GetValueDouble();
 		m_scrollbar_y.SetValueDouble(old_val + ev.delta_y * TBSystem::GetPixelsPerLine());
 		return m_scrollbar_y.GetValueDouble() != old_val;
+	}
+	else if (ev.type == EVENT_TYPE_KEY_DOWN)
+	{
+		if (ev.special_key == TB_KEY_LEFT && m_scrollbar_x.CanScrollNegative())
+			ScrollBySmooth(-TBSystem::GetPixelsPerLine(), 0);
+		else if (ev.special_key == TB_KEY_RIGHT && m_scrollbar_x.CanScrollPositive())
+			ScrollBySmooth(TBSystem::GetPixelsPerLine(), 0);
+		else if (ev.special_key == TB_KEY_UP && m_scrollbar_y.CanScrollNegative())
+			ScrollBySmooth(0, -TBSystem::GetPixelsPerLine());
+		else if (ev.special_key == TB_KEY_DOWN && m_scrollbar_y.CanScrollPositive())
+			ScrollBySmooth(0, TBSystem::GetPixelsPerLine());
+		else if (ev.special_key == TB_KEY_PAGE_UP && m_scrollbar_y.CanScrollNegative())
+			ScrollBySmooth(0, -GetPaddingRect().h);
+		else if (ev.special_key == TB_KEY_PAGE_DOWN && m_scrollbar_y.CanScrollPositive())
+			ScrollBySmooth(0, GetPaddingRect().h);
+		else if (ev.special_key == TB_KEY_HOME)
+			ScrollToSmooth(m_scrollbar_x.GetValue(), 0);
+		else if (ev.special_key == TB_KEY_END)
+			ScrollToSmooth(m_scrollbar_x.GetValue(), (int)m_scrollbar_y.GetMaxValue());
+		else
+			return false;
+		return true;
 	}
 	return false;
 }

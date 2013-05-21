@@ -65,6 +65,19 @@ TBLayout
 					styling 1
 					text: "<color #0794f8>Android test stuff</color>\n" \
 							"This is a read-only multiline textfield with styling enabled.\n"
+				TBEditField
+					multiline 1
+					gravity all
+					text: "Row 1\n" \
+							"Row 2\n" \
+							"Row 3\n" \
+							"Row 4\n" \
+							"Row 5\n" \
+							"Row 6\n" \
+							"Row 7\n" \
+							"Row 8\n" \
+							"Row 9\n" \
+							"Row 10"
 		TBLayout: axis: y
 			TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt-to-content: 1
 				text: "Some speed tests on the layout used in this demo:"

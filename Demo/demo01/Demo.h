@@ -7,6 +7,7 @@
 #include "tb_widgets_listener.h"
 #include "tb_message_window.h"
 #include "tb_msg.h"
+#include "tb_scroller.h"
 #include "platform/Application.h"
 
 using namespace tinkerbell;
@@ -47,6 +48,14 @@ class ImageWindow : public DemoWindow
 public:
 	ImageWindow();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
+};
+
+class PageWindow : public DemoWindow, public TBScrollerSnapListener
+{
+public:
+	PageWindow();
+	virtual bool OnEvent(const TBWidgetEvent &ev);
+	virtual void OnScrollSnap(TBWidget *target_widget, int &target_x, int &target_y);
 };
 
 class AnimationsWindow : public DemoWindow

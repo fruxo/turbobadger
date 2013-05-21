@@ -239,7 +239,7 @@ void TBSelectList::SetValue(int value)
 	SelectItem(m_value, true);
 	ScrollToSelectedItem();
 
-	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	if (TBWidget *widget = GetItemWidget(m_value))
 		ev.ref_id = widget->GetID();
 	InvokeEvent(ev);
@@ -325,7 +325,7 @@ bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 			}
 
 			// Invoke the click event on the target list
-			TBWidgetEvent ev(EVENT_TYPE_CLICK, 0, 0);
+			TBWidgetEvent ev(EVENT_TYPE_CLICK);
 			if (TBWidget *widget = GetItemWidget(m_value))
 				ev.ref_id = widget->GetID();
 			target_list->InvokeEvent(ev);
@@ -334,7 +334,15 @@ bool TBSelectList::OnEvent(const TBWidgetEvent &ev)
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN)
 	{
-		return ChangeValue(ev.special_key);
+		if (ChangeValue(ev.special_key))
+			return true;
+
+		// Give the scroll container a chance to handle the key so it may
+		// scroll. This matters if the list itself is focused instead of
+		// some child view of any select item (since that would have passed
+		// the container already)
+		if (GetScrollContainer()->OnEvent(ev))
+			return true;
 	}
 	return false;
 }
@@ -416,7 +424,7 @@ void TBSelectDropdown::SetValue(int value)
 	else if (m_value < m_source->GetNumItems())
 		SetText(m_source->GetItemString(m_value));
 
-	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 }
 

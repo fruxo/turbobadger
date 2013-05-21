@@ -11,6 +11,7 @@ TBLayout: axis: y, distribution-position: left top
 	TBButton: text: "ScrollContainer & misc.", id: "test-scroll-container"
 	TBButton: text: "TBSelectList", id: "test-list"
 	TBButton: text: "TBImage", id: "test-image"
+	TBButton: text: "TBScrollerSnapListener", id: "test-page"
 	TBButton: text: "Animations", id: "test-animations"
 	TBButton: text: "Skin conditions", id: "test-skin-conditions"
 	TBButton: text: "TBToggleContainer", id: "test-toggle-container"

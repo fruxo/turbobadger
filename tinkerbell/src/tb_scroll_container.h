@@ -70,13 +70,13 @@ public:
 	void SetScrollMode(SCROLL_MODE mode);
 	SCROLL_MODE GetScrollMode() { return m_mode; }
 
-	TBRect GetVisibleRect();
-	void ScrollTo(int x, int y);
-	virtual void ScrollIntoView(const TBRect &rect);
-	virtual void ScrollBy(int &dx, int &dy);
+	virtual void ScrollTo(int x, int y);
+	virtual TBWidget::ScrollInfo GetScrollInfo();
+	virtual TBWidget *GetScrollRoot() { return &m_root; }
 
 	virtual void InvalidateLayout(INVALIDATE_LAYOUT il);
 
+	virtual TBRect GetPaddingRect();
 	virtual PreferredSize OnCalculatePreferredContentSize();
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);

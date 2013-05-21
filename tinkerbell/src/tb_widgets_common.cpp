@@ -178,7 +178,7 @@ bool TBButton::OnEvent(const TBWidgetEvent &ev)
 			return true; // We got removed so we actually handled this event.
 
 		// Invoke a changed event.
-		TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+		TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 		InvokeEvent(ev);
 
 		if (!this_widget.Get())
@@ -194,9 +194,9 @@ void TBButton::OnMessageReceived(TBMessage *msg)
 	if (msg->message == TBIDC("auto_click"))
 	{
 		assert(captured_widget == this);
-		if (!is_panning && GetHitStatus(pointer_move_widget_x, pointer_move_widget_y))
+		if (!cancel_click && GetHitStatus(pointer_move_widget_x, pointer_move_widget_y))
 		{
-			TBWidgetEvent ev(EVENT_TYPE_CLICK, pointer_move_widget_x, pointer_move_widget_y);
+			TBWidgetEvent ev(EVENT_TYPE_CLICK, pointer_move_widget_x, pointer_move_widget_y, true);
 			captured_widget->InvokeEvent(ev);
 		}
 		if (auto_click_repeat_delay)
@@ -249,7 +249,8 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 
 		click_target->SetState(WIDGET_STATE_PRESSED, pressed_state);
 
-		TBWidgetEvent target_ev(ev.type, ev.target_x - click_target->GetRect().x, ev.target_y - click_target->GetRect().y);
+		TBWidgetEvent target_ev(ev.type, ev.target_x - click_target->GetRect().x, ev.target_y - click_target->GetRect().y,
+								ev.touch, ev.modifierkeys);
 		return click_target->InvokeEvent(target_ev);
 	}
 	return false;
@@ -358,7 +359,7 @@ void TBRadioCheckBox::SetValue(int value)
 	SetState(WIDGET_STATE_SELECTED, value ? true : false);
 
 	Invalidate();
-	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 
 	if (!value || !GetGroupID())
@@ -463,7 +464,7 @@ void TBScrollBar::SetValueDouble(double value)
 	m_value = value;
 
 	UpdateHandle();
-	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 }
 
@@ -597,7 +598,7 @@ void TBSlider::SetValueDouble(double value)
 	m_value = value;
 
 	UpdateHandle();
-	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 }
 

@@ -488,6 +488,29 @@ bool ImageWindow::OnEvent(const TBWidgetEvent &ev)
 	return DemoWindow::OnEvent(ev);
 }
 
+// == PageWindow =============================================================
+
+PageWindow::PageWindow()
+{
+	LoadResourceFile("Demo/demo01/ui_resources/test_scroller_snap.tb.txt");
+
+	// Listen to the pagers scroller
+	if (TBWidget *pager = GetWidgetByID(TBIDC("page-scroller")))
+		pager->GetScroller()->SetSnapListener(this);
+}
+
+bool PageWindow::OnEvent(const TBWidgetEvent &ev)
+{
+	return DemoWindow::OnEvent(ev);
+}
+
+void PageWindow::OnScrollSnap(TBWidget *target_widget, int &target_x, int &target_y)
+{
+	int page_w = target_widget->GetPaddingRect().w;
+	int target_page = (target_x + page_w / 2) / page_w;
+	target_x = target_page * page_w;
+}
+
 // == AnimationsWindow ========================================================
 
 AnimationsWindow::AnimationsWindow()
@@ -638,6 +661,11 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		else if (ev.target->GetID() == TBIDC("test-image"))
 		{
 			new ImageWindow();
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("test-page"))
+		{
+			new PageWindow();
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-animations"))

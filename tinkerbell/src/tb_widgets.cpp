@@ -10,6 +10,7 @@
 #include "tb_widgets_common.h"
 #include "tb_widget_skin_condition_context.h"
 #include "tb_system.h"
+#include "tb_scroller.h"
 #include "tb_font_renderer.h"
 #include <assert.h>
 #ifdef TB_ALWAYS_SHOW_EDIT_FOCUS
@@ -26,7 +27,7 @@ int TBWidget::pointer_down_widget_x = 0;
 int TBWidget::pointer_down_widget_y = 0;
 int TBWidget::pointer_move_widget_x = 0;
 int TBWidget::pointer_move_widget_y = 0;
-bool TBWidget::is_panning = false;
+bool TBWidget::cancel_click = false;
 bool TBWidget::update_widget_states = true;
 bool TBWidget::show_focus_state = false;
 
@@ -47,6 +48,7 @@ TBWidget::TBWidget()
 	, m_state(WIDGET_STATE_NONE)
 	, m_gravity(WIDGET_GRAVITY_DEFAULT)
 	, m_layout_params(nullptr)
+	, m_scroller(nullptr)
 	, m_packed_init(0)
 {
 #ifdef TB_RUNTIME_DEBUG_INFO
@@ -75,6 +77,7 @@ TBWidget::~TBWidget()
 		delete child;
 	}
 
+	delete m_scroller;
 	delete m_layout_params;
 }
 
@@ -166,9 +169,10 @@ void TBWidget::SetState(WIDGET_STATE state, bool on)
 WIDGET_STATE TBWidget::GetAutoState() const
 {
 	WIDGET_STATE state = m_state;
-	if (!is_panning && this == captured_widget && this == hovered_widget)
+	bool add_pressed_state = !cancel_click && this == captured_widget && this == hovered_widget;
+	if (add_pressed_state)
 		state |= WIDGET_STATE_PRESSED;
-	if (this == hovered_widget)
+	if (this == hovered_widget && (!m_packed.no_automatic_hover_state || add_pressed_state))
 		state |= WIDGET_STATE_HOVERED;
 	if (this == focused_widget && show_focus_state)
 		state |= WIDGET_STATE_FOCUSED;
@@ -324,12 +328,89 @@ TBSkinElement *TBWidget::GetSkinBgElement()
 	return g_tb_skin->GetSkinElementStrongOverride(m_skin_bg, static_cast<SKIN_STATE>(state), context);
 }
 
+TBWidget *TBWidget::FindScrollableWidget(bool scroll_x, bool scroll_y)
+{
+	TBWidget *candidate = this;
+	while (candidate)
+	{
+		ScrollInfo scroll_info = candidate->GetScrollInfo();
+		if ((scroll_x && scroll_info.CanScrollX()) ||
+			(scroll_y && scroll_info.CanScrollY()))
+			return candidate;
+		candidate = candidate->GetParent();
+	}
+	return nullptr;
+}
+
+TBScroller *TBWidget::FindStartedScroller()
+{
+	TBWidget *candidate = this;
+	while (candidate)
+	{
+		if (candidate->m_scroller && candidate->m_scroller->IsStarted())
+			return candidate->m_scroller;
+		candidate = candidate->GetParent();
+	}
+	return nullptr;
+}
+
+TBScroller *TBWidget::GetReadyScroller(bool scroll_x, bool scroll_y)
+{
+	if (TBScroller *scroller = FindStartedScroller())
+		return scroller;
+	// We didn't have any active scroller, so create one for the nearest scrollable parent.
+	if (TBWidget *scrollable_widget = FindScrollableWidget(scroll_x, scroll_y))
+		return scrollable_widget->GetScroller();
+	return nullptr;
+}
+
+TBScroller *TBWidget::GetScroller()
+{
+	if (!m_scroller)
+		m_scroller = new TBScroller(this);
+	return m_scroller;
+}
+
+void TBWidget::ScrollToSmooth(int x, int y)
+{
+	ScrollInfo info = GetScrollInfo();
+	int dx = x - info.x;
+	int dy = y - info.y;
+	if (TBScroller *scroller = GetReadyScroller(dx != 0, dy != 0))
+		scroller->OnScrollBy(dx, dy, false);
+}
+
+void TBWidget::ScrollBySmooth(int dx, int dy)
+{
+	// Clip the values to the scroll limits, so we don't
+	// scroll any parents.
+	//int x = CLAMP(info.x + dx, info.min_x, info.max_x);
+	//int y = CLAMP(info.y + dy, info.min_y, info.max_y);
+	//dx = x - info.x;
+	//dy = y - info.y;
+	if (!dx && !dy)
+		return;
+
+	if (TBScroller *scroller = GetReadyScroller(dx != 0, dy != 0))
+		scroller->OnScrollBy(dx, dy, true);
+}
+
+void TBWidget::ScrollBy(int dx, int dy)
+{
+	ScrollInfo info = GetScrollInfo();
+	ScrollTo(info.x + dx, info.y + dy);
+}
+
 void TBWidget::ScrollByRecursive(int &dx, int &dy)
 {
 	TBWidget *tmp = this;
 	while (tmp)
 	{
-		tmp->ScrollBy(dx, dy);
+		ScrollInfo old_info = tmp->GetScrollInfo();
+		tmp->ScrollTo(old_info.x + dx, old_info.y + dy);
+		ScrollInfo new_info = tmp->GetScrollInfo();
+		dx -= new_info.x - old_info.x;
+		dy -= new_info.y - old_info.y;
 		if (!dx && !dy)
 			break;
 		tmp = tmp->m_parent;
@@ -347,6 +428,27 @@ void TBWidget::ScrollIntoViewRecursive()
 		scroll_to_rect.y += tmp->m_parent->m_rect.y;
 		tmp = tmp->m_parent;
 	}
+}
+
+void TBWidget::ScrollIntoView(const TBRect &rect)
+{
+	const ScrollInfo info = GetScrollInfo();
+	int new_x = info.x;
+	int new_y = info.y;
+
+	const TBRect visible_rect = GetPaddingRect().Offset(info.x, info.y);
+
+	if (rect.y <= visible_rect.y)
+		new_y = rect.y;
+	else if (rect.y + rect.h > visible_rect.y + visible_rect.h)
+		new_y = rect.y + rect.h - visible_rect.h;
+
+	if (rect.x <= visible_rect.x)
+		new_x = rect.x;
+	else if (rect.x + rect.w > visible_rect.x + visible_rect.w)
+		new_x = rect.x + rect.w - visible_rect.w;
+
+	ScrollTo(new_x, new_y);
 }
 
 bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
@@ -960,12 +1062,12 @@ bool TBWidget::InvokeEvent(TBWidgetEvent &ev)
 	return handled;
 }
 
-void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys)
+void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch)
 {
 	if (!captured_widget)
 	{
 		SetCapturedWidget(GetWidgetAt(x, y, true));
-		SetHoveredWidget(captured_widget);
+		SetHoveredWidget(captured_widget, touch);
 		//captured_button = button;
 
 		// Hide focus when we use the pointer, if it's not on the focused widget.
@@ -979,6 +1081,21 @@ void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 	}
 	if (captured_widget)
 	{
+		// Check if there's any started scroller that should be stopped.
+		TBWidget *tmp = captured_widget;
+		while (tmp)
+		{
+			if (tmp->m_scroller && tmp->m_scroller->IsStarted())
+			{
+				// When we touch down to stop a scroller, we don't
+				// want the touch to end up causing a click.
+				cancel_click = true;
+				tmp->m_scroller->Stop();
+				break;
+			}
+			tmp = tmp->GetParent();
+		}
+
 		// Focus the captured widget or the closest
 		// focusable parent if it isn't focusable.
 		TBWidget *focus_target = captured_widget;
@@ -994,30 +1111,30 @@ void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 		captured_widget->ConvertFromRoot(x, y);
 		pointer_move_widget_x = pointer_down_widget_x = x;
 		pointer_move_widget_y = pointer_down_widget_y = y;
-		TBWidgetEvent ev(EVENT_TYPE_POINTER_DOWN, x, y, modifierkeys);
+		TBWidgetEvent ev(EVENT_TYPE_POINTER_DOWN, x, y, touch, modifierkeys);
 		ev.count = click_count;
 		captured_widget->InvokeEvent(ev);
 	}
 }
 
-void TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys)
+void TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch)
 {
 	if (captured_widget)
 	{
 		captured_widget->ConvertFromRoot(x, y);
-		TBWidgetEvent ev_up(EVENT_TYPE_POINTER_UP, x, y, modifierkeys);
-		TBWidgetEvent ev_click(EVENT_TYPE_CLICK, x, y, modifierkeys);
+		TBWidgetEvent ev_up(EVENT_TYPE_POINTER_UP, x, y, touch, modifierkeys);
+		TBWidgetEvent ev_click(EVENT_TYPE_CLICK, x, y, touch, modifierkeys);
 		captured_widget->InvokeEvent(ev_up);
-		if (!is_panning && captured_widget && captured_widget->GetHitStatus(x, y))
+		if (!cancel_click && captured_widget && captured_widget->GetHitStatus(x, y))
 			captured_widget->InvokeEvent(ev_click);
 		if (captured_widget) // && button == captured_button
 			captured_widget->ReleaseCapture();
 	}
 }
 
-void TBWidget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys)
+void TBWidget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch)
 {
-	SetHoveredWidget(GetWidgetAt(x, y, true));
+	SetHoveredWidget(GetWidgetAt(x, y, true), touch);
 	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
 	if (target)
 	{
@@ -1025,7 +1142,7 @@ void TBWidget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys)
 		pointer_move_widget_x = x;
 		pointer_move_widget_y = y;
 
-		TBWidgetEvent ev(EVENT_TYPE_POINTER_MOVE, x, y, modifierkeys);
+		TBWidgetEvent ev(EVENT_TYPE_POINTER_MOVE, x, y, touch, modifierkeys);
 		if (target->InvokeEvent(ev))
 			return;
 
@@ -1046,21 +1163,26 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 	bool maybe_start_panning = (ABS(dx) >= threshold || ABS(dy) >= threshold);
 
 	// Do panning, or attempt starting panning (we don't know if any widget is scrollable yet)
-	if (is_panning || maybe_start_panning)
+	if (captured_widget->m_packed.is_panning || maybe_start_panning)
 	{
-		int old_translation_x = 0, old_translation_y = 0;
-		captured_widget->GetChildTranslation(old_translation_x, old_translation_y);
+		// Get any active scroller and feed it with pan actions.
+		TBScroller *scroller = captured_widget->GetReadyScroller(dx != 0, dy != 0);
+		if (!scroller)
+			return;
 
-		int old_dx = dx, old_dy = dy;
-		captured_widget->ScrollByRecursive(dx, dy);
-		if (old_dx != dx || old_dy != dy)
+		int old_translation_x = 0, old_translation_y = 0;
+		captured_widget->GetScrollRoot()->GetChildTranslation(old_translation_x, old_translation_y);
+
+		if (scroller->OnPan(dx, dy))
 		{
 			// Scroll delta changed, so we are now panning!
-			is_panning = true;
-			// If the captured widget has panned too, we have to compensate the pointer down
-			// coordinates so next pan handling isn't off.
+			captured_widget->m_packed.is_panning = true;
+			cancel_click = true;
+
+			// If the captured widget (or its scroll root) has panned, we have to compensate the
+			// pointer down coordinates so we won't accumulate the difference the following pan.
 			int new_translation_x = 0, new_translation_y = 0;
-			captured_widget->GetChildTranslation(new_translation_x, new_translation_y);
+			captured_widget->GetScrollRoot()->GetChildTranslation(new_translation_x, new_translation_y);
 			pointer_down_widget_x += new_translation_x - old_translation_x;
 			pointer_down_widget_y += new_translation_y - old_translation_y;
 		}
@@ -1069,14 +1191,14 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 
 void TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys)
 {
-	SetHoveredWidget(GetWidgetAt(x, y, true));
+	SetHoveredWidget(GetWidgetAt(x, y, true), true);
 	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
 	if (target)
 	{
 		target->ConvertFromRoot(x, y);
 		pointer_move_widget_x = x;
 		pointer_move_widget_y = y;
-		TBWidgetEvent ev(EVENT_TYPE_WHEEL, x, y, modifierkeys);
+		TBWidgetEvent ev(EVENT_TYPE_WHEEL, x, y, true, modifierkeys);
 		ev.delta_x = delta_x;
 		ev.delta_y = delta_y;
 		target->InvokeEvent(ev);
@@ -1115,7 +1237,7 @@ bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifie
 			// Invoke the click event
 			if (!down)
 			{
-				TBWidgetEvent ev(EVENT_TYPE_CLICK, m_rect.w / 2, m_rect.h / 2);
+				TBWidgetEvent ev(EVENT_TYPE_CLICK, m_rect.w / 2, m_rect.h / 2, true);
 				focused_widget->InvokeEvent(ev);
 			}
 			handled = true;
@@ -1187,23 +1309,31 @@ void TBWidget::ConvertFromRoot(int &x, int &y) const
 	}
 }
 
-void TBWidget::SetHoveredWidget(TBWidget *widget)
+// static
+void TBWidget::SetHoveredWidget(TBWidget *widget, bool touch)
 {
 	if (TBWidget::hovered_widget == widget)
 		return;
 	if (widget && widget->GetState(WIDGET_STATE_DISABLED))
 		return;
 
-	// We apply hover state automatically so the widget might need to be updated.
+	// We may apply hover state automatically so the widget might need to be updated.
 	if (TBWidget::hovered_widget)
 		TBWidget::hovered_widget->Invalidate();
 
 	TBWidget::hovered_widget = widget;
 
 	if (TBWidget::hovered_widget)
+	{
 		TBWidget::hovered_widget->Invalidate();
+
+		// Cursor based movement should set hover state automatically, but touch
+		// events should not (since touch doesn't really move unless pressed).
+		TBWidget::hovered_widget->m_packed.no_automatic_hover_state = touch;
+	}
 }
 
+// static
 void TBWidget::SetCapturedWidget(TBWidget *widget)
 {
 	if (TBWidget::captured_widget == widget)
@@ -1212,7 +1342,19 @@ void TBWidget::SetCapturedWidget(TBWidget *widget)
 		return;
 
 	// Stop panning when capture change (most likely changing to nullptr because of InvokePointerUp)
-	is_panning = false;
+	// Notify any active scroller so it may begin scrolling.
+	if (TBWidget::captured_widget)
+	{
+		if (TBScroller *scroller = TBWidget::captured_widget->FindStartedScroller())
+		{
+			if (TBWidget::captured_widget->m_packed.is_panning)
+				scroller->OnPanReleased();
+			else
+				scroller->Stop();
+		}
+		TBWidget::captured_widget->m_packed.is_panning = false;
+	}
+	cancel_click = false;
 
 	TBWidget *old_capture = TBWidget::captured_widget;
 

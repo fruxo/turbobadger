@@ -72,7 +72,7 @@ void TBInlineSelect::SetValueInternal(int value, bool update_text)
 		m_editfield.SetText(strval);
 	}
 
-	TBWidgetEvent ev(EVENT_TYPE_CHANGED, 0, 0);
+	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 
 	// Warning: Do nothing here since the event might have deleted us.

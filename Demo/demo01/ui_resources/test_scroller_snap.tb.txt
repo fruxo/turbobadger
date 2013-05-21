@@ -1,0 +1,22 @@
+WindowInfo
+	title TBScrollerSnapListener
+TBScrollContainer: id: "page-scroller"
+	lp: width: 200, height: 300
+	scroll-mode off
+	TBLayout
+		spacing 0
+		TBContainer
+			lp: width: 200, height: 300
+			TBTextField: text: "One - Swipe to next page"
+		TBContainer
+			lp: width: 200, height: 300
+			TBTextField: text: "Two"
+		TBContainer
+			lp: width: 200, height: 300
+			TBTextField: text: "Three"
+		TBContainer
+			lp: width: 200, height: 300
+			TBTextField: text: "Four"
+		TBContainer
+			lp: width: 200, height: 300
+			TBTextField: text: "Five - Last page"

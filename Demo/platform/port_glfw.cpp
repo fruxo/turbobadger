@@ -107,7 +107,8 @@ static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modif
 	else
 		return false;
 
-	TBWidgetEvent ev(EVENT_TYPE_SHORTCUT, 0, 0, modifierkeys);
+	TBWidgetEvent ev(EVENT_TYPE_SHORTCUT);
+	ev.modifierkeys = modifierkeys;
 	ev.ref_id = id;
 	return TBWidget::focused_widget->InvokeEvent(ev);
 }
@@ -161,7 +162,8 @@ static void key_callback(GLFWwindow window, int key, int action)
 	case GLFW_KEY_MENU:
 		if (TBWidget::focused_widget && !down)
 		{
-			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, 0, 0, GetModifierKeys());
+			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU);
+			ev.modifierkeys = modifier;
 			TBWidget::focused_widget->InvokeEvent(ev);
 		}
 		break;
@@ -211,18 +213,18 @@ static void mouse_button_callback(GLFWwindow window, int button, int action)
 			last_y = y;
 			last_time = time;
 
-			g_backend->GetRoot()->InvokePointerDown(x, y, counter, GetModifierKeys());
+			g_backend->GetRoot()->InvokePointerDown(x, y, counter, GetModifierKeys(), false);
 		}
 		else
-			g_backend->GetRoot()->InvokePointerUp(x, y, GetModifierKeys());
+			g_backend->GetRoot()->InvokePointerUp(x, y, GetModifierKeys(), false);
 	}
 	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
 	{
-		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys());
+		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), false);
 		if (TBWidget::hovered_widget)
 		{
 			TBWidget::hovered_widget->ConvertFromRoot(x, y);
-			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, GetModifierKeys());
+			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, false, GetModifierKeys());
 			TBWidget::hovered_widget->InvokeEvent(ev);
 		}
 	}
@@ -233,7 +235,7 @@ void cursor_position_callback(GLFWwindow window, int x, int y)
 	mouse_x = x;
 	mouse_y = y;
 	if (g_backend->GetRoot())
-		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys());
+		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), false);
 }
 
 static void scroll_callback(GLFWwindow window, double x, double y)

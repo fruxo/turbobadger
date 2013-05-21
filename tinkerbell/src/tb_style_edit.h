@@ -317,8 +317,8 @@ public:
 
 	void Paint(const TBRect &rect, const TBFontDescription &font_desc, const TBColor &text_color);
 	bool KeyDown(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys);
-	bool MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys);
-	bool MouseUp(const TBPoint &point, int button, MODIFIER_KEYS modifierkeys);
+	bool MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys, bool touch);
+	bool MouseUp(const TBPoint &point, int button, MODIFIER_KEYS modifierkeys, bool touch);
 	bool MouseMove(const TBPoint &point);
 	void Focus(bool focus);
 
