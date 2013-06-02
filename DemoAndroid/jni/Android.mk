@@ -57,6 +57,7 @@ LOCAL_MODULE     := libTinkerbell
 LOCAL_CFLAGS     := -Werror -DANDROID -D__ANDROID__ -DUSE_GLES -DTB_ALWAYS_SHOW_EDIT_FOCUS
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../.. $(LOCAL_PATH)/../../tinkerbell/src $(LOCAL_PATH)/../../Demo/renderers
 LOCAL_LDLIBS     := -llog -landroid -lGLESv1_CM
+LOCAL_CPPFLAGS   := -fno-rtti -fno-exceptions -std=c++0x
 
 #release
 LOCAL_CFLAGS     += -DNDEBUG
