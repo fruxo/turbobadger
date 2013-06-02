@@ -83,7 +83,7 @@ What features does it have
 	• No dependency on stl, exceptions, RTTI
 	• Very portable & easy to implement new backends (Image loading, fonts,
 	  renderer)
-	• Support 32/64bit architectures and tested on Windows/Linux/Mac/iOS
+	• Support 32/64bit architectures and tested on Windows/Linux/Mac/iOS/Android
 	• Uses constexpr by default for all ID comparisions on compilers that support
 	  it.
 	• Unicode support (UTF8)

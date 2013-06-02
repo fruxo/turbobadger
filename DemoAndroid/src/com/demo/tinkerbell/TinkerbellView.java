@@ -6,9 +6,12 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.View;
-import android.view.WindowManager;
+
+import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
 
 class EventRunnable implements Runnable {
@@ -45,6 +48,7 @@ class TinkerbellView extends GLSurfaceView
 {
 	private static TinkerbellView instance;
 	private static boolean show_keyboard;
+	private TinkerbellRenderer renderer;
 
 	public TinkerbellView(Context context) {
 		super(context);
@@ -64,14 +68,17 @@ class TinkerbellView extends GLSurfaceView
 		//setEGLConfigChooser(this);
 
 		// Set the renderer associated with this view
-		setRenderer(new TinkerbellRenderer());
+		renderer = new TinkerbellRenderer();
+		setRenderer(renderer);
 	}
 
 	/*@Override public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
-		Phint[] num_conf = new int[1];
-		egl.eglGetConfigs(display, null, 0, num_conf);
-		for (int i = 0; i < num_conf[0]; i++) {
-
+		// TODO: We should make sure we get 32bit quality!
+		EGLConfig []configs = new EGLConfig[100];
+		int []num_config = new int[1];
+		egl.eglGetConfigs(display, configs, 100, num_config);
+		for (int i = 0; i < num_config[0]; i++) {
+			return configs[i];
 		}
 		return null;
 	}*/
@@ -93,7 +100,7 @@ class TinkerbellView extends GLSurfaceView
 			}});
 	}
 
-	public boolean onTouchEvent(final MotionEvent event) {
+	@Override public boolean onTouchEvent(final MotionEvent event) {
 			float x2 = 0;
 			float y2 = 0;
 			if (event.getPointerCount() > 1) {
@@ -104,7 +111,7 @@ class TinkerbellView extends GLSurfaceView
 			return true;
 	}
 
-	public void surfaceDestroyed(SurfaceHolder holder) {
+	@Override public void surfaceDestroyed(SurfaceHolder holder) {
 		super.surfaceDestroyed(holder);
 		queueEvent(new Runnable() {
 			public void run() {
@@ -114,7 +121,24 @@ class TinkerbellView extends GLSurfaceView
 
 	private static class TinkerbellRenderer implements GLSurfaceView.Renderer
 	{
+		private int m_width, m_height;
 		public void onDrawFrame(GL10 gl) {
+
+			if (EGLContext.getEGL() instanceof EGL10) {
+				// There seems to be a backend bug (race condition?) that we sometimes
+				// get one onDrawFrame call before onSurfaceChanged is called after the
+				// surface change size. Work around this by checking the size of the
+				// surface and resize the rendering accordingly.
+				int w[] = { 0 };
+				int h[] = { 0 };
+				EGL10 egl = (EGL10)EGLContext.getEGL();
+				EGLDisplay disp = egl.eglGetCurrentDisplay();
+				EGLSurface surf = egl.eglGetCurrentSurface(EGL10.EGL_DRAW);
+				if (egl.eglQuerySurface(disp, surf, EGL10.EGL_WIDTH, w) &&
+					egl.eglQuerySurface(disp, surf, EGL10.EGL_HEIGHT, h))
+					handleSurfaceSizeChanged(w[0], h[0]);
+			}
+
 			TinkerbellLib.RunSlice();
 		}
 
@@ -129,6 +153,15 @@ class TinkerbellView extends GLSurfaceView
 				TinkerbellLib.sInitiated = true;
 				TinkerbellLib.InitApp(width, height, "", "");
 			}
+			handleSurfaceSizeChanged(width, height);
+		}
+
+		private void handleSurfaceSizeChanged(int width, int height) {
+			if (!TinkerbellLib.sInitiated ||
+				(width == m_width && height == m_height))
+				return;
+			m_width = width;
+			m_height = height;
 			TinkerbellLib.OnSurfaceResized(width, height);
 		}
 	}
