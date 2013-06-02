@@ -55,7 +55,7 @@ class Batch
 public:
 	Batch() : vertex_count(0), bitmap(nullptr), fragment(nullptr), is_flushing(false), batch_id(0) {}
 	void Flush();
-	void AddVertex(int x, int y, float u, float v, uint32 color);
+	Vertex *Reserve(int count);
 //private:
 	Vertex vertex[VERTEX_BATCH_SIZE];
 	int vertex_count;
@@ -102,17 +102,14 @@ void Batch::Flush()
 	is_flushing = false;
 }
 
-void Batch::AddVertex(int x, int y, float u, float v, uint32 color)
+Vertex *Batch::Reserve(int count)
 {
-	vertex[vertex_count].x = (float)x;
-	vertex[vertex_count].y = (float)y;
-	vertex[vertex_count].u = u;
-	vertex[vertex_count].v = v;
-	vertex[vertex_count].col = color;
-	vertex_count++;
-
-	if (vertex_count == VERTEX_BATCH_SIZE)
+	assert(count < VERTEX_BATCH_SIZE);
+	if (vertex_count + count > VERTEX_BATCH_SIZE)
 		Flush();
+	Vertex *ret = &vertex[vertex_count];
+	vertex_count += count;
+	return ret;
 }
 
 /** Extreemly simple batcher (only maintains one batch and flushes when texture changes) */
@@ -136,13 +133,38 @@ public:
 			uu = (float)(src_rect.x + src_rect.w) / b->m_w;
 			vv = (float)(src_rect.y + src_rect.h) / b->m_h;
 		}
-		batch.AddVertex(dst_rect.x, dst_rect.y + dst_rect.h, u, vv, color);
-		batch.AddVertex(dst_rect.x + dst_rect.w, dst_rect.y + dst_rect.h, uu, vv, color);
-		batch.AddVertex(dst_rect.x, dst_rect.y, u, v, color);
+		Vertex *ver = batch.Reserve(6);
+		ver[0].x = dst_rect.x;
+		ver[0].y = dst_rect.y + dst_rect.h;
+		ver[0].u = u;
+		ver[0].v = vv;
+		ver[0].col = color;
+		ver[1].x = dst_rect.x + dst_rect.w;
+		ver[1].y = dst_rect.y + dst_rect.h;
+		ver[1].u = uu;
+		ver[1].v = vv;
+		ver[1].col = color;
+		ver[2].x = dst_rect.x;
+		ver[2].y = dst_rect.y;
+		ver[2].u = u;
+		ver[2].v = v;
+		ver[2].col = color;
 
-		batch.AddVertex(dst_rect.x, dst_rect.y, u, v, color);
-		batch.AddVertex(dst_rect.x + dst_rect.w, dst_rect.y + dst_rect.h, uu, vv, color);
-		batch.AddVertex(dst_rect.x + dst_rect.w, dst_rect.y, uu, v, color);
+		ver[3].x = dst_rect.x;
+		ver[3].y = dst_rect.y;
+		ver[3].u = u;
+		ver[3].v = v;
+		ver[3].col = color;
+		ver[4].x = dst_rect.x + dst_rect.w;
+		ver[4].y = dst_rect.y + dst_rect.h;
+		ver[4].u = uu;
+		ver[4].v = vv;
+		ver[4].col = color;
+		ver[5].x = dst_rect.x + dst_rect.w;
+		ver[5].y = dst_rect.y;
+		ver[5].u = uu;
+		ver[5].v = v;
+		ver[5].col = color;
 
 		// Update fragments batch id (See FlushBitmapFragment)
 		if (fragment)
