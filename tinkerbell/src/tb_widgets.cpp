@@ -49,8 +49,10 @@ TBWidget::TBWidget()
 	, m_layout_params(nullptr)
 	, m_packed_init(0)
 {
-	TB_IF_LAYOUT_DEBUG(last_measure_time = TBSystem::GetTimeMS());
-	TB_IF_LAYOUT_DEBUG(last_layout_time = TBSystem::GetTimeMS());
+#ifdef TB_RUNTIME_DEBUG_INFO
+	last_measure_time = 0;
+	last_layout_time = 0;
+#endif // TB_RUNTIME_DEBUG_INFO
 }
 
 TBWidget::~TBWidget()
@@ -751,7 +753,7 @@ PreferredSize TBWidget::GetPreferredSize()
 {
 	if (m_packed.is_cached_ps_valid)
 		return m_cached_ps;
-	TB_IF_LAYOUT_DEBUG(last_measure_time = TBSystem::GetTimeMS());
+	TB_IF_DEBUG_SETTING(LAYOUT_PS_DEBUGGING, last_measure_time = TBSystem::GetTimeMS());
 	m_packed.is_cached_ps_valid = 1;
 	m_cached_ps = OnCalculatePreferredSize();
 
@@ -874,7 +876,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, static_cast<SKIN_STATE>(state), context);
 	assert(!!used_element == !!skin_element);
 
-	TB_IF_GFX_DEBUG(g_renderer->DrawRect(local_rect, TBColor(255, 255, 255, 50)));
+	TB_IF_DEBUG_SETTING(LAYOUT_BOUNDS, g_renderer->DrawRect(local_rect, TBColor(255, 255, 255, 50)));
 
 	// Inherit properties from parent if not specified in the used skin for this widget.
 	PaintProps paint_props = parent_paint_props;
@@ -890,23 +892,26 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	// Paint children
 	OnPaintChildren(paint_props);
 
-#ifdef TB_LAYOUT_DEBUGGING
-	// Layout debug painting. Paint recently layouted widgets with red and
-	// recently measured widgets with yellow.
-	// Invalidate to keep repainting until we've timed out (so it's removed).
-	const double debug_time = 300;
-	const double now = TBSystem::GetTimeMS();
-	if (now < last_layout_time + debug_time)
+#ifdef TB_RUNTIME_DEBUG_INFO
+	if (TB_DEBUG_SETTING(LAYOUT_PS_DEBUGGING))
 	{
-		g_renderer->DrawRect(local_rect, TBColor(255, 30, 30, 200));
-		Invalidate();
+		// Layout debug painting. Paint recently layouted widgets with red and
+		// recently measured widgets with yellow.
+		// Invalidate to keep repainting until we've timed out (so it's removed).
+		const double debug_time = 300;
+		const double now = TBSystem::GetTimeMS();
+		if (now < last_layout_time + debug_time)
+		{
+			g_renderer->DrawRect(local_rect, TBColor(255, 30, 30, 200));
+			Invalidate();
+		}
+		if (now < last_measure_time + debug_time)
+		{
+			g_renderer->DrawRect(local_rect.Shrink(1, 1), TBColor(255, 255, 30, 200));
+			Invalidate();
+		}
 	}
-	if (now < last_measure_time + debug_time)
-	{
-		g_renderer->DrawRect(local_rect.Shrink(1, 1), TBColor(255, 255, 30, 200));
-		Invalidate();
-	}
-#endif // TB_LAYOUT_DEBUGGING
+#endif // TB_RUNTIME_DEBUG_INFO
 
 	if (used_element)
 		g_renderer->Translate(-used_element->content_ofs_x, -used_element->content_ofs_y);

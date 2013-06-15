@@ -355,6 +355,18 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 		if (TBProgressSpinner *spinner = GetWidgetByIDAndType<TBProgressSpinner>(TBIDC("spinner")))
 			spinner->SetValue(0);
 	}
+	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("debug settings"))
+	{
+#ifdef TB_RUNTIME_DEBUG_INFO
+		ShowDebugInfoSettingsWindow(GetParentRoot());
+#else
+		TBMessageWindow *msg_win = new TBMessageWindow(ev.target, TBID());
+		msg_win->Show("Debug settings",
+						"Debug settings is only available in builds "
+						"compiled with TB_RUNTIME_DEBUG_INFO defined.");
+#endif
+		return true;
+	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("reset-master-volume"))
 	{
 		if (TBWidgetValue *val = g_value_group.GetValue(TBIDC("master-volume")))

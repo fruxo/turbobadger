@@ -783,8 +783,10 @@ public:
 	TBValue data;
 
 	// Debugging
-	TB_IF_LAYOUT_DEBUG(double last_measure_time);
-	TB_IF_LAYOUT_DEBUG(double last_layout_time);
+#ifdef TB_RUNTIME_DEBUG_INFO
+	double last_measure_time;
+	double last_layout_time;
+#endif // TB_RUNTIME_DEBUG_INFO
 
 	// TBWidget related globals
 	static TBWidget *hovered_widget;		///< The currently hovered widget, or nullptr.

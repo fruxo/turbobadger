@@ -40,3 +40,5 @@ TBTabContainer
 	TBLayout
 		axis y
 		TBEditField: id: debug_output, multiline: 1, wrap: 0, gravity: all
+			lp: height: 70dp
+		TBButton: id: "debug settings", text: "Runtime debug settings..."
