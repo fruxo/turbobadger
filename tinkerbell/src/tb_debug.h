@@ -31,6 +31,9 @@ public:
 		/** Show highlights on widgets that recalculate their preferred
 			size, and those who recalculate their layout. */
 		LAYOUT_PS_DEBUGGING,
+		/** Show render batch info and log batch info in the debug
+			output. It depends on the renderer backend if this is available. */
+		RENDER_BATCHES,
 
 		NUM_SETTINGS
 	};

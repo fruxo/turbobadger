@@ -30,6 +30,7 @@ public:
 		AddCheckbox(TBDebugInfo::LAYOUT_BOUNDS, "Layout bounds");
 		AddCheckbox(TBDebugInfo::LAYOUT_CLIPPING, "Layout clipping");
 		AddCheckbox(TBDebugInfo::LAYOUT_PS_DEBUGGING, "Layout size calculation");
+		AddCheckbox(TBDebugInfo::RENDER_BATCHES, "Render batches");
 
 		ResizeToFitContent();
 		SetPosition(TBPoint((root->GetRect().w - GetRect().w) / 2,

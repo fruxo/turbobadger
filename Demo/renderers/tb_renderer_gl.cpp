@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "tb_renderer_gl.h"
 #include "tb_bitmap_fragment.h"
+#include "tb_system.h"
 
 namespace tinkerbell {
 
@@ -39,6 +40,11 @@ struct Vertex {
 
 GLuint g_current_texture = (GLuint)-1;
 class Batch *g_current_batch = 0;
+
+#ifdef TB_RUNTIME_DEBUG_INFO
+uint32 dbg_begin_paint_batch_id = 0;
+uint32 dbg_bitmap_validations = 0;
+#endif // TB_RUNTIME_DEBUG_INFO
 
 void BindBitmap(TBBitmap *bitmap)
 {
@@ -95,6 +101,21 @@ void Batch::Flush()
 
 	// Flush
 	glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+#ifdef TB_RUNTIME_DEBUG_INFO
+	if (TB_DEBUG_SETTING(RENDER_BATCHES))
+	{
+		// Draw the triangles again using a random color based on the batch
+		// id. This indicates which triangles belong to the same batch.
+		glBindTexture(GL_TEXTURE_2D, 0);
+		uint32 id = batch_id - dbg_begin_paint_batch_id;
+		uint32 hash = id * (2166136261U ^ id);
+		uint32 color = 0xAA000000 + (hash & 0x00FFFFFF);
+		for (int i = 0; i < vertex_count; i++)
+			vertex[i].col = color;
+		glDrawArrays(GL_TRIANGLES, 0, vertex_count);
+		glBindTexture(GL_TEXTURE_2D, g_current_texture);
+	}
+#endif // TB_RUNTIME_DEBUG_INFO
 	vertex_count = 0;
 
 	batch_id++; // Will overflow eventually, but that doesn't really matter.
@@ -190,6 +211,20 @@ public:
 		if (batch.vertex_count && bitmap_fragment->m_batch_id == batch.batch_id)
 			batch.Flush();
 	}
+	void BeginPaint()
+	{
+#ifdef TB_RUNTIME_DEBUG_INFO
+		if (TB_DEBUG_SETTING(RENDER_BATCHES))
+		{
+			TBStr str;
+			str.SetFormatted("Last frame had %d batches and %d bitmap validations.\n",
+							batch.batch_id - dbg_begin_paint_batch_id, dbg_bitmap_validations);
+			TBDebugOut(str);
+		}
+		dbg_bitmap_validations = 0;
+		dbg_begin_paint_batch_id = batch.batch_id;
+#endif // TB_RUNTIME_DEBUG_INFO
+	}
 private:
 	Batch batch; ///< The one and only batch. (this should be improved)
 };
@@ -236,6 +271,7 @@ void TBBitmapGL::SetData(uint32 *data)
 	batch.FlushBitmap(this);
 	BindBitmap(this);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_w, m_h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	TB_IF_DEBUG_SETTING(RENDER_BATCHES, dbg_bitmap_validations++);
 }
 
 // == TBRendererGL ================================================================================
@@ -247,6 +283,8 @@ TBRendererGL::TBRendererGL()
 
 void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 {
+	batch.BeginPaint();
+
 	m_screen_rect.Set(0, 0, render_target_w, render_target_h);
 	m_clip_rect = m_screen_rect;
 	g_current_texture = (GLuint)-1;
