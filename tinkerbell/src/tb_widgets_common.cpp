@@ -218,6 +218,7 @@ TBClickLabel::TBClickLabel()
 	m_layout.AddChild(&m_textfield);
 	m_layout.SetRect(GetPaddingRect());
 	m_layout.SetGravity(WIDGET_GRAVITY_ALL);
+	m_layout.SetLayoutDistributionPosition(LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP);
 }
 
 TBClickLabel::~TBClickLabel()
