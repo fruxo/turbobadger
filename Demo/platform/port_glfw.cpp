@@ -68,6 +68,13 @@ MODIFIER_KEYS GetModifierKeys()
 	return code;
 }
 
+static bool ShouldEmulateTouchEvent()
+{
+	// Used to emulate that mouse events are touch events when alt, ctrl and shift are pressed.
+	// This makes testing a lot easier when there is no touch screen around :)
+	return (GetModifierKeys() & (TB_ALT | TB_CTRL | TB_SHIFT)) ? true : false;
+}
+
 // @return Return the upper case of a ascii charcter. Only for shortcut handling.
 static int toupr_ascii(int ascii)
 {
@@ -213,14 +220,14 @@ static void mouse_button_callback(GLFWwindow window, int button, int action)
 			last_y = y;
 			last_time = time;
 
-			g_backend->GetRoot()->InvokePointerDown(x, y, counter, GetModifierKeys(), false);
+			g_backend->GetRoot()->InvokePointerDown(x, y, counter, GetModifierKeys(), ShouldEmulateTouchEvent());
 		}
 		else
-			g_backend->GetRoot()->InvokePointerUp(x, y, GetModifierKeys(), false);
+			g_backend->GetRoot()->InvokePointerUp(x, y, GetModifierKeys(), ShouldEmulateTouchEvent());
 	}
 	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
 	{
-		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), false);
+		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), ShouldEmulateTouchEvent());
 		if (TBWidget::hovered_widget)
 		{
 			TBWidget::hovered_widget->ConvertFromRoot(x, y);
@@ -234,8 +241,8 @@ void cursor_position_callback(GLFWwindow window, int x, int y)
 {
 	mouse_x = x;
 	mouse_y = y;
-	if (g_backend->GetRoot())
-		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), false);
+	if (g_backend->GetRoot() && !(ShouldEmulateTouchEvent() && !TBWidget::captured_widget))
+		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), ShouldEmulateTouchEvent());
 }
 
 static void scroll_callback(GLFWwindow window, double x, double y)
