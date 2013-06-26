@@ -64,24 +64,13 @@ class TinkerbellView extends GLSurfaceView
 		// Create an OpenGL ES 2.0 context
 		//setEGLContextClientVersion(2);
 
-		// Choose 32bit and no depth buffer.
-		//setEGLConfigChooser(this);
+		// Choose 32bit and no alpha, depth or stencil buffer.
+		setEGLConfigChooser(8, 8, 8, 0, 0, 0);
 
 		// Set the renderer associated with this view
 		renderer = new TinkerbellRenderer();
 		setRenderer(renderer);
 	}
-
-	/*@Override public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
-		// TODO: We should make sure we get 32bit quality!
-		EGLConfig []configs = new EGLConfig[100];
-		int []num_config = new int[1];
-		egl.eglGetConfigs(display, configs, 100, num_config);
-		for (int i = 0; i < num_config[0]; i++) {
-			return configs[i];
-		}
-		return null;
-	}*/
 
 	@Override public void onPause() {
 		super.onPause();
