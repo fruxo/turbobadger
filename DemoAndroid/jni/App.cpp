@@ -121,7 +121,6 @@ void Init(unsigned int width, unsigned int height)
 
 	// Add a font to the font manager.
 	g_font_manager->AddFontInfo("font/segoe_white_with_shadow.tb.txt", "Segoe");
-	g_font_manager->AddFontInfo("font/orangutang.tb.txt", "Orangutang");
 
 	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;

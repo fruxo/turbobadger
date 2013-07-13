@@ -859,9 +859,9 @@ int app_main()
 	// If you use the freetype or stb backend, you can add true type files
 	//g_font_manager->AddFontInfo("vera.ttf", "Vera");
 	g_font_manager->AddFontInfo("tinkerbell/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
-	g_font_manager->AddFontInfo("tinkerbell/default_font/neon.tb.txt", "Neon");
-	g_font_manager->AddFontInfo("tinkerbell/default_font/orangutang.tb.txt", "Orangutang");
-	g_font_manager->AddFontInfo("tinkerbell/default_font/orange.tb.txt", "Orange");
+	g_font_manager->AddFontInfo("Demo/fonts/neon.tb.txt", "Neon");
+	g_font_manager->AddFontInfo("Demo/fonts/orangutang.tb.txt", "Orangutang");
+	g_font_manager->AddFontInfo("Demo/fonts/orange.tb.txt", "Orange");
 
 	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;
