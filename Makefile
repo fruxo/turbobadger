@@ -20,7 +20,7 @@ ifeq ($(UNAME),Darwin)
 else
  CFLAGS += -DLINUX -Dnullptr=0
  CXXFLAGS += -DLINUX -Dnullptr=0 --std=c++0x
- LIBS += -lGL
+ LIBS += -lGL -lX11
 endif
 
 TARGET = RunDemo
