@@ -32,25 +32,25 @@ TB_TEST_GROUP(tb_object)
 
 	TB_TEST(safe_cast)
 	{
-		Fruit *fruit = new Fruit();
-		Apple *apple = new Apple();
-		Car *car = new Car();
+		Fruit fruit;
+		Apple apple;
+		Car car;
 
-		TB_VERIFY(TBSafeCast<TBTypedObject>(fruit));
-		TB_VERIFY(TBSafeCast<TBTypedObject>(apple));
-		TB_VERIFY(TBSafeCast<TBTypedObject>(car));
+		TB_VERIFY(TBSafeCast<TBTypedObject>(&fruit));
+		TB_VERIFY(TBSafeCast<TBTypedObject>(&apple));
+		TB_VERIFY(TBSafeCast<TBTypedObject>(&car));
 
-		TB_VERIFY(TBSafeCast<Fruit>(fruit));
-		TB_VERIFY(TBSafeCast<Fruit>(apple));
-		TB_VERIFY(!TBSafeCast<Fruit>(car));
+		TB_VERIFY(TBSafeCast<Fruit>(&fruit));
+		TB_VERIFY(TBSafeCast<Fruit>(&apple));
+		TB_VERIFY(!TBSafeCast<Fruit>(&car));
 
-		TB_VERIFY(!TBSafeCast<Apple>(fruit));
-		TB_VERIFY(TBSafeCast<Apple>(apple));
-		TB_VERIFY(!TBSafeCast<Apple>(car));
+		TB_VERIFY(!TBSafeCast<Apple>(&fruit));
+		TB_VERIFY(TBSafeCast<Apple>(&apple));
+		TB_VERIFY(!TBSafeCast<Apple>(&car));
 
-		TB_VERIFY(!TBSafeCast<Car>(fruit));
-		TB_VERIFY(!TBSafeCast<Car>(apple));
-		TB_VERIFY(TBSafeCast<Car>(car));
+		TB_VERIFY(!TBSafeCast<Car>(&fruit));
+		TB_VERIFY(!TBSafeCast<Car>(&apple));
+		TB_VERIFY(TBSafeCast<Car>(&car));
 	}
 }
 

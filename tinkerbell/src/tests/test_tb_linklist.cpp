@@ -111,7 +111,7 @@ TB_TEST_GROUP(tb_linklist)
 
 	TB_TEST(multiple_iterators_assign_swap_list)
 	{
-		TBLinkListOf<Apple> other_list;
+		TBLinkListAutoDeleteOf<Apple> other_list;
 		other_list.AddLast(new Apple(42));
 
 		TBLinkListOf<Apple>::Iterator iA = list.IterateForward();
