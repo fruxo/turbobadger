@@ -572,9 +572,14 @@ TBWidget *TBWidget::GetLastLeaf() const
 	return nullptr;
 }
 
+bool TBWidget::GetIsInteractable() const
+{
+	return !(m_opacity == 0 || GetIgnoreInput() || GetState(WIDGET_STATE_DISABLED) || GetIsDying());
+}
+
 WIDGET_HIT_STATUS TBWidget::GetHitStatus(int x, int y)
 {
-	if (m_opacity == 0 || GetIgnoreInput() || GetState(WIDGET_STATE_DISABLED) || GetIsDying())
+	if (!GetIsInteractable())
 		return WIDGET_HIT_STATUS_NO_HIT;
 	return x >= 0 && y >= 0 && x < m_rect.w && y < m_rect.h ? WIDGET_HIT_STATUS_HIT : WIDGET_HIT_STATUS_NO_HIT;
 }

@@ -409,6 +409,11 @@ public:
 	void SetIgnoreInput(bool ignore_input) { m_packed.ignore_input = ignore_input; }
 	bool GetIgnoreInput() const { return m_packed.ignore_input; }
 
+	/** Get if this widget wants interaction depending on various states.
+		Cares about zero opacity, flag set by SetIgnoreInput, disabled state,
+		and if the widget is currently dying. */
+	bool GetIsInteractable() const;
+
 	/** Set this widget to be the focused widget. It will be the one receiving keyboard input.
 		Widgets can be focused only after enabling it (See SetIsFocusable(true)).
 		Invisible or disabled widgets can not be focused.
