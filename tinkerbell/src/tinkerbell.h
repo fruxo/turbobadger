@@ -62,6 +62,7 @@ public:
 	inline bool IsInsideOut() const					{ return w < 0 || h < 0; }
 	inline bool Equals(const TBRect &rect) const	{ return rect.x == x && rect.y == y && rect.w == w && rect.h == h; }
 	bool Intersects(const TBRect &rect) const;
+	bool Contains(const TBPoint &p) const			{ return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h; }
 
 	inline void Reset()								{ x = y = w = h = 0; }
 	inline void Set(int x, int y, int w, int h)		{ this->x = x; this->y = y; this->w = w; this->h = h; }
