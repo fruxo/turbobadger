@@ -6,6 +6,7 @@
 #include "tinkerbell.h"
 #include "tb_system.h"
 #include "tb_widgets.h"
+#include "tb_select.h"
 #include "tb_font_renderer.h"
 
 #include "tb_widgets_reader.h"
@@ -71,15 +72,31 @@ public:
 		msg_win->Show(title, text);
 	}
 
+	void ShowScreenInfo()
+	{
+		TBStr text;
+		text.SetFormatted(	"Screen DPI: %d\n"
+							"Closest skin DPI: %d\n"
+							"Root dimensions: %dx%dpx\n"
+							"100dp equals %dpx (Based on closest skin DPI and screen DPI)",
+							TBSystem::GetDPI(),
+							g_tb_skin->GetDimensionConverter()->GetDstDPI(),
+							GetParentRoot()->GetRect().w, GetParentRoot()->GetRect().h,
+							g_tb_skin->GetDimensionConverter()->DpToPx(100));
+		TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBIDC(""));
+		msg_win->Show("Screen info", text);
+	}
+
 	virtual bool OnEvent(const TBWidgetEvent &ev)
 	{
-		if (ev.type != EVENT_TYPE_CLICK)
-			return false;
-
-		if (ev.target->GetID() == TBIDC("speed test inflate"))
+		if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("speed test inflate"))
 			TestSpeed(TEST_INFLATE);
-		else if (ev.target->GetID() == TBIDC("speed test resize"))
+		else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("speed test resize"))
 			TestSpeed(TEST_RESIZE);
+		else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("screen-info"))
+			ShowScreenInfo();
+		else
+			return false;
 		return true;
 	}
 };

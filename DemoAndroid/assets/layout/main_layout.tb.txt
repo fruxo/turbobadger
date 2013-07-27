@@ -18,6 +18,7 @@ TBLayout
 				TBSeparator: gravity: all
 				TBButton: text: "3cm wide"
 					lp: width: 30mm
+				TBButton: text: "Screen info", id: "screen-info"
 				TBClickLabel: text: "Check box"
 					TBCheckBox
 				TBClickLabel: text: "Radio button"
