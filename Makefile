@@ -6,12 +6,13 @@ LDFLAGS =
 LIBS =
 INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/glfw/include" -I"."
 
-#release
-CFLAGS = -DNDEBUG -fno-exceptions -O2 $(INCPATH)
-CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
-#debug
-#CFLAGS = -D_DEBUG -g $(INCPATH)
-#CXXFLAGS = -D_DEBUG -g $(INCPATH)
+ifeq ($(DEBUG),YES)
+ CFLAGS = -D_DEBUG -g $(INCPATH)
+ CXXFLAGS = -D_DEBUG -g $(INCPATH)
+else
+ CFLAGS = -DNDEBUG -fno-exceptions -O2 $(INCPATH)
+ CXXFLAGS = -DNDEBUG -fno-rtti -fno-exceptions -O2 $(INCPATH)
+endif
 
 ifeq ($(UNAME),Darwin)
  CFLAGS += -DMACOSX -Dnullptr=0
