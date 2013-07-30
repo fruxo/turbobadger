@@ -2,15 +2,8 @@
 @echo off
 
 call update_assets.bat
-call ndk-build
 
-call ant debug
-REM call ant release
+set INSTALL=adb install -r bin/TinkerbellDemo-debug.apk
+set RUN=adb shell am start -n com.demo.tinkerbell/.TinkerbellActivity
 
-call adb install -r bin/TinkerbellDemo-debug.apk
-call adb shell am start -n com.demo.tinkerbell/.TinkerbellActivity
-
-echo "Success!"
-goto :eof
-:error
-echo "Failed!"
+ndk-build && ant debug && %INSTALL% && %RUN%
