@@ -146,7 +146,7 @@ static void char_callback(GLFWwindow *window, unsigned int character)
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int glfwmod)
 {
 	MODIFIER_KEYS modifier = GetModifierKeys(glfwmod);
-	bool down = (action == GLFW_PRESS);
+	bool down = (action == GLFW_PRESS || action == GLFW_REPEAT);
 	switch (key)
 	{
 	case GLFW_KEY_F1:			InvokeKey(0, TB_KEY_F1, modifier, down); break;
