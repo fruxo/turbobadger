@@ -47,7 +47,7 @@ public:
 	TBRendererGL *m_renderer;
 	RootWidget m_root;
 
-	GLFWwindow mainWindow;
+	GLFWwindow *mainWindow;
 };
 
 void RootWidget::OnInvalid()
@@ -65,6 +65,15 @@ MODIFIER_KEYS GetModifierKeys()
 	if (key_alt)	code |= TB_ALT;
 	if (key_ctrl)	code |= TB_CTRL;
 	if (key_shift)	code |= TB_SHIFT;
+	return code;
+}
+
+MODIFIER_KEYS GetModifierKeys(int modifier)
+{
+	MODIFIER_KEYS code = TB_MODIFIER_NONE;
+	if (modifier & GLFW_MOD_ALT)		code |= TB_ALT;
+	if (modifier & GLFW_MOD_CONTROL)	code |= TB_CTRL;
+	if (modifier & GLFW_MOD_SHIFT)		code |= TB_SHIFT;
 	return code;
 }
 
@@ -120,7 +129,7 @@ static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modif
 	return TBWidget::focused_widget->InvokeEvent(ev);
 }
 
-static bool InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
+static bool InvokeKey(unsigned int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
 	if (InvokeShortcut(key, TB_KEY_UNDEFINED, modifierkeys, down))
 		return true;
@@ -128,15 +137,15 @@ static bool InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierke
 	return true;
 }
 
-static void char_callback(GLFWwindow window, int character)
+static void char_callback(GLFWwindow *window, unsigned int character)
 {
 	InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), true);
 	InvokeKey(character, TB_KEY_UNDEFINED, GetModifierKeys(), false);
 }
 
-static void key_callback(GLFWwindow window, int key, int action)
+static void key_callback(GLFWwindow *window, int key, int scancode, int action, int glfwmod)
 {
-	MODIFIER_KEYS modifier = GetModifierKeys();
+	MODIFIER_KEYS modifier = GetModifierKeys(glfwmod);
 	bool down = (action == GLFW_PRESS);
 	switch (key)
 	{
@@ -156,16 +165,16 @@ static void key_callback(GLFWwindow window, int key, int action)
 	case GLFW_KEY_UP:			InvokeKey(0, TB_KEY_UP, modifier, down); break;
 	case GLFW_KEY_RIGHT:		InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
 	case GLFW_KEY_DOWN:			InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
-	case GLFW_KEY_PAGEUP:		InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
-	case GLFW_KEY_PAGEDOWN:		InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
+	case GLFW_KEY_PAGE_UP:		InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
+	case GLFW_KEY_PAGE_DOWN:	InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
 	case GLFW_KEY_HOME:			InvokeKey(0, TB_KEY_HOME, modifier, down); break;
 	case GLFW_KEY_END:			InvokeKey(0, TB_KEY_END, modifier, down); break;
 	case GLFW_KEY_INSERT:		InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
 	case GLFW_KEY_TAB:			InvokeKey(0, TB_KEY_TAB, modifier, down); break;
-	case GLFW_KEY_DEL:			InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
+	case GLFW_KEY_DELETE:		InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
 	case GLFW_KEY_BACKSPACE:	InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
 	case GLFW_KEY_ENTER:		InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
-	case GLFW_KEY_ESC:			InvokeKey(0, TB_KEY_ESC, modifier, down); break;
+	case GLFW_KEY_ESCAPE:		InvokeKey(0, TB_KEY_ESC, modifier, down); break;
 	case GLFW_KEY_MENU:
 		if (TBWidget::focused_widget && !down)
 		{
@@ -174,16 +183,16 @@ static void key_callback(GLFWwindow window, int key, int action)
 			TBWidget::focused_widget->InvokeEvent(ev);
 		}
 		break;
-	case GLFW_KEY_LSHIFT:
-	case GLFW_KEY_RSHIFT:
+	case GLFW_KEY_LEFT_SHIFT:
+	case GLFW_KEY_RIGHT_SHIFT:
 		key_shift = down;
 		break;
-	case GLFW_KEY_LCTRL:
-	case GLFW_KEY_RCTRL:
+	case GLFW_KEY_LEFT_CONTROL:
+	case GLFW_KEY_RIGHT_CONTROL:
 		key_ctrl = down;
 		break;
-	case GLFW_KEY_LALT:
-	case GLFW_KEY_RALT:
+	case GLFW_KEY_LEFT_ALT:
+	case GLFW_KEY_RIGHT_ALT:
 		key_alt = down;
 		break;
 	default:
@@ -197,8 +206,9 @@ static void key_callback(GLFWwindow window, int key, int action)
 	}
 }
 
-static void mouse_button_callback(GLFWwindow window, int button, int action)
+static void mouse_button_callback(GLFWwindow *window, int button, int action, int glfwmod)
 {
+	MODIFIER_KEYS modifier = GetModifierKeys(glfwmod);
 	int x = mouse_x;
 	int y = mouse_y;
 	if (button == GLFW_MOUSE_BUTTON_LEFT)
@@ -220,24 +230,24 @@ static void mouse_button_callback(GLFWwindow window, int button, int action)
 			last_y = y;
 			last_time = time;
 
-			g_backend->GetRoot()->InvokePointerDown(x, y, counter, GetModifierKeys(), ShouldEmulateTouchEvent());
+			g_backend->GetRoot()->InvokePointerDown(x, y, counter, modifier, ShouldEmulateTouchEvent());
 		}
 		else
-			g_backend->GetRoot()->InvokePointerUp(x, y, GetModifierKeys(), ShouldEmulateTouchEvent());
+			g_backend->GetRoot()->InvokePointerUp(x, y, modifier, ShouldEmulateTouchEvent());
 	}
 	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
 	{
-		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), ShouldEmulateTouchEvent());
+		g_backend->GetRoot()->InvokePointerMove(x, y, modifier, ShouldEmulateTouchEvent());
 		if (TBWidget::hovered_widget)
 		{
 			TBWidget::hovered_widget->ConvertFromRoot(x, y);
-			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, false, GetModifierKeys());
+			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, false, modifier);
 			TBWidget::hovered_widget->InvokeEvent(ev);
 		}
 	}
 }
 
-void cursor_position_callback(GLFWwindow window, int x, int y)
+void cursor_position_callback(GLFWwindow *window, double x, double y)
 {
 	mouse_x = x;
 	mouse_y = y;
@@ -245,7 +255,7 @@ void cursor_position_callback(GLFWwindow window, int x, int y)
 		g_backend->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), ShouldEmulateTouchEvent());
 }
 
-static void scroll_callback(GLFWwindow window, double x, double y)
+static void scroll_callback(GLFWwindow *window, double x, double y)
 {
 	if (g_backend->GetRoot())
 		g_backend->GetRoot()->InvokeWheel(mouse_x, mouse_y, (int)x, -(int)y, GetModifierKeys());
@@ -298,7 +308,7 @@ void TBSystem::RescheduleTimer(double fire_time)
 	ReschedulePlatformTimer(fire_time, false);
 }
 
-static void window_refresh_callback(GLFWwindow window)
+static void window_refresh_callback(GLFWwindow *window)
 {
 	g_backend->m_application->Process();
 
@@ -309,7 +319,7 @@ static void window_refresh_callback(GLFWwindow window)
 	glfwSwapBuffers(window);
 }
 
-static void window_size_callback(GLFWwindow window, int w, int h)
+static void window_size_callback(GLFWwindow *window, int w, int h)
 {
 	if (g_backend->GetRoot())
 		g_backend->GetRoot()->SetRect(TBRect(0, 0, w, h));
@@ -330,7 +340,7 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 {
 	if (!glfwInit())
 		return false;
-	mainWindow = glfwCreateWindow(width, height, GLFW_WINDOWED, "", NULL);
+	mainWindow = glfwCreateWindow(width, height, title, NULL, NULL);
 	if (!mainWindow)
 	{
 		glfwTerminate();
@@ -338,21 +348,19 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	}
     glfwMakeContextCurrent(mainWindow);
 
-	glfwSetWindowTitle(mainWindow, title);
-
 	// Ensure we can capture the escape key being pressed below
 	//glfwSetInputMode(mainWindow, GLFW_STICKY_KEYS, GL_TRUE);
 	//glfwSetInputMode(mainWindow, GLFW_SYSTEM_KEYS, GL_TRUE);
-    glfwSetInputMode(mainWindow, GLFW_KEY_REPEAT, GL_TRUE);
+    //glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	// Set callback functions
-	glfwSetWindowSizeCallback(window_size_callback);
-	glfwSetWindowRefreshCallback(window_refresh_callback);
-	glfwSetCursorPosCallback(cursor_position_callback);
-    glfwSetMouseButtonCallback(mouse_button_callback);
-    glfwSetScrollCallback(scroll_callback);
-    glfwSetKeyCallback(key_callback);
-    glfwSetCharCallback(char_callback);
+	glfwSetWindowSizeCallback(mainWindow, window_size_callback);
+	glfwSetWindowRefreshCallback(mainWindow, window_refresh_callback);
+	glfwSetCursorPosCallback(mainWindow, cursor_position_callback);
+    glfwSetMouseButtonCallback(mainWindow, mouse_button_callback);
+    glfwSetScrollCallback(mainWindow, scroll_callback);
+    glfwSetKeyCallback(mainWindow, key_callback);
+    glfwSetCharCallback(mainWindow, char_callback);
     glfwSetTimerCallback(timer_callback);
 
 	m_renderer = new TBRendererGL();
@@ -384,7 +392,7 @@ void ApplicationBackendGLFW::Run()
 		if (has_pending_update)
 			window_refresh_callback(mainWindow);
         glfwWaitMsgLoop(mainWindow);
-	} while (!glfwGetWindowParam(mainWindow, GLFW_CLOSE_REQUESTED));
+	} while (!glfwWindowShouldClose(mainWindow));
 }
 
 #ifdef WIN32

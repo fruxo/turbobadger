@@ -3,24 +3,24 @@
 #include "tb_system.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32_WGL
-#include "GL/glfw3native.h"
+#include "GLFW/glfw3native.h"
 
 GLFWtimerfun timerCallback;
 UINT_PTR timer_id;
 
 #define GLFW_EXTRA_MSG_NULL WM_USER + 1
 
-void glfwWakeUpMsgLoop(GLFWwindow window)
+void glfwWakeUpMsgLoop(GLFWwindow *window)
 {
 	PostMessage(glfwGetWin32Window(window), GLFW_EXTRA_MSG_NULL, 0, 0);
 }
 
-void glfwWaitMsgLoop(GLFWwindow window)
+void glfwWaitMsgLoop(GLFWwindow *window)
 {
 	glfwWaitEvents();
 }
 
-void glfwPollMsgLoop(GLFWwindow window)
+void glfwPollMsgLoop(GLFWwindow *window)
 {
 	glfwPollEvents();
 }

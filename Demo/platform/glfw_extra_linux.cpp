@@ -9,9 +9,9 @@
 //#include <GL/glx.h>
 
 //#define GLFW_EXPOSE_NATIVE_X11_GLX
-//#include "GL/glfw3native.h"
+//#include "GLFW/glfw3native.h"
 
-//#include "GL/glfw3.h"
+//#include "GLFW/glfw3.h"
 
 // ## NOTE ############################################
 // FIX: Implement message loop and timer on linux!
@@ -21,18 +21,18 @@
 
 GLFWtimerfun timerCallback;
 
-void glfwWakeUpMsgLoop(GLFWwindow window)
+void glfwWakeUpMsgLoop(GLFWwindow *window)
 {
 }
 
-void glfwWaitMsgLoop(GLFWwindow window)
+void glfwWaitMsgLoop(GLFWwindow *window)
 {
 	glfwPollEvents();
 	if (timerCallback)
 		timerCallback();
 }
 
-void glfwPollMsgLoop(GLFWwindow window)
+void glfwPollMsgLoop(GLFWwindow *window)
 {
 	glfwPollEvents();
 	if (timerCallback)

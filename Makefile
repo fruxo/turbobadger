@@ -15,14 +15,17 @@ else
 endif
 
 ifeq ($(UNAME),Darwin)
- CFLAGS += -DMACOSX -Dnullptr=0
- CXXFLAGS += -DMACOSX -Dnullptr=0
+ CFLAGS += -DMACOSX -Dnullptr=0 -D_GLFW_COCOA
+ CXXFLAGS += -DMACOSX -Dnullptr=0 -D_GLFW_COCOA
  LIBS +=  -framework OpenGL -framework AppKit -framework IOKit -lobjc
 else
- CFLAGS += -DLINUX -Dnullptr=0
- CXXFLAGS += -DLINUX -Dnullptr=0 --std=c++0x
- LIBS += -lGL -lX11
+ CFLAGS += -DLINUX -Dnullptr=0 -D_GLFW_X11
+ CXXFLAGS += -DLINUX -Dnullptr=0 --std=c++0x -D_GLFW_X11
+ LIBS += -lGL -lX11 -lXxf86vm -lpthread -lXrandr -lXi
 endif
+
+CFLAGS += -D_GLFW_USE_OPENGL -D_GLFW_GLX
+CXXFLAGS += -D_GLFW_USE_OPENGL -D_GLFW_GLX
 
 TARGET = RunDemo
 SRC = tinkerbell/src/tb_layout.cpp \
@@ -94,37 +97,32 @@ SRC = tinkerbell/src/tb_layout.cpp \
       Demo/renderers/tb_renderer_gl.cpp
 
 CSRC = Demo/glfw/src/clipboard.c \
-       Demo/glfw/src/fullscreen.c \
+       Demo/glfw/src/context.c \
        Demo/glfw/src/gamma.c \
+       Demo/glfw/src/glx_context.c \
        Demo/glfw/src/init.c \
        Demo/glfw/src/input.c \
        Demo/glfw/src/joystick.c \
-       Demo/glfw/src/opengl.c \
+       Demo/glfw/src/monitor.c \
        Demo/glfw/src/time.c \
        Demo/glfw/src/window.c
 
 ifeq ($(UNAME),Darwin)
 MSRC = Demo/glfw/src/cocoa_clipboard.m \
-       Demo/glfw/src/cocoa_fullscreen.m \
        Demo/glfw/src/cocoa_gamma.m \
        Demo/glfw/src/cocoa_init.m \
-       Demo/glfw/src/cocoa_input.m \
        Demo/glfw/src/cocoa_joystick.m \
-       Demo/glfw/src/cocoa_native.m \
-       Demo/glfw/src/cocoa_opengl.m \
+       Demo/glfw/src/cocoa_monitor.m \
        Demo/glfw/src/cocoa_time.m \
        Demo/glfw/src/cocoa_window.m
 else
 CSRC += Demo/glfw/src/x11_clipboard.c \
-        Demo/glfw/src/x11_fullscreen.c \
         Demo/glfw/src/x11_gamma.c \
         Demo/glfw/src/x11_init.c \
-        Demo/glfw/src/x11_input.c \
         Demo/glfw/src/x11_joystick.c \
-        Demo/glfw/src/x11_keysym2unicode.c \
-        Demo/glfw/src/x11_native.c \
-        Demo/glfw/src/x11_opengl.c \
+        Demo/glfw/src/x11_monitor.c \
         Demo/glfw/src/x11_time.c \
+        Demo/glfw/src/x11_unicode.c \
         Demo/glfw/src/x11_window.c
 endif
 

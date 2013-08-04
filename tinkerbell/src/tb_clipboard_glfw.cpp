@@ -4,7 +4,7 @@
 // ================================================================================
 
 #include "tb_system.h"
-#include "GL/glfw3.h"
+#include "GLFW/glfw3.h"
 
 namespace tinkerbell {
 
@@ -17,7 +17,7 @@ void TBClipboard::Empty()
 
 bool TBClipboard::HasText()
 {
-	if (GLFWwindow window = glfwGetCurrentContext())
+	if (GLFWwindow *window = glfwGetCurrentContext())
 	{
 		const char *str = glfwGetClipboardString(window);
 		if (str && *str)
@@ -28,7 +28,7 @@ bool TBClipboard::HasText()
 
 bool TBClipboard::SetText(const char *text)
 {
-	if (GLFWwindow window = glfwGetCurrentContext())
+	if (GLFWwindow *window = glfwGetCurrentContext())
 	{
 		glfwSetClipboardString(window, text);
 		return true;
@@ -38,7 +38,7 @@ bool TBClipboard::SetText(const char *text)
 
 bool TBClipboard::GetText(TBStr &text)
 {
-	if (GLFWwindow window = glfwGetCurrentContext())
+	if (GLFWwindow *window = glfwGetCurrentContext())
 	{
 		if (const char *str = glfwGetClipboardString(window))
 			return text.Set(str);
