@@ -304,7 +304,6 @@ elements
 				state all
 	TBWindow.mover.overlay
 		bitmap window_mover_overlay.png
-		type Stretch
 		cut 12
 		expand 3
 	TBWindow.mover.active
