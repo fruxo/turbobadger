@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -187,7 +187,7 @@ void Parser::OnLine(char *line, ParserTarget *target)
 
 	if (indent > current_indent)
 	{
-		// FIX: om den är mer än 1 högre är det indentation error!
+		// FIX: Report indentation error if more than 1 higher!
 		assert(indent - current_indent == 1);
 		target->Enter();
 		current_indent++;

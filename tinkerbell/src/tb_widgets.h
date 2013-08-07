@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -668,7 +668,7 @@ public:
 	TBStr GetText() { TBStr str; GetText(str); return str; }
 
 	/** Connect this widget to a widget value.
-	
+
 		When this widget invoke EVENT_TYPE_CHANGED, it will automatically update the
 		connected widget value, and any other widgets that may be connected to it.
 

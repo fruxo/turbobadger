@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -22,10 +22,6 @@ typedef unsigned int uint32;
 
 #ifndef MAX
 #define MAX(a,b)		(((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef MIN
-#define MIN(a,b)		(((a) < (b)) ? (a) : (b))
 #endif
 
 #ifndef MIN

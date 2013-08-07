@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -53,7 +53,7 @@ void TBWidgetValue::SetFromWidget(TBWidget *source_widget)
 	if (m_syncing)
 		return; // We ended up here because syncing is in progress.
 
-	// Get the value in the format 
+	// Get the value in the format
 	TBStr text;
 	switch (m_value.GetType())
 	{

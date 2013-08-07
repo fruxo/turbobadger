@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -111,11 +111,11 @@ public:
 	/** Render all glyphs needed to display the string. */
 	bool RenderGlyphs(const char *glyph_str, int glyph_str_len = TB_ALL_TO_TERMINATION);
 
-	/** Get the vertical distance (positive) from the horizontal baseline to the highest ‘character’ coordinate
+	/** Get the vertical distance (positive) from the horizontal baseline to the highest character coordinate
 		in a font face. */
 	int GetAscent() const { return m_metrics.ascent; }
 
-	/** Get the vertical distance (positive) from the horizontal baseline to the lowest ‘character’ coordinate
+	/** Get the vertical distance (positive) from the horizontal baseline to the lowest character coordinate
 		in the font face. */
 	int GetDescent() const { return m_metrics.descent; }
 

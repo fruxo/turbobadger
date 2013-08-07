@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -13,13 +13,6 @@
 namespace tinkerbell {
 
 class TBMenuWindow;
-
-// FIX: A maximum items showed option, and a automatic "Show more" item at the bottom.
-// FIX: Item-quick-find by pressing one or two keys in the list!
-//      -Implement with generic search-and-find in widgets. Should be available in all UI!
-// FIX: gör även en default string source med checkboxar (multiselectable)??
-// Indentera alla items, och ge menyn ett bg skin/underlay ifall någon har ikon!
-// Treeview item, item column, och indent för items utan ikon.. använda samma indent system?
 
 /** TBSelectList shows a scrollable list of items provided by a TBSelectItemSource. */
 

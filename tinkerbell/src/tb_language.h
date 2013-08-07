@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -22,7 +22,7 @@ namespace tinkerbell {
 
 	Ex: TBButton: text: @close   (Create a button with text from lookup of "close")
 */
-	
+
 class TBLanguage
 {
 public:

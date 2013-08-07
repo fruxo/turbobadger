@@ -1,5 +1,5 @@
 // ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil Segerås  ==
+// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2013, Emil SegerÃ¥s  ==
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
@@ -399,7 +399,7 @@ void TBEditField::OnMessageReceived(TBMessage *msg)
 	{
 		m_style_edit.caret.on = !m_style_edit.caret.on;
 		m_style_edit.caret.Invalidate();
-	
+
 		// Post another blink message so we blink again.
 		PostMessageDelayed(TBIDC("blink"), nullptr, CARET_BLINK_TIME);
 	}
