@@ -177,6 +177,12 @@ TB_TEST_GROUP(tb_widget_value_listener)
 
 	TB_TEST(Cleanup) { g_value_group.RemoveListener(&listener); }
 
+	TB_TEST(Shutdown)
+	{
+		delete a;
+		delete b;
+	}
+
 	TB_TEST(change_with_no_widgets)
 	{
 		// Set the initial value, no widgets connected yet.

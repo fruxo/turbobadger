@@ -39,6 +39,11 @@ TB_TEST_GROUP(tb_linklist)
 		TB_VERIFY(AddAppless(3));
 	}
 
+	TB_TEST(Shutdown)
+	{
+		list.DeleteAll();
+	}
+
 	TB_TEST(iteration_while_delete_all)
 	{
 		TBLinkListOf<Apple>::Iterator iterator = list.IterateForward();
