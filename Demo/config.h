@@ -5,7 +5,8 @@
 // an extra step after checkout (to generate config.h using cmake).
 
 #ifdef WIN32
-# define _GLFW_WIN32_WGL
+# define _GLFW_USE_OPENGL
+# define _GLFW_WGL
 #elif defined(MACOSX)
 # define _GLFW_COCOA_NSGL
 #else
@@ -13,6 +14,6 @@
 # define _GLFW_HAS_GLXGETPROCADDRESS
 #endif
 
-#define _GLFW_VERSION_FULL "3.0.0"
+#define _GLFW_VERSION_FULL "3.0.1"
 
 #endif // DEMO_CONFIG_H

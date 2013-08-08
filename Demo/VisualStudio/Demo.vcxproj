@@ -53,7 +53,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;_GLFW_WIN32;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <AdditionalIncludeDirectories>../glfw/include/;../glfw/lib/win32;../glfw/lib/;../;../../tinkerbell/src/;../../</AdditionalIncludeDirectories>
@@ -74,7 +74,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLFW_EXPOSE_NATIVE_WIN32;GLFW_EXPOSE_NATIVE_WGL;_GLFW_WIN32;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>false</ExceptionHandling>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <AdditionalIncludeDirectories>../glfw/include/;../glfw/lib/win32;../glfw/lib/;../;../../tinkerbell/src/;../../</AdditionalIncludeDirectories>
@@ -98,20 +98,19 @@
     <ClCompile Include="..\demo01\ListWindow.cpp" />
     <ClCompile Include="..\demo01\ResourceEditWindow.cpp" />
     <ClCompile Include="..\glfw\src\clipboard.c" />
-    <ClCompile Include="..\glfw\src\fullscreen.c" />
+    <ClCompile Include="..\glfw\src\context.c" />
+    <ClCompile Include="..\glfw\src\gamma.c" />
     <ClCompile Include="..\glfw\src\init.c" />
     <ClCompile Include="..\glfw\src\input.c" />
     <ClCompile Include="..\glfw\src\joystick.c" />
-    <ClCompile Include="..\glfw\src\opengl.c" />
+    <ClCompile Include="..\glfw\src\monitor.c" />
     <ClCompile Include="..\glfw\src\time.c" />
+    <ClCompile Include="..\glfw\src\wgl_context.c" />
     <ClCompile Include="..\glfw\src\win32_clipboard.c" />
-    <ClCompile Include="..\glfw\src\win32_fullscreen.c" />
     <ClCompile Include="..\glfw\src\win32_gamma.c" />
     <ClCompile Include="..\glfw\src\win32_init.c" />
-    <ClCompile Include="..\glfw\src\win32_input.c" />
     <ClCompile Include="..\glfw\src\win32_joystick.c" />
-    <ClCompile Include="..\glfw\src\win32_native.c" />
-    <ClCompile Include="..\glfw\src\win32_opengl.c" />
+    <ClCompile Include="..\glfw\src\win32_monitor.c" />
     <ClCompile Include="..\glfw\src\win32_time.c" />
     <ClCompile Include="..\glfw\src\win32_window.c" />
     <ClCompile Include="..\glfw\src\window.c" />
