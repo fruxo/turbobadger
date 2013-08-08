@@ -263,10 +263,10 @@ static void mouse_button_callback(GLFWwindow *window, int button, int action, in
 
 void cursor_position_callback(GLFWwindow *window, double x, double y)
 {
-	mouse_x = x;
-	mouse_y = y;
+	mouse_x = (int)x;
+	mouse_y = (int)y;
 	if (GetBackend(window)->GetRoot() && !(ShouldEmulateTouchEvent() && !TBWidget::captured_widget))
-		GetBackend(window)->GetRoot()->InvokePointerMove(x, y, GetModifierKeys(), ShouldEmulateTouchEvent());
+		GetBackend(window)->GetRoot()->InvokePointerMove(mouse_x, mouse_y, GetModifierKeys(), ShouldEmulateTouchEvent());
 }
 
 static void scroll_callback(GLFWwindow *window, double x, double y)
