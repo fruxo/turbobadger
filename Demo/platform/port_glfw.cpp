@@ -155,6 +155,11 @@ static bool InvokeKey(GLFWwindow *window, unsigned int key, SPECIAL_KEY special_
 
 static void char_callback(GLFWwindow *window, unsigned int character)
 {
+	// glfw on osx seems to send us characters from the private
+	// use block when using f.ex arrow keys on osx.
+	if (character >= 0xE000 && character <= 0xF8FF)
+		return;
+
 	InvokeKey(window, character, TB_KEY_UNDEFINED, GetModifierKeys(), true);
 	InvokeKey(window, character, TB_KEY_UNDEFINED, GetModifierKeys(), false);
 }
