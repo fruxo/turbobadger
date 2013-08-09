@@ -99,7 +99,6 @@ SRC = tinkerbell/src/tb_layout.cpp \
 CSRC = Demo/glfw/src/clipboard.c \
        Demo/glfw/src/context.c \
        Demo/glfw/src/gamma.c \
-       Demo/glfw/src/glx_context.c \
        Demo/glfw/src/init.c \
        Demo/glfw/src/input.c \
        Demo/glfw/src/joystick.c \
@@ -114,9 +113,11 @@ MSRC = Demo/glfw/src/cocoa_clipboard.m \
        Demo/glfw/src/cocoa_joystick.m \
        Demo/glfw/src/cocoa_monitor.m \
        Demo/glfw/src/cocoa_time.m \
-       Demo/glfw/src/cocoa_window.m
+       Demo/glfw/src/cocoa_window.m \
+       Demo/glfw/src/nsgl_context.m
 else
-CSRC += Demo/glfw/src/x11_clipboard.c \
+CSRC += Demo/glfw/src/glx_context.c \
+        Demo/glfw/src/x11_clipboard.c \
         Demo/glfw/src/x11_gamma.c \
         Demo/glfw/src/x11_init.c \
         Demo/glfw/src/x11_joystick.c \

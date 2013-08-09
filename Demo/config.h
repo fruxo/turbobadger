@@ -8,7 +8,7 @@
 # define _GLFW_USE_OPENGL
 # define _GLFW_WGL
 #elif defined(MACOSX)
-# define _GLFW_COCOA_NSGL
+# define _GLFW_NSGL
 #else
 # define _GLFW_X11_GLX
 # define _GLFW_HAS_GLXGETPROCADDRESS
