@@ -14,6 +14,7 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/tb_editfield.cpp \
                    ../../tinkerbell/src/tb_font_renderer.cpp \
                    ../../tinkerbell/src/tb_font_renderer_tbbf.cpp \
+                   ../../tinkerbell/src/tb_geometry.cpp \
                    ../../tinkerbell/src/tb_hash.cpp \
                    ../../tinkerbell/src/tb_hashtable.cpp \
                    ../../tinkerbell/src/tb_inline_select.cpp \

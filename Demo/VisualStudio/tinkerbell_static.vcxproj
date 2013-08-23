@@ -22,6 +22,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_editfield.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_geometry.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hashtable.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_inline_select.cpp" />
@@ -58,6 +59,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\tb_test.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_color.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_dimension.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_geometry.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_object.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_parser.cpp" />
