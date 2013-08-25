@@ -10,6 +10,46 @@
 
 namespace tinkerbell {
 
+/** Simple point class. */
+
+class TBPoint
+{
+public:
+	int x, y;
+	TBPoint() : x(0), y(0) {}
+	TBPoint(int x, int y) : x(x), y(y) {}
+};
+
+/** Simple rectangle class. */
+
+class TBRect
+{
+public:
+	int x, y, w, h;
+	TBRect() : x(0), y(0), w(0), h(0) {}
+	TBRect(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
+
+	inline bool IsEmpty() const						{ return w <= 0 || h <= 0; }
+	inline bool IsInsideOut() const					{ return w < 0 || h < 0; }
+	inline bool Equals(const TBRect &rect) const	{ return rect.x == x && rect.y == y && rect.w == w && rect.h == h; }
+	bool Intersects(const TBRect &rect) const;
+	bool Contains(const TBPoint &p) const			{ return p.x >= x && p.y >= y && p.x < x + w && p.y < y + h; }
+
+	inline void Reset()								{ x = y = w = h = 0; }
+	inline void Set(int x, int y, int w, int h)		{ this->x = x; this->y = y; this->w = w; this->h = h; }
+
+	inline TBRect Shrink(int left, int top, int right, int bottom) const	{ return TBRect(x + left, y + top, w - left - right, h - top - bottom); }
+	inline TBRect Expand(int left, int top, int right, int bottom) const	{ return Shrink(-left, -top, -right, -bottom); }
+	inline TBRect Shrink(int tx, int ty) const		{ return TBRect(x + tx, y + ty, w - tx * 2, h - ty * 2); }
+	inline TBRect Expand(int tx, int ty) const		{ return Shrink(-tx, -ty); }
+	inline TBRect Offset(int dx, int dy) const		{ return TBRect(x + dx, y + dy, w, h); }
+
+	TBRect Union(const TBRect &rect) const;
+	TBRect Clip(const TBRect &clip_rect) const;
+};
+
+/** TBRegion does calculations on regions represented by a list of rectangles. */
+
 class TBRegion
 {
 public:

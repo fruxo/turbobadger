@@ -7,6 +7,7 @@
 #define TB_WIDGETS_H
 
 #include "tinkerbell.h"
+#include "tb_geometry.h"
 #include "tb_skin.h"
 #include "tb_linklist.h"
 #include "tb_widget_value.h"

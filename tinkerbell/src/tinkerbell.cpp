@@ -54,50 +54,6 @@ void shutdown_tinkerbell()
 	delete g_tb_lng;
 }
 
-// == TBRect ======================================================
-
-bool TBRect::Intersects(const TBRect &rect) const
-{
-	if (IsEmpty() || rect.IsEmpty())
-		return false;
-	if (x + w > rect.x && x < rect.x + rect.w &&
-		y + h > rect.y && y < rect.y + rect.h)
-		return true;
-	return false;
-}
-
-TBRect TBRect::Union(const TBRect &rect) const
-{
-	assert(!IsInsideOut());
-	assert(!rect.IsInsideOut());
-
-	if (IsEmpty())
-		return rect;
-	if (rect.IsEmpty())
-		return *this;
-
-	int minx = MIN(x, rect.x);
-	int miny = MIN(y, rect.y);
-	int maxx = x + w > rect.x + rect.w ?
-				x + w : rect.x + rect.w;
-	int maxy = y + h > rect.y + rect.h ?
-				y + h : rect.y + rect.h;
-	return TBRect(minx, miny, maxx - minx, maxy - miny);
-}
-
-TBRect TBRect::Clip(const TBRect &clip_rect) const
-{
-	assert(!clip_rect.IsInsideOut());
-	TBRect tmp;
-	if (!Intersects(clip_rect))
-		return tmp;
-	tmp.x = MAX(x, clip_rect.x);
-	tmp.y = MAX(y, clip_rect.y);
-	tmp.w = MIN(x + w, clip_rect.x + clip_rect.w) - tmp.x;
-	tmp.h = MIN(y + h, clip_rect.y + clip_rect.h) - tmp.y;
-	return tmp;
-}
-
 // ===================================================================
 
 const char *stristr(const char *arg1, const char *arg2)

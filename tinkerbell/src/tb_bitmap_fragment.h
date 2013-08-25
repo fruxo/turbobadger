@@ -7,6 +7,7 @@
 #define TB_BITMAP_FRAGMENT_H
 
 #include "tinkerbell.h"
+#include "tb_geometry.h"
 #include "tb_hashtable.h"
 #include "tb_list.h"
 #include "tb_linklist.h"
