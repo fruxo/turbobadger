@@ -30,7 +30,7 @@ int TBTextFragmentContentFactory::GetContent(const char *text)
 TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const char *text, int text_len)
 {
 	if (strncmp(text, "<hr>", text_len) == 0)
-		return new TBTextFragmentContentHR(100, 2, TBColor(255, 255, 255, 64));
+		return new TBTextFragmentContentHR(100, 2);
 	else if (strncmp(text, "<u>", text_len) == 0)
 		return new TBTextFragmentContentUnderline();
 	else if (strncmp(text, "<color ", MIN(text_len, 7)) == 0)
@@ -46,10 +46,9 @@ TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const
 
 // == PHorizontalLineContent ================================================================================
 
-TBTextFragmentContentHR::TBTextFragmentContentHR(int32 width_in_percent, int32 height, const TBColor &color)
+TBTextFragmentContentHR::TBTextFragmentContentHR(int32 width_in_percent, int32 height)
 	: width_in_percent(width_in_percent)
 	, height(height)
-	, color(color)
 {
 }
 
@@ -62,7 +61,7 @@ void TBTextFragmentContentHR::Paint(TBTextFragment *fragment, int32 translate_x,
 	x += (fragment->block->styledit->layout_width - w) / 2;
 
 	TBStyleEditListener *listener = fragment->block->styledit->listener;
-	listener->DrawRectFill(TBRect(x, y, w, height), color);
+	listener->DrawRectFill(TBRect(x, y, w, height), props->data->text_color);
 }
 
 int32 TBTextFragmentContentHR::GetWidth(TBFontFace *font, TBTextFragment *fragment) { return MAX(fragment->block->styledit->layout_width, 0); }

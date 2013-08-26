@@ -39,14 +39,13 @@ public:
 class TBTextFragmentContentHR : public TBTextFragmentContent
 {
 public:
-	TBTextFragmentContentHR(int32 width_in_percent, int32 height, const TBColor &color);
+	TBTextFragmentContentHR(int32 width_in_percent, int32 height);
 
 	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
 	virtual int32 GetWidth(TBFontFace *font, TBTextFragment *fragment);
 	virtual int32 GetHeight(TBFontFace *font, TBTextFragment *fragment);
 private:
 	int32 width_in_percent, height;
-	TBColor color;
 };
 
 /** Fragment content that enables underline in a TBStyleEdit */
