@@ -121,7 +121,9 @@ bool TBRegion::AddRect(const TBRect &rect, bool coalesce)
 		// If the rect can coalesce with any existing rect,
 		// just replace it with the union of both, doing coalesce
 		// check again recursively.
-		for (int i = 0; i < m_num_rects; i++)
+		// Searching backwards is most likely to give a hit quicker
+		// in many usage scenarios.
+		for (int i = m_num_rects - 1; i >= 0; i--)
 		{
 			if ( // Can coalesce vertically
 				(rect.x == m_rects[i].x && rect.w == m_rects[i].w &&
