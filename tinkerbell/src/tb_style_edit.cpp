@@ -211,7 +211,7 @@ void TBSelection::CopyToClipboard()
 	}
 }
 
-void TBSelection::Invalidate()
+void TBSelection::Invalidate() const
 {
 	TBBlock *block = start.block;
 	while (block)
@@ -285,7 +285,14 @@ void TBSelection::SelectNothing()
 	stop.Set(nullptr, 0);
 }
 
-bool TBSelection::IsFragmentSelected(TBTextFragment *elm)
+bool TBSelection::IsBlockSelected(TBBlock *block) const
+{
+	if (!IsSelected())
+		return false;
+	return block->ypos >= start.block->ypos && block->ypos <= stop.block->ypos;
+}
+
+bool TBSelection::IsFragmentSelected(TBTextFragment *elm) const
 {
 	if (!IsSelected())
 		return false;
@@ -362,7 +369,7 @@ void TBSelection::RemoveContent()
 	styledit->EndLockScrollbars();
 }
 
-bool TBSelection::GetText(TBStr &text)
+bool TBSelection::GetText(TBStr &text) const
 {
 	if (!IsSelected())
 	{
@@ -1103,9 +1110,24 @@ void TBBlock::Invalidate()
 		styledit->listener->Invalidate(TBRect(0, - styledit->scroll_y + ypos, styledit->layout_width, height));
 }
 
+void TBBlock::BuildSelectionRegion(int32 translate_x, int32 translate_y, TBTextProps *props,
+	TBRegion &bg_region, TBRegion &fg_region)
+{
+	if (!styledit->selection.IsBlockSelected(this))
+		return;
+
+	TBTextFragment *fragment = fragments.GetFirst();
+	while (fragment)
+	{
+		fragment->BuildSelectionRegion(translate_x, translate_y + ypos, props, bg_region, fg_region);
+		fragment = fragment->GetNext();
+	}
+}
+
 void TBBlock::Paint(int32 translate_x, int32 translate_y, TBTextProps *props)
 {
 	TMPDEBUG(styledit->listener->DrawRect(TBRect(translate_x, translate_y + ypos, styledit->layout_width, height), TBColor(255, 200, 0, 128)));
+
 	TBTextFragment *fragment = fragments.GetFirst();
 	while (fragment)
 	{
@@ -1132,6 +1154,38 @@ void TBTextFragment::UpdateContentPos()
 		content->UpdatePos(xpos, ypos + block->ypos);
 }
 
+void TBTextFragment::BuildSelectionRegion(int32 translate_x, int32 translate_y, TBTextProps *props,
+	TBRegion &bg_region, TBRegion &fg_region)
+{
+	if (!block->styledit->selection.IsFragmentSelected(this))
+		return;
+
+	int x = translate_x + xpos;
+	int y = translate_y + ypos;
+	TBColor color = props->data->text_color;
+	TBFontFace *font = props->GetFont();
+
+	if (content)
+	{
+		// Selected embedded content should add to the foreground region.
+		fg_region.IncludeRect(TBRect(x, y, GetWidth(font), GetHeight(font)));
+		return;
+	}
+
+	// Selected text should add to the backgroud region.
+	TBSelection *sel = &block->styledit->selection;
+
+	int sofs1 = sel->start.block == block ? sel->start.ofs : 0;
+	int sofs2 = sel->stop.block == block ? sel->stop.ofs : block->str_len;
+	sofs1 = MAX(sofs1, ofs);
+	sofs2 = MIN(sofs2, ofs + len);
+
+	int s1x = GetStringWidth(font, block->str.CStr() + ofs, sofs1 - ofs);
+	int s2x = GetStringWidth(font, block->str.CStr() + sofs1, sofs2 - sofs1);
+
+	bg_region.IncludeRect(TBRect(x + s1x, y, s2x, GetHeight(font)));
+}
+
 void TBTextFragment::Paint(int32 translate_x, int32 translate_y, TBTextProps *props)
 {
 	TBStyleEditListener *listener = block->styledit->listener;
@@ -1144,26 +1198,9 @@ void TBTextFragment::Paint(int32 translate_x, int32 translate_y, TBTextProps *pr
 	if (content)
 	{
 		content->Paint(this, translate_x, translate_y, props);
-		if (block->styledit->selection.IsFragmentSelected(this))
-			listener->DrawContentSelectionFg(TBRect(x, y, GetWidth(font), GetHeight(font)));
 		return;
 	}
 	TMPDEBUG(listener->DrawRect(TBRect(x, y, GetWidth(), GetHeight()), TBColor(255, 255, 255, 128)));
-
-	if (block->styledit->selection.IsFragmentSelected(this))
-	{
-		TBSelection *sel = &block->styledit->selection;
-
-		int sofs1 = sel->start.block == block ? sel->start.ofs : 0;
-		int sofs2 = sel->stop.block == block ? sel->stop.ofs : block->str_len;
-		sofs1 = MAX(sofs1, ofs);
-		sofs2 = MIN(sofs2, ofs + len);
-
-		int s1x = GetStringWidth(font, block->str.CStr() + ofs, sofs1 - ofs);
-		int s2x = GetStringWidth(font, block->str.CStr() + sofs1, sofs2 - sofs1);
-
-		listener->DrawTextSelectionBg(TBRect(x + s1x, y, s2x, GetHeight(font)));
-	}
 
 	if (block->styledit->packed.password_on)
 	{
@@ -1509,16 +1546,48 @@ void TBStyleEdit::Paint(const TBRect &rect, const TBFontDescription &font_desc, 
 {
 	TBTextProps props(font_desc, text_color);
 
-	TBBlock *block = blocks.GetFirst();
+	// Find the first visible block
+	TBBlock *first_visible_block = blocks.GetFirst();
+	while (first_visible_block)
+	{
+		if (first_visible_block->ypos + first_visible_block->height - scroll_y >= 0)
+			break;
+		first_visible_block = first_visible_block->GetNext();
+	}
+
+	// Get the selection region for all visible blocks
+	TBRegion bg_region, fg_region;
+	if (selection.IsSelected())
+	{
+		TBBlock *block = first_visible_block;
+		while (block)
+		{
+			if (block->ypos - scroll_y > rect.y + rect.h)
+				break;
+			block->BuildSelectionRegion(-scroll_x, -scroll_y, &props, bg_region, fg_region);
+			block = block->GetNext();
+		}
+
+		// Paint bg selection
+		for (int i = 0; i < bg_region.GetNumRects(); i++)
+			listener->DrawTextSelectionBg(bg_region.GetRect(i));
+	}
+
+	// Paint the content
+	TBBlock *block = first_visible_block;
 	while (block)
 	{
 		if (block->ypos - scroll_y > rect.y + rect.h)
 			break;
-		if (block->ypos + block->height - scroll_y >= 0)
-			block->Paint(-scroll_x, -scroll_y, &props);
-
+		block->Paint(-scroll_x, -scroll_y, &props);
 		block = block->GetNext();
 	}
+
+	// Paint fg selection
+	for (int i = 0; i < fg_region.GetNumRects(); i++)
+		listener->DrawTextSelectionBg(fg_region.GetRect(i));
+
+	// Paint caret
 	caret.Paint(- scroll_x, - scroll_y);
 }
 

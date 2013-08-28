@@ -81,7 +81,7 @@ class TBSelection
 {
 public:
 	TBSelection(TBStyleEdit *styledit);
-	void Invalidate();
+	void Invalidate() const;
 	void Select(const TBTextOfs &new_start, const TBTextOfs &new_stop);
 	void Select(const TBPoint &from, const TBPoint &to);
 	void Select(int glob_ofs_from, int glob_ofs_to);
@@ -90,10 +90,11 @@ public:
 	void SelectNothing();
 	void CorrectOrder();
 	void CopyToClipboard();
-	bool IsFragmentSelected(TBTextFragment *elm);
+	bool IsBlockSelected(TBBlock *block) const;
+	bool IsFragmentSelected(TBTextFragment *elm) const;
 	bool IsSelected() const;
 	void RemoveContent();
-	bool GetText(TBStr &text);
+	bool GetText(TBStr &text) const;
 public:
 	TBStyleEdit *styledit;
 	TBTextOfs start, stop;
@@ -202,6 +203,8 @@ public:
 	int32 CalculateBaseline(TBFontFace *font) const;
 
 	void Invalidate();
+	void BuildSelectionRegion(int32 translate_x, int32 translate_y, TBTextProps *props,
+		TBRegion &bg_region, TBRegion &fg_region);
 	void Paint(int32 translate_x, int32 translate_y, TBTextProps *props);
 public:
 	TBStyleEdit *styledit;
@@ -250,7 +253,12 @@ private:
 	void Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse);
 };
 
-/** The textfragment baseclass for TBStyleEdit. */
+/** The textfragment baseclass for TBStyleEdit.
+
+	TODO: This object is allocated on vast amounts and need
+		  to shrink in size. Remove all cached positioning
+		  and implement a fragment traverser (for TBBlock).
+		  Also allocate fragments in chunks. */
 
 class TBTextFragment : public TBLinkOf<TBTextFragment>
 {
@@ -270,6 +278,8 @@ public:
 
 	void UpdateContentPos();
 
+	void BuildSelectionRegion(int32 translate_x, int32 translate_y, TBTextProps *props,
+		TBRegion &bg_region, TBRegion &fg_region);
 	void Paint(int32 translate_x, int32 translate_y, TBTextProps *props);
 	void Click(int button, uint32 modifierkeys);
 
