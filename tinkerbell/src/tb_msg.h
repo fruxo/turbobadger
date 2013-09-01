@@ -9,6 +9,7 @@
 #include "tinkerbell.h"
 #include "tb_linklist.h"
 #include "tb_value.h"
+#include "tb_object.h"
 
 namespace tinkerbell {
 
@@ -20,7 +21,7 @@ class TBMessageHandler;
 
 /** TBMessageData holds custom data to send with a posted message. */
 
-class TBMessageData
+class TBMessageData : public TBTypedObject
 {
 public:
 	TBMessageData() {}
