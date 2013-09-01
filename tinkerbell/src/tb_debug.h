@@ -34,6 +34,11 @@ public:
 		/** Show render batch info and log batch info in the debug
 			output. It depends on the renderer backend if this is available. */
 		RENDER_BATCHES,
+		/** Render the bitmap fragments of the skin. */
+		RENDER_SKIN_BITMAP_FRAGMENTS,
+		/** Render the bitmap fragments of the font that's set on the hovered
+			or focused widget. */
+		RENDER_FONT_BITMAP_FRAGMENTS,
 
 		NUM_SETTINGS
 	};

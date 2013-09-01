@@ -6,6 +6,7 @@
 #include "tinkerbell.h"
 #include "tb_widgets_reader.h"
 #include "tb_window.h"
+#include "tb_font_renderer.h"
 
 namespace tinkerbell {
 
@@ -31,6 +32,8 @@ public:
 		AddCheckbox(TBDebugInfo::LAYOUT_CLIPPING, "Layout clipping");
 		AddCheckbox(TBDebugInfo::LAYOUT_PS_DEBUGGING, "Layout size calculation");
 		AddCheckbox(TBDebugInfo::RENDER_BATCHES, "Render batches");
+		AddCheckbox(TBDebugInfo::RENDER_SKIN_BITMAP_FRAGMENTS, "Render skin bitmap fragments");
+		AddCheckbox(TBDebugInfo::RENDER_FONT_BITMAP_FRAGMENTS, "Render font bitmap fragments");
 
 		ResizeToFitContent();
 		SetPosition(TBPoint((root->GetRect().w - GetRect().w) / 2,
@@ -63,6 +66,27 @@ public:
 			return true;
 		}
 		return TBWindow::OnEvent(ev);
+	}
+
+	virtual void OnPaint(const PaintProps &paint_props)
+	{
+		// Draw stuff to the right of the debug window
+		g_renderer->Translate(GetRect().w, 0);
+
+		// Draw skin bitmap fragments
+		if (TB_DEBUG_SETTING(RENDER_SKIN_BITMAP_FRAGMENTS))
+			g_tb_skin->Debug();
+
+		// Draw font glyph fragments (the font of the hovered widget)
+		if (TB_DEBUG_SETTING(RENDER_FONT_BITMAP_FRAGMENTS))
+		{
+			TBWidget *widget = TBWidget::hovered_widget ? TBWidget::hovered_widget : TBWidget::focused_widget;
+			g_font_manager->GetFontFace(widget ?
+										widget->GetCalculatedFontDescription() :
+										g_font_manager->GetDefaultFontDescription())->Debug();
+		}
+
+		g_renderer->Translate(-GetRect().w, 0);
 	}
 };
 

@@ -513,12 +513,12 @@ void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *eleme
 		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h, rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2), TBRect(cut, cut, bw - cut * 2, bh - cut * 2), element->bitmap);
 }
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 void TBSkin::Debug()
 {
 	m_frag_manager.Debug();
 }
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 
 void TBSkin::OnContextLost()
 {

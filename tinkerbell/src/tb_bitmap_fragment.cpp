@@ -485,7 +485,7 @@ int TBBitmapFragmentManager::GetUseRatio() const
 	return total ? (used * 100) / total : 0;
 }
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 void TBBitmapFragmentManager::Debug()
 {
 	float old_opacity = g_renderer->GetOpacity();
@@ -500,6 +500,6 @@ void TBBitmapFragmentManager::Debug()
 	}
 	g_renderer->SetOpacity(old_opacity);
 }
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 
 }; // namespace tinkerbell

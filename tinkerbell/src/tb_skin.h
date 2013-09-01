@@ -311,7 +311,7 @@ public:
 	/** Paint the overlay elements for the given skin element and state. */
 	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context);
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	/** Render the skin bitmaps on screen, to analyze fragment positioning. */
 	void Debug();
 #endif

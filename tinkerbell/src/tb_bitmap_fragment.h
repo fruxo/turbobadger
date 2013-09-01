@@ -225,7 +225,7 @@ public:
 	/** Get the amount (in percent) of space that is currently occupied by all maps
 		in this fragment manager. */
 	int GetUseRatio() const;
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	/** Render the maps on screen, to analyze fragment positioning. */
 	void Debug();
 #endif

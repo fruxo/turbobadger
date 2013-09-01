@@ -791,15 +791,7 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 	g_renderer->BeginPaint(window_w, window_h);
 	GetRoot()->InvokePaint(TBWidget::PaintProps());
 
-#ifdef _DEBUG
-	// Enable to debug skin bitmap fragments
-	//g_tb_skin->Debug();
-
-	// Enable to debug font glyph fragments (the font of the hovered widget)
-	//g_font_manager->GetFontFace(TBWidget::hovered_widget ?
-	//							TBWidget::hovered_widget->GetCalculatedFontDescription() :
-	//							g_font_manager->GetDefaultFontDescription())->Debug();
-
+#ifdef TB_RUNTIME_DEBUG_INFO
 	// Enable to debug image manager fragments (if addons/tbimage/* is used)
 	//g_image_manager->Debug();
 #endif

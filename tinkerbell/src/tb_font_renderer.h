@@ -133,7 +133,7 @@ public:
 		termination (whatever comes first). */
 	int GetStringWidth(const char *str, int len = TB_ALL_TO_TERMINATION);
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	/** Render the glyph bitmaps on screen, to analyze fragment positioning. */
 	void Debug();
 #endif

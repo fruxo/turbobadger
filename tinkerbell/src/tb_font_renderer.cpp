@@ -342,12 +342,12 @@ int TBFontFace::GetStringWidth(const char *str, int len)
 	return width;
 }
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 void TBFontFace::Debug()
 {
 	m_frag_manager.Debug();
 }
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 
 void TBFontFace::OnContextLost()
 {
