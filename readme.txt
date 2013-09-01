@@ -1,10 +1,13 @@
-﻿
 
 TinkerBell UI Toolkit - BETA*
 -----------------------------------------------------------------------------------
 
 I created TinkerBell UI toolkit because i wanted a small UI toolkit for use in
-games and hardware accelerated applications.
+games and hardware accelerated applications across multiple platforms (that target
+both desktop and mobile).
+
+The goal is a toolkit that can be easily integrated into an existing codebase to
+make UI with skinning.
 
 It has no dependency on stl, RTTI or exceptions. Compiling without these features
 makes footprint very small. Utility classes (such as string, lists, hash table,
@@ -20,20 +23,10 @@ system etc.
 BETA notice
 -----------------------------------------------------------------------------------
 
-I call this an beta since some of the APIs are still a bit experimental and may
-change. That does not mean that the code is very unstable and can't be used for
-anything yet.
-
-If you use this right now, don't be surprised if you need to adjust your code to
-API changes. Since there is no release changelogs during beta, you should keep an
-eye on the commit changelog to see what's going on.
-
-I'll try to respond to questions and feature requests but can't make any promises
-about frequent updates. There's lots of things on the backlog already and this is
-a non funded hobby project so time is precious!
-
-I'm working on this because i need it and because it's fun, but tomorrow i might
-focus on some other project instead :)
+APIs are changed, features improved & added. Be aware that if you use this right
+now, you'll probably have to adjust your code to API changes sometimes after
+pulling master. Documentation about API changes take place in the git commit
+changelog for now ;)
 
 
 License
@@ -76,8 +69,7 @@ What features does it have
 	• Message handling, with delayed/timed messages.
 	• All containers are scrollable/pannable (automatically from mouse/finger
 	  interaction, and following focus).
-	• Very failproof event handling (F.ex deleting a widget that is on the
-	  stack in a event handler is not dangerous).
+	• Very failproof event handling.
 	• Widget connections (synchronize multiple widgets with "widget-values")
 	• Language string handling
 	• No dependency on stl, exceptions, RTTI
@@ -119,6 +111,24 @@ easier to get a pull requests accepted:
 	• Follow the used code style (4 spaces wide tabs, indentation & whitespace style,
 	  documentation etc.)
 
+	• Features that may be optional should be optional and not tied to the core.
+	  That's what the addons folder is for.
+
+
+Creating custom widgets
+-----------------------------------------------------------------------------------
+
+TBWidget is cheap to create and layout and using many widgets to get what you want
+is encouraged. A custom widget should typically not implement any layouting and
+drawing of sub-elements if it can be solved by wrapping a TBLayout and other
+existing widgets.
+
+Any widget may contain other widgets and may control into which sub-widget other
+widgets are inflated from resources (using TBWidget::GetContentRoot).
+
+Custom widgets can be inflated from UI resources too. See the use of the
+TB_WIDGET_FACTORY macro in tb_widgets_reader.cpp for examples on how to do this.
+
 
 Building the demo
 -----------------------------------------------------------------------------------
@@ -133,8 +143,12 @@ This will clone GLFW into the right directory.
 
 On Windows, use the project files for Visual Studio 2010 in Demo/VisualStudio.
 On Linux & Mac, simply run make. It will create a executable called RunDemo.
-On Linux & Mac, you can also use the Sublime Text 2 project in the root folder
+On Linux & Mac, you can also use the Sublime Text project in the root folder
 that is set up to work with debugging using SublimeGDB.
+
+There's a Sublime Text project for a small Android test app in DemoAndroid with a
+custom build & deploy script (Windows .bat file. There's currently no Linux/Mac
+scripts).
 
 
 Author
@@ -142,3 +156,4 @@ Author
 
 Emil Segerås (emilsegers@gmail.com)
 Web: http://fiffigt.com/
+TinkerBell home: https://github.com/fruxo/tinkerbell
