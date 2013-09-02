@@ -105,7 +105,7 @@ PreferredSize TBTextField::OnCalculatePreferredContentSize()
 	if (m_cached_text_width == UPDATE_TEXT_WIDTH_CACHE)
 		m_cached_text_width = m_text.GetWidth(this);
 	ps.pref_w = m_cached_text_width;
-	ps.pref_h = ps.min_h = m_text.GetHeight(this);
+	ps.pref_h = ps.min_h = ps.max_h = m_text.GetHeight(this);
 	if (!m_squeezable)
 		ps.min_w = ps.pref_w;
 	return ps;
