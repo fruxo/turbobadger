@@ -28,7 +28,6 @@ public:
 	bool LoadResourceFile(const char *filename);
 	void LoadResourceData(const char *data);
 	void LoadResource(TBNode &node);
-	void Output(const char *format, ...);
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };

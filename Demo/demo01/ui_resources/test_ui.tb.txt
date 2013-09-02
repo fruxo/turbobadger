@@ -34,3 +34,4 @@ TBLayout: axis: y, distribution-position: left top
 			TBButton
 				text Delayed Msg!
 				id delayedmsg
+	TBButton: id: "debug settings", text: "Runtime debug settings..."

@@ -121,6 +121,7 @@ public:
 	const TBID& operator = (const TBID &id) { Set(id); return *this; }
 private:
 	uint32 id;
+public:
 	/** This string is here to aid debugging (Only in debug builds!)
 		It should not to be used in your code! */
 #ifdef _DEBUG

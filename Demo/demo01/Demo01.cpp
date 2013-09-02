@@ -104,48 +104,9 @@ void DemoWindow::LoadResource(TBNode &node)
 	EnsureFocus();
 }
 
-void DemoWindow::Output(const char *format, ...)
-{
-	if (!format)
-		return;
-	static char buf[1024];
-	va_list ap;
-	va_start(ap, format);
-	int len = vsnprintf(buf, 1024, format, ap);
-	va_end(ap);
-
-	// Append the text at the last line of the debug field and scroll.
-	if (TBEditField *edit = application->GetRoot()->GetWidgetByIDAndType<TBEditField>(TBIDC("debug_output")))
-	{
-		edit->GetStyleEdit()->AppendText(buf, len, true);
-		edit->GetStyleEdit()->ScrollIfNeeded();
-	}
-}
-
 bool DemoWindow::OnEvent(const TBWidgetEvent &ev)
 {
-	// FIX: Let a special debug output window be a TBGlobalWidgetListener and listen to all events
-	// Now we only know about events that are not handled.
-	if (ev.type == EVENT_TYPE_CHANGED)
-	{
-		// Output the new value and text
-		TBStr text;
-		if (ev.target->GetText(text) && text.Length() > 24)
-			sprintf(text.CStr() + 20, "...");
-		Output("Changed to: %.2f (\"%s\")\n", ev.target->GetValueDouble(), text.CStr());
-	}
-	else if (ev.type == EVENT_TYPE_CLICK)
-	{
-		// Output the id if it's a target with a id.
-		if (ev.target->GetID())
-		{
-			TBStr text;
-			if (ev.target->GetText(text) && text.Length() > 24)
-				sprintf(text.CStr() + 20, "...");
-			Output("Click with id: %u\n", (uint32)ev.target->GetID());
-		}
-	}
-	else if (ev.type == EVENT_TYPE_KEY_DOWN && ev.special_key == TB_KEY_ESC)
+	if (ev.type == EVENT_TYPE_KEY_DOWN && ev.special_key == TB_KEY_ESC)
 	{
 		// We could call Die() to fade away and die, but click the close button instead.
 		// That way the window has a chance of intercepting the close and f.ex ask if it really should be closed.
@@ -354,18 +315,6 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		if (TBProgressSpinner *spinner = GetWidgetByIDAndType<TBProgressSpinner>(TBIDC("spinner")))
 			spinner->SetValue(0);
-	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("debug settings"))
-	{
-#ifdef TB_RUNTIME_DEBUG_INFO
-		ShowDebugInfoSettingsWindow(GetParentRoot());
-#else
-		TBMessageWindow *msg_win = new TBMessageWindow(ev.target, TBID());
-		msg_win->Show("Debug settings",
-						"Debug settings is only available in builds "
-						"compiled with TB_RUNTIME_DEBUG_INFO defined.");
-#endif
-		return true;
 	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("reset-master-volume"))
 	{
@@ -694,6 +643,19 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 			ResourceEditWindow *res_edit_win = new ResourceEditWindow();
 			res_edit_win->Load("Demo/demo01/ui_resources/resource_edit_test.tb.txt");
 			GetParent()->AddChild(res_edit_win);
+			return true;
+		}
+		else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("debug settings"))
+		{
+#ifdef TB_RUNTIME_DEBUG_INFO
+			ShowDebugInfoSettingsWindow(GetParentRoot());
+#else
+			TBMessageWindow *msg_win = new TBMessageWindow(ev.target, TBID());
+			msg_win->Show("Debug settings",
+							"Debug settings is only available in builds "
+							"compiled with TB_RUNTIME_DEBUG_INFO defined.\n\n"
+							"Debug builds enable this by default.");
+#endif
 			return true;
 		}
 	}
