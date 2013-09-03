@@ -478,18 +478,37 @@ bool TBCaret::Move(bool forward, bool word)
 		const char *str = pos.block->str;
 		if (forward)
 		{
-			while (pos.ofs < len && !is_wordbreak(str[pos.ofs]))
+			if (is_linebreak(str[pos.ofs]))
+			{
 				pos.ofs++;
-			while (pos.ofs < len && is_wordbreak(str[pos.ofs]))
-				pos.ofs++;
+			}
+			else if (is_wordbreak(str[pos.ofs]))
+			{
+				while (pos.ofs < len && is_wordbreak(str[pos.ofs]) && !is_linebreak(str[pos.ofs]))
+					pos.ofs++;
+			}
+			else
+			{
+				while (pos.ofs < len && !is_wordbreak(str[pos.ofs]))
+					pos.ofs++;
+				while (pos.ofs < len && is_space(str[pos.ofs]))
+					pos.ofs++;
+			}
 		}
 		else if (pos.ofs > 0)
 		{
+			while (pos.ofs > 0 && is_space(str[pos.ofs - 1]))
+				pos.ofs--;
 			if (is_wordbreak(str[pos.ofs - 1]))
+			{
 				while (pos.ofs > 0 && is_wordbreak(str[pos.ofs - 1]))
 					pos.ofs--;
-			while (pos.ofs > 0 && !is_wordbreak(str[pos.ofs - 1]))
-				pos.ofs--;
+			}
+			else
+			{
+				while (pos.ofs > 0 && !is_wordbreak(str[pos.ofs - 1]))
+					pos.ofs--;
+			}
 		}
 	}
 	else
