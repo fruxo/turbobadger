@@ -1645,7 +1645,7 @@ void TBStyleEdit::InsertText(const char *text, int32 len, bool after_last, bool 
 	else
 		undoredo.Commit(this, caret.GetGlobalOfs(), len_inserted, text, true);
 
-	caret.Place(caret.pos.block, caret.pos.ofs + len);
+	caret.Place(caret.pos.block, caret.pos.ofs + len, false);
 	caret.UpdatePos();
 	caret.UpdateWantedX();
 }
@@ -2071,7 +2071,7 @@ void TBUndoRedoStack::Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse)
 	else
 	{
 		styledit->selection.SelectNothing();
-		styledit->caret.SetGlobalOfs(e->gofs, false);
+		styledit->caret.SetGlobalOfs(e->gofs, true, true);
 		styledit->InsertText(e->text);
 		int text_len = e->text.Length();
 		if (text_len > 1)

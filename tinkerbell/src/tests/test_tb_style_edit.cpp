@@ -195,6 +195,41 @@ TB_TEST_GROUP(tb_editfield)
 		TB_VERIFY_STR(edit->GetText(), "ONE\r\n\r\n");
 	}
 
+	TB_TEST(settext_undoredo_bugfix1)
+	{
+		// Make sure we use the test dummy font (ID 0), so we're not dependant on
+		// the available fonts & font backend in this test.
+		TBFontDescription fd;
+		const int font_size = 48;
+		fd.SetSize(font_size);
+		edit->SetFontDescription(fd);
+
+		sedit->InsertBreak();
+		sedit->InsertText("A");
+		TB_VERIFY_STR(edit->GetText(), "\r\nA\r\n");
+		TB_VERIFY(sedit->GetContentHeight() == font_size * 2);
+
+		sedit->KeyDown(0, TB_KEY_BACKSPACE, TB_MODIFIER_NONE);
+		TB_VERIFY_STR(edit->GetText(), "\r\n\r\n");
+		TB_VERIFY(sedit->GetContentHeight() == font_size * 2);
+
+		sedit->Undo();
+		TB_VERIFY_STR(edit->GetText(), "\r\nA\r\n");
+		TB_VERIFY(sedit->GetContentHeight() == font_size * 2);
+
+		sedit->Redo();
+		TB_VERIFY_STR(edit->GetText(), "\r\n\r\n");
+		TB_VERIFY(sedit->GetContentHeight() == font_size * 2);
+	}
+
+	TB_TEST(settext_insert_linebreaks_move)
+	{
+		sedit->InsertText("Foo\n");
+		sedit->InsertText("Foo\n");
+		sedit->InsertText("Foo\n");
+		TB_VERIFY_STR(edit->GetText(), "Foo\nFoo\nFoo\n");
+	}
+
 	TB_TEST(multiline_overflow_1)
 	{
 		// Make sure we use the test dummy font (ID 0), so we're not dependant on
