@@ -162,7 +162,7 @@ bool TBBitmapFragmentMap::Init(int bitmap_w, int bitmap_h)
 	m_bitmap_h = bitmap_h;
 	if (m_bitmap_data)
 #ifdef _DEBUG
-		memset(m_bitmap_data, 0xFF, bitmap_w * bitmap_h * sizeof(uint32));
+		memset(m_bitmap_data, 0x88, bitmap_w * bitmap_h * sizeof(uint32));
 #else
 		memset(m_bitmap_data, 0x00, bitmap_w * bitmap_h * sizeof(uint32));
 #endif
@@ -308,14 +308,20 @@ void TBBitmapFragmentMap::CopyData(TBBitmapFragment *frag, int data_stride, uint
 		src = frag_data;
 		for (int i = 0; i < frag->m_rect.h; i++)
 		{
-			dst[0] = src[0];
-			dst[rect.w - 1] = src[frag->m_rect.w - 1];
+			dst[0] = src[0] & 0x00ffffff;
+			dst[rect.w - 1] = src[frag->m_rect.w - 1] & 0x00ffffff;
 			dst += m_bitmap_w;
 			src += data_stride;
 		}
 		// Copy horizontal edges
-		memcpy(m_bitmap_data + rect.x + 1 + rect.y * m_bitmap_w, frag_data, frag->m_rect.w * sizeof(uint32));
-		memcpy(m_bitmap_data + rect.x + 1 + (rect.y + rect.h - 1) * m_bitmap_w, frag_data + (frag->m_rect.h - 1) * data_stride, frag->m_rect.w * sizeof(uint32));
+		dst = m_bitmap_data + rect.x + 1 + rect.y * m_bitmap_w;
+		src = frag_data;
+		for (int i = 0; i < frag->m_rect.w; i++)
+			dst[i] = src[i] & 0x00ffffff;
+		dst = m_bitmap_data + rect.x + 1 + (rect.y + rect.h - 1) * m_bitmap_w;
+		src = frag_data + (frag->m_rect.h - 1) * data_stride;
+		for (int i = 0; i < frag->m_rect.w; i++)
+			dst[i] = src[i] & 0x00ffffff;
 	}
 }
 
@@ -488,8 +494,6 @@ int TBBitmapFragmentManager::GetUseRatio() const
 #ifdef TB_RUNTIME_DEBUG_INFO
 void TBBitmapFragmentManager::Debug()
 {
-	float old_opacity = g_renderer->GetOpacity();
-	g_renderer->SetOpacity(0.9f);
 	int x = 0;
 	for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
 	{
@@ -498,7 +502,6 @@ void TBBitmapFragmentManager::Debug()
 			g_renderer->DrawBitmap(TBRect(x, 0, fm->m_bitmap_w, fm->m_bitmap_h), TBRect(0, 0, fm->m_bitmap_w, fm->m_bitmap_h), bitmap);
 		x += fm->m_bitmap_w + 5;
 	}
-	g_renderer->SetOpacity(old_opacity);
 }
 #endif // TB_RUNTIME_DEBUG_INFO
 
