@@ -65,10 +65,24 @@ public:
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
-class MyToolbarWindow : public DemoWindow
+class LayoutWindow : public DemoWindow
 {
 public:
-	MyToolbarWindow(const char *filename);
+	LayoutWindow(const char *filename);
+	virtual bool OnEvent(const TBWidgetEvent &ev);
+};
+
+class TabContainerWindow : public DemoWindow
+{
+public:
+	TabContainerWindow();
+	virtual bool OnEvent(const TBWidgetEvent &ev);
+};
+
+class ConnectionWindow : public DemoWindow
+{
+public:
+	ConnectionWindow();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 

@@ -34,7 +34,7 @@ ResourceEditWindow::ResourceEditWindow()
 	m_widget_list = GetWidgetByIDAndType<TBSelectList>(TBIDC("widget_list"));
 	m_widget_list->SetSource(&m_widget_list_source);
 
-	SetRect(TBRect(100, 100, 900, 600));
+	SetRect(TBRect(100, 50, 900, 600));
 }
 
 ResourceEditWindow::~ResourceEditWindow()

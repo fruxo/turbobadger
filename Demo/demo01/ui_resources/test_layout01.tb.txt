@@ -1,6 +1,5 @@
 WindowInfo
 	title TBLayout size & gravity
-	position 100 240
 TBLayout
 	axis y
 	TBLayout

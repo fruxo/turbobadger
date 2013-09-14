@@ -247,14 +247,14 @@ public:
 	}
 };
 
-// == MyToolbarWindow =========================================================
+// == LayoutWindow ============================================================
 
-MyToolbarWindow::MyToolbarWindow(const char *filename)
+LayoutWindow::LayoutWindow(const char *filename)
 {
 	LoadResourceFile(filename);
 }
 
-bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
+bool LayoutWindow::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target->GetID() == TBIDC("select position"))
 	{
@@ -278,18 +278,22 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("set_align"))
+	return DemoWindow::OnEvent(ev);
+}
+
+// == TabContainerWindow ============================================================
+
+TabContainerWindow::TabContainerWindow()
+{
+	LoadResourceFile("Demo/demo01/ui_resources/test_tabcontainer01.tb.txt");
+}
+
+bool TabContainerWindow::OnEvent(const TBWidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("set_align"))
 	{
 		if (TBTabContainer *tc = GetWidgetByIDAndType<TBTabContainer>(TBIDC("tabcontainer")))
 			tc->SetAlignment(static_cast<TB_ALIGN>(ev.target->data.GetInt()));
-		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
-	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("toggle_axis"))
-	{
-		static AXIS axis = AXIS_Y;
-		axis = axis == AXIS_X ? AXIS_Y : AXIS_X;
-		if (TBTabContainer *tc = GetWidgetByIDAndType<TBTabContainer>(TBIDC("tabcontainer")))
-			tc->SetAxis(axis);
 		ResizeToFitContent(RESIZE_FIT_CURRENT_OR_NEEDED);
 	}
 	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("toggle_tab_axis"))
@@ -316,7 +320,19 @@ bool MyToolbarWindow::OnEvent(const TBWidgetEvent &ev)
 		if (TBProgressSpinner *spinner = GetWidgetByIDAndType<TBProgressSpinner>(TBIDC("spinner")))
 			spinner->SetValue(0);
 	}
-	else if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("reset-master-volume"))
+	return DemoWindow::OnEvent(ev);
+}
+
+// == ConnectionWindow =========================================================
+
+ConnectionWindow::ConnectionWindow()
+{
+	LoadResourceFile("Demo/demo01/ui_resources/test_connections.tb.txt");
+}
+
+bool ConnectionWindow::OnEvent(const TBWidgetEvent &ev)
+{
+	if (ev.type == EVENT_TYPE_CLICK && ev.target->GetID() == TBIDC("reset-master-volume"))
 	{
 		if (TBWidgetValue *val = g_value_group.GetValue(TBIDC("master-volume")))
 			val->SetInt(50);
@@ -587,19 +603,14 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-layout"))
 		{
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout01.tb.txt");
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout02.tb.txt");
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_layout03.tb.txt");
+			TBStr resource_file("Demo/demo01/ui_resources/");
+			resource_file.Append(ev.target->data.GetString());
+			new LayoutWindow(resource_file);
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-connections"))
 		{
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_connections.tb.txt");
-			return true;
-		}
-		else if (ev.target->GetID() == TBIDC("test-radio-check"))
-		{
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_radio_checkbox.tb.txt");
+			new ConnectionWindow();
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-list"))
@@ -629,13 +640,8 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-skin-conditions"))
 		{
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_skin_conditions01.tb.txt");
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_skin_conditions02.tb.txt");
-			return true;
-		}
-		else if (ev.target->GetID() == TBIDC("test-toggle-container"))
-		{
-			new MyToolbarWindow("Demo/demo01/ui_resources/test_toggle_containers.tb.txt");
+			(new DemoWindow())->LoadResourceFile("Demo/demo01/ui_resources/test_skin_conditions01.tb.txt");
+			(new DemoWindow())->LoadResourceFile("Demo/demo01/ui_resources/test_skin_conditions02.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-resource-edit"))
@@ -731,7 +737,7 @@ bool DemoApplication::Init()
 
 	AdvancedListWindow *listwindow2 = new AdvancedListWindow(&advanced_source);
 
-	new MyToolbarWindow("Demo/demo01/ui_resources/test_tabcontainer01.tb.txt");
+	new TabContainerWindow();
 
 	if (num_failed_tests)
 	{
@@ -792,7 +798,7 @@ int app_main()
 {
 	application = new DemoApplication();
 
-	ApplicationBackend *application_backend = ApplicationBackend::Create(application, 1280, 720, "Demo");
+	ApplicationBackend *application_backend = ApplicationBackend::Create(application, 1280, 700, "Demo");
 	if (!application_backend)
 		return 1;
 

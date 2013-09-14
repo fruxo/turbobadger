@@ -30,5 +30,5 @@ TBLayout: axis: y, distribution: available
 				" • Keyboard navigation using tab.\n" \
 				" • <u>Underline</u>, <color #f44>Red</color>, <color #6f6>Green</color>, <color #aaf>Blue</color>\n\n" \
 				"<color #0794f8>Good to know</color>\n" \
-				" • The text component you're reading in handles styling and embedded content (such as this widget: <widget TBButton: text: ':)'>), but does not handle editing of those fully. Undo/Redo should work fine, but caret movement and position updates doesn't.\n" \
+				" • The text widget handles styling and embedded content (Example: <widget TBSkinImage: skin: 'Icon16'> <widget TBButton: text: 'Nice!'>), but does not handle editing of those fully. Undo/Redo should work fine, but caret movement and position updates doesn't.\n" \
 				" • All resources are UTF-8.\n"
