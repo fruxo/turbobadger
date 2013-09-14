@@ -539,9 +539,12 @@ public:
 		invoked on even though they are also dying. */
 	virtual void OnDie() {}
 
-	/** Called when this view has been resized.
+	/** Called when this widget has been resized.
 		The default implementation move and resize all children according to their gravity. */
 	virtual void OnResized(int old_w, int old_h);
+
+	/** Called when this widget has been scrolled. */
+	virtual void OnScroll(int scroll_x, int scroll_y) {}
 
 	/** Called just before a child is inflated into this widget.
 		The default implementation will resize the child to it's preferred size
@@ -587,7 +590,8 @@ public:
 	virtual void GetChildTranslation(int &x, int &y) const { x = y = 0; }
 
 	/** If this is a widget that scroll children (see GetChildTranslation), it should
-		scroll to the coordinates x, y. */
+		scroll to the coordinates x, y.
+		This must result in calling OnScroll if scrolling occured. */
 	virtual void ScrollTo(int x, int y) {}
 
 	/** Start the TBScroller for this widget and scroll it to the given position.
@@ -609,6 +613,10 @@ public:
 		ScrollInfo() : min_x(0), min_y(0), max_x(0), max_y(0), x(0), y(0) {}
 		bool CanScrollX() const { return max_x > min_x; }
 		bool CanScrollY() const { return max_y > min_y; }
+		bool CanScrollLeft() const { return x > min_x; }
+		bool CanScrollRight() const { return x < max_x; }
+		bool CanScrollUp() const { return y > min_y; }
+		bool CanScrollDown() const { return y < max_y; }
 		bool CanScroll() const { return CanScrollX() || CanScrollY(); }
 		int min_x, min_y;	///< Minimum x and y scroll position.
 		int max_x, max_y;	///< Maximum x and y scroll position.

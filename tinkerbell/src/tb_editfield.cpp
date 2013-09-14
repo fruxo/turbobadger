@@ -188,11 +188,13 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 	if (ev.type == EVENT_TYPE_CHANGED && ev.target == &m_scrollbar_x)
 	{
 		m_style_edit.SetScrollPos(m_scrollbar_x.GetValue(), m_style_edit.scroll_y);
+		OnScroll(m_scrollbar_x.GetValue(), m_style_edit.scroll_y);
 		return true;
 	}
 	else if (ev.type == EVENT_TYPE_CHANGED && ev.target == &m_scrollbar_y)
 	{
 		m_style_edit.SetScrollPos(m_style_edit.scroll_x, m_scrollbar_y.GetValue());
+		OnScroll(m_style_edit.scroll_x, m_scrollbar_y.GetValue());
 		return true;
 	}
 	else if (ev.type == EVENT_TYPE_WHEEL)

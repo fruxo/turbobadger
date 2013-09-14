@@ -51,6 +51,10 @@ void TBLayout::SetOverflowScroll(int overflow_scroll)
 		return;
 	m_overflow_scroll = overflow_scroll;
 	Invalidate();
+	if (m_axis == AXIS_X)
+		OnScroll(m_overflow_scroll, 0);
+	else
+		OnScroll(0, m_overflow_scroll);
 }
 
 void TBLayout::SetLayoutSize(LAYOUT_SIZE size)

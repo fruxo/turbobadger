@@ -201,6 +201,7 @@ bool TBScrollContainer::OnEvent(const TBWidgetEvent &ev)
 	if (ev.type == EVENT_TYPE_CHANGED && (ev.target == &m_scrollbar_x || ev.target == &m_scrollbar_y))
 	{
 		Invalidate();
+		OnScroll(m_scrollbar_x.GetValue(), m_scrollbar_y.GetValue());
 		return true;
 	}
 	else if (ev.type == EVENT_TYPE_WHEEL)
