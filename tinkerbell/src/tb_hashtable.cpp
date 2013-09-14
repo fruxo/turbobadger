@@ -12,7 +12,6 @@ namespace tinkerbell {
 //FIX: reduce memory (block allocation of ITEM)
 //FIX: should shrink when deleting single items (but not when adding items!)
 //FIX: should grow when about 70% full instead of 100%
-//FIX: Don't use % as long as we use a hash function that doesn't need primes. We use power of two sizes!
 
 // == TBHashTable =======================================================================
 
@@ -65,7 +64,7 @@ bool TBHashTable::Rehash(uint32 new_num_buckets)
 			{
 				ITEM *item_next = item->next;
 				// Add it to new_buckets
-				uint32 bucket = item->key % new_num_buckets;
+				uint32 bucket = item->key & (new_num_buckets - 1);
 				item->next = new_buckets[bucket];
 				new_buckets[bucket] = item;
 				item = item_next;
@@ -88,13 +87,6 @@ bool TBHashTable::NeedRehash() const
 
 uint32 TBHashTable::GetSuitableBucketsCount() const
 {
-	//const uint32 num_primes = 23;
-	//static const uint32 primes[num_primes] = { 29, 53, 97, 193, 389, 769, 1543, 3079, 6151, 12289, 24593, 49157, 98317, 196613,
-	//										393241, 786433, 1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319 };
-	//for (uint32 i = 0; i < num_primes; i++)
-	//	if (primes[i] > m_num_items)
-	//		return primes[i];
-	//return 201326611;
 	// As long as we use FNV for TBID (in TBGetHash), power of two hash sizes are the best.
 	if (!m_num_items)
 		return 16;
@@ -105,7 +97,7 @@ void *TBHashTable::Get(uint32 key) const
 {
 	if (!m_num_buckets)
 		return nullptr;
-	uint32 bucket = key % m_num_buckets;
+	uint32 bucket = key & (m_num_buckets - 1);
 	ITEM *item = m_buckets[bucket];
 	while (item)
 	{
@@ -123,7 +115,7 @@ bool TBHashTable::Add(uint32 key, void *content)
 	assert(!Get(key));
 	if (ITEM *item = new ITEM)
 	{
-		uint32 bucket = key % m_num_buckets;
+		uint32 bucket = key & (m_num_buckets - 1);
 		item->key = key;
 		item->content = content;
 		item->next = m_buckets[bucket];
@@ -138,7 +130,7 @@ void *TBHashTable::Remove(uint32 key)
 {
 	if (!m_num_buckets)
 		return nullptr;
-	uint32 bucket = key % m_num_buckets;
+	uint32 bucket = key & (m_num_buckets - 1);
 	ITEM *item = m_buckets[bucket];
 	ITEM *prev_item = nullptr;
 	while (item)
