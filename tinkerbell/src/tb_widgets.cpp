@@ -29,6 +29,7 @@ int TBWidget::pointer_move_widget_x = 0;
 int TBWidget::pointer_move_widget_y = 0;
 bool TBWidget::cancel_click = false;
 bool TBWidget::update_widget_states = true;
+bool TBWidget::update_skin_states = true;
 bool TBWidget::show_focus_state = false;
 
 // == TBWidget::PaintProps ==============================================================
@@ -110,6 +111,7 @@ void TBWidget::Invalidate()
 void TBWidget::InvalidateStates()
 {
 	update_widget_states = true;
+	update_skin_states = true;
 }
 
 void TBWidget::Die()
@@ -905,12 +907,16 @@ void TBWidget::InvalidateLayout(INVALIDATE_LAYOUT il)
 
 void TBWidget::InvokeProcess()
 {
-	InvokeSkinUpdatesInternal();
+	InvokeSkinUpdatesInternal(false);
 	InvokeProcessInternal();
 }
 
-void TBWidget::InvokeSkinUpdatesInternal()
+void TBWidget::InvokeSkinUpdatesInternal(bool force_update)
 {
+	if (!update_skin_states && !force_update)
+		return;
+	update_skin_states = false;
+
 	// Check if the skin we get is different from what we expect. That might happen
 	// if the skin has some strong override dependant a condition that has changed.
 	// If that happens, call OnSkinChanged so the widget can react to that (possibly
@@ -927,7 +933,7 @@ void TBWidget::InvokeSkinUpdatesInternal()
 	}
 
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
-		child->InvokeSkinUpdatesInternal();
+		child->InvokeSkinUpdatesInternal(true);
 }
 
 void TBWidget::InvokeProcessInternal()

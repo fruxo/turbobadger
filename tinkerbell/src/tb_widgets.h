@@ -275,7 +275,8 @@ public:
 	void Invalidate();
 
 	/** Call if something changes that might need other widgets to update their state.
-		F.ex if a action availability changes, some widget might have to become enabled/disabled.
+		F.ex if a action availability changes, some widget might have to become enabled/disabled,
+		or a skin might need to change due to different conditions.
 		This is done automatically for all invoked events of type:
 			EVENT_TYPE_CLICK, EVENT_TYPE_CHANGED, EVENT_TYPE_KEYDOWN, EVENT_TYPE_KEYUP. */
 	void InvalidateStates();
@@ -862,6 +863,7 @@ public:
 	static int pointer_move_widget_y;	///< Pointer y position on last pointer event, relative to the captured widget (if any) or hovered widget.
 	static bool cancel_click;			///< true if the pointer up event should not generate a click event.
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
+	static bool update_skin_states;		///< true if something has called InvalidateStates() and skin still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 private:
 	/** Return this widget or the nearest parent that is scrollable
@@ -870,7 +872,7 @@ private:
 	TBScroller *FindStartedScroller();
 	TBScroller *GetReadyScroller(bool scroll_x, bool scroll_y);
 	TBWidget *GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_id = nullptr);
-	void InvokeSkinUpdatesInternal();
+	void InvokeSkinUpdatesInternal(bool force_update);
 	void InvokeProcessInternal();
 	static void SetHoveredWidget(TBWidget *widget, bool touch);
 	static void SetCapturedWidget(TBWidget *widget);
