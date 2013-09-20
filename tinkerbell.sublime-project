@@ -15,5 +15,13 @@
 		// Settings for SublimeGDB
 		"sublimegdb_commandline": "gdb --interpreter=mi ./RunDemo",
 		"sublimegdb_workingdir": "${folder:${project_path:RunDemo}}"
-	}
+	},
+	"build_systems":
+	[
+		{
+			"name": "Make DEBUG=YES",
+			"working_dir": "${project_path:${folder}}",
+			"cmd": ["make", "DEBUG=YES"]
+		}
+	]
 }
