@@ -47,10 +47,19 @@ public:
 		are added after any existing nodes. */
 	bool CloneChildren(TBNode *source);
 
-	/** Get a node from the given request or nullptr if no such node was found.
+	enum GET_MISS_POLICY {
+		/** GetNode will return nullptr if the node doesn't exist. */
+		GET_MISS_POLICY_NULL,
+		/** GetNode will create all missing nodes for the request. */
+		GET_MISS_POLICY_CREATE
+	};
+
+	/** Get a node from the given request.
+		If the node doesn't exist, it will either return nullptr or create
+		missing nodes, depending on the miss policy.
 		It can find nodes in children as well. Names are separated by a ">".
 		Ex: GetNode("dishes>pizza>special>batman") */
-	TBNode *GetNode(const char *request);
+	TBNode *GetNode(const char *request, GET_MISS_POLICY mp = GET_MISS_POLICY_NULL);
 
 	/** Returns the name of this node. */
 	const char *GetName() const { return m_name; }
@@ -75,6 +84,7 @@ public:
 private:
 friend class TBNodeTarget;
 	TBNode *GetNode(const char *name, int name_len) const;
+	static TBNode *Create(const char *name, int name_len);
 	char *m_name;
 	TBValue m_value;
 	TBLinkListOf<TBNode> m_children;

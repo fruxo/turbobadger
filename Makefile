@@ -82,6 +82,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tests/test_tb_linklist.cpp \
       tinkerbell/src/tests/test_tb_object.cpp \
       tinkerbell/src/tests/test_tb_parser.cpp \
+      tinkerbell/src/tests/test_tb_value.cpp \
       tinkerbell/src/tests/test_tb_tempbuffer.cpp \
       tinkerbell/src/tests/test_tb_test.cpp \
       tinkerbell/src/tests/test_tb_color.cpp \

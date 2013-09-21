@@ -17,6 +17,7 @@ TBNode::~TBNode()
 	Clear();
 }
 
+// static
 TBNode *TBNode::Create(const char *name)
 {
 	TBNode *n = new TBNode;
@@ -28,6 +29,20 @@ TBNode *TBNode::Create(const char *name)
 	return n;
 }
 
+// static
+TBNode *TBNode::Create(const char *name, int name_len)
+{
+	TBNode *n = new TBNode;
+	if (!n || !(n->m_name = (char *) malloc(name_len + 1)))
+	{
+		delete n;
+		return nullptr;
+	}
+	memcpy(n->m_name, name, name_len);
+	n->m_name[name_len] = 0;
+	return n;
+}
+
 const char *get_next_end(const char *request)
 {
 	while (*request != 0 && *request != '>')
@@ -35,13 +50,22 @@ const char *get_next_end(const char *request)
 	return request;
 }
 
-TBNode *TBNode::GetNode(const char *request)
+TBNode *TBNode::GetNode(const char *request, GET_MISS_POLICY mp)
 {
+	// Iterate one node deeper for each sub request (non recursive)
 	TBNode *n = this;
 	while (*request && n)
 	{
 		const char *nextend = get_next_end(request);
-		n = n->GetNode(request, nextend - request);
+		int name_len = nextend - request;
+		TBNode *n_child = n->GetNode(request, name_len);
+		if (!n_child && mp == GET_MISS_POLICY_CREATE)
+		{
+			n_child = n->Create(request, name_len);
+			if (n_child)
+				n->Add(n_child);
+		}
+		n = n_child;
 		request = *nextend == 0 ? nextend : nextend + 1;
 	}
 	return n;
