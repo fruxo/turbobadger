@@ -55,6 +55,7 @@ public:
 private:
 	TBSelectList *m_widget_list;
 	TBSelectItemSourceList<ResourceItem> m_widget_list_source;
+	TBScrollContainer *m_scroll_container;
 	TBWidget *m_build_container;
 	TBEditField *m_source_edit;
 	TBStr m_resource_filename;

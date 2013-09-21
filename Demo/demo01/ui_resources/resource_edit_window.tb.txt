@@ -30,6 +30,9 @@ TBLayout
 			id source_edit
 			multiline 1
 			gravity all
-		TBScrollContainer
-			id build_container
-			gravity all
+		TBLayout: axis: y, distribution: available, position: left
+			TBScrollContainer
+				id scroll_container
+				gravity all
+			TBClickLabel: text: "Adapt to container"
+				TBCheckBox: id: "constrained"

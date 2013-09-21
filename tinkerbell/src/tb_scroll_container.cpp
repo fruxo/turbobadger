@@ -121,6 +121,23 @@ TBScrollContainer::~TBScrollContainer()
 	RemoveChild(&m_scrollbar_x);
 }
 
+void TBScrollContainer::SetAdaptToContentSize(bool adapt)
+{
+	if (m_adapt_to_content_size == adapt)
+		return;
+	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+	m_adapt_to_content_size = adapt;
+	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+}
+
+void TBScrollContainer::SetAdaptContentSize(bool adapt)
+{
+	if (m_adapt_content_size == adapt)
+		return;
+	m_adapt_content_size = adapt;
+	InvalidateLayout(INVALIDATE_LAYOUT_TARGET_ONLY);
+}
+
 void TBScrollContainer::SetScrollMode(SCROLL_MODE mode)
 {
 	if (mode == m_mode)
@@ -155,7 +172,9 @@ TBWidget::ScrollInfo TBScrollContainer::GetScrollInfo()
 void TBScrollContainer::InvalidateLayout(INVALIDATE_LAYOUT il)
 {
 	m_layout_is_invalid = true;
-	// No recursion up to parents here.
+	// No recursion up to parents here unless we adapt to content size.
+	if (m_adapt_to_content_size)
+		TBWidget::InvalidateLayout(il);
 }
 
 TBRect TBScrollContainer::GetPaddingRect()

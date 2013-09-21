@@ -5,6 +5,7 @@
 #include "tb_select.h"
 #include "tb_editfield.h"
 #include "tb_tempbuffer.h"
+#include "tb_scroll_container.h"
 #include <stdio.h>
 
 // == ResourceItem ====================================================================================
@@ -19,6 +20,7 @@ ResourceItem::ResourceItem(TBWidget *widget, const char *str)
 
 ResourceEditWindow::ResourceEditWindow()
 	: m_widget_list(nullptr)
+	, m_scroll_container(nullptr)
 	, m_build_container(nullptr)
 	, m_source_edit(nullptr)
 {
@@ -27,8 +29,8 @@ ResourceEditWindow::ResourceEditWindow()
 
 	g_widgets_reader->LoadFile(this, "Demo/demo01/ui_resources/resource_edit_window.tb.txt");
 
-	m_build_container = GetWidgetByID(TBIDC("build_container"));
-	m_build_container = m_build_container->GetContentRoot();
+	m_scroll_container = GetWidgetByIDAndType<TBScrollContainer>(TBIDC("scroll_container"));
+	m_build_container = m_scroll_container->GetContentRoot();
 	m_source_edit = GetWidgetByIDAndType<TBEditField>(TBIDC("source_edit"));
 
 	m_widget_list = GetWidgetByIDAndType<TBSelectList>(TBIDC("widget_list"));
@@ -175,6 +177,10 @@ bool ResourceEditWindow::OnEvent(const TBWidgetEvent &ev)
 			GetParent()->AddChild(win);
 		}
 		return true;
+	}
+	else if (ev.target->GetID() == TBIDC("constrained"))
+	{
+		m_scroll_container->SetAdaptContentSize(ev.target->GetValue() ? true : false);
 	}
 	return TBWindow::OnEvent(ev);
 }

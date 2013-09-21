@@ -59,12 +59,12 @@ public:
 
 	/** Set to true if the preferred size of this container should adapt to the preferred
 		size of the content. This is disabled by default. */
-	void SetAdaptToContentSize(bool adapt) { m_adapt_to_content_size = adapt; }
+	void SetAdaptToContentSize(bool adapt);
 	bool GetAdaptToContentSize() { return m_adapt_to_content_size; }
 
 	/** Set to true if the content should adapt to the available size of this container
 		when it's larger than the preferred size. */
-	void SetAdaptContentSize(bool adapt) { m_adapt_content_size = adapt; }
+	void SetAdaptContentSize(bool adapt);
 	bool GetAdaptContentSize() { return m_adapt_content_size; }
 
 	void SetScrollMode(SCROLL_MODE mode);
