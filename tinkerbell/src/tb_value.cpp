@@ -142,10 +142,10 @@ TBValue::TBValue(float value)
 	SetFloat(value);
 }
 
-TBValue::TBValue(const char *value)
+TBValue::TBValue(const char *value, SET set)
 	: m_packed_init(0)
 {
-	SetString(value, SET_NEW_COPY);
+	SetString(value, set);
 }
 
 TBValue::TBValue(TBTypedObject *object)
@@ -183,19 +183,22 @@ void TBValue::Copy(const TBValue &source_value)
 	}
 	else
 	{
-		// Assumes we are a POD, which we should be
+		SetNull();
 		memcpy(this, &source_value, sizeof(TBValue));
 	}
 }
 
 void TBValue::SetNull()
 {
-	if (m_packed.type == TYPE_STRING && m_packed.allocated)
-		free(val_str);
-	else if (m_packed.type == TYPE_OBJECT && m_packed.allocated)
-		delete val_obj;
-	else if (m_packed.type == TYPE_ARRAY && m_packed.allocated)
-		delete val_arr;
+	if (m_packed.allocated)
+	{
+		if (m_packed.type == TYPE_STRING)
+			free(val_str);
+		else if (m_packed.type == TYPE_OBJECT)
+			delete val_obj;
+		else if (m_packed.type == TYPE_ARRAY)
+			delete val_arr;
+	}
 	m_packed.type = TYPE_NULL;
 }
 

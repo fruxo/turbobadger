@@ -76,7 +76,7 @@ public:
 
 	TBValue(int value);
 	TBValue(float value);
-	TBValue(const char *value);
+	TBValue(const char *value, SET set = SET_NEW_COPY);
 	TBValue(TBTypedObject *object);
 
 	~TBValue();
