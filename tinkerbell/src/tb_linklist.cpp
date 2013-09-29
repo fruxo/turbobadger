@@ -95,6 +95,7 @@ TBLinkList::~TBLinkList()
 
 void TBLinkList::AddFirst(TBLink *link)
 {
+	assert(!link->linklist); // Link is already in some list!
 	link->linklist = this;
 	link->next = first;
 	if (first)
@@ -106,6 +107,7 @@ void TBLinkList::AddFirst(TBLink *link)
 
 void TBLinkList::AddLast(TBLink *link)
 {
+	assert(!link->linklist); // Link is already in some list!
 	link->linklist = this;
 	link->prev = last;
 	if (last)
