@@ -35,7 +35,7 @@ void TBWidgetValueConnection::SyncFromWidget(TBWidget *source_widget)
 
 // == TBWidgetValue =====================================================================
 
-TBWidgetValue::TBWidgetValue(TBID name, TBValue::TYPE type)
+TBWidgetValue::TBWidgetValue(const TBID &name, TBValue::TYPE type)
 	: m_name(name)
 	, m_value(type)
 	, m_syncing(false)
@@ -142,7 +142,7 @@ void TBWidgetValue::SetDouble(double value)
 
 /*extern*/ TBValueGroup g_value_group;
 
-TBWidgetValue *TBValueGroup::CreateValueIfNeeded(TBID name, TBValue::TYPE type)
+TBWidgetValue *TBValueGroup::CreateValueIfNeeded(const TBID &name, TBValue::TYPE type)
 {
 	if (TBWidgetValue *val = GetValue(name))
 		return val;

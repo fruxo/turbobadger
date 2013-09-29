@@ -58,7 +58,7 @@ private:
 class TBWidgetValue
 {
 public:
-	TBWidgetValue(TBID name, TBValue::TYPE type = TBValue::TYPE_INT);
+	TBWidgetValue(const TBID &name, TBValue::TYPE type = TBValue::TYPE_INT);
 	~TBWidgetValue();
 
 	/** Set integer value and sync to connected widgets. */
@@ -122,10 +122,10 @@ class TBValueGroup
 public:
 	/** Create a TBWidgetValue with the given name if it does not already exist.
 		Returns nullptr if out of memory. */
-	TBWidgetValue *CreateValueIfNeeded(TBID name, TBValue::TYPE type = TBValue::TYPE_INT);
+	TBWidgetValue *CreateValueIfNeeded(const TBID &name, TBValue::TYPE type = TBValue::TYPE_INT);
 
 	/** Get the TBWidgetValue with the given name, or nullptr if no match is found. */
-	TBWidgetValue *GetValue(TBID name) const { return m_values.Get(name); }
+	TBWidgetValue *GetValue(const TBID &name) const { return m_values.Get(name); }
 
 	/** Add listener to this group. It will be removed automatically when deleted,
 		but can also be removed by RemoveListener. */
