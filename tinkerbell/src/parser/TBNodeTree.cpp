@@ -43,7 +43,8 @@ TBNode *TBNode::Create(const char *name, int name_len)
 	return n;
 }
 
-const char *get_next_end(const char *request)
+//static
+const char *TBNode::GetNextNodeSeparator(const char *request)
 {
 	while (*request != 0 && *request != '>')
 		request++;
@@ -56,7 +57,7 @@ TBNode *TBNode::GetNode(const char *request, GET_MISS_POLICY mp)
 	TBNode *n = this;
 	while (*request && n)
 	{
-		const char *nextend = get_next_end(request);
+		const char *nextend = GetNextNodeSeparator(request);
 		int name_len = nextend - request;
 		TBNode *n_child = n->GetNode(request, name_len);
 		if (!n_child && mp == GET_MISS_POLICY_CREATE)

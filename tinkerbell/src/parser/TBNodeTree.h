@@ -39,8 +39,17 @@ public:
 	/** Add node as child to this node. */
 	void Add(TBNode *n) { m_children.AddLast(n); n->m_parent = this; }
 
+	/** Add node before the reference node (which must be a child to this node). */
+	void AddBefore(TBNode *n, TBNode *reference) { m_children.AddBefore(n, reference); n->m_parent = this; }
+
+	/** Add node after the reference node (which must be a child to this node). */
+	void AddAfter(TBNode *n, TBNode *reference) { m_children.AddAfter(n, reference); n->m_parent = this; }
+
 	/** Remove child node n from this node. */
 	void Remove(TBNode *n) { m_children.Remove(n); n->m_parent = nullptr; }
+
+	/** Remove and delete child node n from this node. */
+	void Delete(TBNode *n) { m_children.Delete(n); }
 
 	/** Create duplicates of all items in source and add them to this node.
 		Note: Nodes does not replace existing nodes with the same name. Cloned nodes
@@ -79,6 +88,11 @@ public:
 		If the value is not specified, it returns the default value (def). */
 	const char *GetValueString(const char *request, const char *def);
 
+	/** Get the next position in request that is a sub node separator,
+		or the end of the string. */
+	static const char *GetNextNodeSeparator(const char *request);
+
+	inline TBNode *GetParent() const { return m_parent; }
 	inline TBNode *GetFirstChild() const { return m_children.GetFirst(); }
 	inline TBNode *GetLastChild() const { return m_children.GetLast(); }
 private:
