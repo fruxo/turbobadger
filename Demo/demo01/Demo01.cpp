@@ -12,7 +12,7 @@
 #include "tb_tab_container.h"
 #include "tb_bitmap_fragment.h"
 #include "tbanimation/tb_animation.h"
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 #include "tb_tempbuffer.h"
 #include "tb_font_renderer.h"
 #include "addons/tbimage/tb_image_manager.h"

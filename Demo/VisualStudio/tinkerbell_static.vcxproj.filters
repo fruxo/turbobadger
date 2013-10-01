@@ -135,9 +135,6 @@
     <ClCompile Include="..\..\tinkerbell\src\parser\TBParser.cpp">
       <Filter>Source Files\parser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\parser\TBNodeTree.cpp">
-      <Filter>Source Files\parser</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_style_edit.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
@@ -209,6 +206,9 @@
     </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_geometry.cpp">
       <Filter>Source Files\tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_node_tree.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -314,9 +314,6 @@
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.h">
       <Filter>Source Files\addons\tbimage</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\parser\TBNodeTree.h">
-      <Filter>Source Files\parser</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\parser\TBParser.h">
       <Filter>Source Files\parser</Filter>
     </ClInclude>
@@ -351,6 +348,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_scroller.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_node_tree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

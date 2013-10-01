@@ -3,7 +3,7 @@
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>

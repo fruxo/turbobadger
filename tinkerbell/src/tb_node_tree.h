@@ -3,8 +3,8 @@
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
-#ifndef TBNodeTree_H
-#define TBNodeTree_H
+#ifndef TB_NODE_TREE_H
+#define TB_NODE_TREE_H
 
 #include "parser/TBParser.h"
 #include "tb_linklist.h"
@@ -107,4 +107,4 @@ friend class TBNodeTarget;
 
 }; // namespace tinkerbell
 
-#endif // TBNodeTree_H
+#endif // TB_NODE_TREE_H

@@ -11,7 +11,7 @@
 #include "tb_inline_select.h"
 #include "tb_editfield.h"
 #include "tb_language.h"
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 #include "tb_font_renderer.h"
 
 namespace tinkerbell {

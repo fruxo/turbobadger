@@ -5,7 +5,7 @@
 
 #include "addons/tbimage/tb_image_widget.h"
 #include "tb_widgets_reader.h"
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 
 namespace tinkerbell {
 

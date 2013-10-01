@@ -13,7 +13,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.cpp" />
-    <ClCompile Include="..\..\tinkerbell\src\parser\TBNodeTree.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\parser\TBParser.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_addon.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp" />
@@ -33,6 +32,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_menu_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_message_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_msg.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_node_tree.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_object.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_popup_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_renderer.cpp" />
@@ -75,7 +75,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.h" />
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.h" />
-    <ClInclude Include="..\..\tinkerbell\src\parser\TBNodeTree.h" />
     <ClInclude Include="..\..\tinkerbell\src\parser\TBParser.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_addon.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_bitmap_fragment.h" />
@@ -93,6 +92,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_menu_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_message_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_msg.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_node_tree.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_object.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_popup_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_renderer.h" />

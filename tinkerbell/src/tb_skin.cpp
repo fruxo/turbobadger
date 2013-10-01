@@ -6,7 +6,7 @@
 #include "tb_skin.h"
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>

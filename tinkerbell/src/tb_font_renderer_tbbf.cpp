@@ -7,7 +7,7 @@
 #include "tb_renderer.h"
 #include "tb_tempbuffer.h"
 #include "tb_system.h"
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 #include "tb_hashtable.h"
 
 using namespace tinkerbell;

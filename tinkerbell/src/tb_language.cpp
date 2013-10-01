@@ -5,7 +5,7 @@
 
 #include "tb_language.h"
 #include "tb_system.h"
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 
 namespace tinkerbell {
 

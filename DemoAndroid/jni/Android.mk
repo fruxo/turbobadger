@@ -49,10 +49,10 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/tb_widgets_reader.cpp \
                    ../../tinkerbell/src/tb_window.cpp \
                    ../../tinkerbell/src/tb_debug.cpp \
+                   ../../tinkerbell/src/tb_node_tree.cpp \
                    ../../tinkerbell/src/tinkerbell.cpp \
                    ../../tinkerbell/src/addons/tbimage/tb_image_manager.cpp \
                    ../../tinkerbell/src/addons/tbimage/tb_image_widget.cpp \
-                   ../../tinkerbell/src/parser/TBNodeTree.cpp \
                    ../../tinkerbell/src/parser/TBParser.cpp \
                    ../../tinkerbell/src/utf8/utf8.cpp \
 

@@ -4,7 +4,7 @@
 // ================================================================================
 
 #include "tb_test.h"
-#include "parser/TBNodeTree.h"
+#include "tb_node_tree.h"
 
 #ifdef TB_UNIT_TESTING
 

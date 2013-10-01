@@ -70,7 +70,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_font_renderer.cpp \
       tinkerbell/src/tb_font_renderer_tbbf.cpp \
       tinkerbell/src/tb_geometry.cpp \
-      tinkerbell/src/parser/TBNodeTree.cpp \
+      tinkerbell/src/tb_node_tree.cpp \
       tinkerbell/src/parser/TBParser.cpp \
       tinkerbell/src/utf8/utf8.cpp \
       tinkerbell/src/addons/tbimage/tb_image_manager.cpp \
