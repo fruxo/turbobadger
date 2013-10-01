@@ -11,10 +11,10 @@
 
 namespace tinkerbell {
 
-class ParserTarget
+class TBParserTarget
 {
 public:
-	virtual ~ParserTarget() {}
+	virtual ~TBParserTarget() {}
 	virtual void OnError(int line_nr, const char *error) = 0;
 	virtual void OnComment(int line_nr, const char *comment) = 0;
 	virtual void OnToken(int line_nr, const char *name, TBValue &value) = 0;
@@ -22,14 +22,14 @@ public:
 	virtual void Leave() = 0;
 };
 
-class ParserStream
+class TBParserStream
 {
 public:
-	virtual ~ParserStream() {}
+	virtual ~TBParserStream() {}
 	virtual int GetMoreData(char *buf, int buf_len) = 0;
 };
 
-class Parser
+class TBParser
 {
 public:
 	enum STATUS {
@@ -37,8 +37,8 @@ public:
 		STATUS_NO_MEMORY,
 		STATUS_PARSE_ERROR
 	};
-	Parser() {}
-	STATUS Read(ParserStream *stream, ParserTarget *target);
+	TBParser() {}
+	STATUS Read(TBParserStream *stream, TBParserTarget *target);
 private:
 	int current_indent;
 	int current_line_nr;
@@ -46,9 +46,9 @@ private:
 	TBTempBuffer multi_line_value;
 	int multi_line_sub_level;
 	bool pending_multiline;
-	void OnLine(char *line, ParserTarget *target);
-	void OnCompactLine(char *line, ParserTarget *target);
-	void OnMultiline(char *line, ParserTarget *target);
+	void OnLine(char *line, TBParserTarget *target);
+	void OnCompactLine(char *line, TBParserTarget *target);
+	void OnMultiline(char *line, TBParserTarget *target);
 	void ConsumeValue(TBValue &dst_value, char *&line);
 };
 

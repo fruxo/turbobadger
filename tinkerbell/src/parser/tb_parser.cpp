@@ -83,7 +83,7 @@ bool is_pending_multiline(const char *str)
 
 // == Parser ============================================================================
 
-Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
+TBParser::STATUS TBParser::Read(TBParserStream *stream, TBParserTarget *target)
 {
 	TBTempBuffer line, work;
 	if (!line.Reserve(1024) || !work.Reserve(1024))
@@ -159,7 +159,7 @@ Parser::STATUS Parser::Read(ParserStream *stream, ParserTarget *target)
 	return STATUS_OK;
 }
 
-void Parser::OnLine(char *line, ParserTarget *target)
+void TBParser::OnLine(char *line, TBParserTarget *target)
 {
 	if (is_space_or_comment(line))
 	{
@@ -261,7 +261,7 @@ bool IsEndQuote(const char *buf_start, const char *buf, const char quote_type)
 	return !(num_backslashes & 1);
 }
 
-void Parser::OnCompactLine(char *line, ParserTarget *target)
+void TBParser::OnCompactLine(char *line, TBParserTarget *target)
 {
 	target->Enter();
 	while (*line)
@@ -301,7 +301,7 @@ void Parser::OnCompactLine(char *line, ParserTarget *target)
 	target->Leave();
 }
 
-void Parser::OnMultiline(char *line, ParserTarget *target)
+void TBParser::OnMultiline(char *line, TBParserTarget *target)
 {
 	// consume any whitespace
 	while (is_white_space(line))
@@ -325,7 +325,7 @@ void Parser::OnMultiline(char *line, ParserTarget *target)
 	}
 }
 
-void Parser::ConsumeValue(TBValue &dst_value, char *&line)
+void TBParser::ConsumeValue(TBValue &dst_value, char *&line)
 {
 	// Find value (As quoted string, or as auto)
 	char *value = line;

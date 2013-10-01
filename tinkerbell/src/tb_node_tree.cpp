@@ -119,18 +119,18 @@ const char *TBNode::GetValueString(const char *request, const char *def)
 	return n ? n->m_value.GetString() : def;
 }
 
-class FileParser : public ParserStream
+class FileParser : public TBParserStream
 {
 public:
-	bool Read(const char *filename, ParserTarget *target)
+	bool Read(const char *filename, TBParserTarget *target)
 	{
 		f = TBFile::Open(filename, TBFile::MODE_READ);
 		if (!f)
 			return false;
-		Parser p;
-		Parser::STATUS status = p.Read(this, target);
+		TBParser p;
+		TBParser::STATUS status = p.Read(this, target);
 		delete f;
-		return status == Parser::STATUS_OK ? true : false;
+		return status == TBParser::STATUS_OK ? true : false;
 	}
 	virtual int GetMoreData(char *buf, int buf_len)
 	{
@@ -140,15 +140,15 @@ private:
 	TBFile *f;
 };
 
-class DataParser : public ParserStream
+class DataParser : public TBParserStream
 {
 public:
-	bool Read(const char *data, int data_len, ParserTarget *target)
+	bool Read(const char *data, int data_len, TBParserTarget *target)
 	{
 		m_data = data;
 		m_data_len = data_len;
-		Parser p;
-		Parser::STATUS status = p.Read(this, target);
+		TBParser p;
+		TBParser::STATUS status = p.Read(this, target);
 		return true;
 	}
 	virtual int GetMoreData(char *buf, int buf_len)
@@ -164,7 +164,7 @@ private:
 	int m_data_len;
 };
 
-class TBNodeTarget : public ParserTarget
+class TBNodeTarget : public TBParserTarget
 {
 public:
 	TBNodeTarget(TBNode *root, const char *filename)
