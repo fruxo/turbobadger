@@ -10,8 +10,10 @@
 
 #ifdef _DEBUG
 void TBDebugOut(const char *str);
+#define TBDebugPrint(str, ...) { TBStr tmp; tmp.SetFormatted(str, __VA_ARGS__); TBDebugOut(str); }
 #else
 #define TBDebugOut(str) ((void)0)
+#define TBDebugPrint(str, ...) ((void)0)
 #endif
 
 namespace tinkerbell {
