@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.cpp" />
-    <ClCompile Include="..\..\tinkerbell\src\parser\TBParser.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\parser\tb_parser.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_addon.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_clipboard_win.cpp" />
@@ -75,7 +75,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.h" />
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.h" />
-    <ClInclude Include="..\..\tinkerbell\src\parser\TBParser.h" />
+    <ClInclude Include="..\..\tinkerbell\src\parser\tb_parser.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_addon.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_bitmap_fragment.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_config.h" />

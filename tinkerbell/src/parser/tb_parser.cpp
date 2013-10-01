@@ -3,7 +3,7 @@
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
-#include "parser/TBParser.h"
+#include "parser/tb_parser.h"
 #include "tb_tempbuffer.h"
 #include <assert.h>
 

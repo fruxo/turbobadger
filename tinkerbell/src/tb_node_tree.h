@@ -6,7 +6,7 @@
 #ifndef TB_NODE_TREE_H
 #define TB_NODE_TREE_H
 
-#include "parser/TBParser.h"
+#include "parser/tb_parser.h"
 #include "tb_linklist.h"
 
 namespace tinkerbell {

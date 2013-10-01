@@ -3,8 +3,8 @@
 // ==                   See tinkerbell.h for more information.                   ==
 // ================================================================================
 
-#ifndef TBParser_H
-#define TBParser_H
+#ifndef TB_PARSER_H
+#define TB_PARSER_H
 
 #include "tb_value.h"
 #include "tb_tempbuffer.h"
@@ -54,4 +54,4 @@ private:
 
 }; // namespace tinkerbell
 
-#endif // TBParser_H
+#endif // TB_PARSER_H
