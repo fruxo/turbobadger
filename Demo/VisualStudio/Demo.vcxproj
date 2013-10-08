@@ -117,7 +117,6 @@
     <ClCompile Include="..\platform\Application.cpp" />
     <ClCompile Include="..\platform\glfw_extra_win.cpp" />
     <ClCompile Include="..\platform\port_glfw.cpp" />
-    <ClCompile Include="..\renderers\tb_renderer_gl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tbanimation\Animation.h" />
@@ -130,7 +129,6 @@
     <ClInclude Include="..\glfw\src\win32_platform.h" />
     <ClInclude Include="..\platform\Application.h" />
     <ClInclude Include="..\platform\glfw_extra.h" />
-    <ClInclude Include="..\renderers\tb_renderer_gl.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="tinkerbell_static.vcxproj">

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "App.h"
-#include "tb_renderer_gl.h"
+#include "renderers/tb_renderer_gl.h"
 
 #include "tinkerbell.h"
 #include "tb_system.h"

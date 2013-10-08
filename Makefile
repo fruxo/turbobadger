@@ -75,6 +75,8 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/utf8/utf8.cpp \
       tinkerbell/src/addons/tbimage/tb_image_manager.cpp \
       tinkerbell/src/addons/tbimage/tb_image_widget.cpp \
+      tinkerbell/src/renderers/tb_renderer_batcher.cpp
+      tinkerbell/src/renderers/tb_renderer_gl.cpp
       tinkerbell/src/tests/tb_test.cpp \
       tinkerbell/src/tests/test_tb_style_edit.cpp \
       tinkerbell/src/tests/test_tb_space_allocator.cpp \
@@ -96,8 +98,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       Demo/demo01/ResourceEditWindow.cpp \
       Demo/platform/Application.cpp \
       Demo/platform/port_glfw.cpp \
-      Demo/platform/glfw_extra_linux.cpp \
-      Demo/renderers/tb_renderer_gl.cpp
+      Demo/platform/glfw_extra_linux.cpp
 
 CSRC = Demo/glfw/src/clipboard.c \
        Demo/glfw/src/context.c \

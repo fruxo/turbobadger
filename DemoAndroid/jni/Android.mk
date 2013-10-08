@@ -7,7 +7,6 @@ PROJECT_ROOT := ../../
 LOCAL_SRC_FILES := jni_glue.cpp \
                    App.cpp       \
                    ../../stb_image/tb_image_loader_stb.cpp \
-                   ../../Demo/renderers/tb_renderer_gl.cpp \
                    ../../tinkerbell/src/tb_addon.cpp \
                    ../../tinkerbell/src/tb_bitmap_fragment.cpp \
                    ../../tinkerbell/src/tb_clipboard_dummy.cpp \
@@ -55,6 +54,8 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/addons/tbimage/tb_image_widget.cpp \
                    ../../tinkerbell/src/parser/tb_parser.cpp \
                    ../../tinkerbell/src/utf8/utf8.cpp \
+                   ../../tinkerbell/src/renderers/tb_renderer_batcher.cpp \
+                   ../../tinkerbell/src/renderers/tb_renderer_gl.cpp \
 
 LOCAL_MODULE     := libTinkerbell
 LOCAL_CFLAGS     := -Werror -DANDROID -D__ANDROID__ -DUSE_GLES -DTB_ALWAYS_SHOW_EDIT_FOCUS

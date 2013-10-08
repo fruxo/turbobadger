@@ -22,55 +22,44 @@
 #include <GL/gl.h>
 #endif
 
-#include "tb_renderer.h"
+#include "renderers/tb_renderer_batcher.h"
 
 namespace tinkerbell {
+
+class TBRendererGL;
 
 class TBBitmapGL : public TBBitmap
 {
 public:
-	TBBitmapGL();
+	TBBitmapGL(TBRendererGL *renderer);
 	~TBBitmapGL();
 	bool Init(int width, int height, uint32 *data);
 	virtual int Width() { return m_w; }
 	virtual int Height() { return m_h; }
 	virtual void SetData(uint32 *data);
 public:
+	TBRendererGL *m_renderer;
 	int m_w, m_h;
 	GLuint m_texture;
 };
 
-class TBRendererGL : public TBRenderer
+class TBRendererGL : public TBRendererBatcher
 {
 public:
 	TBRendererGL();
 
-	// == TBRenderer ==============================================
+	// == TBRenderer ====================================================================
 
 	virtual void BeginPaint(int render_target_w, int render_target_h);
 	virtual void EndPaint();
 
-	virtual void Translate(int x, int y);
-	virtual void SetOpacity(float opacity);
-	virtual float GetOpacity();
-	virtual TBRect SetClipRect(const TBRect &rect, bool add_to_current);
-	virtual TBRect GetClipRect();
-	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmapFragment *bitmap_fragment);
-	virtual void DrawBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBBitmap *bitmap);
-	virtual void DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmapFragment *bitmap_fragment);
-	virtual void DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmap *bitmap);
-	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap);
-	virtual void DrawRect(const TBRect &dst_rect, const TBColor &color);
-	virtual void DrawRectFill(const TBRect &dst_rect, const TBColor &color);
-	virtual void FlushBitmapFragment(TBBitmapFragment *bitmap_fragment);
-
 	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data);
+
+	// == TBRendererBatcher ===============================================================
+
+	virtual void RenderBatch(Batch *batch);
+	virtual void SetClipRect(const TBRect &rect);
 public:
-	uint8 m_opacity;
-	TBRect m_screen_rect;
-	TBRect m_clip_rect;
-	int m_translation_x;
-	int m_translation_y;
 };
 
 }; // namespace tinkerbell

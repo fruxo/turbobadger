@@ -28,6 +28,9 @@
     <Filter Include="Source Files\utf8">
       <UniqueIdentifier>{39488b9f-57ff-4a32-8b13-84b3b68c74b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\renderers">
+      <UniqueIdentifier>{e3dccb00-1283-4413-a12a-4ef486295a84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\tinkerbell\src\tb_language.cpp">
@@ -210,6 +213,12 @@
     <ClCompile Include="..\..\tinkerbell\src\parser\tb_parser.cpp">
       <Filter>Source Files\parser</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\renderers\tb_renderer_batcher.cpp">
+      <Filter>Source Files\renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\renderers\tb_renderer_gl.cpp">
+      <Filter>Source Files\renderers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">
@@ -352,6 +361,12 @@
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\parser\tb_parser.h">
       <Filter>Source Files\parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\renderers\tb_renderer_batcher.h">
+      <Filter>Source Files\renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\renderers\tb_renderer_gl.h">
+      <Filter>Source Files\renderers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

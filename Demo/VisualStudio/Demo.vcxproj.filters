@@ -28,9 +28,6 @@
     <Filter Include="Source Files\demo01">
       <UniqueIdentifier>{9dabbf50-c352-4aaf-86ab-b678ab8c3136}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\renderers">
-      <UniqueIdentifier>{fbf1da9c-6bd5-40be-977d-d9a1de19032f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\platform">
       <UniqueIdentifier>{bc150975-47f1-41bc-8c1d-039162628f54}</UniqueIdentifier>
     </Filter>
@@ -99,9 +96,6 @@
     <ClCompile Include="..\platform\Application.cpp">
       <Filter>Source Files\platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\renderers\tb_renderer_gl.cpp">
-      <Filter>Source Files\renderers</Filter>
-    </ClCompile>
     <ClCompile Include="..\glfw\src\context.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
@@ -145,9 +139,6 @@
     </ClInclude>
     <ClInclude Include="..\platform\glfw_extra.h">
       <Filter>Source Files\platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\renderers\tb_renderer_gl.h">
-      <Filter>Source Files\renderers</Filter>
     </ClInclude>
     <ClInclude Include="..\config.h">
       <Filter>Source Files</Filter>

@@ -33,11 +33,16 @@ public:
 class TBBitmap
 {
 public:
+	/** Note: Implementations for batched renderers should call TBRenderer::FlushBitmap
+		to make sure any active batch is being flushed before the bitmap is deleted. */
 	virtual ~TBBitmap() {}
+
 	virtual int Width() = 0;
 	virtual int Height() = 0;
 
-	/** Update the bitmap with the given data (in BGRA32 format). */
+	/** Update the bitmap with the given data (in BGRA32 format).
+		Note: Implementations for batched renderers should call TBRenderer::FlushBitmap
+		to make sure any active batch is being flushed before the bitmap is changed. */
 	virtual void SetData(uint32 *data) = 0;
 };
 
@@ -46,6 +51,8 @@ public:
 class TBRenderer
 {
 public:
+	virtual ~TBRenderer() {}
+
 	/** Should be called before invoking paint on any widget.
 		render_target_w and render_target_h should be the size of the render target
 		that the renderer renders to. I.e window size, screen size or frame buffer object. */

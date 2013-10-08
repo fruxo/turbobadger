@@ -7,6 +7,8 @@
 
 namespace tinkerbell {
 
+// == TBRenderer ========================================================================
+
 void TBRenderer::InvokeContextLost()
 {
 	TBLinkListOf<TBRendererListener>::Iterator iter = m_listeners.IterateForward();
