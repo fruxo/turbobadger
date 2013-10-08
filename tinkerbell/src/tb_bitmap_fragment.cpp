@@ -438,6 +438,8 @@ void TBBitmapFragmentManager::FreeFragment(TBBitmapFragment *frag)
 {
 	if (frag)
 	{
+		g_renderer->FlushBitmapFragment(frag);
+
 		TBBitmapFragmentMap *map = frag->m_map;
 		frag->m_map->FreeFragmentSpace(frag);
 		m_fragments.Delete(frag->m_id);

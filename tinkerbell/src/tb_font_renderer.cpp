@@ -201,7 +201,6 @@ TBFontGlyph *TBFontFace::CreateGlyph(UCS4 cp)
 			;
 		if (oldest_glyph)
 		{
-			g_renderer->FlushBitmapFragment(oldest_glyph->frag);
 			m_frag_manager.FreeFragment(oldest_glyph->frag);
 			m_glyphs.Remove(oldest_glyph->cp);
 			m_all_glyphs.Delete(oldest_glyph);
