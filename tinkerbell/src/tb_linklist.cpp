@@ -145,6 +145,8 @@ void TBLinkList::AddAfter(TBLink *link, TBLink *reference)
 
 void TBLinkList::Remove(TBLink *link)
 {
+	assert(link->linklist == this); // Link is not added to this list!
+
 	// Go through iterators and make sure there are no pointers
 	// to the link we remove.
 	TBLinkListIterator *iter = first_iterator;

@@ -665,7 +665,9 @@ TBTextProps::Data *TBTextProps::Push()
 	if (Data *new_data = new Data)
 	{
 		data_list.AddLast(new_data);
-		*new_data = *data;
+		new_data->font_desc = data->font_desc;
+		new_data->text_color = data->text_color;
+		new_data->underline = data->underline;
 		data = new_data;
 		return data;
 	}
