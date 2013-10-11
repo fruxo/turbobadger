@@ -166,12 +166,12 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 	if (settings & WINDOW_SETTINGS_CLOSE_BUTTON)
 	{
 		if (!m_close_button.GetParent())
-			AddChild(&m_close_button);
+			m_mover.AddChild(&m_close_button);
 	}
 	else if (!(settings & WINDOW_SETTINGS_CLOSE_BUTTON))
 	{
 		if (m_close_button.GetParent())
-			RemoveChild(&m_close_button);
+			m_mover.RemoveChild(&m_close_button);
 	}
 
 	// FIX: invalidate layout / resize window!
