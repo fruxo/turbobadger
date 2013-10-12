@@ -26,7 +26,7 @@ class TBLinkListIterator
 {
 public:
 	TBLinkListIterator(const TBLinkListIterator &iter);
-	TBLinkListIterator(TBLinkList *linklist, bool forward);
+	TBLinkListIterator(TBLinkList *linklist, TBLink *current_link, bool forward);
 	~TBLinkListIterator();
 
 	/** Set the iterator to the first link in we iterate forward,
@@ -159,7 +159,9 @@ public:
 	class Iterator : public TBLinkListIterator
 	{
 	public:
-		Iterator(TBLinkListOf<T> *linklistof, bool forward) : TBLinkListIterator(&linklistof->m_linklist, forward) {}
+		Iterator(TBLinkListOf<T> *linklistof, bool forward)
+			: TBLinkListIterator(&linklistof->m_linklist, forward ? linklistof->m_linklist.first : linklistof->m_linklist.last, forward) {}
+		Iterator(TBLinkListOf<T> *linklistof, T *link, bool forward) : TBLinkListIterator(&linklistof->m_linklist, link, forward) {}
 		inline T *Get() const { return (T *) static_cast<TBLinkOf<T>*>(TBLinkListIterator::Get()); }
 		inline T *GetAndStep() { return (T *) static_cast<TBLinkOf<T>*>(TBLinkListIterator::GetAndStep()); }
 		inline operator T *() const { return (T *) static_cast<TBLinkOf<T>*>(Get()); }
@@ -168,8 +170,14 @@ public:
 	/** Get a forward iterator that starts with the first link. */
 	Iterator IterateForward() { return Iterator(this, true); }
 
+	/** Get a forward iterator that starts with the given link. */
+	Iterator IterateForward(T *link) { return Iterator(this, link, true); }
+
 	/** Get a backward iterator that starts with the last link. */
 	Iterator IterateBackward() { return Iterator(this, false); }
+
+	/** Get a backward iterator that starts with the given link. */
+	Iterator IterateBackward(T *link) { return Iterator(this, link, false); }
 private:
 	TBLinkList m_linklist;
 };

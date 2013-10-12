@@ -9,9 +9,9 @@ namespace tinkerbell {
 
 // == TBLinkListIterator ====================================================================================
 
-TBLinkListIterator::TBLinkListIterator(TBLinkList *linklist, bool forward)
+TBLinkListIterator::TBLinkListIterator(TBLinkList *linklist, TBLink *current_link, bool forward)
 	: m_linklist(linklist)
-	, m_current_link(forward ? linklist->first : linklist->last)
+	, m_current_link(current_link)
 	, m_forward(forward)
 {
 	Register();
