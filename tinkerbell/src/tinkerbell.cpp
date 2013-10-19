@@ -60,7 +60,7 @@ const char *stristr(const char *arg1, const char *arg2)
 {
 	const char *a, *b;
 
-	for(;*arg1;*arg1++)
+	for(;*arg1;arg1++)
 	{
 		a = arg1;
 		b = arg2;

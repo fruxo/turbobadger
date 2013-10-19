@@ -225,7 +225,7 @@ void TBValue::SetString(const char *val, SET set)
 		val_str = const_cast<char *>(val);
 		m_packed.type = TYPE_STRING;
 	}
-	else if (val_str = strdup(val))
+	else if ((val_str = strdup(val)))
 		m_packed.type = TYPE_STRING;
 }
 
@@ -245,7 +245,7 @@ void TBValue::SetArray(TBValueArray *arr, SET set)
 		val_arr = arr;
 		m_packed.type = TYPE_ARRAY;
 	}
-	else if (val_arr = TBValueArray::Clone(arr))
+	else if ((val_arr = TBValueArray::Clone(arr)))
 		m_packed.type = TYPE_ARRAY;
 }
 

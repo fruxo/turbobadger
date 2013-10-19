@@ -135,6 +135,8 @@ void TBToggleContainer::UpdateInternal()
 	bool on = GetIsOn();
 	switch (m_toggle)
 	{
+	case TOGGLE_NOTHING:
+		break;
 	case TOGGLE_ENABLED:
 		SetState(WIDGET_STATE_DISABLED, !on);
 		break;

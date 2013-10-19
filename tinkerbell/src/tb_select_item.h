@@ -66,7 +66,7 @@ protected:
 
 	This class has no storage of items. If you want an array storage of items,
 	use the subclass TBSelectItemSourceList. If you implement your own storage,
-	remember to call InvokeItem[Added/*] to notify viewers that they need to update.
+	remember to call InvokeItem[Added/...] to notify viewers that they need to update.
 */
 
 class TBSelectItemSource

@@ -400,7 +400,7 @@ TBBitmapFragment *TBBitmapFragmentManager::CreateNewFragment(const TBID &id, boo
 	{
 		for (int i = 0; i < m_fragment_maps.GetNumItems(); i++)
 		{
-			if (frag = m_fragment_maps[i]->CreateNewFragment(data_w, data_h, data_stride, data, m_add_border))
+			if ((frag = m_fragment_maps[i]->CreateNewFragment(data_w, data_h, data_stride, data, m_add_border)))
 				break;
 		}
 	}
