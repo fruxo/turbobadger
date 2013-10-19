@@ -75,8 +75,8 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/utf8/utf8.cpp \
       tinkerbell/src/addons/tbimage/tb_image_manager.cpp \
       tinkerbell/src/addons/tbimage/tb_image_widget.cpp \
-      tinkerbell/src/renderers/tb_renderer_batcher.cpp
-      tinkerbell/src/renderers/tb_renderer_gl.cpp
+      tinkerbell/src/renderers/tb_renderer_batcher.cpp \
+      tinkerbell/src/renderers/tb_renderer_gl.cpp \
       tinkerbell/src/tests/tb_test.cpp \
       tinkerbell/src/tests/test_tb_style_edit.cpp \
       tinkerbell/src/tests/test_tb_space_allocator.cpp \
