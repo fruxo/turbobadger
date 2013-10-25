@@ -1168,14 +1168,27 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 		return;
 
 	// Check pointer movement
-	int dx = pointer_down_widget_x - x;
-	int dy = pointer_down_widget_y - y;
-	int threshold = TBSystem::GetPanThreshold();
-	bool maybe_start_panning = (ABS(dx) >= threshold || ABS(dy) >= threshold);
+	const int dx = pointer_down_widget_x - x;
+	const int dy = pointer_down_widget_y - y;
+	const int threshold = TBSystem::GetPanThreshold();
+	const bool maybe_start_panning_x = ABS(dx) >= threshold;
+	const bool maybe_start_panning_y = ABS(dy) >= threshold;
 
 	// Do panning, or attempt starting panning (we don't know if any widget is scrollable yet)
-	if (captured_widget->m_packed.is_panning || maybe_start_panning)
+	if (captured_widget->m_packed.is_panning || maybe_start_panning_x || maybe_start_panning_y)
 	{
+		int start_compensation_x = 0, start_compensation_y = 0;
+		if (!captured_widget->m_packed.is_panning)
+		{
+			// When we start panning, deduct the extra distance caused by the
+			// start threshold from the delta so we don't start with a sudden jump.
+			int extra = threshold - 1;
+			if (maybe_start_panning_x)
+				start_compensation_x = dx < 0 ? extra : -extra;
+			if (maybe_start_panning_y)
+				start_compensation_y = dy < 0 ? extra : -extra;
+		}
+
 		// Get any active scroller and feed it with pan actions.
 		TBScroller *scroller = captured_widget->GetReadyScroller(dx != 0, dy != 0);
 		if (!scroller)
@@ -1184,7 +1197,7 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 		int old_translation_x = 0, old_translation_y = 0;
 		captured_widget->GetScrollRoot()->GetChildTranslation(old_translation_x, old_translation_y);
 
-		if (scroller->OnPan(dx, dy))
+		if (scroller->OnPan(dx + start_compensation_x, dy + start_compensation_y))
 		{
 			// Scroll delta changed, so we are now panning!
 			captured_widget->m_packed.is_panning = true;
@@ -1194,8 +1207,8 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 			// pointer down coordinates so we won't accumulate the difference the following pan.
 			int new_translation_x = 0, new_translation_y = 0;
 			captured_widget->GetScrollRoot()->GetChildTranslation(new_translation_x, new_translation_y);
-			pointer_down_widget_x += new_translation_x - old_translation_x;
-			pointer_down_widget_y += new_translation_y - old_translation_y;
+			pointer_down_widget_x += new_translation_x - old_translation_x + start_compensation_x;
+			pointer_down_widget_y += new_translation_y - old_translation_y + start_compensation_y;
 		}
 	}
 }
