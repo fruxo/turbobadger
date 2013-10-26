@@ -71,12 +71,7 @@ TBWidget::~TBWidget()
 		focused_widget = nullptr;
 
 	TBGlobalWidgetListener::InvokeWidgetDelete(this);
-
-	while (TBWidget *child = GetFirstChild())
-	{
-		RemoveChild(child);
-		delete child;
-	}
+	DeleteAllChildren();
 
 	delete m_scroller;
 	delete m_layout_params;
@@ -284,6 +279,15 @@ void TBWidget::RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info)
 
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 	Invalidate();
+}
+
+void TBWidget::DeleteAllChildren()
+{
+	while (TBWidget *child = GetFirstChild())
+	{
+		RemoveChild(child);
+		delete child;
+	}
 }
 
 void TBWidget::SetZ(WIDGET_Z z)

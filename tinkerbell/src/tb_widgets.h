@@ -362,6 +362,11 @@ public:
 	/** Remove child from this widget without deleting it. */
 	void RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
+	/** Remove and delete all children in this widget.
+		Note: This won't invoke Die so there's no chance for widgets to survive or
+		animate. They will be instantly removed and deleted. */
+	void DeleteAllChildren();
+
 	/** Sets the z-order of this widget related to its siblings. When a widget is added with AddChild, it will be
 		placed at the top in the parent (Above previously added widget). SetZ can be used to change the order. */
 	void SetZ(WIDGET_Z z);
