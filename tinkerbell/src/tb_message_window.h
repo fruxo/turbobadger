@@ -39,7 +39,7 @@ public:
 
 	If the target widget is deleted while this window is alive, the
 	window will delete itself. */
-class TBMessageWindow : public TBWindow, private TBGlobalWidgetListener
+class TBMessageWindow : public TBWindow, private TBWidgetListener
 {
 public:
 	// For safe typecasting
@@ -56,7 +56,7 @@ public:
 	virtual void OnDie();
 private:
 	void AddButton(TBID id, bool focused);
-	// TBGlobalWidgetListener
+	// TBWidgetListener
 	virtual void OnWidgetDelete(TBWidget *widget);
 	virtual bool OnWidgetDying(TBWidget *widget);
 	TBWidgetSafePointer m_dimmer;

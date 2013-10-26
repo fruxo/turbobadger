@@ -53,7 +53,7 @@ private:
 	TBRect m_dst_rect;
 };
 
-class WidgetsAnimationManager : public TBGlobalWidgetListener
+class WidgetsAnimationManager : public TBWidgetListener
 {
 public:
 	/** Init the widgets animation manager and AnimationManager. */
@@ -72,7 +72,7 @@ public:
 	static void AbortAnimations(TBWidget *widget);
 
 private:
-	// == TBGlobalWidgetListener ==================
+	// == TBWidgetListener ==================
 	virtual void OnWidgetDelete(TBWidget *widget);
 	virtual bool OnWidgetDying(TBWidget *widget);
 	virtual void OnWidgetAdded(TBWidget *widget);

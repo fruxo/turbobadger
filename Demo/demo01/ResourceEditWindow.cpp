@@ -25,7 +25,7 @@ ResourceEditWindow::ResourceEditWindow()
 	, m_source_edit(nullptr)
 {
 	// Register as global listener to intercept events in the build container
-	TBGlobalWidgetListener::AddListener(this);
+	TBWidgetListener::AddGlobalListener(this);
 
 	g_widgets_reader->LoadFile(this, "Demo/demo01/ui_resources/resource_edit_window.tb.txt");
 
@@ -41,7 +41,7 @@ ResourceEditWindow::ResourceEditWindow()
 
 ResourceEditWindow::~ResourceEditWindow()
 {
-	TBGlobalWidgetListener::RemoveListener(this);
+	TBWidgetListener::RemoveGlobalListener(this);
 
 	// avoid assert
 	m_widget_list->SetSource(nullptr);

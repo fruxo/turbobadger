@@ -16,13 +16,13 @@ namespace tinkerbell {
 TBMessageWindow::TBMessageWindow(TBWidget *target, TBID id)
 	: m_target(target)
 {
-	TBGlobalWidgetListener::AddListener(this);
+	TBWidgetListener::AddGlobalListener(this);
 	SetID(id);
 }
 
 TBMessageWindow::~TBMessageWindow()
 {
-	TBGlobalWidgetListener::RemoveListener(this);
+	TBWidgetListener::RemoveGlobalListener(this);
 	if (TBWidget *dimmer = m_dimmer.Get())
 	{
 		dimmer->GetParent()->RemoveChild(dimmer);

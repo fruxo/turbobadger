@@ -7,62 +7,62 @@
 
 namespace tinkerbell {
 
-TBLinkListOf<TBGlobalWidgetListener> listeners;
+TBLinkListOf<TBWidgetListener> listeners;
 
-// == TBGlobalWidgetListener ================================================================================
+// == TBWidgetListener ================================================================================
 
-void TBGlobalWidgetListener::AddListener(TBGlobalWidgetListener *listener)
+void TBWidgetListener::AddGlobalListener(TBWidgetListener *listener)
 {
 	listeners.AddLast(listener);
 }
 
-void TBGlobalWidgetListener::RemoveListener(TBGlobalWidgetListener *listener)
+void TBWidgetListener::RemoveGlobalListener(TBWidgetListener *listener)
 {
 	listeners.Remove(listener);
 }
 
-void TBGlobalWidgetListener::InvokeWidgetDelete(TBWidget *widget)
+void TBWidgetListener::InvokeWidgetDelete(TBWidget *widget)
 {
-	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
-	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
+	TBLinkListOf<TBWidgetListener>::Iterator iter = listeners.IterateForward();
+	while (TBWidgetListener *listener = iter.GetAndStep())
 		listener->OnWidgetDelete(widget);
 }
 
-bool TBGlobalWidgetListener::InvokeWidgetDying(TBWidget *widget)
+bool TBWidgetListener::InvokeWidgetDying(TBWidget *widget)
 {
 	bool handled = false;
-	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
-	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
+	TBLinkListOf<TBWidgetListener>::Iterator iter = listeners.IterateForward();
+	while (TBWidgetListener *listener = iter.GetAndStep())
 		handled |= listener->OnWidgetDying(widget);
 	return handled;
 }
 
-void TBGlobalWidgetListener::InvokeWidgetAdded(TBWidget *widget)
+void TBWidgetListener::InvokeWidgetAdded(TBWidget *widget)
 {
-	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
-	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
+	TBLinkListOf<TBWidgetListener>::Iterator iter = listeners.IterateForward();
+	while (TBWidgetListener *listener = iter.GetAndStep())
 		listener->OnWidgetAdded(widget);
 }
 
-void TBGlobalWidgetListener::InvokeWidgetRemove(TBWidget *widget)
+void TBWidgetListener::InvokeWidgetRemove(TBWidget *widget)
 {
-	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
-	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
+	TBLinkListOf<TBWidgetListener>::Iterator iter = listeners.IterateForward();
+	while (TBWidgetListener *listener = iter.GetAndStep())
 		listener->OnWidgetRemove(widget);
 }
 
-void TBGlobalWidgetListener::InvokeWidgetFocusChanged(TBWidget *widget, bool focused)
+void TBWidgetListener::InvokeWidgetFocusChanged(TBWidget *widget, bool focused)
 {
-	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
-	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
+	TBLinkListOf<TBWidgetListener>::Iterator iter = listeners.IterateForward();
+	while (TBWidgetListener *listener = iter.GetAndStep())
 		listener->OnWidgetFocusChanged(widget, focused);
 }
 
-bool TBGlobalWidgetListener::InvokeWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev)
+bool TBWidgetListener::InvokeWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev)
 {
 	bool handled = false;
-	TBLinkListOf<TBGlobalWidgetListener>::Iterator iter = listeners.IterateForward();
-	while (TBGlobalWidgetListener *listener = iter.GetAndStep())
+	TBLinkListOf<TBWidgetListener>::Iterator iter = listeners.IterateForward();
+	while (TBWidgetListener *listener = iter.GetAndStep())
 		handled |= listener->OnWidgetInvokeEvent(widget, ev);
 	return handled;
 }
@@ -72,9 +72,9 @@ bool TBGlobalWidgetListener::InvokeWidgetInvokeEvent(TBWidget *widget, const TBW
 void TBWidgetSafePointer::Set(TBWidget *widget)
 {
 	if (!m_widget && widget)
-		TBGlobalWidgetListener::AddListener(this);
+		TBWidgetListener::AddGlobalListener(this);
 	else if (m_widget && !widget)
-		TBGlobalWidgetListener::RemoveListener(this);
+		TBWidgetListener::RemoveGlobalListener(this);
 	m_widget = widget;
 }
 

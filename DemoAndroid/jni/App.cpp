@@ -103,10 +103,10 @@ public:
 
 // == LISTEN TO KEYBOARD FOCUS TO CALL ANDROID KEYBOARD ON JAVA SIDE ====================
 
-class EditListener : public TBGlobalWidgetListener
+class EditListener : public TBWidgetListener
 {
 public:
-	// == TBGlobalWidgetListener ========================================================
+	// == TBWidgetListener ========================================================
 	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused)
 	{
 		if (TBEditField *edit = TBSafeCast<TBEditField>(widget))
@@ -127,7 +127,7 @@ void Init(unsigned int width, unsigned int height)
 	Resize(width, height);
 
 	// Start listening to keyboard focus
-	TBGlobalWidgetListener::AddListener(&edit_listener);
+	TBWidgetListener::AddGlobalListener(&edit_listener);
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
 	g_tb_skin->Load("skin/skin.tb.txt", "demo_skin/skin.tb.txt");
@@ -207,7 +207,7 @@ void Render()
 void Shutdown()
 {
 	delete root;
-	TBGlobalWidgetListener::RemoveListener(&edit_listener);
+	TBWidgetListener::RemoveGlobalListener(&edit_listener);
 	shutdown_tinkerbell();
 	delete renderer;
 }

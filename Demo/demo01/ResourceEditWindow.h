@@ -19,7 +19,7 @@ private:
 	TBWidget *m_widget;
 };
 
-class ResourceEditWindow : public TBWindow, public TBMessageHandler, public TBGlobalWidgetListener
+class ResourceEditWindow : public TBWindow, public TBMessageHandler, public TBWidgetListener
 {
 public:
 	// For safe typecasting
@@ -48,7 +48,7 @@ public:
 	// == TBMessageHandler ==============================================================
 	virtual void OnMessageReceived(TBMessage *msg);
 
-	// == TBGlobalWidgetListener ========================================================
+	// == TBWidgetListener ========================================================
 	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev);
 	virtual void OnWidgetAdded(TBWidget *widget);
 	virtual void OnWidgetRemove(TBWidget *widget);

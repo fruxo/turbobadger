@@ -23,7 +23,7 @@ TBDebugInfo::TBDebugInfo()
 }
 
 /** Window showing runtime debug settings. */
-class DebugSettingsWindow : public TBWindow, public TBGlobalWidgetListener
+class DebugSettingsWindow : public TBWindow, public TBWidgetListener
 {
 public:
 	TBEditField *output;
@@ -55,12 +55,12 @@ public:
 
 		root->AddChild(this);
 
-		TBGlobalWidgetListener::AddListener(this);
+		TBWidgetListener::AddGlobalListener(this);
 	}
 
 	~DebugSettingsWindow()
 	{
-		TBGlobalWidgetListener::RemoveListener(this);
+		TBWidgetListener::RemoveGlobalListener(this);
 	}
 
 	void AddCheckbox(TBDebugInfo::SETTING setting, const char *str)
@@ -123,7 +123,7 @@ public:
 		return str;
 	}
 
-	// TBGlobalWidgetListener
+	// TBWidgetListener
 	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev)
 	{
 		// Skip these events for now

@@ -19,6 +19,7 @@ class TBWindow;
 class TBWidget;
 class TBFontFace;
 class TBScroller;
+class TBWidgetListener;
 
 // == Generic widget stuff =================================================
 
@@ -759,7 +760,7 @@ public:
 
 	/** Invoke a event on this widget.
 
-		This will first check with all registered TBGlobalWidgetListener if the event should be dispatched.
+		This will first check with all registered TBWidgetListener if the event should be dispatched.
 
 		If the widgets OnEvent returns false (event not handled), it will continue traversing to
 		GetEventDestination (by default the parent) until a widget handles the event.

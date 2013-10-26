@@ -14,18 +14,18 @@ namespace tinkerbell {
 
 class TBWidget;
 
-/** TBGlobalWidgetListener listens to some callbacks from all widgets in tinkerbell.
-	You can set as many TBGlobalWidgetListener you want, by using AddListener.
+/** TBWidgetListener listens to some callbacks from widgets in tinkerbell.
+	It may either listen to all widgets globally, or selected widgets.
 
 	This is useful f.ex if you want to listen to when a textfield receive focus
 	to display virtual keyboard, or when a widget of a certain type is added, to
 	start animations or sound. */
 
-class TBGlobalWidgetListener : public TBLinkOf<TBGlobalWidgetListener>
+class TBWidgetListener : public TBLinkOf<TBWidgetListener>
 {
 public:
-	static void AddListener(TBGlobalWidgetListener *listener);
-	static void RemoveListener(TBGlobalWidgetListener *listener);
+	static void AddGlobalListener(TBWidgetListener *listener);
+	static void RemoveGlobalListener(TBWidgetListener *listener);
 
 	/** Called when widget is being deleted (in its destructor, so virtual functions are already gone). */
 	virtual void OnWidgetDelete(TBWidget *widget) {}
@@ -49,7 +49,7 @@ public:
 	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused) {}
 
 	/** Called when a event is about to be invoked on a widget. This make it possible
-		to intercept a events before they are handled, and block it (by returning true).
+		to intercept events before they are handled, and block it (by returning true).
 		Note, if returning true, other global listeners will still also be notified. */
 	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev) { return false; }
 private:
@@ -72,7 +72,7 @@ private:
 			return;
 		// Do some more things with thiswidget.
 		*/
-class TBWidgetSafePointer : private TBGlobalWidgetListener
+class TBWidgetSafePointer : private TBWidgetListener
 {
 public:
 	TBWidgetSafePointer() : m_widget(nullptr)				{ }

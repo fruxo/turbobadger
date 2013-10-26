@@ -70,14 +70,14 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 TBPopupWindow::TBPopupWindow(TBWidget *target)
 	: m_target(target)
 {
-	TBGlobalWidgetListener::AddListener(this);
+	TBWidgetListener::AddGlobalListener(this);
 	SetSkinBg("TBPopupWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	SetSettings(WINDOW_SETTINGS_NONE);
 }
 
 TBPopupWindow::~TBPopupWindow()
 {
-	TBGlobalWidgetListener::RemoveListener(this);
+	TBWidgetListener::RemoveGlobalListener(this);
 }
 
 bool TBPopupWindow::Show(const TBPopupAlignment &alignment)

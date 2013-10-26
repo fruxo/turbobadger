@@ -70,7 +70,7 @@ TBWidget::~TBWidget()
 	if (this == focused_widget)
 		focused_widget = nullptr;
 
-	TBGlobalWidgetListener::InvokeWidgetDelete(this);
+	TBWidgetListener::InvokeWidgetDelete(this);
 	DeleteAllChildren();
 
 	delete m_scroller;
@@ -115,7 +115,7 @@ void TBWidget::Die()
 		return;
 	m_packed.is_dying = true;
 	OnDie();
-	if (!TBGlobalWidgetListener::InvokeWidgetDying(this))
+	if (!TBWidgetListener::InvokeWidgetDying(this))
 	{
 		// No one was interested, so die immediately.
 		if (m_parent)
@@ -252,7 +252,7 @@ void TBWidget::AddChildRelative(TBWidget *child, WIDGET_Z_REL z, TBWidget *refer
 	{
 		OnChildAdded(child);
 		child->OnAdded();
-		TBGlobalWidgetListener::InvokeWidgetAdded(child);
+		TBWidgetListener::InvokeWidgetAdded(child);
 	}
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 	Invalidate();
@@ -271,7 +271,7 @@ void TBWidget::RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info)
 
 		OnChildRemove(child);
 		child->OnRemove();
-		TBGlobalWidgetListener::InvokeWidgetRemove(child);
+		TBWidgetListener::InvokeWidgetRemove(child);
 	}
 
 	m_children.Remove(child);
@@ -498,11 +498,11 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 			old->OnFocusChanged(false);
 		}
 		if (old_focus.Get())
-			TBGlobalWidgetListener::InvokeWidgetFocusChanged(old_focus.Get(), false);
+			TBWidgetListener::InvokeWidgetFocusChanged(old_focus.Get(), false);
 		if (focused_widget && focused_widget == this)
 			focused_widget->OnFocusChanged(true);
 		if (focused_widget && focused_widget == this)
-			TBGlobalWidgetListener::InvokeWidgetFocusChanged(focused_widget, true);
+			TBWidgetListener::InvokeWidgetFocusChanged(focused_widget, true);
 	}
 	return true;
 }
@@ -1045,7 +1045,7 @@ bool TBWidget::InvokeEvent(TBWidgetEvent &ev)
 	// Who knows, maybe some listener will block the event or cause us
 	// to be deleted.
 	TBWidgetSafePointer this_widget(this);
-	if (TBGlobalWidgetListener::InvokeWidgetInvokeEvent(this, ev))
+	if (TBWidgetListener::InvokeWidgetInvokeEvent(this, ev))
 		return true;
 
 	if (!this_widget.Get())

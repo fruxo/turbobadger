@@ -48,7 +48,7 @@ public:
 	through the given target. It will automatically close on click events that
 	are not sent through this popup. */
 
-class TBPopupWindow : public TBWindow, private TBGlobalWidgetListener
+class TBPopupWindow : public TBWindow, private TBWidgetListener
 {
 public:
 	// For safe typecasting
@@ -64,7 +64,7 @@ public:
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 private:
 	TBWidgetSafePointer m_target;
-	// TBGlobalWidgetListener
+	// TBWidgetListener
 	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused);
 	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev);
 	virtual void OnWidgetDelete(TBWidget *widget);

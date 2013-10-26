@@ -110,12 +110,12 @@ WidgetsAnimationManager widgets_animation_manager;
 void WidgetsAnimationManager::Init()
 {
 	AnimationManager::Init();
-	TBGlobalWidgetListener::AddListener(&widgets_animation_manager);
+	TBWidgetListener::AddGlobalListener(&widgets_animation_manager);
 }
 
 void WidgetsAnimationManager::Shutdown()
 {
-	TBGlobalWidgetListener::RemoveListener(&widgets_animation_manager);
+	TBWidgetListener::RemoveGlobalListener(&widgets_animation_manager);
 	AnimationManager::Shutdown();
 }
 
