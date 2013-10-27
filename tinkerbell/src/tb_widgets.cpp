@@ -75,6 +75,8 @@ TBWidget::~TBWidget()
 
 	delete m_scroller;
 	delete m_layout_params;
+
+	assert(!m_listeners.HasLinks()); // There's still listeners added to this widget!
 }
 
 void TBWidget::SetRect(const TBRect &rect)
@@ -654,6 +656,16 @@ TBWindow *TBWidget::GetParentWindow()
 	while (tmp && !tmp->IsOfType<TBWindow>())
 		tmp = tmp->m_parent;
 	return static_cast<TBWindow *>(tmp);
+}
+
+void TBWidget::AddListener(TBWidgetListener *listener)
+{
+	m_listeners.AddLast(listener);
+}
+
+void TBWidget::RemoveListener(TBWidgetListener *listener)
+{
+	m_listeners.Remove(listener);
 }
 
 void TBWidget::OnPaintChildren(const PaintProps &paint_props)

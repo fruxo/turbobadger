@@ -14,16 +14,21 @@ namespace tinkerbell {
 
 class TBWidget;
 
-/** TBWidgetListener listens to some callbacks from widgets in tinkerbell.
-	It may either listen to all widgets globally, or selected widgets.
+/** TBWidgetListenerGlobalLink should never be created or subclassed anywhere except
+	in TBWidgetListener. It's only purpose is to add a extra typed link for
+	TBWidgetListener, since it needs to be added in multiple lists. */
+class TBWidgetListenerGlobalLink : public TBLinkOf<TBWidgetListenerGlobalLink> { };
 
-	This is useful f.ex if you want to listen to when a textfield receive focus
-	to display virtual keyboard, or when a widget of a certain type is added, to
-	start animations or sound. */
+/** TBWidgetListener listens to some callbacks from TBWidget.
+	It may either listen to all widgets globally, or one specific widget.
 
-class TBWidgetListener : public TBLinkOf<TBWidgetListener>
+	Local listeners (added with TBWidget:AddListener) will be invoked before
+	global listeners (added with TBWidgetListener::AddGlobalListener). */
+
+class TBWidgetListener : public TBLinkOf<TBWidgetListener>, public TBWidgetListenerGlobalLink
 {
 public:
+	/** Add a listener to all widgets. */
 	static void AddGlobalListener(TBWidgetListener *listener);
 	static void RemoveGlobalListener(TBWidgetListener *listener);
 
@@ -63,23 +68,13 @@ private:
 };
 
 /** TBWidgetSafePointer keeps a pointer to a widget that will be set to
-	nullptr if the widget is removed. Do not create excessive amounts of this
-	object as it's expensive. Use it f.ex on the stack to detect self deletion.
-	ex: (in OnEvent)
-		TBWidgetSafePointer thiswidget(this);
-		// Invoke callbacks that might remove this widget
-		if (!thiswidget->Get())
-			return;
-		// Do some more things with thiswidget.
-		*/
+	nullptr if the widget is removed. */
 class TBWidgetSafePointer : private TBWidgetListener
 {
 public:
-	TBWidgetSafePointer() : m_widget(nullptr)				{ }
+	TBWidgetSafePointer() : m_widget(nullptr)					{ }
 	TBWidgetSafePointer(TBWidget *widget) : m_widget(nullptr)	{ Set(widget); }
-	~TBWidgetSafePointer()									{ Set(nullptr); }
-
-	virtual void OnWidgetDelete(TBWidget *widget)				{ if (widget == m_widget) Set(nullptr); }
+	~TBWidgetSafePointer()										{ Set(nullptr); }
 
 	/** Set the widget pointer that should be nulled if deleted. */
 	void Set(TBWidget *widget);
@@ -87,6 +82,7 @@ public:
 	/** Return the widget, or nullptr if it has been deleted. */
 	TBWidget *Get() const { return m_widget; }
 private:
+	virtual void OnWidgetDelete(TBWidget *widget);
 	TBWidget *m_widget;
 };
 

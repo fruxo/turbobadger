@@ -469,6 +469,11 @@ public:
 
 	// == Callbacks ==============================================
 
+	/** Add a listener to this widget. It should be removed again with
+		RemoveListener before the widget is deleted. */
+	void AddListener(TBWidgetListener *listener);
+	void RemoveListener(TBWidgetListener *listener);
+
 	/** Callback for handling events.
 		Return true if the event is handled and should not
 		continue to be handled by any parent widgets. */
@@ -819,6 +824,7 @@ public:
 	TBFontFace *GetFont() const;
 
 private:
+	friend class TBWidgetListener;	///< It does iteration of m_listeners for us.
 	TBWidget *m_parent;				///< The parent of this widget
 	TBRect m_rect;					///< The rectangle of this widget, relative to the parent. See SetRect.
 	TBID m_id;						///< ID for GetWidgetByID and others.
@@ -828,6 +834,7 @@ private:
 									///< used to indirect skin changes because of condition changes.
 	TBLinkListOf<TBWidget> m_children;///< List of child widgets
 	TBWidgetValueConnection m_connection; ///< TBWidget value connection
+	TBLinkListOf<TBWidgetListener> m_listeners;	///< List of listeners
 	float m_opacity;				///< Opacity 0-1. See SetOpacity.
 	WIDGET_STATE m_state;			///< The widget state (excluding any auto states)
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
