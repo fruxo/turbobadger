@@ -15,6 +15,7 @@ TB_TEST_GROUP(tb_linklist)
 	class Apple : public TBLinkOf<Apple>
 	{
 	public:
+		Apple() : id(0) { total_apple_count++; }
 		Apple(int id) : id(id) { total_apple_count++; }
 		~Apple() { total_apple_count--; }
 
@@ -70,6 +71,27 @@ TB_TEST_GROUP(tb_linklist)
 		}
 		// success already, if we didn't crash
 		TB_VERIFY(list.CountLinks() == 0);
+	}
+
+	TB_TEST(iteration_while_list_delete)
+	{
+		// Allocate a list that does not own its apples.
+		// We need the apples to survive their list to test this fully.
+		TBLinkListOf<Apple> *apple_refs = new TBLinkListOf<Apple>;
+		Apple apples[3];
+		for (int i = 0; i < 3; i++)
+			apple_refs->AddLast(&apples[i]);
+
+		// Lets pretend we do some iteration in a list...
+		TBLinkListOf<Apple>::Iterator iterator = apple_refs->IterateForward();
+		TB_VERIFY(iterator.Get());
+
+		// Now the list itself gets deallocated.
+		delete apple_refs;
+
+		// Now the iterator should not point to anything,
+		// and we should not crash.
+		TB_VERIFY(!iterator.Get());
 	}
 
 	TB_TEST(forward_iterator)

@@ -41,12 +41,23 @@ void TBLinkListIterator::Register()
 
 void TBLinkListIterator::Unregister()
 {
+	if (!m_linklist) // Already unregistered
+		return;
 	if (m_prev)
 		m_prev->m_next = m_next;
 	if (m_next)
 		m_next->m_prev = m_prev;
 	if (m_linklist->first_iterator == this)
 		m_linklist->first_iterator = m_next;
+}
+
+void TBLinkListIterator::UnregisterAndClear()
+{
+	Unregister();
+	m_linklist = nullptr;
+	m_current_link = nullptr;
+	m_prev = nullptr;
+	m_next = nullptr;
 }
 
 const TBLinkListIterator& TBLinkListIterator::operator = (const TBLinkListIterator &iter)
@@ -66,7 +77,10 @@ const TBLinkListIterator& TBLinkListIterator::operator = (const TBLinkListIterat
 
 void TBLinkListIterator::Reset()
 {
-	m_current_link = m_forward ? m_linklist->first : m_linklist->last;
+	if (m_linklist)
+		m_current_link = m_forward ? m_linklist->first : m_linklist->last;
+	else
+		m_current_link  = nullptr;
 }
 
 TBLink *TBLinkListIterator::GetAndStep()
@@ -89,8 +103,9 @@ void TBLinkListIterator::RemoveLink(TBLink *link)
 
 TBLinkList::~TBLinkList()
 {
-	// Assert if there's still iterators for this linklist when it's removed!
-	assert(!first_iterator);
+	// Make sure any live iterators for this linklist are cleared!
+	while (first_iterator)
+		first_iterator->UnregisterAndClear();
 }
 
 void TBLinkList::AddFirst(TBLink *link)

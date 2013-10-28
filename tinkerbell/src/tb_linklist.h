@@ -60,6 +60,7 @@ private:
 
 	/** Unlink ourself from the chain of iterators in the linklist. */
 	void Unregister();
+	void UnregisterAndClear();
 };
 
 /** TBLink - The backend class to be inserted in TBLinkList.
