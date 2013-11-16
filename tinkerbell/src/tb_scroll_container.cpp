@@ -103,15 +103,7 @@ TBScrollContainer::TBScrollContainer()
 	AddChild(&m_scrollbar_x);
 	AddChild(&m_scrollbar_y);
 	AddChild(&m_root);
-	m_root.SetGravity(WIDGET_GRAVITY_ALL);
-	m_scrollbar_x.SetGravity(WIDGET_GRAVITY_BOTTOM | WIDGET_GRAVITY_LEFT_RIGHT);
-	m_scrollbar_y.SetGravity(WIDGET_GRAVITY_RIGHT | WIDGET_GRAVITY_TOP_BOTTOM);
 	m_scrollbar_y.SetAxis(AXIS_Y);
-	int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
-	int scrollbar_x_h = m_scrollbar_x.GetPreferredSize().pref_h;
-	m_scrollbar_x.SetRect(TBRect(0, - scrollbar_x_h, - scrollbar_y_w, scrollbar_x_h));
-	m_scrollbar_y.SetRect(TBRect(- scrollbar_y_w, 0, scrollbar_y_w, 0));
-	m_root.SetRect(TBRect(0, 0, - scrollbar_y_w, - scrollbar_x_h));
 }
 
 TBScrollContainer::~TBScrollContainer()
@@ -188,7 +180,7 @@ TBRect TBScrollContainer::GetPaddingRect()
 	return TBRect(0, 0, visible_w, visible_h);
 }
 
-PreferredSize TBScrollContainer::OnCalculatePreferredContentSize()
+PreferredSize TBScrollContainer::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
 {
 	PreferredSize ps;
 	ps.pref_w = ps.pref_h = 100;
@@ -197,7 +189,7 @@ PreferredSize TBScrollContainer::OnCalculatePreferredContentSize()
 	{
 		if (TBWidget *content_child = m_root.GetFirstChild())
 		{
-			ps = content_child->GetPreferredSize();
+			ps = content_child->GetPreferredSize(constraints);
 			int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
 			int scrollbar_x_h = m_scrollbar_x.GetPreferredSize().pref_h;
 
@@ -256,21 +248,31 @@ bool TBScrollContainer::OnEvent(const TBWidgetEvent &ev)
 
 void TBScrollContainer::OnProcess()
 {
-	ValidateLayout();
+	SizeConstraints sc(GetRect().w, GetRect().h);
+	ValidateLayout(sc);
 }
 
-void TBScrollContainer::ValidateLayout()
+void TBScrollContainer::ValidateLayout(const SizeConstraints &constraints)
 {
 	if (!m_layout_is_invalid)
 		return;
 	m_layout_is_invalid = false;
 
+	// Layout scrollbars (no matter if they are visible or not)
+	int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
+	int scrollbar_x_h = m_scrollbar_x.GetPreferredSize().pref_h;
+	m_scrollbar_x.SetRect(TBRect(0, GetRect().h - scrollbar_x_h, GetRect().w - scrollbar_y_w, scrollbar_x_h));
+	m_scrollbar_y.SetRect(TBRect(GetRect().w - scrollbar_y_w, 0, scrollbar_y_w, GetRect().h));
+
 	if (TBWidget *content_child = m_root.GetFirstChild())
 	{
-		PreferredSize ps = content_child->GetPreferredSize();
+		int horizontal_padding = TBScrollBarVisibility::IsAlwaysOnY(m_mode) ? scrollbar_y_w : 0;
+		int vertical_padding = TBScrollBarVisibility::IsAlwaysOnX(m_mode) ? scrollbar_x_h : 0;
 
-		int scrollbar_x_h = m_scrollbar_x.GetPreferredSize().pref_h;
-		int scrollbar_y_w = m_scrollbar_y.GetPreferredSize().pref_w;
+		SizeConstraints inner_sc = constraints.ConstrainByPadding(horizontal_padding, vertical_padding);
+
+		PreferredSize ps = content_child->GetPreferredSize(inner_sc);
+
 		TBScrollBarVisibility visibility = TBScrollBarVisibility::Solve(m_mode, ps.pref_w, ps.pref_h,
 																		GetRect().w, GetRect().h,
 																		scrollbar_x_h, scrollbar_y_w);
@@ -291,6 +293,7 @@ void TBScrollContainer::ValidateLayout()
 			content_w = ps.pref_w;
 			content_h = ps.pref_h;
 		}
+
 		content_child->SetRect(TBRect(0, 0, content_w, content_h));
 		double limit_max_w = MAX(0, content_w - m_root.GetRect().w);
 		double limit_max_h = MAX(0, content_h - m_root.GetRect().h);
@@ -301,9 +304,9 @@ void TBScrollContainer::ValidateLayout()
 
 void TBScrollContainer::OnResized(int old_w, int old_h)
 {
-	TBWidget::OnResized(old_w, old_h);
 	InvalidateLayout(INVALIDATE_LAYOUT_TARGET_ONLY);
-	ValidateLayout();
+	SizeConstraints sc(GetRect().w, GetRect().h);
+	ValidateLayout(sc);
 }
 
 }; // namespace tinkerbell

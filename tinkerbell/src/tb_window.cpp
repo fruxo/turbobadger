@@ -194,9 +194,9 @@ TBRect TBWindow::GetPaddingRect()
 	return padding_rect;
 }
 
-PreferredSize TBWindow::OnCalculatePreferredSize()
+PreferredSize TBWindow::OnCalculatePreferredSize(const SizeConstraints &constraints)
 {
-	PreferredSize ps = OnCalculatePreferredContentSize();
+	PreferredSize ps = OnCalculatePreferredContentSize(constraints);
 
 	// Add window skin padding
 	if (TBSkinElement *e = GetSkinBgElement())

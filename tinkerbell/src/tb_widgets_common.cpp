@@ -99,7 +99,7 @@ void TBTextField::SetSqueezable(bool squeezable)
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 }
 
-PreferredSize TBTextField::OnCalculatePreferredContentSize()
+PreferredSize TBTextField::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
 {
 	PreferredSize ps;
 	if (m_cached_text_width == UPDATE_TEXT_WIDTH_CACHE)
@@ -258,9 +258,9 @@ bool TBClickLabel::OnEvent(const TBWidgetEvent &ev)
 
 // == TBSkinImage =======================================
 
-PreferredSize TBSkinImage::OnCalculatePreferredSize()
+PreferredSize TBSkinImage::OnCalculatePreferredSize(const SizeConstraints &constraints)
 {
-	PreferredSize ps = TBWidget::OnCalculatePreferredSize();
+	PreferredSize ps = TBWidget::OnCalculatePreferredSize(constraints);
 	// FIX: Make it stretched proportionally if shrunk.
 	ps.max_w = ps.pref_w;
 	ps.max_h = ps.pref_h;
@@ -375,9 +375,9 @@ void TBRadioCheckBox::SetValue(int value)
 	}
 }
 
-PreferredSize TBRadioCheckBox::OnCalculatePreferredSize()
+PreferredSize TBRadioCheckBox::OnCalculatePreferredSize(const SizeConstraints &constraints)
 {
-	PreferredSize ps = TBWidget::OnCalculatePreferredSize();
+	PreferredSize ps = TBWidget::OnCalculatePreferredSize(constraints);
 	ps.min_w = ps.max_w = ps.pref_w;
 	ps.min_h = ps.max_h = ps.pref_h;
 	return ps;

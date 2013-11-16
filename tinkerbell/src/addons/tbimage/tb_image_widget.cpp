@@ -17,7 +17,7 @@ TB_WIDGET_FACTORY(TBImageWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 
 // == TBImageWidget =======================================
 
-PreferredSize TBImageWidget::OnCalculatePreferredContentSize()
+PreferredSize TBImageWidget::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
 {
 	return PreferredSize(m_image.Width(), m_image.Height());
 }

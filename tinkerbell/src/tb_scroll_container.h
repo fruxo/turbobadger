@@ -40,6 +40,8 @@ public:
 	static TBScrollBarVisibility Solve(SCROLL_MODE mode, int content_w, int content_h,
 														int available_w, int available_h,
 														int scrollbar_x_h, int scrollbar_y_w);
+	static bool IsAlwaysOnX(SCROLL_MODE mode) { return mode == SCROLL_MODE_X_Y; }
+	static bool IsAlwaysOnY(SCROLL_MODE mode) { return mode == SCROLL_MODE_X_Y || mode == SCROLL_MODE_Y; }
 public:
 	bool x_on, y_on;
 	int visible_w, visible_h;
@@ -77,7 +79,7 @@ public:
 	virtual void InvalidateLayout(INVALIDATE_LAYOUT il);
 
 	virtual TBRect GetPaddingRect();
-	virtual PreferredSize OnCalculatePreferredContentSize();
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnProcess();
@@ -92,7 +94,7 @@ protected:
 	bool m_adapt_content_size;
 	bool m_layout_is_invalid;
 	SCROLL_MODE m_mode;
-	void ValidateLayout();
+	void ValidateLayout(const SizeConstraints &constraints);
 };
 
 };

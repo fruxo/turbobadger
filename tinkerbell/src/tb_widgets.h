@@ -158,15 +158,21 @@ enum AXIS {
 	AXIS_Y, ///< Vertical layout
 };
 
-class SizeConstraints
-{
-public:
-	static const int NO_RESTRICTION = 10000;
-
-	SizeConstraints() : available_w(NO_RESTRICTION), available_h(NO_RESTRICTION) {}
-
-	int available_w, available_h;
+/** Defines how the size in one axis depend on the other axis when a widgets size is
+	affected by constraints. */
+enum SIZE_DEP {
+	/** No dependency (Faster layout). */
+	SIZE_DEP_NONE						= 0,
+	/** The width is dependant on the height. Additional layout pass may be required. */
+	SIZE_DEP_WIDTH_DEPEND_ON_HEIGHT		= 1,
+	/** The height is dependant on the width. Additional layout pass may be required. */
+	SIZE_DEP_HEIGHT_DEPEND_ON_WIDTH		= 2,
+	/** Both width and height are dependant on each other. Additional layout pass may
+		be required. */
+	SIZE_DEP_BOTH						=	SIZE_DEP_WIDTH_DEPEND_ON_HEIGHT |
+											SIZE_DEP_HEIGHT_DEPEND_ON_WIDTH
 };
+MAKE_ENUM_FLAG_COMBO(SIZE_DEP);
 
 /** PreferredSize contains size preferences for a TBWidget.
 	This is calculated during layout for each widget from
@@ -178,16 +184,16 @@ public:
 	PreferredSize() : min_w(0), min_h(0)
 					, max_w(10000), max_h(10000)
 					, pref_w(0), pref_h(0)
-					, constraints_dependant(false) {}
+					, size_dependency(SIZE_DEP_NONE) {}
 	PreferredSize(int w, int h) : min_w(w), min_h(h)
 								, max_w(w), max_h(h)
 								, pref_w(w), pref_h(h)
-								, constraints_dependant(false) {}
+								, size_dependency(SIZE_DEP_NONE) {}
 
 	int min_w, min_h;			///< The minimal preferred width and height.
 	int max_w, max_h;			///< The maximum preferred width and height.
 	int pref_w, pref_h;			///< The preferred width and height.
-	bool constraints_dependant;
+	SIZE_DEP size_dependency;	///< The size dependency when size is affected by constraints.
 };
 
 /** LayoutParams defines size preferences for a TBWidget that
@@ -210,6 +216,52 @@ public:
 	int min_w, min_h;			///< The minimal preferred width and height.
 	int max_w, max_h;			///< The maximum preferred width and height.
 	int pref_w, pref_h;			///< The preferred width and height.
+};
+
+/** Specifies size constraints used during size calculations. */
+class SizeConstraints
+{
+public:
+	static const int NO_RESTRICTION = 10000;
+
+	/** The available width and height. May be NO_RESTRICTION which is a large value. */
+	int available_w, available_h;
+
+	/** Constrain to the given width and height. */
+	SizeConstraints(int w, int h) : available_w(w), available_h(h) {}
+
+	/** No constraints. */
+	SizeConstraints() : available_w(NO_RESTRICTION), available_h(NO_RESTRICTION) {}
+
+	/** Return new constraints reduced by the given padding. */
+	SizeConstraints ConstrainByPadding(int horizontal_padding, int vertical_padding) const
+	{
+		return SizeConstraints(available_w == NO_RESTRICTION ? NO_RESTRICTION : available_w - horizontal_padding,
+								available_h == NO_RESTRICTION ? NO_RESTRICTION : available_h - vertical_padding);
+	}
+
+	/** Return new constraints that are constrained by LayoutParams. */
+	SizeConstraints ConstrainByLayoutParams(const LayoutParams &lp) const
+	{
+		return SizeConstraints(ConstrainByLPMax(available_w, lp.min_w, lp.max_w),
+								ConstrainByLPMax(available_h, lp.min_h, lp.max_h));
+	}
+
+	bool operator == (const SizeConstraints &sc) const { return available_w == sc.available_w &&
+																available_h == sc.available_h; }
+
+private:
+	int ConstrainByLPMax(int constraint, int lp_min, int lp_max) const
+	{
+		if (constraint == NO_RESTRICTION)
+			return lp_max != LayoutParams::UNSPECIFIED ? lp_max : NO_RESTRICTION;
+		int ret = constraint;
+		if (lp_min != LayoutParams::UNSPECIFIED)
+			ret = MAX(ret, lp_min);
+		if (lp_max != LayoutParams::UNSPECIFIED)
+			ret = MIN(ret, lp_max);
+		return ret;
+	}
 };
 
 /** Defines widget z level, used with TBWidget::SetZ, TBWidget::AddChild. */
@@ -709,17 +761,18 @@ public:
 
 	/** Calculate the preferred content size for this widget. This is the size of the actual
 		content. Don't care about padding or other decoration. */
-	virtual PreferredSize OnCalculatePreferredContentSize();
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
 	/** Calculate the preferred size for this widget. This is the full size of the widget,
 		content + padding + eventual other decoration (but not skin expansion).
 		This is the size that should be used for layouting a widget.
 		The returned PreferredSize also contains minimal size and maximum size. */
-	virtual PreferredSize OnCalculatePreferredSize();
+	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 
 	/** Get the PreferredSize for this widget.
 		This returns cached data if valid, or calls OnCalculatePreferredSize if needed. */
-	PreferredSize GetPreferredSize();
+	PreferredSize GetPreferredSize(const SizeConstraints &constraints);
+	PreferredSize GetPreferredSize() { return GetPreferredSize(SizeConstraints()); }
 
 	/** Type used for InvalidateLayout */
 	enum INVALIDATE_LAYOUT {
@@ -840,6 +893,7 @@ private:
 	WIDGET_GRAVITY m_gravity;		///< The layout gravity setting.
 	TBFontDescription m_font_desc;	///< The font description.
 	PreferredSize m_cached_ps;		///< Cached preferred size.
+	SizeConstraints m_cached_sc;	///< Cached size constraints.
 	LayoutParams *m_layout_params;	///< Layout params, or nullptr.
 	TBScroller *m_scroller;
 	union {

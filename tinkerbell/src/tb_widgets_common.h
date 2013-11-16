@@ -68,7 +68,7 @@ public:
 	void SetSqueezable(bool squeezable);
 	bool GetSqueezable() { return m_squeezable; }
 
-	virtual PreferredSize OnCalculatePreferredContentSize();
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 	virtual void OnFontChanged();
 	virtual void OnPaint(const PaintProps &paint_props);
 protected:
@@ -120,7 +120,7 @@ public:
 	virtual void OnSkinChanged();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
-	virtual PreferredSize OnCalculatePreferredContentSize() { return m_layout.GetPreferredSize(); }
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints) { return m_layout.GetPreferredSize(); }
 
 	virtual TBWidget *GetContentRoot() { return &m_layout; }
 
@@ -155,7 +155,7 @@ public:
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
-	virtual PreferredSize OnCalculatePreferredContentSize() { return m_layout.GetPreferredSize(); }
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints) { return m_layout.GetPreferredSize(); }
 
 	virtual TBWidget *GetContentRoot() { return &m_layout; }
 
@@ -178,7 +178,7 @@ public:
 	TBSkinImage() {}
 	TBSkinImage(TBID skin_bg) { SetSkinBg(skin_bg); }
 
-	virtual PreferredSize OnCalculatePreferredSize();
+	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 };
 
 /** TBSeparator is a widget only showing a skin.
@@ -238,7 +238,7 @@ public:
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
 
-	virtual PreferredSize OnCalculatePreferredSize();
+	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:
 	void ToggleGroup(TBWidget *root, TBWidget *toggled);

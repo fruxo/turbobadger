@@ -88,7 +88,7 @@ public:
 	int GetTitleHeight();
 
 	virtual TBRect GetPaddingRect();
-	virtual PreferredSize OnCalculatePreferredSize();
+	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnAdded();

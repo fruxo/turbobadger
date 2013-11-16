@@ -16,6 +16,8 @@
 
 namespace tinkerbell {
 
+TB_WIDGET_FACTORY(TBWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
+
 TB_WIDGET_FACTORY(TBButton, TBValue::TYPE_NULL, WIDGET_Z_BOTTOM)
 {
 	const char *axis = info->node->GetValueString("axis", "x");

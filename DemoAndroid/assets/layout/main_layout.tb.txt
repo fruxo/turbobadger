@@ -42,8 +42,8 @@ TBLayout
 				TBImageWidget: filename: "images/image_1.png", skin: ImageFrame
 					TBTextField: skin: "ImageCaption", text: "Öland", gravity: bottom left right
 		TBLayout: axis: y
-			TBTextField: text: Testing high DPI skin positioning.
-			TBTextField: text: Layout with skin "Starry buttons":
+			TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt-to-content: 1
+				text: "Testing high DPI skin positioning. Layout with skin \"Starry buttons\":"
 			TBContainer
 				TBLayout: skin: Starry buttons
 					TBButton: text: "  A  ", skin: "SpecialButton"

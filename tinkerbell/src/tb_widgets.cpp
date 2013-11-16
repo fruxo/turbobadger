@@ -777,7 +777,7 @@ TBRect TBWidget::GetPaddingRect()
 	return padding_rect;
 }
 
-PreferredSize TBWidget::OnCalculatePreferredContentSize()
+PreferredSize TBWidget::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
 {
 	// The default preferred size is calculated to satisfy the children
 	// in the best way. Since this is the default, it's probably not a
@@ -797,9 +797,14 @@ PreferredSize TBWidget::OnCalculatePreferredContentSize()
 			ps.max_h = 0;
 	}
 
+	TBSkinElement *bg_skin = GetSkinBgElement();
+	int horizontal_padding = bg_skin ? bg_skin->padding_left + bg_skin->padding_right : 0;
+	int vertical_padding = bg_skin ? bg_skin->padding_top + bg_skin->padding_bottom : 0;
+	SizeConstraints inner_sc = constraints.ConstrainByPadding(horizontal_padding, vertical_padding);
+
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
 	{
-		PreferredSize child_ps = child->GetPreferredSize();
+		PreferredSize child_ps = child->GetPreferredSize(inner_sc);
 		ps.pref_w = MAX(ps.pref_w, child_ps.pref_w);
 		ps.pref_h = MAX(ps.pref_h, child_ps.pref_h);
 		ps.min_w = MAX(ps.min_w, child_ps.min_w);
@@ -808,15 +813,15 @@ PreferredSize TBWidget::OnCalculatePreferredContentSize()
 			ps.max_w = MAX(ps.max_w, child_ps.max_w);
 		if (apply_max_h)
 			ps.max_h = MAX(ps.max_h, child_ps.max_h);
-		ps.constraints_dependant |= child_ps.constraints_dependant;
+		ps.size_dependency |= child_ps.size_dependency;
 	}
 
 	return ps;
 }
 
-PreferredSize TBWidget::OnCalculatePreferredSize()
+PreferredSize TBWidget::OnCalculatePreferredSize(const SizeConstraints &constraints)
 {
-	PreferredSize ps = OnCalculatePreferredContentSize();
+	PreferredSize ps = OnCalculatePreferredContentSize(constraints);
 	assert(ps.pref_w >= ps.min_w);
 	assert(ps.pref_h >= ps.min_h);
 
@@ -874,13 +879,35 @@ PreferredSize TBWidget::OnCalculatePreferredSize()
 	return ps;
 }
 
-PreferredSize TBWidget::GetPreferredSize()
+PreferredSize TBWidget::GetPreferredSize(const SizeConstraints &in_constraints)
 {
+	SizeConstraints constraints(in_constraints);
+	if (m_layout_params)
+		constraints = constraints.ConstrainByLayoutParams(*m_layout_params);
+
+	// Returned cached result if valid and the constraints are the same.
 	if (m_packed.is_cached_ps_valid)
-		return m_cached_ps;
+	{
+		if (m_cached_sc == constraints ||
+			m_cached_ps.size_dependency == SIZE_DEP_NONE /*||
+			// FIX: These optimizations would probably be good. Keeping
+			//      disabled for now because it needs testing.
+			// If *only* width depend on height, only the height matter
+			(m_cached_ps.size_dependency == SIZE_DEP_WIDTH_DEPEND_ON_HEIGHT &&
+			m_cached_sc.available_h == constraints.available_h) ||
+			// If *only* height depend on width, only the width matter
+			(m_cached_ps.size_dependency == SIZE_DEP_HEIGHT_DEPEND_ON_WIDTH &&
+			m_cached_sc.available_w == constraints.available_w)*/)
+		{
+			return m_cached_ps;
+		}
+	}
+
+	// Measure and save to cache
 	TB_IF_DEBUG_SETTING(LAYOUT_PS_DEBUGGING, last_measure_time = TBSystem::GetTimeMS());
 	m_packed.is_cached_ps_valid = 1;
-	m_cached_ps = OnCalculatePreferredSize();
+	m_cached_ps = OnCalculatePreferredSize(constraints);
+	m_cached_sc = constraints;
 
 	// Override the calculated ps with any specified layout parameter.
 	if (m_layout_params)

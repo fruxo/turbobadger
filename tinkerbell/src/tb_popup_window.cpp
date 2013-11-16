@@ -13,7 +13,10 @@ namespace tinkerbell {
 TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 {
 	TBWidget *root = target->GetParentRoot();
-	PreferredSize ps = popup->GetPreferredSize();
+
+	SizeConstraints sc(root->GetRect().w, root->GetRect().h);
+
+	PreferredSize ps = popup->GetPreferredSize(sc);
 
 	TBRect target_rect;
 	TBPoint pos;

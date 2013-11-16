@@ -152,9 +152,9 @@ void TBToggleContainer::UpdateInternal()
 	};
 }
 
-PreferredSize TBToggleContainer::OnCalculatePreferredSize()
+PreferredSize TBToggleContainer::OnCalculatePreferredSize(const SizeConstraints &constraints)
 {
-	PreferredSize ps = TBWidget::OnCalculatePreferredSize();
+	PreferredSize ps = TBWidget::OnCalculatePreferredSize(constraints);
 	if (m_toggle == TOGGLE_EXPANDED)
 	{
 		if (!GetIsOn())

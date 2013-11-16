@@ -347,7 +347,7 @@ void TBEditField::OnResized(int old_w, int old_h)
 	UpdateScrollbars();
 }
 
-PreferredSize TBEditField::OnCalculatePreferredContentSize()
+PreferredSize TBEditField::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
 {
 	int font_height = GetFont()->GetHeight();
 	PreferredSize ps;
@@ -367,8 +367,15 @@ PreferredSize TBEditField::OnCalculatePreferredContentSize()
 			// as virtual width for the new.
 			//int layout_width = old_layout_width > 0 ? MAX(old_layout_width, m_virtual_width) : m_virtual_width;
 			int layout_width = m_virtual_width;
+			if (constraints.available_w != SizeConstraints::NO_RESTRICTION)
+			{
+				layout_width = constraints.available_w;
+				if (TBSkinElement *bg_skin = GetSkinBgElement())
+					layout_width -= bg_skin->padding_left + bg_skin->padding_right;
+			}
 
 			m_style_edit.SetLayoutSize(layout_width, old_layout_height, true);
+			ps.size_dependency = SIZE_DEP_HEIGHT_DEPEND_ON_WIDTH;
 		}
 		int width = m_style_edit.GetContentWidth();
 		int height = m_style_edit.GetContentHeight();
@@ -376,10 +383,9 @@ PreferredSize TBEditField::OnCalculatePreferredContentSize()
 			m_style_edit.SetLayoutSize(old_layout_width, old_layout_height, true);
 		height = MAX(height, font_height);
 
-		//ps.min_w = ps.pref_w /*= ps.max_w*/ = width; // should go with the hack above.
-		ps.min_w = ps.pref_w = ps.max_w = width;
+		ps.min_w = ps.pref_w /*= ps.max_w*/ = width; // should go with the hack above.
+		//ps.min_w = ps.pref_w = ps.max_w = width;
 		ps.min_h = ps.pref_h = ps.max_h = height;
-		ps.constraints_dependant = true;
 	}
 	else
 	{

@@ -121,11 +121,11 @@ public:
 
 	virtual void InvalidateLayout(INVALIDATE_LAYOUT il);
 
-	virtual PreferredSize OnCalculatePreferredContentSize();
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnPaintChildren(const PaintProps &paint_props);
-	virtual void OnProcess() { ValidateLayout(); }
+	virtual void OnProcess();
 	virtual void OnResized(int old_w, int old_h);
 	virtual void OnInflateChild(TBWidget *child);
 	virtual void GetChildTranslation(int &x, int &y) const;
@@ -149,7 +149,7 @@ protected:
 		} m_packed;
 		uint32 m_packed_init;
 	};
-	void ValidateLayout(PreferredSize *calculate_ps = nullptr);
+	void ValidateLayout(const SizeConstraints &constraints, PreferredSize *calculate_ps = nullptr);
 	bool QualifyForExpansion(WIDGET_GRAVITY gravity);
 	int GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, int available_height);
 	TBWidget *GetFirstInLayoutOrder();

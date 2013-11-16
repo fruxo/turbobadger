@@ -124,7 +124,17 @@ PreferredSize RotPreferredSize(const PreferredSize &ps, AXIS axis)
 	psr.min_h = ps.min_w;
 	psr.pref_w = ps.pref_h;
 	psr.pref_h = ps.pref_w;
+	psr.size_dependency =
+		((ps.size_dependency & SIZE_DEP_WIDTH_DEPEND_ON_HEIGHT) ?
+				SIZE_DEP_HEIGHT_DEPEND_ON_WIDTH : SIZE_DEP_NONE) |
+		((ps.size_dependency & SIZE_DEP_HEIGHT_DEPEND_ON_WIDTH) ?
+				SIZE_DEP_WIDTH_DEPEND_ON_HEIGHT : SIZE_DEP_NONE);
 	return psr;
+}
+
+SizeConstraints RotSizeConstraints(const SizeConstraints &sc, AXIS axis)
+{
+	return axis == AXIS_X ? sc : SizeConstraints(sc.available_h, sc.available_w);
 }
 
 TBRect RotRect(const TBRect &rect, AXIS axis)
@@ -186,18 +196,12 @@ TBWidget *TBLayout::GetNextInLayoutOrder(TBWidget *child)
 	return m_packed.mode_reverse_order ? child->GetPrev() : child->GetNext();
 }
 
-void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
+void TBLayout::ValidateLayout(const SizeConstraints &constraints, PreferredSize *calculate_ps)
 {
 	// Layout notes:
 	// -All layout code is written for AXIS_X layout.
 	//  Instead of duplicating the layout code for both AXIS_X and AXIS_Y, we simply
 	//  rotate the in data (rect, gravity, preferred size) and the outdata (rect).
-
-	// FIX: Overflow Wrap (multi-row/col)
-	// FIX: Overflow scroll (scroll buttons)
-	// FIX: ShrinkToFit (For layouts that should not grow more than its childrens preferred size,
-	//      f.ex a tab bar that want size available, but not grow above that to the infinite max height)
-	// FIX: Column object (optional). For column list, popup items, dialogs for multirow alignment (instead of grid).
 
 	if (!calculate_ps)
 	{
@@ -223,7 +227,11 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 			spacing = g_tb_skin->GetDefaultSpacing();
 	}
 
-	TBRect layout_rect = RotRect(GetPaddingRect(), m_axis);
+	const TBRect padding_rect = GetPaddingRect();
+	const TBRect layout_rect = RotRect(padding_rect, m_axis);
+
+	const SizeConstraints inner_sc = constraints.ConstrainByPadding(GetRect().w - padding_rect.w,
+																	GetRect().h - padding_rect.h);
 
 	// Calculate totals for minimum and preferred width that we need for layout.
 	int total_preferred_w = 0;
@@ -236,7 +244,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	for (TBWidget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
 	{
 		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
-		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(), m_axis);
+		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(inner_sc), m_axis);
 		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		// Collapse empty widgets completly if there is other widgets.
@@ -268,6 +276,8 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 			// even if the widget wouldn't actually use it.
 			int height = GetWantedHeight(gravity, ps, ps.max_h);
 			calculate_ps->max_h = MAX(calculate_ps->max_h, height);
+
+			calculate_ps->size_dependency |= ps.size_dependency;
 		}
 	}
 
@@ -317,7 +327,7 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	for (TBWidget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
 	{
 		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
-		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(), m_axis);
+		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(inner_sc), m_axis);
 		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		// Collapse empty widgets completly if there is other widgets
@@ -391,11 +401,11 @@ void TBLayout::ValidateLayout(PreferredSize *calculate_ps)
 	SetOverflowScroll(m_overflow_scroll);
 }
 
-PreferredSize TBLayout::OnCalculatePreferredContentSize()
+PreferredSize TBLayout::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
 {
 	// Do a layout pass (without layouting) to check childrens preferences.
 	PreferredSize ps;
-	ValidateLayout(&ps);
+	ValidateLayout(constraints, &ps);
 	return ps;
 }
 
@@ -462,10 +472,17 @@ void TBLayout::OnPaintChildren(const PaintProps &paint_props)
 		g_renderer->SetClipRect(old_clip_rect, false);
 }
 
+void TBLayout::OnProcess()
+{
+	SizeConstraints sc(GetRect().w, GetRect().h);
+	ValidateLayout(sc);
+}
+
 void TBLayout::OnResized(int old_w, int old_h)
 {
 	InvalidateLayout(INVALIDATE_LAYOUT_TARGET_ONLY);
-	ValidateLayout();
+	SizeConstraints sc(GetRect().w, GetRect().h);
+	ValidateLayout(sc);
 }
 
 void TBLayout::OnInflateChild(TBWidget *child)

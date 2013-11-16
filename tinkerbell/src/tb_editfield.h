@@ -165,7 +165,7 @@ public:
 	virtual void OnResized(int old_w, int old_h);
 	virtual TBWidget *GetContentRoot() { return &m_root; }
 
-	virtual PreferredSize OnCalculatePreferredContentSize();
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
 	virtual void OnMessageReceived(TBMessage *msg);
 private:
