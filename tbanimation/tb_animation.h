@@ -28,6 +28,7 @@ public:
 	TBWidget *m_widget;
 };
 
+/** Animate the opacity of the target widget. */
 class WidgetAnimationOpacity : public WidgetAnimationObject
 {
 public:
@@ -41,16 +42,32 @@ private:
 	bool m_die;
 };
 
+/** Animate the rectangle of the target widget. */
 class WidgetAnimationRect : public WidgetAnimationObject
 {
 public:
+	enum MODE {
+		/** Animate from source to dest. */
+		MODE_SRC_TO_DST,
+		/** Animate from current + delta to current. */
+		MODE_DELTA_IN,
+		/** Animate from current to current + delta. */
+		MODE_DELTA_OUT
+	};
+	/** Animate the widget between the given source and dest rectangle. */
 	WidgetAnimationRect(TBWidget *widget, const TBRect &src_rect, const TBRect &dst_rect);
+	/** Animate the widget between rectangles based on the current widget
+		rectangle and a delta. The reference rectangle will be taken from
+		the target widget on the first OnAnimationUpdate. */
+	WidgetAnimationRect(TBWidget *widget, const TBRect &delta_rect, MODE mode);
 	virtual void OnAnimationStart();
 	virtual void OnAnimationUpdate(float progress);
 	virtual void OnAnimationStop(bool aborted);
 private:
 	TBRect m_src_rect;
 	TBRect m_dst_rect;
+	TBRect m_delta_rect;
+	MODE m_mode;
 };
 
 class WidgetsAnimationManager : public TBWidgetListener

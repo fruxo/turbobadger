@@ -75,7 +75,16 @@ WidgetAnimationRect::WidgetAnimationRect(TBWidget *widget, const TBRect &src_rec
 	: WidgetAnimationObject(widget)
 	, m_src_rect(src_rect)
 	, m_dst_rect(dst_rect)
+	, m_mode(MODE_SRC_TO_DST)
 {
+}
+
+WidgetAnimationRect::WidgetAnimationRect(TBWidget *widget, const TBRect &delta_rect, MODE mode)
+	: WidgetAnimationObject(widget)
+	, m_delta_rect(delta_rect)
+	, m_mode(mode)
+{
+	assert(mode == MODE_DELTA_IN || mode == MODE_DELTA_OUT);
 }
 
 void WidgetAnimationRect::OnAnimationStart()
@@ -84,11 +93,38 @@ void WidgetAnimationRect::OnAnimationStart()
 	if (!WidgetsAnimationManager::HasAnimationsRunning())
 		m_widget->Invalidate();
 
-	m_widget->SetRect(m_src_rect);
+	if (m_mode == MODE_SRC_TO_DST)
+		m_widget->SetRect(m_src_rect);
 }
 
 void WidgetAnimationRect::OnAnimationUpdate(float progress)
 {
+	if (m_mode == MODE_DELTA_IN || m_mode == MODE_DELTA_OUT)
+	{
+		m_dst_rect = m_src_rect = m_widget->GetRect();
+		if (m_dst_rect.Equals(TBRect()))
+		{
+			// Widget hasn't been laid out yet,
+			// the animation was started too soon.
+			AnimationManager::AbortAnimation(this);
+			return;
+		}
+		if (m_mode == MODE_DELTA_IN)
+		{
+			m_dst_rect.x += m_delta_rect.x;
+			m_dst_rect.y += m_delta_rect.y;
+			m_dst_rect.w += m_delta_rect.w;
+			m_dst_rect.h += m_delta_rect.h;
+		}
+		else
+		{
+			m_src_rect.x += m_delta_rect.x;
+			m_src_rect.y += m_delta_rect.y;
+			m_src_rect.w += m_delta_rect.w;
+			m_src_rect.h += m_delta_rect.h;
+		}
+		m_mode = MODE_SRC_TO_DST;
+	}
 	TBRect rect;
 	rect.x = (int) LERP(m_src_rect.x, m_dst_rect.x, progress);
 	rect.y = (int) LERP(m_src_rect.y, m_dst_rect.y, progress);
@@ -99,7 +135,8 @@ void WidgetAnimationRect::OnAnimationUpdate(float progress)
 
 void WidgetAnimationRect::OnAnimationStop(bool aborted)
 {
-	m_widget->SetRect(m_dst_rect);
+	if (m_mode == MODE_SRC_TO_DST) // m_dst_rect may still be unset if aborted.
+		m_widget->SetRect(m_dst_rect);
 	delete this;
 }
 
@@ -162,13 +199,8 @@ bool WidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 	if (TBMessageWindow *window = TBSafeCast<TBMessageWindow>(widget))
 	{
 		// Move out dying message windows
-		if (!window->GetRect().IsEmpty())
-		{
-			TBRect src_rect = window->GetRect();
-			TBRect dst_rect = window->GetRect().Offset(0, 50);
-			if (AnimationObject *anim = new WidgetAnimationRect(window, src_rect, dst_rect))
-				AnimationManager::StartAnimation(anim, ANIMATION_CURVE_SPEED_UP);
-		}
+		if (AnimationObject *anim = new WidgetAnimationRect(window, TBRect(0, 50, 0, 0), WidgetAnimationRect::MODE_DELTA_IN))
+			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_SPEED_UP);
 		handled = true;
 	}
 	if (TBDimmer *dimmer = TBSafeCast<TBDimmer>(widget))
@@ -192,13 +224,8 @@ void WidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
 	if (TBMessageWindow *window = TBSafeCast<TBMessageWindow>(widget))
 	{
 		// Move in new message windows
-		if (!window->GetRect().IsEmpty())
-		{
-			TBRect src_rect = window->GetRect().Offset(0, -50);
-			TBRect dst_rect = window->GetRect();
-			if (AnimationObject *anim = new WidgetAnimationRect(window, src_rect, dst_rect))
-				AnimationManager::StartAnimation(anim);
-		}
+		if (AnimationObject *anim = new WidgetAnimationRect(window, TBRect(0, -50, 0, 0), WidgetAnimationRect::MODE_DELTA_OUT))
+			AnimationManager::StartAnimation(anim);
 	}
 	if (TBDimmer *dimmer = TBSafeCast<TBDimmer>(widget))
 	{
