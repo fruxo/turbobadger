@@ -219,6 +219,9 @@
     <ClCompile Include="..\..\tinkerbell\src\renderers\tb_renderer_gl.cpp">
       <Filter>Source Files\renderers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_image_loader_stb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">

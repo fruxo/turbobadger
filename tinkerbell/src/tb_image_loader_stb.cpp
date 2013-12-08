@@ -22,7 +22,7 @@ namespace tinkerbell {
 // Include stb image - Tiny portable and reasonable fast image loader from http://nothings.org/
 // Should not be used for content not distributed with your app (May not be secure and doesn't
 // support all formats fully)
-#include "stb_image.c"
+#include "thirdparty/stb_image.c"
 
 class STBI_Loader : public TBImageLoader
 {

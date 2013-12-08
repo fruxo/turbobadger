@@ -6,7 +6,6 @@ PROJECT_ROOT := ../../
 
 LOCAL_SRC_FILES := jni_glue.cpp \
                    App.cpp       \
-                   ../../stb_image/tb_image_loader_stb.cpp \
                    ../../tinkerbell/src/tb_addon.cpp \
                    ../../tinkerbell/src/tb_bitmap_fragment.cpp \
                    ../../tinkerbell/src/tb_clipboard_dummy.cpp \
@@ -49,6 +48,7 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/tb_window.cpp \
                    ../../tinkerbell/src/tb_debug.cpp \
                    ../../tinkerbell/src/tb_node_tree.cpp \
+                   ../../tinkerbell/src/tb_image_loader_stb.cpp \
                    ../../tinkerbell/src/tinkerbell.cpp \
                    ../../tinkerbell/src/addons/tbimage/tb_image_manager.cpp \
                    ../../tinkerbell/src/addons/tbimage/tb_image_widget.cpp \

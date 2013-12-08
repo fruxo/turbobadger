@@ -26,6 +26,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_geometry.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_hashtable.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_image_loader_stb.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_inline_select.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_language.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_layout.cpp" />

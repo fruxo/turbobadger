@@ -16,9 +16,6 @@
     <Filter Include="Source Files\tbanimation">
       <UniqueIdentifier>{02dc40a7-f4f8-4dcc-85a4-200f636b1e9e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\stb_image">
-      <UniqueIdentifier>{9635f581-5440-40ed-9040-6534391f08fb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\glfw">
       <UniqueIdentifier>{c0affabe-02aa-41c1-8236-3de174f4e472}</UniqueIdentifier>
     </Filter>
@@ -38,9 +35,6 @@
     </ClCompile>
     <ClCompile Include="..\..\tbanimation\tb_animation.cpp">
       <Filter>Source Files\tbanimation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp">
-      <Filter>Source Files\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="..\demo01\Demo01.cpp">
       <Filter>Source Files\demo01</Filter>

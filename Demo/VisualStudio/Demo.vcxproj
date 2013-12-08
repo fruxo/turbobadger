@@ -91,7 +91,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\stb_image\tb_image_loader_stb.cpp" />
     <ClCompile Include="..\..\tbanimation\Animation.cpp" />
     <ClCompile Include="..\..\tbanimation\tb_animation.cpp" />
     <ClCompile Include="..\demo01\Demo01.cpp" />
