@@ -4,7 +4,7 @@ CC = gcc
 LD = g++
 LDFLAGS =
 LIBS =
-INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/glfw/include" -I"."
+INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/thirdparty/glfw/include" -I"."
 
 ifeq ($(DEBUG),YES)
  CFLAGS = -D_DEBUG -g $(INCPATH)
@@ -100,35 +100,35 @@ SRC = tinkerbell/src/tb_layout.cpp \
       Demo/platform/port_glfw.cpp \
       Demo/platform/glfw_extra_linux.cpp
 
-CSRC = Demo/glfw/src/clipboard.c \
-       Demo/glfw/src/context.c \
-       Demo/glfw/src/gamma.c \
-       Demo/glfw/src/init.c \
-       Demo/glfw/src/input.c \
-       Demo/glfw/src/joystick.c \
-       Demo/glfw/src/monitor.c \
-       Demo/glfw/src/time.c \
-       Demo/glfw/src/window.c
+CSRC = Demo/thirdparty/glfw/src/clipboard.c \
+       Demo/thirdparty/glfw/src/context.c \
+       Demo/thirdparty/glfw/src/gamma.c \
+       Demo/thirdparty/glfw/src/init.c \
+       Demo/thirdparty/glfw/src/input.c \
+       Demo/thirdparty/glfw/src/joystick.c \
+       Demo/thirdparty/glfw/src/monitor.c \
+       Demo/thirdparty/glfw/src/time.c \
+       Demo/thirdparty/glfw/src/window.c
 
 ifeq ($(UNAME),Darwin)
-MSRC = Demo/glfw/src/cocoa_clipboard.m \
-       Demo/glfw/src/cocoa_gamma.m \
-       Demo/glfw/src/cocoa_init.m \
-       Demo/glfw/src/cocoa_joystick.m \
-       Demo/glfw/src/cocoa_monitor.m \
-       Demo/glfw/src/cocoa_time.m \
-       Demo/glfw/src/cocoa_window.m \
-       Demo/glfw/src/nsgl_context.m
+MSRC = Demo/thirdparty/glfw/src/cocoa_clipboard.m \
+       Demo/thirdparty/glfw/src/cocoa_gamma.m \
+       Demo/thirdparty/glfw/src/cocoa_init.m \
+       Demo/thirdparty/glfw/src/cocoa_joystick.m \
+       Demo/thirdparty/glfw/src/cocoa_monitor.m \
+       Demo/thirdparty/glfw/src/cocoa_time.m \
+       Demo/thirdparty/glfw/src/cocoa_window.m \
+       Demo/thirdparty/glfw/src/nsgl_context.m
 else
-CSRC += Demo/glfw/src/glx_context.c \
-        Demo/glfw/src/x11_clipboard.c \
-        Demo/glfw/src/x11_gamma.c \
-        Demo/glfw/src/x11_init.c \
-        Demo/glfw/src/x11_joystick.c \
-        Demo/glfw/src/x11_monitor.c \
-        Demo/glfw/src/x11_time.c \
-        Demo/glfw/src/x11_unicode.c \
-        Demo/glfw/src/x11_window.c
+CSRC += Demo/thirdparty/glfw/src/glx_context.c \
+        Demo/thirdparty/glfw/src/x11_clipboard.c \
+        Demo/thirdparty/glfw/src/x11_gamma.c \
+        Demo/thirdparty/glfw/src/x11_init.c \
+        Demo/thirdparty/glfw/src/x11_joystick.c \
+        Demo/thirdparty/glfw/src/x11_monitor.c \
+        Demo/thirdparty/glfw/src/x11_time.c \
+        Demo/thirdparty/glfw/src/x11_unicode.c \
+        Demo/thirdparty/glfw/src/x11_window.c
 endif
 
 .SUFFIXES: .cpp .c .m
