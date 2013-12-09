@@ -145,7 +145,7 @@ void TBEditField::SetEditType(EDIT_TYPE type)
 
 bool TBEditField::GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info)
 {
-	if (info.custom_prop == TBIDC("edit_type"))
+	if (info.custom_prop == TBIDC("edit-type"))
 	{
 		switch (m_edit_type)
 		{

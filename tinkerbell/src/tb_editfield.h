@@ -125,7 +125,7 @@ public:
 	void SetEditType(EDIT_TYPE type);
 	EDIT_TYPE GetEditType() { return m_edit_type; }
 
-	/** Support custom skin condition property "edit_type", matching those of EDIT_TYPE. */
+	/** Support custom skin condition property "edit-type", matching those of EDIT_TYPE. */
 	virtual bool GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info);
 
 	/** Set which alignment the text should have if the space

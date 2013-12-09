@@ -256,7 +256,7 @@ elements
 		padding 4
 		strong-overrides
 			element TBEditField.search
-				condition: target: this, property: edit_type, value: "search"
+				condition: target: this, property: edit-type, value: "search"
 
 	TBEditField.search
 		clone TBEditField
