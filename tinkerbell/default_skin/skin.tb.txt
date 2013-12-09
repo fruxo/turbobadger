@@ -142,6 +142,8 @@ elements
 		img-ofs-x 4
 
 	# == TBTabContainer skins - Create strong overrides for the tab buttons four alignments ============
+	TBTabContainer.rootlayout
+		spacing -1
 	TBTabContainer.tablayout_x
 		padding 0 10
 	TBTabContainer.tablayout_y

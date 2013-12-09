@@ -43,10 +43,10 @@ TBTabContainer::TBTabContainer()
 	m_root_layout.AddChild(&m_content_root);
 	m_root_layout.AddChild(&m_tab_layout);
 	m_root_layout.SetAxis(AXIS_Y);
-	m_root_layout.SetSpacing(-1);
 	m_root_layout.SetGravity(WIDGET_GRAVITY_ALL);
 	m_root_layout.SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
 	m_root_layout.SetLayoutOrder(LAYOUT_ORDER_TOP_TO_BOTTOM);
+	m_root_layout.SetSkinBg("TBTabContainer.rootlayout");
 	m_tab_layout.SetLayoutDistributionPosition(LAYOUT_DISTRIBUTION_POSITION_CENTER);
 	m_tab_layout.SetSkinBg("TBTabContainer.tablayout_x");
 	m_tab_layout.SetLayoutPosition(LAYOUT_POSITION_RIGHT_BOTTOM);
