@@ -179,7 +179,7 @@ public:
 		should be inherited from the parent widget. */
 	TBID GetFontFaceID() const { return m_id + m_packed_init; }
 
-	void SetSize(uint32 size)											{ m_packed.size = MIN(size, 0x8000); }
+	void SetSize(uint32 size)											{ m_packed.size = MIN(size, 0x8000u); }
 	uint32 GetSize() const												{ return m_packed.size; }
 
 	//not connected to anything yet

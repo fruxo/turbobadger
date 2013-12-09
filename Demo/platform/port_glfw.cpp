@@ -295,7 +295,7 @@ static void ReschedulePlatformTimer(double fire_time, bool force)
 	{
 		set_fire_time = fire_time;
 		double delay = fire_time - tinkerbell::TBSystem::GetTimeMS();
-		unsigned int idelay = (unsigned int) MAX(delay, 0);
+		unsigned int idelay = (unsigned int) MAX(delay, 0.0);
 		glfwRescheduleTimer(idelay);
 	}
 }

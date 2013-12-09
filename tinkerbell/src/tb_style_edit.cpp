@@ -1198,8 +1198,8 @@ void TBTextFragment::BuildSelectionRegion(int32 translate_x, int32 translate_y, 
 
 	int sofs1 = sel->start.block == block ? sel->start.ofs : 0;
 	int sofs2 = sel->stop.block == block ? sel->stop.ofs : block->str_len;
-	sofs1 = MAX(sofs1, ofs);
-	sofs2 = MIN(sofs2, ofs + len);
+	sofs1 = MAX(sofs1, (int)ofs);
+	sofs2 = MIN(sofs2, (int)(ofs + len));
 
 	int s1x = GetStringWidth(font, block->str.CStr() + ofs, sofs1 - ofs);
 	int s2x = GetStringWidth(font, block->str.CStr() + sofs1, sofs2 - sofs1);

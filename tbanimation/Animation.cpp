@@ -119,7 +119,7 @@ void AnimationManager::StartAnimation(AnimationObject *obj, ANIMATION_CURVE anim
 		animation_duration = 0;
 	obj->adjust_start_time = (animation_time == ANIMATION_TIME_FIRST_UPDATE ? true : false);
 	obj->animation_start_time = TBSystem::GetTimeMS();
-	obj->animation_duration = MAX(animation_duration, 0);
+	obj->animation_duration = MAX(animation_duration, 0.0);
 	obj->animation_curve = animation_curve;
 	obj->OnAnimationStart();
 	animating_objects.AddLast(obj);
