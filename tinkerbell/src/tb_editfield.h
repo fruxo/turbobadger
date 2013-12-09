@@ -125,7 +125,10 @@ public:
 	void SetEditType(EDIT_TYPE type);
 	EDIT_TYPE GetEditType() { return m_edit_type; }
 
-	/** Support custom skin condition property "edit-type", matching those of EDIT_TYPE. */
+	/** Support custom skin condition properties. Currently supported properties are:
+		"edit-type", matching those of EDIT_TYPE.
+		"multiline", matching 1 if multiline mode is enabled.
+		"readonly", matching 1 if readonly mode is enabled. */
 	virtual bool GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info);
 
 	/** Set which alignment the text should have if the space

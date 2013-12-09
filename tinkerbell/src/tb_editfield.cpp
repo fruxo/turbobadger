@@ -158,6 +158,10 @@ bool TBEditField::GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &
 		case EDIT_TYPE_NUMBER:		return info.value == TBIDC("number");
 		};
 	}
+	else if (info.custom_prop == TBIDC("multiline"))
+		return !((uint32)info.value) == !GetMultiline();
+	else if (info.custom_prop == TBIDC("readonly"))
+		return !((uint32)info.value) == !GetReadOnly();
 	return false;
 }
 
