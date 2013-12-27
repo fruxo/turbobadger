@@ -6,11 +6,12 @@ TBLayout
 			text Button 1
 		TBRadioButton
 		TBCheckBox
-	TBContainer
-		TBLayout
-			TBSlider
-				value 0.5
-			TBScrollBar
+	@if 1
+		TBContainer
+			TBLayout
+				TBSlider
+					value 0.5
+				TBScrollBar
 	TBEditField
 		multiline 1
 		readonly 1

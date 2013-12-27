@@ -4,11 +4,13 @@
 // ================================================================================
 
 #include "tb_node_tree.h"
+#include "tb_node_ref_tree.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
+#include "tb_language.h"
 
 namespace tinkerbell {
 
@@ -59,7 +61,7 @@ TBNode *TBNode::GetNode(const char *request, GET_MISS_POLICY mp)
 	{
 		const char *nextend = GetNextNodeSeparator(request);
 		int name_len = nextend - request;
-		TBNode *n_child = n->GetNode(request, name_len);
+		TBNode *n_child = n->GetNodeInternal(request, name_len);
 		if (!n_child && mp == GET_MISS_POLICY_CREATE)
 		{
 			n_child = n->Create(request, name_len);
@@ -72,7 +74,15 @@ TBNode *TBNode::GetNode(const char *request, GET_MISS_POLICY mp)
 	return n;
 }
 
-TBNode *TBNode::GetNode(const char *name, int name_len) const
+TBNode *TBNode::GetNodeFollowRef(const char *request, GET_MISS_POLICY mp)
+{
+	TBNode *node = GetNode(request, mp);
+	if (node)
+		node = TBNodeRefTree::FollowNodeRef(node);
+	return node;
+}
+
+TBNode *TBNode::GetNodeInternal(const char *name, int name_len) const
 {
 	for (TBNode *n = GetFirstChild(); n; n = n->GetNext())
 	{
@@ -85,7 +95,7 @@ TBNode *TBNode::GetNode(const char *name, int name_len) const
 bool TBNode::CloneChildren(TBNode *source)
 {
 	TBNode *item = source->GetFirstChild();
-	while(item)
+	while (item)
 	{
 		TBNode *new_child = Create(item->m_name);
 		if (!new_child)
@@ -101,21 +111,44 @@ bool TBNode::CloneChildren(TBNode *source)
 	return true;
 }
 
+TBValue &TBNode::GetValueFollowRef()
+{
+	return TBNodeRefTree::FollowNodeRef(this)->GetValue();
+}
+
 int TBNode::GetValueInt(const char *request, int def)
 {
-	TBNode *n = GetNode(request);
+	TBNode *n = GetNodeFollowRef(request);
 	return n ? n->m_value.GetInt() : def;
 }
 
 float TBNode::GetValueFloat(const char *request, float def)
 {
-	TBNode *n = GetNode(request);
+	TBNode *n = GetNodeFollowRef(request);
 	return n ? n->m_value.GetFloat() : def;
 }
 
 const char *TBNode::GetValueString(const char *request, const char *def)
 {
-	TBNode *n = GetNode(request);
+	if (TBNode *node = GetNodeFollowRef(request))
+	{
+		// We might have a language string. Those are not
+		// looked up in GetNode/ResolveNode.
+		if (node->GetValue().IsString())
+		{
+			const char *string = node->GetValue().GetString();
+			if (*string == '@' && *TBNode::GetNextNodeSeparator(string) == 0)
+				string = g_tb_lng->GetString(string + 1);
+			return string;
+		}
+		return node->GetValue().GetString();
+	}
+	return def;
+}
+
+const char *TBNode::GetValueStringRaw(const char *request, const char *def)
+{
+	TBNode *n = GetNodeFollowRef(request);
 	return n ? n->m_value.GetString() : def;
 }
 
@@ -188,9 +221,9 @@ public:
 		if (!m_target_node)
 			return;
 		if (strcmp(name, "@file") == 0)
-		{
 			IncludeFile(line_nr, value.GetString());
-		}
+		else if (strcmp(name, "@include") == 0)
+			IncludeRef(line_nr, value.GetString());
 		else if (TBNode *n = TBNode::Create(name))
 		{
 			n->m_value.TakeOver(value);
@@ -231,6 +264,31 @@ public:
 			OnError(line_nr, err);
 		}
 	}
+	void IncludeRef(int line_nr, const char *refstr)
+	{
+		TBNode *refnode = nullptr;
+		if (*refstr == '@')
+		{
+			TBNode tmp;
+			tmp.GetValue().SetString(refstr, TBValue::SET_AS_STATIC);
+			refnode = TBNodeRefTree::FollowNodeRef(&tmp);
+		}
+		else // Local look-up
+		{
+			// Note: If we read to a target node that already contains
+			//       nodes, we might look up nodes that's already there
+			//       instead of new nodes.
+			refnode = m_root_node->GetNode(refstr, TBNode::GET_MISS_POLICY_NULL);
+		}
+		if (refnode)
+			m_target_node->CloneChildren(refnode);
+		else
+		{
+			TBStr err;
+			err.SetFormatted("Include \"%s\" was not found!", refstr);
+			OnError(line_nr, err);
+		}
+	}
 private:
 	TBNode *m_root_node;
 	TBNode *m_target_node;
@@ -242,7 +300,12 @@ bool TBNode::ReadFile(const char *filename)
 	Clear();
 	FileParser p;
 	TBNodeTarget t(this, filename);
-	return p.Read(filename, &t);
+	if (p.Read(filename, &t))
+	{
+		TBNodeRefTree::ResolveConditions(this);
+		return true;
+	}
+	return false;
 }
 
 void TBNode::ReadData(const char *data)
@@ -256,6 +319,7 @@ void TBNode::ReadData(const char *data, int data_len)
 	DataParser p;
 	TBNodeTarget t(this, "{data}");
 	p.Read(data, data_len, &t);
+	TBNodeRefTree::ResolveConditions(this);
 }
 
 void TBNode::Clear()

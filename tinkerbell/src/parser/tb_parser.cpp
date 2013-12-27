@@ -59,6 +59,39 @@ bool is_white_space(const char *str)
 	}
 }
 
+/** Return true if the given string starts with a color.
+	Ex: #ffdd00, #fd0 */
+bool is_start_of_color(const char *str)
+{
+	if (*str++ != '#')
+		return false;
+	int digit_count = 0;
+	while ((*str >= '0' && *str <= '9') ||
+			(*str >= 'a' && *str <= 'f') ||
+			(*str >= 'A' && *str <= 'F'))
+	{
+		str++;
+		digit_count++;
+	}
+	return digit_count == 8 || digit_count == 6 || digit_count == 4 || digit_count == 3;
+}
+
+/** Return true if the given string may be a node reference, such
+	as language strings or TBNodeRefTree references. */
+bool is_start_of_reference(const char *str)
+{
+	if (*str++ != '@')
+		return false;
+	while (*str && *str != ' ')
+	{
+		// If the token ends with colon, it's not a value but a key.
+		if (*str == ':')
+			return false;
+		str++;
+	}
+	return true;
+}
+
 /** Check if the line is a comment or empty space. If it is, consume the leading
 	whitespace from line. */
 bool is_space_or_comment(char *&line)
@@ -223,7 +256,10 @@ void TBParser::OnLine(char *line, TBParserTarget *target)
 			token[token_len] = 0;
 
 			// Check if the first argument is not a child but the value for this token
-			if (is_start_of_number(line) || *line == '[' || *line == '\"' || *line == '\'' || *line == '@')
+			if (*line == '[' || *line == '\"' || *line == '\'' ||
+				is_start_of_number(line) ||
+				is_start_of_color(line) ||
+				is_start_of_reference(line))
 			{
 				ConsumeValue(value, line);
 

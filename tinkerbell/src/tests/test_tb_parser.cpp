@@ -40,7 +40,8 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY_STR(node.GetValueString("strings_compact>string9", ""), "\\\\\\\\");
 		TB_VERIFY_STR(node.GetValueString("strings_compact>string10", ""), "\\\\\"");
 		TB_VERIFY_STR(node.GetValueString("strings_compact>string11", ""), "\"\"\'\'");
-		TB_VERIFY_STR(node.GetValueString("strings_compact>string12", ""), "@language_string_token");
+		TB_VERIFY_STR(node.GetValueStringRaw("strings_compact>string12", ""), "@language_string_token");
+		TB_VERIFY_STR(node.GetValueString("strings_compact>string13", ""), "#ffdd00");
 	}
 
 	TB_TEST(numbers_compact)
@@ -151,13 +152,26 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY(node.GetValueInt("comments_and_space>three", 0) == 3);
 	}
 
-	TB_TEST(file)
+	TB_TEST(include_file)
 	{
-		TB_VERIFY_STR(node.GetValueString("included>file1>something1", ""), "Chocolate");
-		TB_VERIFY_STR(node.GetValueString("included>file1>something2", ""), "Cake");
-		TB_VERIFY_STR(node.GetValueString("included>file2>something1", ""), "Chocolate");
-		TB_VERIFY_STR(node.GetValueString("included>file2>something2", ""), "Cake");
+		TB_VERIFY_STR(node.GetValueString("include_file>file1>something1", ""), "Chocolate");
+		TB_VERIFY_STR(node.GetValueString("include_file>file1>something2", ""), "Cake");
+		TB_VERIFY_STR(node.GetValueString("include_file>file2>something1", ""), "Chocolate");
+		TB_VERIFY_STR(node.GetValueString("include_file>file2>something2", ""), "Cake");
 	}
+
+	TB_TEST(include_locally)
+	{
+		TB_VERIFY_STR(node.GetValueString("include_branch>test1>skin", ""), "DarkSkin");
+		TB_VERIFY_STR(node.GetValueString("include_branch>test2>skin", ""), "LightSkin");
+	}
+
+	TB_TEST(conditions)
+	{
+		TB_VERIFY(node.GetValueInt("conditions>value", 0) == 42);
+	}
+
+	// More coverage in test_tb_node_ref_tree.cpp...
 }
 
 #endif // TB_UNIT_TESTING

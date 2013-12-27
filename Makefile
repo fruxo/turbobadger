@@ -71,6 +71,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_font_renderer_tbbf.cpp \
       tinkerbell/src/tb_geometry.cpp \
       tinkerbell/src/tb_node_tree.cpp \
+      tinkerbell/src/tb_node_ref_tree.cpp \
       tinkerbell/src/tb_image_loader_stb.cpp \
       tinkerbell/src/parser/tb_parser.cpp \
       tinkerbell/src/utf8/utf8.cpp \
@@ -85,6 +86,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tests/test_tb_linklist.cpp \
       tinkerbell/src/tests/test_tb_object.cpp \
       tinkerbell/src/tests/test_tb_parser.cpp \
+      tinkerbell/src/tests/test_tb_node_ref_tree.cpp \
       tinkerbell/src/tests/test_tb_value.cpp \
       tinkerbell/src/tests/test_tb_tempbuffer.cpp \
       tinkerbell/src/tests/test_tb_test.cpp \

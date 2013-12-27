@@ -10,7 +10,6 @@
 #include "tb_select.h"
 #include "tb_inline_select.h"
 #include "tb_editfield.h"
-#include "tb_language.h"
 #include "tb_node_tree.h"
 #include "tb_font_renderer.h"
 
@@ -47,7 +46,7 @@ TB_WIDGET_FACTORY(TBEditField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
 	widget->SetWrapping(info->node->GetValueInt("wrap", widget->GetWrapping()) ? true : false);
 	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt-to-content", widget->GetAdaptToContentSize()) ? true : false);
 	widget->SetVirtualWidth(info->node->GetValueInt("virtual-width", widget->GetVirtualWidth()));
-	if (const char *text = info->reader->GetTranslatableString(info->node, "placeholder", nullptr))
+	if (const char *text = info->node->GetValueString("placeholder", nullptr))
 		widget->SetPlaceholderText(text);
 	if (const char *type = info->node->GetValueString("type", nullptr))
 	{
@@ -172,8 +171,7 @@ void ReadItems(TBWidgetsReader *reader, TBNode *node, TBGenericStringItemSource 
 		{
 			if (strcmp(n->GetName(), "item") != 0)
 				continue;
-
-			const char *item_str = reader->GetTranslatableString(n, "text", "");
+			const char *item_str = n->GetValueString("text", "");
 			TBID item_id;
 			if (TBNode *n_id = n->GetNode("id"))
 				reader->SetIDFromNode(item_id, n_id);
@@ -265,18 +263,6 @@ TBWidgetsReader::~TBWidgetsReader()
 {
 }
 
-const char *TBWidgetsReader::GetTranslatableString(TBNode *node, const char *request, const char *def)
-{
-	if (const char *string = node->GetValueString(request, nullptr))
-	{
-		// FIX: If it's a number after @, look it up from the number!
-		if (*string == '@')
-			string = g_tb_lng->GetString(string + 1);
-		return string;
-	}
-	return def;
-}
-
 bool TBWidgetsReader::LoadFile(TBWidget *target, const char *filename)
 {
 	TBNode node;
@@ -305,8 +291,8 @@ bool TBWidgetsReader::LoadData(TBWidget *target, const char *data, int data_len)
 void TBWidgetsReader::LoadNodeTree(TBWidget *target, TBNode *node)
 {
 	// Iterate through all nodes and create widgets
-	for (TBNode *n = node->GetFirstChild(); n; n = n->GetNext())
-		CreateWidget(target, n, WIDGET_Z_TOP);
+	for (TBNode *child = node->GetFirstChild(); child; child = child->GetNext())
+		CreateWidget(target, child, WIDGET_Z_TOP);
 }
 
 void TBWidgetsReader::SetIDFromNode(TBID &id, TBNode *node)
@@ -350,10 +336,10 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	new_widget->SetIgnoreInput(node->GetValueInt("ignore-input", new_widget->GetIgnoreInput()) ? true : false);
 
-	if (const char *text = GetTranslatableString(node, "text", nullptr))
+	if (const char *text = node->GetValueString("text", nullptr))
 		new_widget->SetText(text);
 
-	if (const char *connection = node->GetValueString("connection", nullptr))
+	if (const char *connection = node->GetValueStringRaw("connection", nullptr))
 	{
 		// If we already have a widget value with this name, just connect to it and the widget will
 		// adjust its value to it. Otherwise create a new widget value, and give it the value we

@@ -11,11 +11,18 @@
 
 namespace tinkerbell {
 
-/** TBNode is a tree node with a string name and a value (TBValue). */
+/** TBNode is a tree node with a string name and a value (TBValue).
+	It may have a parent TBNode and child TBNodes.
+
+	Getting the value of this node or any child, may optionally follow
+	references to nodes in any existing TBNodeRefTree (by name).
+
+	During ReadFile/ReadData, it may also select which branches to include
+	or exclude conditionally by lookup up values in TBNodeRefTree. */
 class TBNode : public TBLinkOf<TBNode>
 {
 public:
-	TBNode() : m_name(nullptr), m_parent(nullptr) {}
+	TBNode() : m_name(nullptr), m_parent(nullptr), m_cycle_id(0) {}
 	~TBNode();
 
 	/** Create a new node with the given name. */
@@ -67,6 +74,7 @@ public:
 		If the node doesn't exist, it will either return nullptr or create
 		missing nodes, depending on the miss policy.
 		It can find nodes in children as well. Names are separated by a ">".
+
 		Ex: GetNode("dishes>pizza>special>batman") */
 	TBNode *GetNode(const char *request, GET_MISS_POLICY mp = GET_MISS_POLICY_NULL);
 
@@ -76,17 +84,28 @@ public:
 	/** Returns the value of this node. */
 	TBValue &GetValue() { return m_value; }
 
+	/** Returns the value of this node.
+		Will follow eventual references to TBNodeRefTree. */
+	TBValue &GetValueFollowRef();
+
 	/** Get a value from the given request as an integer.
+		Will follow eventual references to TBNodeRefTree.
 		If the value is not specified, it returns the default value (def). */
 	int GetValueInt(const char *request, int def);
 
 	/** Get a value from the given request as an float.
+		Will follow eventual references to TBNodeRefTree.
 		If the value is not specified, it returns the default value (def). */
 	float GetValueFloat(const char *request, float def);
 
 	/** Get a value from the given request as an string.
+		Will follow eventual references to TBNodeRefTree.
+		Will also return any referenced language string.
 		If the value is not specified, it returns the default value (def). */
 	const char *GetValueString(const char *request, const char *def);
+
+	/** Same as GetValueString, but won't look up language string references. */
+	const char *GetValueStringRaw(const char *request, const char *def);
 
 	/** Get the next position in request that is a sub node separator,
 		or the end of the string. */
@@ -97,12 +116,16 @@ public:
 	inline TBNode *GetLastChild() const { return m_children.GetLast(); }
 private:
 friend class TBNodeTarget;
-	TBNode *GetNode(const char *name, int name_len) const;
+friend class TBNodeRefTree;
+	TBNode *GetNodeFollowRef(const char *request,
+							GET_MISS_POLICY mp = GET_MISS_POLICY_NULL);
+	TBNode *GetNodeInternal(const char *name, int name_len) const;
 	static TBNode *Create(const char *name, int name_len);
 	char *m_name;
 	TBValue m_value;
 	TBLinkListOf<TBNode> m_children;
 	TBNode *m_parent;
+	uint32 m_cycle_id;	///< Used to detect circular references.
 };
 
 }; // namespace tinkerbell

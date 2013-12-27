@@ -27,6 +27,7 @@ strings_compact
 	string10: "\\\\\""
 	string11: "\"\"\'\'"
 	string12: @language_string_token
+	string13: #ffdd00
 
 numbers_compact
 	integer1: -10
@@ -80,12 +81,30 @@ comments_and_space
 
 	# There was a empty line before this line
 	two 2
-	   
+
 	# There was some dangling space before this line
 	three 3
 
-included
+include_file
 	file1
 		@file test_tb_parser_included.tb.txt
 	file2
 		@file: "test_tb_parser_included.tb.txt"
+
+# Include a file with some definitions referenced below, as an example
+# of how to use f.ex a style file.
+@file test_tb_parser_definitions.tb.txt
+
+include_branch
+	# include the branch styles>Pretty that was included above.
+	test1
+		@include styles>Chocolate
+	test2: @include: "styles>Vanilla"
+	# It's also possible to include from named node trees, using "@treename>noderequest"
+
+conditions
+	@if 1
+		value 42
+	@else
+		value 43
+	# It's also possible to check condition from named node trees, using "@if @treename>noderequest"

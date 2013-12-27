@@ -86,6 +86,19 @@ public:
 	that have a registered factory (TBWidgetFactory). All default tinkerbell
 	widgets have a factory by default, and you can also add your own.
 
+	Values may be looked up from any existing TBNodeRefTree using the syntax
+	"@treename>noderequest". In addition to this, strings will be looked up
+	from the global TBLanguage by using the syntax "@stringid"
+
+	Branches may be included or not depending on the value of a TBNodeRefTree
+	node, using "@if @treename>noderequest" and optionally a following "@else".
+
+	Branches may be included from TBNodeRefTree using
+	"@include @treename>noderequest", or included from nodes specified previosly
+	in the same tree using "@include noderequest".
+
+	Files can be included by using the syntax "@file filename".
+
 	Each factory may have its own set of properties, but a set of generic
 	properties is always supported on all widgets. Those are:
 
@@ -95,7 +108,7 @@ public:
 	group-id			TBWidget::m_group_id	TBID (string or int)
 	value				TBWidget::SetValue		integer
 	data				TBWidget::m_data		integer
-	text				TBWidget::SetText		string (translatable using @string)
+	text				TBWidget::SetText		string
 	connection			TBWidget::Connect		string
 	gravity				TBWidget::SetGravity	string (combination of left, top, right, bottom, or all)
 	state				TBWidget::SetState		string (disabled)
@@ -115,11 +128,6 @@ public:
 		TB_WIDGET_FACTORY macro that automatically register it during startup. */
 	bool AddFactory(TBWidgetFactory *wf) { factories.AddLast(wf); return true; }
 	void RemoveFactory(TBWidgetFactory *wf) { factories.Remove(wf); }
-
-	/** Return a string with the given request from node. If the string
-		is preceded with a @, it will be looked up from the global TBLanguage.
-		If the value is not specified, it returns the default value (def). */
-	const char *GetTranslatableString(TBNode *node, const char *request, const char *def);
 
 	/** Set the id from the given node. */
 	void SetIDFromNode(TBID &id, TBNode *node);

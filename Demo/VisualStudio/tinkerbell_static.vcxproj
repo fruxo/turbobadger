@@ -35,6 +35,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_menu_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_message_window.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_msg.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_node_ref_tree.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_node_tree.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_object.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_popup_window.cpp" />
@@ -64,6 +65,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_dimension.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_geometry.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_node_ref_tree.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_object.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_parser.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_value.cpp" />
@@ -97,6 +99,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_menu_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_message_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_msg.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_node_ref_tree.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_node_tree.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_object.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_popup_window.h" />
