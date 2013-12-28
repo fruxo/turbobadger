@@ -154,10 +154,10 @@ TBButton::~TBButton()
 void TBButton::OnCaptureChanged(bool captured)
 {
 	if (captured && m_auto_repeat_click)
-		PostMessageDelayed("auto_click", nullptr, auto_click_first_delay);
+		PostMessageDelayed(TBIDC("auto_click"), nullptr, auto_click_first_delay);
 	else if (!captured)
 	{
-		if (TBMessage *msg = GetMessageByID("auto_click"))
+		if (TBMessage *msg = GetMessageByID(TBIDC("auto_click")))
 			DeleteMessage(msg);
 	}
 }
@@ -200,7 +200,7 @@ void TBButton::OnMessageReceived(TBMessage *msg)
 			captured_widget->InvokeEvent(ev);
 		}
 		if (auto_click_repeat_delay)
-			PostMessageDelayed("auto_click", nullptr, auto_click_repeat_delay);
+			PostMessageDelayed(TBIDC("auto_click"), nullptr, auto_click_repeat_delay);
 	}
 }
 
@@ -342,6 +342,7 @@ TBRadioCheckBox::TBRadioCheckBox()
 	SetClickByKey(true);
 }
 
+//static
 void TBRadioCheckBox::ToggleGroup(TBWidget *root, TBWidget *toggled)
 {
 	if (root != toggled && root->GetGroupID() == toggled->GetGroupID())

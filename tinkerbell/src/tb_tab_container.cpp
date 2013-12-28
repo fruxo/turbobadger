@@ -25,7 +25,7 @@ void TBTabLayout::OnChildAdded(TBWidget *child)
 	{
 		button->SetSqueezable(true);
 		button->SetSkinBg("TBTabContainer.tab");
-		button->GetID().Set("tab");
+		button->SetID(TBIDC("tab"));
 	}
 }
 

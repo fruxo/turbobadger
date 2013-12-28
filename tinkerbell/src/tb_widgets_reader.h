@@ -102,17 +102,25 @@ public:
 	Each factory may have its own set of properties, but a set of generic
 	properties is always supported on all widgets. Those are:
 
-	Resource name:		TBWidget property:		Values:
+	Resource name:		TBWidget property:			Values:
 
-	id					TBWidget::m_id			TBID (string or int)
-	group-id			TBWidget::m_group_id	TBID (string or int)
-	value				TBWidget::SetValue		integer
-	data				TBWidget::m_data		integer
-	text				TBWidget::SetText		string
-	connection			TBWidget::Connect		string
-	gravity				TBWidget::SetGravity	string (combination of left, top, right, bottom, or all)
-	state				TBWidget::SetState		string (disabled)
-	skin				TBWidget::SetSkinBg		TBID (string or int)
+	id					TBWidget::m_id				TBID (string or int)
+	group-id			TBWidget::m_group_id		TBID (string or int)
+	value				TBWidget::SetValue			integer
+	data				TBWidget::m_data			integer
+	text				TBWidget::SetText			string
+	connection			TBWidget::Connect			string
+	gravity				TBWidget::SetGravity		string (combination of left, top, right, bottom, or all)
+	state				TBWidget::SetState			string (disabled)
+	skin				TBWidget::SetSkinBg			TBID (string or int)
+	lp>width			TBWidget::SetLayoutParams	dimension
+	lp>min-width		TBWidget::SetLayoutParams	dimension
+	lp>max-width		TBWidget::SetLayoutParams	dimension
+	lp>pref-width		TBWidget::SetLayoutParams	dimension
+	lp>height			TBWidget::SetLayoutParams	dimension
+	lp>min-height		TBWidget::SetLayoutParams	dimension
+	lp>max-height		TBWidget::SetLayoutParams	dimension
+	lp>pref-height		TBWidget::SetLayoutParams	dimension
 	autofocus			The TBWidget will be focused automatically the first time its TBWindow is activated.
 	font>name			Font name
 	font>size			Font size
