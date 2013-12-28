@@ -18,6 +18,7 @@ defaults
 		opacity 0.3
 elements
 	TBButton
+		text-color #fefefe
 		bitmap button.png
 		cut 17
 		expand 7
@@ -29,6 +30,7 @@ elements
 			element TBButton.pressed
 				state pressed
 	TBButton.pressed
+		text-color #fefefe
 		bitmap button_pressed.png
 		cut 17
 		expand 7
@@ -36,6 +38,7 @@ elements
 		content-ofs-y 1
 
 	TBButton.flat
+		text-color #fefefe
 		padding 6 8
 		children
 			element TBButton.flat.hovered
