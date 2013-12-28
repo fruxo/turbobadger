@@ -1,7 +1,7 @@
 /** @mainpage TinkerBell UI toolkit
 
 TinkerBell UI toolkit
-Copyright (C) 2011-2013 Emil Segerås
+Copyright (C) 2011-2014 Emil Segerås
 
 License:
 
