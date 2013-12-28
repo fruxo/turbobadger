@@ -176,7 +176,7 @@ public:
 	TBOBJECT_SUBCLASS(TBSkinImage, TBWidget);
 
 	TBSkinImage() {}
-	TBSkinImage(TBID skin_bg) { SetSkinBg(skin_bg); }
+	TBSkinImage(const TBID &skin_bg) { SetSkinBg(skin_bg); }
 
 	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 };
