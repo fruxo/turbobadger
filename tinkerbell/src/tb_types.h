@@ -8,6 +8,8 @@
 
 #include <string.h>
 
+namespace tinkerbell {
+
 #ifndef nullptr
 #define nullptr NULL
 #endif
@@ -20,20 +22,37 @@ typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
 
+template <class T>
+T Max(const T& left, const T& right) { return left > right ? left : right; }
+
+template <class T>
+T Min(const T& left, const T& right) { return left < right ? left : right; }
+
+template <class T>
+T Abs(const T& value) { return value < 0 ? -value : value; }
+
+template <class T>
+T Clamp(const T& value, const T& min, const T& max)
+	{ return (value > max) ? max : ((value < min) ? min : value); }
+
 #ifndef MAX
-#define MAX(a,b)		(((a) > (b)) ? (a) : (b))
+/** This is deprecated! Use Max(a, b)! */
+#define MAX(a, b) Max(a, b)
 #endif
 
 #ifndef MIN
-#define MIN(a,b)		(((a) < (b)) ? (a) : (b))
+/** This is deprecated! Use Min(a, b)! */
+#define MIN(a, b) Min(a, b)
 #endif
 
 #ifndef ABS
-#define ABS(a) (((a) < 0) ? -(a) : (a))
+/** This is deprecated! Use Abs(value)! */
+#define ABS(value) Abs(value)
 #endif
 
 #ifndef CLAMP
-#define CLAMP(value, min, max) ((value > max) ? max : ((value < min) ? min : value))
+/** This is deprecated! Use Clamp(value, min, max)! */
+#define CLAMP(value, min, max) Clamp(value, min, max)
 #endif
 
 /** Makes it possible to use the given enum types as flag combinations.
@@ -47,5 +66,7 @@ typedef unsigned int uint32;
 	inline void operator &= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32>(a) & static_cast<uint32>(b)); } \
 	inline void operator ^= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32>(a) ^ static_cast<uint32>(b)); } \
 	inline Enum operator ~ (Enum a)  { return static_cast<Enum>(~static_cast<uint32>(a)); }
+
+}; // namespace tinkerbell
 
 #endif // TB_TYPES_H

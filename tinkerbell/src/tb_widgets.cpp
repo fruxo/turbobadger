@@ -194,7 +194,7 @@ void TBWidget::SetAutoFocusState(bool on)
 
 void TBWidget::SetOpacity(float opacity)
 {
-	opacity = CLAMP(opacity, 0, 1);
+	opacity = Clamp(opacity, 0.f, 1.f);
 	if (m_opacity == opacity)
 		return;
 	m_opacity = opacity;
