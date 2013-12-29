@@ -506,7 +506,7 @@ public:
 		with that id. */
 	int GetValueByID(const TBID &id);
 
-	TBWidget *GetNextDeep() const;
+	TBWidget *GetNextDeep(const TBWidget *bounding_ancestor = nullptr) const;
 	TBWidget *GetPrevDeep() const;
 	TBWidget *GetLastLeaf() const;
 	inline TBWidget *GetFirstChild() const { return m_children.GetFirst(); }

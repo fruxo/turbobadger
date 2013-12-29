@@ -513,11 +513,11 @@ bool TBWidget::SetFocusRecursive(WIDGET_FOCUS_REASON reason)
 {
 	// Search for a child widget that accepts focus
 	TBWidget *child = GetFirstChild();
-	while (child && IsAncestorOf(child))
+	while (child)
 	{
 		if (child->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN))
 			return true;
-		child = child->GetNextDeep();
+		child = child->GetNextDeep(this);
 	}
 	return false;
 }
@@ -549,11 +549,11 @@ bool TBWidget::MoveFocus(bool forward)
 	return false;
 }
 
-TBWidget *TBWidget::GetNextDeep() const
+TBWidget *TBWidget::GetNextDeep(const TBWidget *bounding_ancestor) const
 {
 	if (m_children.GetFirst())
 		return GetFirstChild();
-	for (const TBWidget *widget = this; widget; widget = widget->m_parent)
+	for (const TBWidget *widget = this; widget != bounding_ancestor; widget = widget->m_parent)
 		if (widget->next)
 			return widget->GetNext();
 	return nullptr;
