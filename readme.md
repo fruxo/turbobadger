@@ -1,4 +1,3 @@
-
 TinkerBell UI Toolkit
 -----------------------------------------------------------------------------------
 
@@ -16,8 +15,8 @@ etc.) are quite minimal for the basic needs of TinkerBell itself.
 I named it TinkerBell UI (TBUI for short) because it's lightweight (small
 footprint) compared to many other UI toolkits.
 
-See integration.txt for details about integrating image loading, renderer, font
-system etc.
+See [integration.txt](integration.txt) for details about integrating image loading,
+renderer, font system etc.
 
 
 BETA notice
@@ -64,7 +63,7 @@ TinkerBell core:
     conditions (simple selectors), overrides, overlays, children, multiple
     pixel density support etc.
   * Automatic widget layout (No need to specify widget dimensions by pixels)
-  * Text based UI resource format
+  * Text based UI resource format, supporting conditions etc.
   * Keyboard friendly (tab focus etc.)
   * Message handling, with delayed/timed messages.
   * All containers are scrollable/pannable (automatically from mouse/finger
@@ -84,10 +83,6 @@ TinkerBell core:
   * Animation system.
   * Unit tests.
 
-TinkerBell addons:
-
-  * Image manager & Image widget (load graphics into widgets on demand)
-
 
 The code design & developing TinkerBell
 -----------------------------------------------------------------------------------
@@ -97,9 +92,8 @@ object `TBID` that may seem like a string. It's actually an uint32 that can be s
 from a string (using the strings hash value). It's used for hash keys, as
 substitute for enums and all kind of things needing custom IDs.
 
-The thing about it deserving mention is that it's using `constexpr`, a C++ 11
-feature that (if supported by the compiler) converts constant strings into the
-uint32 at compile time.
+With compilers supporting C++ 11 `constexpr`, the string to integer conversion is
+done compile time.
 
 If you want to add new stuff to TinkerBell, here are some hints that will make it
 easier to get a pull requests accepted:
@@ -142,7 +136,7 @@ After the first git clone, you need to run:
 
 This will clone GLFW into the right directory.
 
-On Windows, use the project files for Visual Studio 2010 in Demo/VisualStudio.
+On Windows, use the project files for Visual Studio 2012 in Demo/VisualStudio.
 On Linux & Mac, simply run make. It will create a executable called RunDemo.
 On Linux & Mac, you can also use the Sublime Text project in the root folder
 that is set up to work with debugging using SublimeGDB.
