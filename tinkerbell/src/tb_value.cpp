@@ -5,6 +5,7 @@
 
 #include "tb_value.h"
 #include "tb_object.h"
+#include "tb_str.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

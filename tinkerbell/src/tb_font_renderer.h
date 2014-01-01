@@ -11,6 +11,7 @@
 #include "tb_renderer.h"
 #include "tb_tempbuffer.h"
 #include "tb_linklist.h"
+#include "tb_font_desc.h"
 #include "utf8/utf8.h"
 
 namespace tinkerbell {

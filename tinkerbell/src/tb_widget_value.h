@@ -10,6 +10,7 @@
 #include "tb_linklist.h"
 #include "tb_hashtable.h"
 #include "tb_value.h"
+#include "tb_id.h"
 
 namespace tinkerbell {
 

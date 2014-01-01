@@ -8,6 +8,7 @@
 
 #include "tinkerbell.h"
 #include "tb_hashtable.h"
+#include "tb_id.h"
 
 namespace tinkerbell {
 

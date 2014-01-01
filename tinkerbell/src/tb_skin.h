@@ -11,6 +11,7 @@
 #include "tb_bitmap_fragment.h"
 #include "tb_hashtable.h"
 #include "tb_linklist.h"
+#include "tb_dimension.h"
 
 namespace tinkerbell {
 

@@ -8,6 +8,7 @@
 
 #include "tb_linklist.h"
 #include "tb_node_tree.h"
+#include "tb_id.h"
 
 namespace tinkerbell {
 

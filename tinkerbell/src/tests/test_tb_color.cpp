@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "tb_test.h"
+#include "tb_color.h"
 #include "tinkerbell.h"
 
 #ifdef TB_UNIT_TESTING

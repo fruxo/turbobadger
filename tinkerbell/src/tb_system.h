@@ -7,6 +7,7 @@
 #define TB_SYSTEM_H
 
 #include "tinkerbell.h"
+#include "tb_str.h"
 
 #ifdef _DEBUG
 void TBDebugOut(const char *str);

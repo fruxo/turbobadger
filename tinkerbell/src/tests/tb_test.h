@@ -84,6 +84,7 @@
 
 #include "tb_types.h"
 #include "tb_linklist.h"
+#include "tb_str.h"
 #include <math.h>
 
 namespace tinkerbell {

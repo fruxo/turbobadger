@@ -8,6 +8,7 @@
 
 #include "tinkerbell.h"
 #include "tb_geometry.h"
+#include "tb_color.h"
 #include "tb_linklist.h"
 
 namespace tinkerbell {

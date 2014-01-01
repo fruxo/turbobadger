@@ -228,6 +228,18 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_node_ref_tree.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_dimension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_str.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_id.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">
@@ -378,6 +390,21 @@
       <Filter>Source Files\renderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_node_ref_tree.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_dimension.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_str.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_id.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_font_desc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_color.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

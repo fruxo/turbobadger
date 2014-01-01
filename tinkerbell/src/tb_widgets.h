@@ -12,6 +12,7 @@
 #include "tb_linklist.h"
 #include "tb_widget_value.h"
 #include "tb_object.h"
+#include "tb_font_desc.h"
 
 namespace tinkerbell {
 

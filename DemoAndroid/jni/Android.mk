@@ -9,12 +9,15 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/tb_addon.cpp \
                    ../../tinkerbell/src/tb_bitmap_fragment.cpp \
                    ../../tinkerbell/src/tb_clipboard_dummy.cpp \
+                   ../../tinkerbell/src/tb_color.cpp \
+                   ../../tinkerbell/src/tb_dimension.cpp \
                    ../../tinkerbell/src/tb_editfield.cpp \
                    ../../tinkerbell/src/tb_font_renderer.cpp \
                    ../../tinkerbell/src/tb_font_renderer_tbbf.cpp \
                    ../../tinkerbell/src/tb_geometry.cpp \
                    ../../tinkerbell/src/tb_hash.cpp \
                    ../../tinkerbell/src/tb_hashtable.cpp \
+                   ../../tinkerbell/src/tb_id.cpp \
                    ../../tinkerbell/src/tb_inline_select.cpp \
                    ../../tinkerbell/src/tb_language.cpp \
                    ../../tinkerbell/src/tb_layout.cpp \
@@ -22,6 +25,7 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/tb_list.cpp \
                    ../../tinkerbell/src/tb_message_window.cpp \
                    ../../tinkerbell/src/tb_popup_window.cpp \
+                   ../../tinkerbell/src/tb_str.cpp \
                    ../../tinkerbell/src/tb_menu_window.cpp \
                    ../../tinkerbell/src/tb_msg.cpp \
                    ../../tinkerbell/src/tb_object.cpp \

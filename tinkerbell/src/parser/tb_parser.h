@@ -8,6 +8,7 @@
 
 #include "tb_value.h"
 #include "tb_tempbuffer.h"
+#include "tb_str.h"
 
 namespace tinkerbell {
 
