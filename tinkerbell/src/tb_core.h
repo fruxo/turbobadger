@@ -25,8 +25,8 @@ freely, subject to the following restrictions:
     distribution.
 */
 
-#ifndef TINKERBELL_H
-#define TINKERBELL_H
+#ifndef TB_CORE_H
+#define TB_CORE_H
 
 #include "tb_config.h"
 #include "tb_hash.h"
@@ -54,4 +54,4 @@ void shutdown_tinkerbell();
 
 }; // namespace tinkerbell
 
-#endif // TINKERBELL_H
+#endif // TB_CORE_H

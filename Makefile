@@ -53,7 +53,7 @@ SRC = tinkerbell/src/tb_layout.cpp \
       tinkerbell/src/tb_popup_window.cpp \
       tinkerbell/src/tb_menu_window.cpp \
       tinkerbell/src/tb_addon.cpp \
-      tinkerbell/src/tinkerbell.cpp \
+      tinkerbell/src/tb_core.cpp \
       tinkerbell/src/tb_dimension.cpp \
       tinkerbell/src/tb_id.cpp \
       tinkerbell/src/tb_str.cpp \

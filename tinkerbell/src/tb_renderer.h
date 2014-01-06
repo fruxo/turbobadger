@@ -1,12 +1,12 @@
 // ================================================================================
 // == This file is a part of TinkerBell UI Toolkit. (C) 2011-2014, Emil Segerås  ==
-// ==                   See tinkerbell.h for more information.                   ==
+// ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
 #ifndef TB_RENDERER_H
 #define TB_RENDERER_H
 
-#include "tinkerbell.h"
+#include "tb_core.h"
 #include "tb_geometry.h"
 #include "tb_color.h"
 #include "tb_linklist.h"

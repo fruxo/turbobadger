@@ -1,9 +1,9 @@
 // ================================================================================
 // == This file is a part of TinkerBell UI Toolkit. (C) 2011-2014, Emil Segerås  ==
-// ==                   See tinkerbell.h for more information.                   ==
+// ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
-#include "tinkerbell.h"
+#include "tb_core.h"
 #include "tb_skin.h"
 #include "tb_widgets_reader.h"
 #include "tb_language.h"

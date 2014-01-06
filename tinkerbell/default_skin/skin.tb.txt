@@ -2,7 +2,7 @@
 # The license of the skin is Public Domain.
 #
 # For more information about TinkerBell UI Toolkit and its license,
-# see tinkerbell.h.
+# see tb_core.h.
 description
 	name TinkerBell Default skin
 	# Dimensions (padding and such) and bitmaps are specified for this DPI.

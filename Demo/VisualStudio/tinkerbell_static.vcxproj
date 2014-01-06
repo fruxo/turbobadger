@@ -20,6 +20,7 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_clipboard_win.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_color.cpp" />
+    <ClCompile Include="..\..\tinkerbell\src\tb_core.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_debug.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_dimension.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tb_editfield.cpp" />
@@ -78,7 +79,6 @@
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_tempbuffer.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_test.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_widget_value.cpp" />
-    <ClCompile Include="..\..\tinkerbell\src\tinkerbell.cpp" />
     <ClCompile Include="..\..\tinkerbell\src\utf8\utf8.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +91,7 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_bitmap_fragment.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_color.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_config.h" />
+    <ClInclude Include="..\..\tinkerbell\src\tb_core.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_debug.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_dimension.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_editfield.h" />
@@ -135,7 +136,6 @@
     <ClInclude Include="..\..\tinkerbell\src\tb_widget_value.h" />
     <ClInclude Include="..\..\tinkerbell\src\tb_window.h" />
     <ClInclude Include="..\..\tinkerbell\src\tests\tb_test.h" />
-    <ClInclude Include="..\..\tinkerbell\src\tinkerbell.h" />
     <ClInclude Include="..\..\tinkerbell\src\utf8\utf8.h" />
   </ItemGroup>
   <ItemGroup>

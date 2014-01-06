@@ -1,12 +1,12 @@
 // ================================================================================
 // == This file is a part of TinkerBell UI Toolkit. (C) 2011-2014, Emil Segerås  ==
-// ==                   See tinkerbell.h for more information.                   ==
+// ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
 #ifndef TB_LIST_H
 #define TB_LIST_H
 
-#include "tinkerbell.h"
+#include "tb_core.h"
 namespace tinkerbell {
 
 /** TBList is a list (array) of pointers to any kind of objects.

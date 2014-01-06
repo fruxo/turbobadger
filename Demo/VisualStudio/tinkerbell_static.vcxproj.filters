@@ -105,9 +105,6 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tinkerbell.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\tinkerbell\src\tb_addon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -240,6 +237,9 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\tb_core.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">
@@ -315,9 +315,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_window.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tinkerbell.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_addon.h">
@@ -405,6 +402,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tinkerbell\src\tb_color.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\tb_core.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

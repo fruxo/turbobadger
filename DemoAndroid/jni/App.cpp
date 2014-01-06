@@ -3,7 +3,7 @@
 #include "App.h"
 #include "renderers/tb_renderer_gl.h"
 
-#include "tinkerbell.h"
+#include "tb_core.h"
 #include "tb_system.h"
 #include "tb_widgets.h"
 #include "tb_select.h"
