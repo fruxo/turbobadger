@@ -82,6 +82,7 @@
     <ClCompile Include="..\..\tinkerbell\src\utf8\utf8.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\tbanimation\tb_animation_utils.h" />
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.h" />
     <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.h" />
     <ClInclude Include="..\..\tinkerbell\src\parser\tb_parser.h" />

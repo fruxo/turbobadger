@@ -100,53 +100,6 @@ public:
 	static void EndBlockAnimations();
 };
 
-// ==============================================================
-
-// == Animation util classes ====================================
-
-// AnimatedFloat - A animated float value
-
-class AnimatedFloat : public AnimationObject
-{
-public:
-	float src_val;
-	float dst_val;
-	float current_progress;
-public:
-	AnimatedFloat(	float initial_value,
-					ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
-					double animation_duration = ANIMATION_DEFAULT_DURATION)
-		: src_val(initial_value), dst_val(initial_value), current_progress(0)
-	{
-		AnimationObject::animation_curve = animation_curve;
-		AnimationObject::animation_duration = animation_duration;
-	}
-
-	float GetValue() { return src_val + (dst_val - src_val) * current_progress; }
-	void SetValueAnimated(float value) { src_val = GetValue(); dst_val = value; AnimationManager::StartAnimation(this, animation_curve, animation_duration); }
-	void SetValueImmediately(float value) { AnimationManager::AbortAnimation(this); src_val = dst_val = value; OnAnimationUpdate(1.0f); }
-
-	virtual void OnAnimationStart() { current_progress = 0; }
-	virtual void OnAnimationUpdate(float progress) { current_progress = progress; }
-	virtual void OnAnimationStop(bool aborted) {}
-};
-
-// FloatAnimator - Animates a external float value, which address is given in the constructor.
-
-class FloatAnimator : public AnimatedFloat
-{
-public:
-	float *target_value;
-public:
-	FloatAnimator(	float *target_value,
-					ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
-					double animation_duration = ANIMATION_DEFAULT_DURATION)
-		: AnimatedFloat(*target_value), target_value(target_value) {}
-
-	virtual void OnAnimationStart() { AnimatedFloat::OnAnimationStart(); *target_value = GetValue(); }
-	virtual void OnAnimationUpdate(float progress) { AnimatedFloat::OnAnimationUpdate(progress); *target_value = GetValue(); }
-};
-
 /** AnimationBlocker blocks new animations during its lifetime.
 	It's convenient to put on the stack to block new animations
 	within a scope of code. */
