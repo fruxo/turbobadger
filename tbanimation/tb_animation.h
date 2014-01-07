@@ -15,24 +15,24 @@ namespace tinkerbell {
 	At the moment a window should appear and start fading in from opacity 0,
 	it would also attempt setting the focus to it, but if opacity is 0 it will
 	think focus should not be set in that window and fail. */
-#define ALMOST_ZERO_OPACITY 0.001f
+#define TB_ALMOST_ZERO_OPACITY 0.001f
 
 /** Base class for widget animations. This animation object will
 	be deleted automatically if the widget is deleted. */
-class WidgetAnimationObject : public AnimationObject, public TBLinkOf<WidgetAnimationObject>
+class TBWidgetAnimationObject : public AnimationObject, public TBLinkOf<TBWidgetAnimationObject>
 {
 public:
-	WidgetAnimationObject(TBWidget *widget);
-	virtual ~WidgetAnimationObject();
+	TBWidgetAnimationObject(TBWidget *widget);
+	virtual ~TBWidgetAnimationObject();
 public:
 	TBWidget *m_widget;
 };
 
 /** Animate the opacity of the target widget. */
-class WidgetAnimationOpacity : public WidgetAnimationObject
+class TBWidgetAnimationOpacity : public TBWidgetAnimationObject
 {
 public:
-	WidgetAnimationOpacity(TBWidget *widget, float src_opacity, float dst_opacity, bool die);
+	TBWidgetAnimationOpacity(TBWidget *widget, float src_opacity, float dst_opacity, bool die);
 	virtual void OnAnimationStart();
 	virtual void OnAnimationUpdate(float progress);
 	virtual void OnAnimationStop(bool aborted);
@@ -43,7 +43,7 @@ private:
 };
 
 /** Animate the rectangle of the target widget. */
-class WidgetAnimationRect : public WidgetAnimationObject
+class TBWidgetAnimationRect : public TBWidgetAnimationObject
 {
 public:
 	enum MODE {
@@ -55,11 +55,11 @@ public:
 		MODE_DELTA_OUT
 	};
 	/** Animate the widget between the given source and dest rectangle. */
-	WidgetAnimationRect(TBWidget *widget, const TBRect &src_rect, const TBRect &dst_rect);
+	TBWidgetAnimationRect(TBWidget *widget, const TBRect &src_rect, const TBRect &dst_rect);
 	/** Animate the widget between rectangles based on the current widget
 		rectangle and a delta. The reference rectangle will be taken from
 		the target widget on the first OnAnimationUpdate. */
-	WidgetAnimationRect(TBWidget *widget, const TBRect &delta_rect, MODE mode);
+	TBWidgetAnimationRect(TBWidget *widget, const TBRect &delta_rect, MODE mode);
 	virtual void OnAnimationStart();
 	virtual void OnAnimationUpdate(float progress);
 	virtual void OnAnimationStop(bool aborted);
@@ -70,7 +70,7 @@ private:
 	MODE m_mode;
 };
 
-class WidgetsAnimationManager : public TBWidgetListener
+class TBWidgetsAnimationManager : public TBWidgetListener
 {
 public:
 	/** Init the widgets animation manager and AnimationManager. */

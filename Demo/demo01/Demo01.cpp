@@ -487,7 +487,7 @@ AnimationsWindow::AnimationsWindow()
 void AnimationsWindow::Animate()
 {
 	// Abort any still unfinished animations.
-	WidgetsAnimationManager::AbortAnimations(this);
+	TBWidgetsAnimationManager::AbortAnimations(this);
 
 	ANIMATION_CURVE curve = ANIMATION_CURVE_SLOW_DOWN;
 	double duration = 500;
@@ -501,12 +501,12 @@ void AnimationsWindow::Animate()
 		fade = fade_check->GetValue() ? true : false;
 
 	// Start move animation
-	if (AnimationObject *anim = new WidgetAnimationRect(this, GetRect().Offset(-GetRect().x - GetRect().w, 0), GetRect()))
+	if (AnimationObject *anim = new TBWidgetAnimationRect(this, GetRect().Offset(-GetRect().x - GetRect().w, 0), GetRect()))
 		AnimationManager::StartAnimation(anim, curve, duration);
 	// Start fade animation
 	if (fade)
 	{
-		if (AnimationObject *anim = new WidgetAnimationOpacity(this, ALMOST_ZERO_OPACITY, 1, false))
+		if (AnimationObject *anim = new TBWidgetAnimationOpacity(this, TB_ALMOST_ZERO_OPACITY, 1, false))
 			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_SLOW_DOWN, duration);
 	}
 }
@@ -790,7 +790,7 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 	g_renderer->EndPaint();
 
 	// If we want continous updates or got animations running, reinvalidate immediately
-	if (continuous_repaint || WidgetsAnimationManager::HasAnimationsRunning())
+	if (continuous_repaint || TBWidgetsAnimationManager::HasAnimationsRunning())
 		GetRoot()->Invalidate();
 }
 

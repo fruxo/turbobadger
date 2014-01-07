@@ -10,20 +10,20 @@ void Application::Run()
 
 bool Application::Init()
 {
-	WidgetsAnimationManager::Init();
+	TBWidgetsAnimationManager::Init();
 	return true;
 }
 
 void Application::ShutDown()
 {
-	WidgetsAnimationManager::Shutdown();
+	TBWidgetsAnimationManager::Shutdown();
 	delete m_backend;
 	m_backend = nullptr;
 }
 
 void Application::Process()
 {
-	WidgetsAnimationManager::Update();
+	TBWidgetsAnimationManager::Update();
 	GetRoot()->InvokeProcessStates();
 	GetRoot()->InvokeProcess();
 }
@@ -35,6 +35,6 @@ void Application::RenderFrame(int window_w, int window_h)
 	g_renderer->EndPaint();
 
 	// If animations are running, reinvalidate immediately
-	if (WidgetsAnimationManager::HasAnimationsRunning())
+	if (TBWidgetsAnimationManager::HasAnimationsRunning())
 		GetRoot()->Invalidate();
 }
