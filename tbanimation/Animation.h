@@ -3,8 +3,8 @@
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
-#ifndef ANIMATION_H
-#define ANIMATION_H
+#ifndef TB_ANIMATION_H
+#define TB_ANIMATION_H
 
 #include "tb_linklist.h"
 
@@ -22,7 +22,7 @@ enum ANIMATION_CURVE {
 /** Defines what the animation duration time is relative to. */
 enum ANIMATION_TIME {
 
-	/** The start time begins when the animation start in AnimationManager::StartAnimation. */
+	/** The start time begins when the animation start in TBAnimationManager::StartAnimation. */
 	ANIMATION_TIME_IMMEDIATELY,
 
 	/** The animation start in StartAnimation just as with ANIMATION_TIME_IMMEDIATELY,
@@ -44,9 +44,9 @@ enum ANIMATION_TIME {
 #define ANIMATION_DEFAULT_CURVE			ANIMATION_CURVE_SLOW_DOWN
 #define ANIMATION_DEFAULT_DURATION		200
 
-/** AnimationObject - Base class for all animated object */
+/** TBAnimationObject - Base class for all animated object */
 
-class AnimationObject : public TBLinkOf<AnimationObject>
+class TBAnimationObject : public TBLinkOf<TBAnimationObject>
 {
 public:
 	ANIMATION_CURVE animation_curve;
@@ -67,26 +67,26 @@ public:
 	/** Called on animation stop. aborted is true if it was aborted before completion.
 		Note that if a animation is started when it's already running,
 		it will first be aborted and then started again. Except in that case, no pointers
-		are kept to the AnimationObject after this call so it is safe to delete it. */
+		are kept to the TBAnimationObject after this call so it is safe to delete it. */
 	virtual void OnAnimationStop(bool aborted) = 0;
 };
 
-/** AnimationManager - System class that manages all animated object */
+/** TBAnimationManager - System class that manages all animated object */
 
-class AnimationManager
+class TBAnimationManager
 {
 private:
-	static TBLinkListOf<AnimationObject> animating_objects;
+	static TBLinkListOf<TBAnimationObject> animating_objects;
 public:
 	static void Init();
 	static void Shutdown();
 	static void Update();
 	static bool HasAnimationsRunning();
-	static void StartAnimation(AnimationObject *obj,
+	static void StartAnimation(TBAnimationObject *obj,
 								ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
 								double animation_duration = ANIMATION_DEFAULT_DURATION,
 								ANIMATION_TIME animation_time = ANIMATION_TIME_FIRST_UPDATE);
-	static void AbortAnimation(AnimationObject *obj);
+	static void AbortAnimation(TBAnimationObject *obj);
 
 	/** Return true if new animations are blocked. */
 	static bool IsAnimationsBlocked();
@@ -100,16 +100,16 @@ public:
 	static void EndBlockAnimations();
 };
 
-/** AnimationBlocker blocks new animations during its lifetime.
+/** TBAnimationBlocker blocks new animations during its lifetime.
 	It's convenient to put on the stack to block new animations
 	within a scope of code. */
-class AnimationBlocker
+class TBAnimationBlocker
 {
 public:
-	AnimationBlocker() { AnimationManager::BeginBlockAnimations(); }
-	~AnimationBlocker() { AnimationManager::EndBlockAnimations(); }
+	TBAnimationBlocker() { TBAnimationManager::BeginBlockAnimations(); }
+	~TBAnimationBlocker() { TBAnimationManager::EndBlockAnimations(); }
 };
 
 }; // namespace tinkerbell
 
-#endif // ANIMATION_H
+#endif // TB_ANIMATION_H

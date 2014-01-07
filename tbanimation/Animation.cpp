@@ -28,32 +28,32 @@ static float SmoothCurve(float x, float a)
 	return sc(r) * 0.5f + 0.5f;
 }
 
-// == AnimationObject ===============================================
+// == TBAnimationObject ===============================================
 
-// == AnimationManager ==============================================
+// == TBAnimationManager ==============================================
 
-TBLinkListOf<AnimationObject> AnimationManager::animating_objects;
+TBLinkListOf<TBAnimationObject> TBAnimationManager::animating_objects;
 static int block_animations_counter = 0;
 
 //static
-void AnimationManager::Init()
+void TBAnimationManager::Init()
 {
 }
 
 //static
-void AnimationManager::Shutdown()
+void TBAnimationManager::Shutdown()
 {
-	while (AnimationObject *obj = animating_objects.GetFirst())
+	while (TBAnimationObject *obj = animating_objects.GetFirst())
 		AbortAnimation(obj);
 }
 
 //static
-void AnimationManager::Update()
+void TBAnimationManager::Update()
 {
 	double time_now = TBSystem::GetTimeMS();
 
-	TBLinkListOf<AnimationObject>::Iterator iter = animating_objects.IterateForward();
-	while (AnimationObject *obj = iter.GetAndStep())
+	TBLinkListOf<TBAnimationObject>::Iterator iter = animating_objects.IterateForward();
+	while (TBAnimationObject *obj = iter.GetAndStep())
 	{
 		// Adjust the start time if it's the first update time for this object.
 		if (obj->adjust_start_time)
@@ -105,13 +105,13 @@ void AnimationManager::Update()
 }
 
 //static
-bool AnimationManager::HasAnimationsRunning()
+bool TBAnimationManager::HasAnimationsRunning()
 {
 	return animating_objects.HasLinks();
 }
 
 //static
-void AnimationManager::StartAnimation(AnimationObject *obj, ANIMATION_CURVE animation_curve, double animation_duration, ANIMATION_TIME animation_time)
+void TBAnimationManager::StartAnimation(TBAnimationObject *obj, ANIMATION_CURVE animation_curve, double animation_duration, ANIMATION_TIME animation_time)
 {
 	if (obj->IsAnimating())
 		AbortAnimation(obj);
@@ -126,7 +126,7 @@ void AnimationManager::StartAnimation(AnimationObject *obj, ANIMATION_CURVE anim
 }
 
 //static
-void AnimationManager::AbortAnimation(AnimationObject *obj)
+void TBAnimationManager::AbortAnimation(TBAnimationObject *obj)
 {
 	if (obj->IsAnimating())
 	{
@@ -136,19 +136,19 @@ void AnimationManager::AbortAnimation(AnimationObject *obj)
 }
 
 //static
-bool AnimationManager::IsAnimationsBlocked()
+bool TBAnimationManager::IsAnimationsBlocked()
 {
 	return block_animations_counter > 0;
 }
 
 //static
-void AnimationManager::BeginBlockAnimations()
+void TBAnimationManager::BeginBlockAnimations()
 {
 	block_animations_counter++;
 }
 
 //static
-void AnimationManager::EndBlockAnimations()
+void TBAnimationManager::EndBlockAnimations()
 {
 	assert(block_animations_counter > 0);
 	block_animations_counter--;

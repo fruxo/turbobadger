@@ -106,7 +106,7 @@ void TBWidgetAnimationRect::OnAnimationUpdate(float progress)
 		{
 			// Widget hasn't been laid out yet,
 			// the animation was started too soon.
-			AnimationManager::AbortAnimation(this);
+			TBAnimationManager::AbortAnimation(this);
 			return;
 		}
 		if (m_mode == MODE_DELTA_IN)
@@ -146,24 +146,24 @@ TBWidgetsAnimationManager widgets_animation_manager;
 
 void TBWidgetsAnimationManager::Init()
 {
-	AnimationManager::Init();
+	TBAnimationManager::Init();
 	TBWidgetListener::AddGlobalListener(&widgets_animation_manager);
 }
 
 void TBWidgetsAnimationManager::Shutdown()
 {
 	TBWidgetListener::RemoveGlobalListener(&widgets_animation_manager);
-	AnimationManager::Shutdown();
+	TBAnimationManager::Shutdown();
 }
 
 void TBWidgetsAnimationManager::Update()
 {
-	AnimationManager::Update();
+	TBAnimationManager::Update();
 }
 
 bool TBWidgetsAnimationManager::HasAnimationsRunning()
 {
-	return AnimationManager::HasAnimationsRunning();
+	return TBAnimationManager::HasAnimationsRunning();
 }
 
 void TBWidgetsAnimationManager::AbortAnimations(TBWidget *widget)
@@ -175,7 +175,7 @@ void TBWidgetsAnimationManager::AbortAnimations(TBWidget *widget)
 		{
 			// Abort the animation. This will both autoremove itself
 			// and autodelete, so no need to do it here.
-			AnimationManager::AbortAnimation(wao);
+			TBAnimationManager::AbortAnimation(wao);
 		}
 	}
 }
@@ -192,22 +192,22 @@ bool TBWidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 	if (TBWindow *window = TBSafeCast<TBWindow>(widget))
 	{
 		// Fade out dying windows
-		if (AnimationObject *anim = new TBWidgetAnimationOpacity(window, 1.f, TB_ALMOST_ZERO_OPACITY, true))
-			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
+		if (TBAnimationObject *anim = new TBWidgetAnimationOpacity(window, 1.f, TB_ALMOST_ZERO_OPACITY, true))
+			TBAnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 		handled = true;
 	}
 	if (TBMessageWindow *window = TBSafeCast<TBMessageWindow>(widget))
 	{
 		// Move out dying message windows
-		if (AnimationObject *anim = new TBWidgetAnimationRect(window, TBRect(0, 50, 0, 0), TBWidgetAnimationRect::MODE_DELTA_IN))
-			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_SPEED_UP);
+		if (TBAnimationObject *anim = new TBWidgetAnimationRect(window, TBRect(0, 50, 0, 0), TBWidgetAnimationRect::MODE_DELTA_IN))
+			TBAnimationManager::StartAnimation(anim, ANIMATION_CURVE_SPEED_UP);
 		handled = true;
 	}
 	if (TBDimmer *dimmer = TBSafeCast<TBDimmer>(widget))
 	{
 		// Fade out dying dim layers
-		if (AnimationObject *anim = new TBWidgetAnimationOpacity(dimmer, 1.f, TB_ALMOST_ZERO_OPACITY, true))
-			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
+		if (TBAnimationObject *anim = new TBWidgetAnimationOpacity(dimmer, 1.f, TB_ALMOST_ZERO_OPACITY, true))
+			TBAnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 		handled = true;
 	}
 	return handled;
@@ -218,20 +218,20 @@ void TBWidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
 	if (TBWindow *window = TBSafeCast<TBWindow>(widget))
 	{
 		// Fade in new windows
-		if (AnimationObject *anim = new TBWidgetAnimationOpacity(window, TB_ALMOST_ZERO_OPACITY, 1.f, false))
-			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
+		if (TBAnimationObject *anim = new TBWidgetAnimationOpacity(window, TB_ALMOST_ZERO_OPACITY, 1.f, false))
+			TBAnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 	}
 	if (TBMessageWindow *window = TBSafeCast<TBMessageWindow>(widget))
 	{
 		// Move in new message windows
-		if (AnimationObject *anim = new TBWidgetAnimationRect(window, TBRect(0, -50, 0, 0), TBWidgetAnimationRect::MODE_DELTA_OUT))
-			AnimationManager::StartAnimation(anim);
+		if (TBAnimationObject *anim = new TBWidgetAnimationRect(window, TBRect(0, -50, 0, 0), TBWidgetAnimationRect::MODE_DELTA_OUT))
+			TBAnimationManager::StartAnimation(anim);
 	}
 	if (TBDimmer *dimmer = TBSafeCast<TBDimmer>(widget))
 	{
 		// Fade in dim layer
-		if (AnimationObject *anim = new TBWidgetAnimationOpacity(dimmer, TB_ALMOST_ZERO_OPACITY, 1.f, false))
-			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
+		if (TBAnimationObject *anim = new TBWidgetAnimationOpacity(dimmer, TB_ALMOST_ZERO_OPACITY, 1.f, false))
+			TBAnimationManager::StartAnimation(anim, ANIMATION_CURVE_BEZIER);
 	}
 }
 

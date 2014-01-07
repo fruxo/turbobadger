@@ -3,8 +3,8 @@
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
-#ifndef TB_ANIMATION_H
-#define TB_ANIMATION_H
+#ifndef TB_WIDGET_ANIMATION_H
+#define TB_WIDGET_ANIMATION_H
 
 #include "tb_widgets_listener.h"
 #include "Animation.h"
@@ -19,7 +19,7 @@ namespace tinkerbell {
 
 /** Base class for widget animations. This animation object will
 	be deleted automatically if the widget is deleted. */
-class TBWidgetAnimationObject : public AnimationObject, public TBLinkOf<TBWidgetAnimationObject>
+class TBWidgetAnimationObject : public TBAnimationObject, public TBLinkOf<TBWidgetAnimationObject>
 {
 public:
 	TBWidgetAnimationObject(TBWidget *widget);
@@ -73,13 +73,13 @@ private:
 class TBWidgetsAnimationManager : public TBWidgetListener
 {
 public:
-	/** Init the widgets animation manager and AnimationManager. */
+	/** Init the widgets animation manager and TBAnimationManager. */
 	static void Init();
 
-	/** Shutdown the widgets animation manager and AnimationManager. */
+	/** Shutdown the widgets animation manager and TBAnimationManager. */
 	static void Shutdown();
 
-	/** Update all running animations. This will call AnimationManager::Update. */
+	/** Update all running animations. This will call TBAnimationManager::Update. */
 	static void Update();
 
 	/** Return true if there is running animations. */
@@ -98,4 +98,4 @@ private:
 
 }; // namespace tinkerbell
 
-#endif // TB_ANIMATION_H
+#endif // TB_WIDGET_ANIMATION_H

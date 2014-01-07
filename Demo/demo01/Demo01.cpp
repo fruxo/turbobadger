@@ -501,13 +501,13 @@ void AnimationsWindow::Animate()
 		fade = fade_check->GetValue() ? true : false;
 
 	// Start move animation
-	if (AnimationObject *anim = new TBWidgetAnimationRect(this, GetRect().Offset(-GetRect().x - GetRect().w, 0), GetRect()))
-		AnimationManager::StartAnimation(anim, curve, duration);
+	if (TBAnimationObject *anim = new TBWidgetAnimationRect(this, GetRect().Offset(-GetRect().x - GetRect().w, 0), GetRect()))
+		TBAnimationManager::StartAnimation(anim, curve, duration);
 	// Start fade animation
 	if (fade)
 	{
-		if (AnimationObject *anim = new TBWidgetAnimationOpacity(this, TB_ALMOST_ZERO_OPACITY, 1, false))
-			AnimationManager::StartAnimation(anim, ANIMATION_CURVE_SLOW_DOWN, duration);
+		if (TBAnimationObject *anim = new TBWidgetAnimationOpacity(this, TB_ALMOST_ZERO_OPACITY, 1, false))
+			TBAnimationManager::StartAnimation(anim, ANIMATION_CURVE_SLOW_DOWN, duration);
 	}
 }
 
@@ -699,7 +699,7 @@ bool DemoApplication::Init()
 		return false;
 
 	// Block new animations during Init.
-	AnimationBlocker anim_blocker;
+	TBAnimationBlocker anim_blocker;
 
 	// Run unit tests
 	int num_failed_tests = TBRunTests();
