@@ -32,6 +32,11 @@ freely, subject to the following restrictions:
 #include "tb_hash.h"
 #include "tb_debug.h"
 
+#define TB_VERSION_MAJOR 0
+#define TB_VERSION_MINOR 1
+#define TB_VERSION_REVISION 1
+#define TB_VERSION_STR "0.1.1"
+
 namespace tinkerbell {
 
 class TBRenderer;

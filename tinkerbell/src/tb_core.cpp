@@ -21,6 +21,7 @@ TBFontManager *g_font_manager = nullptr;
 
 bool init_tinkerbell(TBRenderer *renderer, const char *lng_file)
 {
+	TBDebugPrint("Initiating tinkerbell version %s\n", TB_VERSION_STR);
 	g_renderer = renderer;
 	g_tb_lng = new TBLanguage;
 	g_tb_lng->Load(lng_file);
