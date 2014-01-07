@@ -91,8 +91,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\tbanimation\Animation.cpp" />
-    <ClCompile Include="..\..\tbanimation\tb_animation.cpp" />
     <ClCompile Include="..\demo01\Demo01.cpp" />
     <ClCompile Include="..\demo01\ListWindow.cpp" />
     <ClCompile Include="..\demo01\ResourceEditWindow.cpp" />
@@ -118,8 +116,6 @@
     <ClCompile Include="..\thirdparty\glfw\src\window.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\tbanimation\Animation.h" />
-    <ClInclude Include="..\..\tbanimation\tb_animation.h" />
     <ClInclude Include="..\config.h" />
     <ClInclude Include="..\demo01\Demo.h" />
     <ClInclude Include="..\demo01\ListWindow.h" />

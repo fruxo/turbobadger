@@ -7,7 +7,7 @@
 #define TB_WIDGET_ANIMATION_H
 
 #include "tb_widgets_listener.h"
-#include "Animation.h"
+#include "animation/tb_animation.h"
 
 namespace tinkerbell {
 

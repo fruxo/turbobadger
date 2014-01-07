@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\tbanimation">
-      <UniqueIdentifier>{02dc40a7-f4f8-4dcc-85a4-200f636b1e9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\glfw">
       <UniqueIdentifier>{c0affabe-02aa-41c1-8236-3de174f4e472}</UniqueIdentifier>
     </Filter>
@@ -30,12 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\tbanimation\Animation.cpp">
-      <Filter>Source Files\tbanimation</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\tbanimation\tb_animation.cpp">
-      <Filter>Source Files\tbanimation</Filter>
-    </ClCompile>
     <ClCompile Include="..\demo01\Demo01.cpp">
       <Filter>Source Files\demo01</Filter>
     </ClCompile>
@@ -107,12 +98,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\tbanimation\Animation.h">
-      <Filter>Source Files\tbanimation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\tbanimation\tb_animation.h">
-      <Filter>Source Files\tbanimation</Filter>
-    </ClInclude>
     <ClInclude Include="..\demo01\Demo.h">
       <Filter>Source Files\demo01</Filter>
     </ClInclude>

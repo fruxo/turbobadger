@@ -55,6 +55,8 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../tinkerbell/src/tb_node_ref_tree.cpp \
                    ../../tinkerbell/src/tb_image_loader_stb.cpp \
                    ../../tinkerbell/src/tb_core.cpp \
+                   ../../tinkerbell/src/animation/tb_animation.cpp \
+                   ../../tinkerbell/src/animation/tb_widget_animation.cpp \
                    ../../tinkerbell/src/addons/tbimage/tb_image_manager.cpp \
                    ../../tinkerbell/src/addons/tbimage/tb_image_widget.cpp \
                    ../../tinkerbell/src/parser/tb_parser.cpp \

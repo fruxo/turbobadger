@@ -6,7 +6,7 @@
 #ifndef TB_ANIMATION_UTILS_H
 #define TB_ANIMATION_UTILS_H
 
-#include "tb_animation.h"
+#include "animation/tb_animation.h"
 
 namespace tinkerbell {
 

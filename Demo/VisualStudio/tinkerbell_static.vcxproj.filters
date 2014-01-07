@@ -31,6 +31,9 @@
     <Filter Include="Source Files\renderers">
       <UniqueIdentifier>{e3dccb00-1283-4413-a12a-4ef486295a84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\animation">
+      <UniqueIdentifier>{12e88d74-9c68-4f34-b7e1-8141af493ab9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\tinkerbell\src\tb_language.cpp">
@@ -240,6 +243,12 @@
     <ClCompile Include="..\..\tinkerbell\src\tb_core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\animation\tb_animation.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\tinkerbell\src\animation\tb_widget_animation.cpp">
+      <Filter>Source Files\animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\tinkerbell\src\tb_language.h">
@@ -409,6 +418,15 @@
     </ClInclude>
     <ClInclude Include="..\..\tbanimation\tb_animation_utils.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\animation\tb_animation.h">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\animation\tb_animation_utils.h">
+      <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\tinkerbell\src\animation\tb_widget_animation.h">
+      <Filter>Source Files\animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
