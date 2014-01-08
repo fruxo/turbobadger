@@ -23,7 +23,7 @@ void Application::ShutDown()
 
 void Application::Process()
 {
-	TBWidgetsAnimationManager::Update();
+	TBAnimationManager::Update();
 	GetRoot()->InvokeProcessStates();
 	GetRoot()->InvokeProcess();
 }
@@ -35,6 +35,6 @@ void Application::RenderFrame(int window_w, int window_h)
 	g_renderer->EndPaint();
 
 	// If animations are running, reinvalidate immediately
-	if (TBWidgetsAnimationManager::HasAnimationsRunning())
+	if (TBAnimationManager::HasAnimationsRunning())
 		GetRoot()->Invalidate();
 }

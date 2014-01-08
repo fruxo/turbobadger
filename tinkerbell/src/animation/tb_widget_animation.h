@@ -73,17 +73,11 @@ private:
 class TBWidgetsAnimationManager : public TBWidgetListener
 {
 public:
-	/** Init the widgets animation manager and TBAnimationManager. */
+	/** Init the widgets animation manager. */
 	static void Init();
 
-	/** Shutdown the widgets animation manager and TBAnimationManager. */
+	/** Shutdown the widgets animation manager. */
 	static void Shutdown();
-
-	/** Update all running animations. This will call TBAnimationManager::Update. */
-	static void Update();
-
-	/** Return true if there is running animations. */
-	static bool HasAnimationsRunning();
 
 	/** Abort all animations that are running for the given widget. */
 	static void AbortAnimations(TBWidget *widget);

@@ -790,7 +790,7 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 	g_renderer->EndPaint();
 
 	// If we want continous updates or got animations running, reinvalidate immediately
-	if (continuous_repaint || TBWidgetsAnimationManager::HasAnimationsRunning())
+	if (continuous_repaint || TBAnimationManager::HasAnimationsRunning())
 		GetRoot()->Invalidate();
 }
 

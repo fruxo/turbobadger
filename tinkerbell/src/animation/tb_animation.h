@@ -78,8 +78,12 @@ class TBAnimationManager
 private:
 	static TBLinkListOf<TBAnimationObject> animating_objects;
 public:
+	/** Update all running animations. */
 	static void Update();
+
+	/** Return true if there is running animations. */
 	static bool HasAnimationsRunning();
+
 	static void StartAnimation(TBAnimationObject *obj,
 								ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
 								double animation_duration = ANIMATION_DEFAULT_DURATION,

@@ -42,7 +42,8 @@ TBWidgetAnimationOpacity::TBWidgetAnimationOpacity(TBWidget *widget, float src_o
 void TBWidgetAnimationOpacity::OnAnimationStart()
 {
 	// Make sure we don't stay idle if nothing is scheduled (hack).
-	if (!TBWidgetsAnimationManager::HasAnimationsRunning())
+	// FIX: fix this properly
+	if (!TBAnimationManager::HasAnimationsRunning())
 		m_widget->Invalidate();
 
 	m_widget->SetOpacity(m_src_opacity);
@@ -89,8 +90,9 @@ TBWidgetAnimationRect::TBWidgetAnimationRect(TBWidget *widget, const TBRect &del
 
 void TBWidgetAnimationRect::OnAnimationStart()
 {
-	// Make sure we don't stay idle if nothing is scheduled.
-	if (!TBWidgetsAnimationManager::HasAnimationsRunning())
+	// Make sure we don't stay idle if nothing is scheduled (hack).
+	// FIX: fix this properly
+	if (!TBAnimationManager::HasAnimationsRunning())
 		m_widget->Invalidate();
 
 	if (m_mode == MODE_SRC_TO_DST)
@@ -152,16 +154,6 @@ void TBWidgetsAnimationManager::Init()
 void TBWidgetsAnimationManager::Shutdown()
 {
 	TBWidgetListener::RemoveGlobalListener(&widgets_animation_manager);
-}
-
-void TBWidgetsAnimationManager::Update()
-{
-	TBAnimationManager::Update();
-}
-
-bool TBWidgetsAnimationManager::HasAnimationsRunning()
-{
-	return TBAnimationManager::HasAnimationsRunning();
 }
 
 void TBWidgetsAnimationManager::AbortAnimations(TBWidget *widget)
