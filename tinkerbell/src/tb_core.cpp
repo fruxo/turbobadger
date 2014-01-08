@@ -10,6 +10,7 @@
 #include "tb_font_renderer.h"
 #include "tb_addon.h"
 #include "tb_system.h"
+#include "animation/tb_animation.h"
 
 namespace tinkerbell {
 
@@ -33,6 +34,7 @@ bool init_tinkerbell(TBRenderer *renderer, const char *lng_file)
 
 void shutdown_tinkerbell()
 {
+	TBAnimationManager::AbortAllAnimations();
 	TBShutdownAddons();
 	delete g_widgets_reader;
 	delete g_tb_skin;

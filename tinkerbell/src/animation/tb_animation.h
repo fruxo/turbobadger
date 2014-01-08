@@ -78,8 +78,6 @@ class TBAnimationManager
 private:
 	static TBLinkListOf<TBAnimationObject> animating_objects;
 public:
-	static void Init();
-	static void Shutdown();
 	static void Update();
 	static bool HasAnimationsRunning();
 	static void StartAnimation(TBAnimationObject *obj,
@@ -87,6 +85,7 @@ public:
 								double animation_duration = ANIMATION_DEFAULT_DURATION,
 								ANIMATION_TIME animation_time = ANIMATION_TIME_FIRST_UPDATE);
 	static void AbortAnimation(TBAnimationObject *obj);
+	static void AbortAllAnimations();
 
 	/** Return true if new animations are blocked. */
 	static bool IsAnimationsBlocked();

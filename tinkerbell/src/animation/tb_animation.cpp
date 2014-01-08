@@ -36,12 +36,7 @@ TBLinkListOf<TBAnimationObject> TBAnimationManager::animating_objects;
 static int block_animations_counter = 0;
 
 //static
-void TBAnimationManager::Init()
-{
-}
-
-//static
-void TBAnimationManager::Shutdown()
+void TBAnimationManager::AbortAllAnimations()
 {
 	while (TBAnimationObject *obj = animating_objects.GetFirst())
 		AbortAnimation(obj);
