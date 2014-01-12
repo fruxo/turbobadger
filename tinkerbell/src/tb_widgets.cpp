@@ -17,7 +17,7 @@
 #include "tb_editfield.h"
 #endif // TB_ALWAYS_SHOW_EDIT_FOCUS
 
-namespace tinkerbell {
+namespace tb {
 
 //static data
 TBWidget *TBWidget::hovered_widget = nullptr;
@@ -1485,4 +1485,4 @@ TBFontFace *TBWidget::GetFont() const
 	return g_font_manager->GetFontFace(GetCalculatedFontDescription());
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

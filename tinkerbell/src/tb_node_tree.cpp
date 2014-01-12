@@ -12,7 +12,7 @@
 #include "tb_tempbuffer.h"
 #include "tb_language.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TBNode::~TBNode()
 {
@@ -329,4 +329,4 @@ void TBNode::Clear()
 	m_children.DeleteAll();
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

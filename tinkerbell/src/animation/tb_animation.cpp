@@ -6,7 +6,7 @@
 #include "animation/tb_animation.h"
 #include "tb_system.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == Helpers =======================================================
 
@@ -149,4 +149,4 @@ void TBAnimationManager::EndBlockAnimations()
 	block_animations_counter--;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

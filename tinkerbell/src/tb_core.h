@@ -37,7 +37,7 @@ freely, subject to the following restrictions:
 #define TB_VERSION_REVISION 1
 #define TB_VERSION_STR "0.1.1"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBRenderer;
 class TBSkin;
@@ -57,6 +57,6 @@ bool tb_core_init(TBRenderer *renderer, const char *lng_file);
 /** Shutdown turbo badger. Call this after deleting the last widget, to free turbo badger internals. */
 void tb_core_shutdown();
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_CORE_H

@@ -5,7 +5,7 @@
 
 #include "tb_skin_util.h"
 
-namespace tinkerbell {
+namespace tb {
 
 static int GetFadeoutSize(int scrolled_distance, int fadeout_length)
 {
@@ -47,4 +47,4 @@ void DrawEdgeFadeout(const TBRect &dst_rect, TBID skin_x, TBID skin_y,
 	}
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

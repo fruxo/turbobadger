@@ -7,7 +7,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBClipboard =====================================
 
@@ -33,4 +33,4 @@ bool TBClipboard::GetText(TBStr &text)
 	return text.Set(clipboard);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

@@ -10,7 +10,7 @@
 #include "tb_scroll_container.h"
 #include "tb_select_item.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBMenuWindow;
 
@@ -153,6 +153,6 @@ protected:
 	TBWidgetSafePointer m_window_pointer; ///< Points to the dropdown window if opened
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_SELECT_H

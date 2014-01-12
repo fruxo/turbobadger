@@ -7,7 +7,7 @@
 
 #ifdef TB_UNIT_TESTING
 
-using namespace tinkerbell;
+using namespace tb;
 
 TB_TEST_GROUP(tb_test)
 {

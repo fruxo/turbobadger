@@ -17,7 +17,7 @@ void TBDebugOut(const char *str);
 #define TBDebugPrint(str, ...) ((void)0)
 #endif
 
-namespace tinkerbell {
+namespace tb {
 
 // == Platform interface ===================================================
 
@@ -75,6 +75,6 @@ public:
 	virtual size_t Read(void *buf, size_t elemSize, size_t count) = 0;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_SYSTEM_H

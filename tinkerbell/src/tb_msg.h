@@ -12,7 +12,7 @@
 #include "tb_object.h"
 #include "tb_id.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBMessageHandler;
 
@@ -121,6 +121,6 @@ private:
 	TBLinkListOf<TBMessage> m_messages;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_MSG_H

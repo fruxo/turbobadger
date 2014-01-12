@@ -5,7 +5,7 @@
 
 #include "tb_hash.h"
 
-namespace tinkerbell {
+namespace tb {
 
 #ifndef TB_SUPPORT_CONSTEXPR
 
@@ -26,4 +26,4 @@ uint32 TBGetHash(const char *str)
 
 #endif // !TB_SUPPORT_CONSTEXPR
 
-}; // namespace tinkerbell
+}; // namespace tb

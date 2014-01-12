@@ -7,7 +7,7 @@
 #include "tb_renderer.h"
 #include "tb_system.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
 #include "stb_truetype.h"

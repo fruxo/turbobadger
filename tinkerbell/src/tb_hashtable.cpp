@@ -7,7 +7,7 @@
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
 
-namespace tinkerbell {
+namespace tb {
 
 //FIX: reduce memory (block allocation of ITEM)
 //FIX: should shrink when deleting single items (but not when adding items!)
@@ -216,4 +216,4 @@ void *TBHashTableIterator::GetNextContent()
 	return m_current_item ? m_current_item->content : nullptr;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

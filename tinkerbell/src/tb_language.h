@@ -10,7 +10,7 @@
 #include "tb_hashtable.h"
 #include "tb_id.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBLanguage is a basic language string manager.
 	Strings read into it can be looked up from a TBID, so either by a number

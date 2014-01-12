@@ -10,7 +10,7 @@
 #include "tb_list.h"
 #include "tb_value.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBSelectItemSource;
 
@@ -206,6 +206,6 @@ public:
 
 class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem> { };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_SELECT_ITEM_H

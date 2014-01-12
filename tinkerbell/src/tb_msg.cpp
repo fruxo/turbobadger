@@ -7,7 +7,7 @@
 #include "tb_system.h"
 #include <stddef.h>
 
-namespace tinkerbell {
+namespace tb {
 
 /** List of all delayed messages */
 TBLinkListOf<TBMessageLink> g_all_delayed_messages;
@@ -187,4 +187,4 @@ double TBMessageHandler::GetNextMessageFireTime()
 	return TB_NOT_SOON;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

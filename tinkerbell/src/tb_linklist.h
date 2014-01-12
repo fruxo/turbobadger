@@ -9,7 +9,7 @@
 #include "tb_core.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 class TBLinkList;
 class TBLink;
@@ -192,6 +192,6 @@ public:
 	~TBLinkListAutoDeleteOf() { TBLinkListOf<T>::DeleteAll(); }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_LINKLIST_H

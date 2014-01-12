@@ -9,7 +9,7 @@
 #include "tb_config.h"
 #include "tb_types.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBColor contains a 32bit color. */
 
@@ -32,6 +32,6 @@ public:
 	bool operator != (const TBColor &c) const { return !(*this == c); }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_COLOR_H

@@ -5,7 +5,7 @@
 
 #include "tb_linklist.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBLinkListIterator ====================================================================================
 
@@ -215,4 +215,4 @@ int TBLinkList::CountLinks() const
 	return count;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

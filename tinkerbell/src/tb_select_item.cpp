@@ -10,7 +10,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBSimpleLayoutItemWidget is a item containing a layout with the following:
 	-TBSkinImage showing the item image.
@@ -179,4 +179,4 @@ void TBSelectItemSource::InvokeAllItemsRemoved()
 		viewer->OnAllItemsRemoved();
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

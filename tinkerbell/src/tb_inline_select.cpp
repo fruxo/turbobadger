@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // FIX: axis should affect the buttons arrow skin!
 // FIX: unfocus should set the correct text!
@@ -114,4 +114,4 @@ bool TBInlineSelect::OnEvent(const TBWidgetEvent &ev)
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

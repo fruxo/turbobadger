@@ -6,7 +6,7 @@
 #ifndef TB_TEMP_BUFFER_H
 #define TB_TEMP_BUFFER_H
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBTempBuffer manages a buffer that will be deleted on destruction.
 
@@ -60,6 +60,6 @@ private:
 	int m_append_pos;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_TEMP_BUFFER_H

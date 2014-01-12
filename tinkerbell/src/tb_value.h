@@ -9,7 +9,7 @@
 #include "tb_core.h"
 #include "tb_list.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBValue;
 class TBTypedObject;
@@ -138,6 +138,6 @@ private:
 	};
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_VALUE_H

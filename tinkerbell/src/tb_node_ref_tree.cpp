@@ -7,7 +7,7 @@
 #include "tb_language.h"
 #include "tb_system.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBNodeRefTree ==============================================================
 
@@ -176,4 +176,4 @@ void TBNodeRefTree::ResolveConditions(TBNode *parent_node)
 	}
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

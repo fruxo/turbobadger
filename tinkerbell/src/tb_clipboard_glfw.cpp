@@ -6,7 +6,7 @@
 #include "tb_system.h"
 #include "GLFW/glfw3.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBClipboard =====================================
 
@@ -46,4 +46,4 @@ bool TBClipboard::GetText(TBStr &text)
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

@@ -7,7 +7,7 @@
 #include "tb_system.h"
 #include "tb_node_tree.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TBLanguage::~TBLanguage()
 {
@@ -55,4 +55,4 @@ const char *TBLanguage::GetString(const TBID &id)
 #endif
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

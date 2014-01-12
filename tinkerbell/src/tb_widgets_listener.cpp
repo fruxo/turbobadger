@@ -5,7 +5,7 @@
 
 #include "tb_widgets_listener.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TBLinkListOf<TBWidgetListenerGlobalLink> g_listeners;
 
@@ -104,4 +104,4 @@ void TBWidgetSafePointer::OnWidgetDelete(TBWidget *widget)
 		Set(nullptr);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

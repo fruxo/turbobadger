@@ -9,7 +9,7 @@
 #include "tb_system.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBWidgetString =======================================
 
@@ -764,4 +764,4 @@ void TBDimmer::OnAdded()
 	SetRect(TBRect(0, 0, GetParent()->GetRect().w, GetParent()->GetRect().h));
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

@@ -9,7 +9,7 @@
 #include "tb_widgets_listener.h"
 #include "animation/tb_animation.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** Don't use 0.0 for opacity animations since that may break focus code.
 	At the moment a window should appear and start fading in from opacity 0,
@@ -90,6 +90,6 @@ private:
 	virtual void OnWidgetRemove(TBWidget *widget);
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_WIDGET_ANIMATION_H

@@ -8,7 +8,7 @@
 #include "tb_window.h"
 #include "tb_tab_container.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBWidgetSkinConditionContext ======================================================
 
@@ -79,4 +79,4 @@ bool TBWidgetSkinConditionContext::GetCondition(TBWidget *widget, const TBSkinCo
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

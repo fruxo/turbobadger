@@ -7,7 +7,7 @@
 #include <Windows.h>
 #include <stdio.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBClipboard =====================================
 
@@ -76,4 +76,4 @@ bool TBClipboard::GetText(TBStr &text)
 	return success;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

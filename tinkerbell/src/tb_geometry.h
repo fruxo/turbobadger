@@ -8,7 +8,7 @@
 
 #include "tb_core.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** Simple point class. */
 
@@ -98,6 +98,6 @@ private:
 	bool GrowIfNeeded();
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_GEOMETRY_H

@@ -7,7 +7,7 @@
 #include "tb_tempbuffer.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == Util functions ====================================================================
 
@@ -410,4 +410,4 @@ void TBParser::ConsumeValue(TBValue &dst_value, char *&line)
 		multi_line_value.AppendString(dst_value.GetString());
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

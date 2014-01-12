@@ -9,7 +9,7 @@
 #include "tb_linklist.h"
 #include "tb_widgets.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBAddon provides a simple API with Init/Shutdown callbacks that will
 	be called during tb_core_init and tb_core_shutdown. */
@@ -58,6 +58,6 @@ void TBShutdownAddons();
 	}; \
 	static classname##AddonFactory classname##_af;
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_ADDON_H

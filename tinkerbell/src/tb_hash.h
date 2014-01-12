@@ -8,7 +8,7 @@
 
 #include "tb_types.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // On C++ compilers that support it, use const expr for hash so that
 // TBID comparisions turn into simple uint32 comparisions compiletime.
@@ -51,7 +51,7 @@ uint32 TBGetHash(const char *str);
 
 #endif // !TB_SUPPORT_CONSTEXPR
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_HASH_H
 

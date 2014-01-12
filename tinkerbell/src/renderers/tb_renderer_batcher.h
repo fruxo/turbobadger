@@ -8,7 +8,7 @@
 
 #include "tb_renderer.h"
 
-namespace tinkerbell {
+namespace tb {
 
 #define VERTEX_BATCH_SIZE 6 * 2048
 
@@ -91,6 +91,6 @@ protected:
 	void FlushAllInternal();
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_RENDERER_BATCHER_H

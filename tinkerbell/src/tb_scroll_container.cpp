@@ -7,7 +7,7 @@
 #include "tb_system.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBScrollBarVisibility ===================================
 
@@ -309,4 +309,4 @@ void TBScrollContainer::OnResized(int old_w, int old_h)
 	ValidateLayout(sc);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

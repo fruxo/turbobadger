@@ -14,7 +14,7 @@
 #include "tb_font_desc.h"
 #include "utf8/utf8.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBBitmap;
 class TBFontFace;
@@ -240,6 +240,6 @@ private:
 	TBFontDescription m_test_font_desc;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_FONT_RENDERER_H

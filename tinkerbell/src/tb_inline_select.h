@@ -10,7 +10,7 @@
 #include "tb_select_item.h"
 #include "tb_editfield.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBSelectList is a select widget with no popups. Instead it has two
 	arrow buttons that cycle between the choices.
@@ -50,6 +50,6 @@ protected:
 	void SetValueInternal(int value, bool update_text);
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_INLINE_SELECT_H

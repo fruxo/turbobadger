@@ -6,7 +6,7 @@
 #include "tb_widgets_listener.h"
 #include "tb_popup_window.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBPopupAlignment ======================================================================================
 
@@ -132,4 +132,4 @@ bool TBPopupWindow::OnWidgetDying(TBWidget *widget)
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

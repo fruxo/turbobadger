@@ -9,7 +9,7 @@
 #include "tb_language.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBMessageWindow =======================================================================================
 
@@ -161,4 +161,4 @@ bool TBMessageWindow::OnWidgetDying(TBWidget *widget)
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

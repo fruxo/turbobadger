@@ -12,7 +12,7 @@
 #include "tb_bitmap_fragment.h"
 #include "tb_renderer.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBImageManager;
 
@@ -105,6 +105,6 @@ private:
 /** The global TBImageManager. */
 extern TBImageManager *g_image_manager;
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_IMAGE_MANAGER_H

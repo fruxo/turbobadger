@@ -9,7 +9,7 @@
 #include "tb_select.h"
 #include "tb_popup_window.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBMenuWindow is a popup window that shows a list of items (TBSelectList).
 
@@ -36,6 +36,6 @@ private:
 	TBSelectList m_select_list;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_MENU_WINDOW_H

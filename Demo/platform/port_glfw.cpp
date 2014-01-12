@@ -11,7 +11,7 @@
 #include "tb_font_renderer.h"
 #include "platform/Application.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 int mouse_x = 0;
 int mouse_y = 0;
@@ -294,7 +294,7 @@ static void ReschedulePlatformTimer(double fire_time, bool force)
 	else if (fire_time != set_fire_time || force)
 	{
 		set_fire_time = fire_time;
-		double delay = fire_time - tinkerbell::TBSystem::GetTimeMS();
+		double delay = fire_time - tb::TBSystem::GetTimeMS();
 		unsigned int idelay = (unsigned int) MAX(delay, 0.0);
 		glfwRescheduleTimer(idelay);
 	}
@@ -303,7 +303,7 @@ static void ReschedulePlatformTimer(double fire_time, bool force)
 static void timer_callback()
 {
 	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
-	double now = tinkerbell::TBSystem::GetTimeMS();
+	double now = tb::TBSystem::GetTimeMS();
 	if (now < next_fire_time)
 	{
 		// We timed out *before* we were supposed to (the OS is not playing nice).

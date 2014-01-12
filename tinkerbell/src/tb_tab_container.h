@@ -8,7 +8,7 @@
 
 #include "tb_widgets_common.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBTabLayout is a TBLayout used in TBTabContainer to apply
 	some default properties on any TBButton added to it. */

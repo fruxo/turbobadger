@@ -24,7 +24,7 @@
 
 #include "renderers/tb_renderer_batcher.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBRendererGL;
 
@@ -62,6 +62,6 @@ public:
 public:
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_RENDERER_GL_H

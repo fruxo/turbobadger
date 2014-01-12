@@ -7,7 +7,7 @@
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TB_ADDON_FACTORY(TBImageManager);
 
@@ -172,4 +172,4 @@ void TBImageManager::OnContextRestored()
 	// No need to do anything. The bitmaps will be created when drawing.
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

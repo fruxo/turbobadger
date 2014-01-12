@@ -10,7 +10,7 @@
 #include "tb_node_tree.h"
 #include "tb_id.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBNode;
 class TBNodeRefTreeListener;
@@ -83,6 +83,6 @@ public:
 	virtual void OnDataChanged(TBNodeRefTree *rt, const char *request) = 0;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_NODE_REF_TREE_H

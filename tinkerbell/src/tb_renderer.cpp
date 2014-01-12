@@ -5,7 +5,7 @@
 
 #include "tb_renderer.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBRenderer ========================================================================
 
@@ -23,4 +23,4 @@ void TBRenderer::InvokeContextRestored()
 		listener->OnContextRestored();
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

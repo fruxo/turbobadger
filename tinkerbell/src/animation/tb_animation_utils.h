@@ -8,7 +8,7 @@
 
 #include "animation/tb_animation.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // TBAnimatedFloat - A animated float value
 
@@ -53,6 +53,6 @@ public:
 	virtual void OnAnimationUpdate(float progress) { TBAnimatedFloat::OnAnimationUpdate(progress); *target_value = GetValue(); }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_ANIMATION_UTILS_H

@@ -7,7 +7,7 @@
 #include "tb_widgets_reader.h"
 #include "tb_node_tree.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBSectionHeader =====================================
 
@@ -168,4 +168,4 @@ PreferredSize TBToggleContainer::OnCalculatePreferredSize(const SizeConstraints 
 	return ps;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

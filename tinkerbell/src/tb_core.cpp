@@ -12,7 +12,7 @@
 #include "tb_system.h"
 #include "animation/tb_animation.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TBRenderer *g_renderer = nullptr;
 TBSkin *g_tb_skin = nullptr;
@@ -42,4 +42,4 @@ void tb_core_shutdown()
 	delete g_tb_lng;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

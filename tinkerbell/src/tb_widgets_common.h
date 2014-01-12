@@ -10,7 +10,7 @@
 #include "tb_layout.h"
 #include "tb_msg.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TB_TEXT_ALIGN specifies horizontal text alignment */
 enum TB_TEXT_ALIGN {
@@ -410,6 +410,6 @@ public:
 	virtual void OnAdded();
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_WIDGETS_COMMON_H

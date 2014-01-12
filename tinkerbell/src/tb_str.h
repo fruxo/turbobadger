@@ -9,7 +9,7 @@
 #include <string.h>
 #include "tb_config.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** Use as parameter for string length if you know the string is null terminated.
 	Can be used in functions that support it. */
@@ -73,6 +73,6 @@ public:
 	const TBStr& operator = (const TBStr &str)			{ Set(str); return *this; }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_STR_H

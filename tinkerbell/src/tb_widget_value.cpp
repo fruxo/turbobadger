@@ -6,7 +6,7 @@
 #include "tb_widget_value.h"
 #include "tb_widgets.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBWidgetValueConnection ===========================================================
 
@@ -163,4 +163,4 @@ void TBValueGroup::InvokeOnValueChanged(const TBWidgetValue *value)
 		listener->OnValueChanged(this, value);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBDimensionConverter ==================================================================================
 
@@ -88,4 +88,4 @@ int TBDimensionConverter::GetPxFromValue(TBValue *value, int def_value) const
 	return GetPxFromString(value->GetString(), def_value);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

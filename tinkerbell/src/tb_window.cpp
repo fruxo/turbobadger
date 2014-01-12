@@ -6,7 +6,7 @@
 #include "tb_window.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBWindow ==========================================================================
 
@@ -263,4 +263,4 @@ void TBWindow::OnResized(int old_w, int old_h)
 	m_textfield.SetRect(mover_rect);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

@@ -10,7 +10,7 @@
 #include "tb_tempbuffer.h"
 #include "tb_str.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBParserTarget
 {
@@ -53,6 +53,6 @@ private:
 	void ConsumeValue(TBValue &dst_value, char *&line);
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_PARSER_H

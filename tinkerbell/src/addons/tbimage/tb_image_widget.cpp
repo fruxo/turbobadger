@@ -7,7 +7,7 @@
 #include "tb_widgets_reader.h"
 #include "tb_node_tree.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TB_WIDGET_FACTORY(TBImageWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
@@ -28,4 +28,4 @@ void TBImageWidget::OnPaint(const PaintProps &paint_props)
 		g_renderer->DrawBitmap(GetPaddingRect(), TBRect(0, 0, m_image.Width(), m_image.Height()), fragment);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

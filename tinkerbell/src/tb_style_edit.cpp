@@ -12,7 +12,7 @@
 #include "utf8/utf8.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 #if 0 // Enable for some graphical debugging
 #define TMPDEBUG(expr) expr
@@ -2130,4 +2130,4 @@ TBUndoEvent *TBUndoRedoStack::Commit(TBStyleEdit *styledit, int32 gofs, int32 le
 	return nullptr;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

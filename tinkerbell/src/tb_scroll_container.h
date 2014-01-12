@@ -8,7 +8,7 @@
 
 #include "tb_widgets_common.h"
 
-namespace tinkerbell {
+namespace tb {
 
 enum SCROLL_MODE {
 	SCROLL_MODE_X_Y,			///< X and Y always			scroll-mode: xy

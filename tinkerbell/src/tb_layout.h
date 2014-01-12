@@ -8,7 +8,7 @@
 
 #include "tb_widgets.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** This means the spacing should be the default, read from the skin. */
 #define SPACING_FROM_SKIN TB_INVALID_DIMENSION

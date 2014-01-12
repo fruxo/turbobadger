@@ -6,7 +6,7 @@
 #include "tb_test.h"
 #include "tb_system.h"
 
-namespace tinkerbell {
+namespace tb {
 
 #ifdef TB_UNIT_TESTING
 
@@ -148,4 +148,4 @@ int TBRunTests(uint32 settings)
 
 #endif // TB_UNIT_TESTING
 
-}; // namespace tinkerbell
+}; // namespace tb

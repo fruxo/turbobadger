@@ -9,7 +9,7 @@
 #include "parser/tb_parser.h"
 #include "tb_linklist.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBNode is a tree node with a string name and a value (TBValue).
 	It may have a parent TBNode and child TBNodes.
@@ -128,6 +128,6 @@ friend class TBNodeRefTree;
 	uint32 m_cycle_id;	///< Used to detect circular references.
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_NODE_TREE_H

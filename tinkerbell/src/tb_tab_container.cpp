@@ -6,7 +6,7 @@
 #include "tb_tab_container.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBTabLayout =======================================================================
 
@@ -120,4 +120,4 @@ void TBTabContainer::OnProcess()
 	}
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

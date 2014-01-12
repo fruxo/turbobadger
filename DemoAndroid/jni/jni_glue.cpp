@@ -14,7 +14,7 @@
 #include "tb_system.h"
 #include "tb_editfield.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 // Bug Work around
 bool context_lost = false;

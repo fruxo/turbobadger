@@ -9,7 +9,7 @@
 #include "tb_widgets.h"
 #include "tb_skin.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** Check if a condition is true for a widget when painting a skin. */
 
@@ -23,6 +23,6 @@ private:
 	TBWidget *m_widget;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_WIDGET_SKIN_CONDITION_CONTEXT_H

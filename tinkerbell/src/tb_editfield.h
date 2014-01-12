@@ -10,7 +10,7 @@
 #include "tb_msg.h"
 #include "tb_style_edit.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** EDIT_TYPE - These types does not restrict input (may change in the future).
 	They are just hints for virtual keyboard, so it can show special keys. */
@@ -199,6 +199,6 @@ private:
 	virtual void CaretBlinkStop();
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_EDITFIELD_H

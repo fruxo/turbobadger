@@ -7,7 +7,7 @@
 #include "tb_style_edit_content.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBTextFragmentContentFactory ==========================================================================
 
@@ -87,4 +87,4 @@ void TBTextFragmentContentStylePop::Paint(TBTextFragment *fragment, int32 transl
 	props->Pop();
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

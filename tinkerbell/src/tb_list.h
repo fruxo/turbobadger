@@ -7,7 +7,7 @@
 #define TB_LIST_H
 
 #include "tb_core.h"
-namespace tinkerbell {
+namespace tb {
 
 /** TBList is a list (array) of pointers to any kind of objects.
 	This is the backend for TBListOf and TBListAutoDeleteOf.
@@ -121,6 +121,6 @@ public:
 	~TBListAutoDeleteOf() { TBListOf<T>::DeleteAll(); }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_LIST_H

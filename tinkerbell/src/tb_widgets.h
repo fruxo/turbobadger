@@ -14,7 +14,7 @@
 #include "tb_object.h"
 #include "tb_font_desc.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBWindow;
 class TBWidget;
@@ -947,6 +947,6 @@ private:
 	void HandlePanningOnMove(int x, int y);
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_WIDGETS_H

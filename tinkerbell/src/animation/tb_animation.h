@@ -8,7 +8,7 @@
 
 #include "tb_linklist.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** Defines how the animation progress value is interpolated. */
 enum ANIMATION_CURVE {
@@ -113,6 +113,6 @@ public:
 	~TBAnimationBlocker() { TBAnimationManager::EndBlockAnimations(); }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_ANIMATION_H

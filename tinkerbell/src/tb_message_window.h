@@ -9,7 +9,7 @@
 #include "tb_window.h"
 #include "tb_widgets_listener.h"
 
-namespace tinkerbell {
+namespace tb {
 
 enum TB_MSG {
 	TB_MSG_OK,
@@ -63,6 +63,6 @@ private:
 	TBWidgetSafePointer m_target;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_MESSAGE_WINDOW_H

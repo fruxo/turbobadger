@@ -13,7 +13,7 @@
 #include "tb_id.h"
 #include "tb_linklist.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBBitmapFragment;
 class TBBitmap;
@@ -237,6 +237,6 @@ private:
 	bool m_add_border;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_BITMAP_FRAGMENT_H

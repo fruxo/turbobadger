@@ -6,7 +6,7 @@
 #include "tb_id.h"
 #include "tb_hashtable.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBID ==============================================================================
 
@@ -78,4 +78,4 @@ void TBID::Set(const char *string)
 
 #endif // _DEBUG
 
-}; // namespace tinkerbell
+}; // namespace tb

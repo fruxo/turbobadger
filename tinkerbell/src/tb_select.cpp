@@ -27,7 +27,7 @@
 # define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
 #endif
 
-namespace tinkerbell {
+namespace tb {
 
 // == Sort callback for sorting items ===================================================
 
@@ -490,4 +490,4 @@ bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

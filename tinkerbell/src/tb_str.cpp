@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 static const char *empty = "";
 inline void safe_delete(char *&str)
@@ -156,4 +156,4 @@ bool TBStr::Insert(int ofs, const char *ins, int ins_len)
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

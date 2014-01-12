@@ -9,7 +9,7 @@
 #include "tb_widgets_common.h"
 #include "tb_widgets_listener.h"
 
-namespace tinkerbell {
+namespace tb {
 
 enum WINDOW_SETTINGS {
 	WINDOW_SETTINGS_NONE			= 0,	///< Chrome less window without any other settings.
@@ -107,6 +107,6 @@ protected:
 	void DeActivate();
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_WINDOW_H

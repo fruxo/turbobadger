@@ -10,7 +10,7 @@
 #include "tb_message_window.h"
 #include "tb_list.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TBLinkListOf<TBWidgetAnimationObject> widget_animations;
 
@@ -229,4 +229,4 @@ void TBWidgetsAnimationManager::OnWidgetRemove(TBWidget *widget)
 {
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

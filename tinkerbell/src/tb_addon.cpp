@@ -6,7 +6,7 @@
 #include "tb_system.h"
 #include "tb_addon.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // We can't use a linked list object since we don't know if its constructor
 // would run before of after any widget factory constructor that add itself
@@ -50,4 +50,4 @@ void TBShutdownAddons()
 	}
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

@@ -15,7 +15,7 @@
 #define strtok_r strtok_s
 #endif
 
-namespace tinkerbell {
+namespace tb {
 
 // FIX: ## Floating point string conversions might be locale dependant. Force "." as decimal!
 
@@ -342,4 +342,4 @@ const char *TBValue::GetString()
 	return m_packed.type == TYPE_STRING ? val_str : "";
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

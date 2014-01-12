@@ -9,7 +9,7 @@
 #include "tb_linklist.h"
 #include "tb_widgets.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBWidgetsReader;
 class TBWidget;
@@ -150,6 +150,6 @@ private:
 	TBLinkListOf<TBWidgetFactory> factories;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TBWIDGETS_READER_H

@@ -6,6 +6,6 @@
 #include "tb_object.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
-}; // namespace tinkerbell
+}; // namespace tb

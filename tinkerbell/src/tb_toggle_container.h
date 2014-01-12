@@ -8,7 +8,7 @@
 
 #include "tb_widgets_common.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBToggleContainer is a widget that toggles a property when its value
 	change between 0 and 1. TOGGLE specifies what property will toggle.
@@ -113,6 +113,6 @@ private:
 	bool m_pending_scroll;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_TOGGLE_CONTAINER_H

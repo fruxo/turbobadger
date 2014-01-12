@@ -6,7 +6,7 @@
 #include "tb_menu_window.h"
 #include "tb_widgets_listener.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBMenuWindow ==========================================
 
@@ -56,4 +56,4 @@ bool TBMenuWindow::OnEvent(const TBWidgetEvent &ev)
 	return TBPopupWindow::OnEvent(ev);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

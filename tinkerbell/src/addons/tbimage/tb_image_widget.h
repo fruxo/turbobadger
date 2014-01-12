@@ -9,7 +9,7 @@
 #include "tb_widgets.h"
 #include "addons/tbimage/tb_image_manager.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBImageWidget is a widget showing a image loaded by TBImageManager,
 	constrained in size to its skin.
@@ -33,6 +33,6 @@ private:
 	TBImage m_image;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_IMAGE_WIDGET_H

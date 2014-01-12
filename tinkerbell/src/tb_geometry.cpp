@@ -6,7 +6,7 @@
 #include "tb_geometry.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBRect ============================================================================
 
@@ -219,4 +219,4 @@ const TBRect &TBRegion::GetRect(int index) const
 	return m_rects[index];
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

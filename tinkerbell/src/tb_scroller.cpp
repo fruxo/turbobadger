@@ -8,7 +8,7 @@
 #include "tb_system.h"
 #include <math.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == Misc constants ====================================================================
 
@@ -377,4 +377,4 @@ void TBScroller::OnMessageReceived(TBMessage *msg)
 	}
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

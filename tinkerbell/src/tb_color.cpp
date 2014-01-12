@@ -6,7 +6,7 @@
 #include "tb_color.h"
 #include <stdio.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBColor ===============================================================================
 
@@ -25,4 +25,4 @@ void TBColor::SetFromString(const char *str, int len)
 		Set(TBColor());
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

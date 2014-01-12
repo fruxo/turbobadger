@@ -8,7 +8,7 @@
 #include "tb_skin_util.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBLayout ==========================================================================
 
@@ -525,4 +525,4 @@ TBWidget::ScrollInfo TBLayout::GetScrollInfo()
 	return info;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

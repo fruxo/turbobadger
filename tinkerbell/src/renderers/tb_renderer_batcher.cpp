@@ -7,7 +7,7 @@
 #include "tb_bitmap_fragment.h"
 #include "tb_system.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBRendererBatcher::Batch ==========================================================
 
@@ -285,4 +285,4 @@ void TBRendererBatcher::FlushBitmapFragment(TBBitmapFragment *bitmap_fragment)
 		batch.Flush(this);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

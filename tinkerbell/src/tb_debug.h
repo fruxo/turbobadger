@@ -14,7 +14,7 @@
 #define TB_IF_DEBUG(debug) 
 #endif
 
-namespace tinkerbell {
+namespace tb {
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 
@@ -63,6 +63,6 @@ void ShowDebugInfoSettingsWindow(class TBWidget *root);
 
 #endif // TB_RUNTIME_DEBUG_INFO
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_DEBUG_H

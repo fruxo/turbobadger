@@ -11,7 +11,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // == Util functions ==========================================================
 
@@ -802,4 +802,4 @@ void TBSkinElementStateList::Load(TBNode *n)
 	}
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

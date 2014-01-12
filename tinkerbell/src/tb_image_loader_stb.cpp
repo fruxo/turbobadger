@@ -6,7 +6,7 @@
 #include "tb_bitmap_fragment.h"
 #include "tb_system.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // Remove image formats we don't use to limit binary size.
 #define STBI_NO_STDIO
@@ -85,4 +85,4 @@ TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
 	return nullptr;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

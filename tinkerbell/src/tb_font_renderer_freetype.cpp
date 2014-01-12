@@ -15,7 +15,7 @@ int num_fonts = 0;
 bool ft_initialized = false;
 static FT_Library g_freetype = nullptr;
 
-using namespace tinkerbell;
+using namespace tb;
 
 /** Cache of truetype file data, so it isn't loaded multiple times for each font size */
 

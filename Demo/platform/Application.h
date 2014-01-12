@@ -13,8 +13,8 @@ public:
 	static ApplicationBackend *Create(Application *app, int width, int height, const char *title);
 	virtual ~ApplicationBackend() {}
 	virtual void Run() = 0;
-	virtual tinkerbell::TBWidget *GetRoot() = 0;
-	virtual tinkerbell::TBRenderer *GetRenderer() = 0;
+	virtual tb::TBWidget *GetRoot() = 0;
+	virtual tb::TBRenderer *GetRenderer() = 0;
 };
 
 /** Application interface, for setting up the application using turbo badger. */
@@ -24,7 +24,7 @@ public:
 	Application() {}
 	virtual ~Application() {}
 
-	tinkerbell::TBWidget *GetRoot() { return m_backend->GetRoot(); }
+	tb::TBWidget *GetRoot() { return m_backend->GetRoot(); }
 
 	/** Run the message loop. */
 	void Run();

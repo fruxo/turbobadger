@@ -9,7 +9,7 @@
 #include "tb_core.h"
 #include "tb_linklist.h"
 
-namespace tinkerbell {
+namespace tb {
 
 typedef void* TB_TYPE_ID;
 
@@ -51,6 +51,6 @@ template<class T> T *TBSafeCast(TBTypedObject *obj) {
 	virtual bool IsOfTypeId(const TB_TYPE_ID type_id) const \
 		{ return GetTypeId<clazz>() == type_id ? true : baseclazz::IsOfTypeId(type_id); }
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_OBJECT_H

@@ -13,7 +13,7 @@
 #include "tb_node_tree.h"
 #include "tb_font_renderer.h"
 
-namespace tinkerbell {
+namespace tb {
 
 TB_WIDGET_FACTORY(TBWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 
@@ -428,4 +428,4 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 	return true;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

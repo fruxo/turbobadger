@@ -8,7 +8,7 @@
 #include "tb_editfield.h"
 #include "tb_msg.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 class ResourceItem : public TBGenericStringItem
 {

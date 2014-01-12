@@ -8,7 +8,7 @@
 
 #include <string.h>
 
-namespace tinkerbell {
+namespace tb {
 
 #ifndef nullptr
 #define nullptr NULL
@@ -67,6 +67,6 @@ T Clamp(const T& value, const T& min, const T& max)
 	inline void operator ^= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32>(a) ^ static_cast<uint32>(b)); } \
 	inline Enum operator ~ (Enum a)  { return static_cast<Enum>(~static_cast<uint32>(a)); }
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_TYPES_H

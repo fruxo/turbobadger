@@ -9,7 +9,7 @@
 #include "tb_window.h"
 #include "tb_widgets_listener.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBPopupAlignment describes the preferred alignment of a popup
 	relative to a target widget or a given point.
@@ -71,6 +71,6 @@ private:
 	virtual bool OnWidgetDying(TBWidget *widget);
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_POPUP_WINDOW_H

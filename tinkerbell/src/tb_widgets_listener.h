@@ -10,7 +10,7 @@
 #include "tb_linklist.h"
 #include "tb_widgets.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBWidget;
 
@@ -86,6 +86,6 @@ private:
 	TBWidget *m_widget;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_WIDGETSLISTENER_H

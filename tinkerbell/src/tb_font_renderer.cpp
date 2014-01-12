@@ -8,7 +8,7 @@
 #include "tb_system.h"
 #include <math.h>
 
-namespace tinkerbell {
+namespace tb {
 
 // ================================================================================================
 
@@ -437,4 +437,4 @@ TBFontFace *TBFontManager::CreateFontFace(const TBFontDescription &font_desc)
 	return nullptr;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

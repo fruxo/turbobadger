@@ -14,7 +14,7 @@
 #include "tb_font_renderer.h"
 #include "tb_skin_util.h"
 
-namespace tinkerbell {
+namespace tb {
 
 const int CARET_BLINK_TIME = 500;
 const int SELECTION_SCROLL_DELAY = 1000/30;
@@ -619,4 +619,4 @@ TBTextFragmentContent *TBEditFieldContentFactory::CreateFragmentContent(const ch
 	return TBTextFragmentContentFactory::CreateFragmentContent(text, text_len);
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

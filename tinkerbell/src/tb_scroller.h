@@ -9,7 +9,7 @@
 #include "tb_core.h"
 #include "tb_msg.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBWidget;
 
@@ -128,6 +128,6 @@ private:
 	int m_expected_scroll_y;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_SCROLLER_H

@@ -11,7 +11,7 @@
 #include "tb_color.h"
 #include "tb_linklist.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBBitmapFragment;
 
@@ -147,6 +147,6 @@ private:
 	TBLinkListOf<TBRendererListener> m_listeners;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_RENDERER_H

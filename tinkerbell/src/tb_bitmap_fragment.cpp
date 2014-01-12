@@ -7,7 +7,7 @@
 #include "tb_renderer.h"
 #include "tb_system.h"
 
-namespace tinkerbell {
+namespace tb {
 
 // FIX: Make customizable, so we use 256x256 for the glyph bitmap! That should probably be enough
 // and also reduce stress on the fragment calculations!
@@ -507,4 +507,4 @@ void TBBitmapFragmentManager::Debug()
 }
 #endif // TB_RUNTIME_DEBUG_INFO
 
-}; // namespace tinkerbell
+}; // namespace tb

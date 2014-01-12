@@ -14,7 +14,7 @@
 #include "tb_message_window.h"
 #include "tb_editfield.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 TBRendererGL *renderer;
 TBWidget *root;

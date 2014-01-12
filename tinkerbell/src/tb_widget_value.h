@@ -12,7 +12,7 @@
 #include "tb_value.h"
 #include "tb_id.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBWidget;
 class TBWidgetValue;
@@ -145,6 +145,6 @@ private:
 /** The global value group. */
 extern TBValueGroup g_value_group;
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_WIDGET_VALUE_H

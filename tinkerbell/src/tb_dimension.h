@@ -10,7 +10,7 @@
 #include "tb_debug.h"
 #include "tb_str.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** Dimensions <= this value will be untouched by conversion in TBDimensionConverter.
 	To preserve special constants, those must be <= this value. */
@@ -74,6 +74,6 @@ public:
 	int GetPxFromValue(TBValue *value, int def_value) const;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_DIMENSION_H

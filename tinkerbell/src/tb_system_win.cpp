@@ -17,7 +17,7 @@ void TBDebugOut(const char *str)
 
 #endif // _DEBUG
 
-namespace tinkerbell {
+namespace tb {
 
 // == TBSystem ========================================
 
@@ -96,4 +96,4 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 	return tbf;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

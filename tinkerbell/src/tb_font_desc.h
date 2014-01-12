@@ -9,7 +9,7 @@
 #include "tb_config.h"
 #include "tb_id.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBFontDescription describes a font.
 	By default when nothing is set, the font is unspecified and means it should be inherited
@@ -67,6 +67,6 @@ private:
 	};
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_FONT_DESC_H

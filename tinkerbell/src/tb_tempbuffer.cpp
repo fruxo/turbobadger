@@ -9,7 +9,7 @@
 #include <memory.h>
 #include <string.h>
 
-namespace tinkerbell {
+namespace tb {
 
 static char *p_realloc(char *buf, size_t size) { return (char *) realloc(buf, size); }
 static void p_free(char *buf) { free(buf); }
@@ -99,4 +99,4 @@ bool TBTempBuffer::AppendPath(const char *full_path_and_filename)
 	return false;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

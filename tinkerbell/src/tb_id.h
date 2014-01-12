@@ -10,7 +10,7 @@
 #include "tb_hash.h"
 #include "tb_str.h"
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBID is a wrapper for a uint32 to be used as ID.
 	The uint32 can be set directly to any uint32, or it can be
@@ -45,6 +45,6 @@ public:
 #endif
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_ID_H

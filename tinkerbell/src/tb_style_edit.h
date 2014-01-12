@@ -11,7 +11,7 @@
 #include "tb_widgets_common.h"
 #include "tb_list.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBStyleEdit;
 class TBBlock;
@@ -435,6 +435,6 @@ public:
 	bool GetSizeAffectsLayout() const;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif

@@ -12,7 +12,7 @@
 static char *p_realloc(char *buf, size_t size) { return (char *) realloc(buf, size); }
 static void p_free(char *buf) { free(buf); }
 
-namespace tinkerbell {
+namespace tb {
 
 bool TBListBackend::Add(void *data)
 {
@@ -119,4 +119,4 @@ bool TBListBackend::GrowIfNeeded()
 	return true;
 }
 
-}; // namespace tinkerbell
+}; // namespace tb

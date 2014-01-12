@@ -8,7 +8,7 @@
 
 #include "tb_core.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBTextFragment;
 
@@ -81,6 +81,6 @@ public:
 	virtual bool GetAllowBreakAfter() { return true; }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_STYLE_EDIT_CONTENT_H

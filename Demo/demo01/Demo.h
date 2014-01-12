@@ -10,7 +10,7 @@
 #include "tb_scroller.h"
 #include "platform/Application.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 class DemoApplication : public Application
 {

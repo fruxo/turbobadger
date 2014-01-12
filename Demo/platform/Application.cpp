@@ -1,7 +1,7 @@
 #include "animation/tb_widget_animation.h"
 #include "Application.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 void Application::Run()
 {

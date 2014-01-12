@@ -10,7 +10,7 @@
 #include "tb_node_tree.h"
 #include "tb_hashtable.h"
 
-using namespace tinkerbell;
+using namespace tb;
 
 struct GLYPH {
 	int x, w;

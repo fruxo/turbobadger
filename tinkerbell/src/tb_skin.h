@@ -13,7 +13,7 @@
 #include "tb_linklist.h"
 #include "tb_dimension.h"
 
-namespace tinkerbell {
+namespace tb {
 
 class TBNode;
 class TBSkinConditionContext;
@@ -341,6 +341,6 @@ private:
 	int GetPxFromNode(TBNode *node, int def_value) const;
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_SKIN_H

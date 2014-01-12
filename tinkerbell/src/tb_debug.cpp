@@ -11,7 +11,7 @@
 #include "tb_tempbuffer.h"
 #include <stdio.h>
 
-namespace tinkerbell {
+namespace tb {
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 
@@ -204,4 +204,4 @@ void ShowDebugInfoSettingsWindow(TBWidget *root)
 
 #endif // TB_RUNTIME_DEBUG_INFO
 
-}; // namespace tinkerbell
+}; // namespace tb

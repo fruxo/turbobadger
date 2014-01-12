@@ -9,7 +9,7 @@
 #include "tb_core.h"
 #include <assert.h>
 
-namespace tinkerbell {
+namespace tb {
 
 /** TBHashTable is a minimal hash table, for hashing anything using a uint32 key. */
 
@@ -120,6 +120,6 @@ protected:
 	virtual void DeleteContent(void *content) { delete (T*) content; }
 };
 
-}; // namespace tinkerbell
+}; // namespace tb
 
 #endif // TB_HASHTABLE_H
