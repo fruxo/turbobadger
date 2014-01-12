@@ -400,7 +400,7 @@ ApplicationBackendGLFW::~ApplicationBackendGLFW()
 	m_application->OnBackendDetached();
 	m_application = nullptr;
 
-	shutdown_tinkerbell();
+	tb_core_shutdown();
 
 	glfwTerminate();
 

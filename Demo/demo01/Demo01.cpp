@@ -802,7 +802,7 @@ int app_main()
 	if (!application_backend)
 		return 1;
 
-	init_tinkerbell(application_backend->GetRenderer(), "tinkerbell/lng_en.tb.txt");
+	tb_core_init(application_backend->GetRenderer(), "tinkerbell/lng_en.tb.txt");
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
 	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");

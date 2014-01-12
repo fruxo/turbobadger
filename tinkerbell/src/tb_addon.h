@@ -12,15 +12,15 @@
 namespace tinkerbell {
 
 /** TBAddon provides a simple API with Init/Shutdown callbacks that will
-	be called during init_tinkerbell and shutdown_tinkerbell. */
+	be called during tb_core_init and tb_core_shutdown. */
 
 class TBAddon : public TBLinkOf<TBAddon>
 {
 public:
-	/** Called during init_tinkerbell after tinkerbell core has been initiated. */
+	/** Called during tb_core_init after turbo badger core has been initiated. */
 	virtual bool Init() = 0;
 
-	/** Called during shutdown_tinkerbell before tinkerbell core has been shut down. */
+	/** Called during tb_core_shutdown before turbo badger core has been shut down. */
 	virtual void Shutdown() = 0;
 
 	virtual ~TBAddon() {}
@@ -28,8 +28,8 @@ public:
 
 /** TBAddonFactory is ment to be subclassed to create a TBAddon, by
 	being declared as a global object. It will then register itself
-	so the addon is created, initiated during init_tinkerbell and
-	destroyed during shutdown_tinkerbell. */
+	so the addon is created, initiated during tb_core_init and
+	destroyed during tb_core_shutdown. */
 class TBAddonFactory
 {
 public:

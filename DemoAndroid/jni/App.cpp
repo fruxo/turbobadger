@@ -122,7 +122,7 @@ EditListener edit_listener;
 void Init(unsigned int width, unsigned int height)
 {
 	renderer = new TBRendererGL();
-	init_tinkerbell(renderer, "language/lng_en.tb.txt");
+	tb_core_init(renderer, "language/lng_en.tb.txt");
 	root = new AppRoot();
 	Resize(width, height);
 
@@ -208,6 +208,6 @@ void Shutdown()
 {
 	delete root;
 	TBWidgetListener::RemoveGlobalListener(&edit_listener);
-	shutdown_tinkerbell();
+	tb_core_shutdown();
 	delete renderer;
 }
