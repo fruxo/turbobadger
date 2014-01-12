@@ -440,8 +440,6 @@ void TBEditField::OnChange()
 	if (m_adapt_to_content_size)
 		InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 
-	//FIX: some of theese in tinkerbell doesn't check if the widget is removed afterwards!
-	//     it's not unlikely that it might result in the widget to be removed.
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 }

@@ -29,16 +29,16 @@ TB_TEST_GROUP(tb_widget_value_text)
 	TB_TEST(connect)
 	{
 		// Set the initial value, no widgets connected yet.
-		widget_val.SetText("tinkerbell");
+		widget_val.SetText("turbo badger");
 
 		// Connecting widgets should give them the current value.
 		a->Connect(&widget_val);
 		b->Connect(&widget_val);
 		c->Connect(&widget_val);
 
-		TB_VERIFY_STR(a->GetText(), "tinkerbell");
-		TB_VERIFY_STR(b->GetText(), "tinkerbell");
-		TB_VERIFY_STR(c->GetText(), "tinkerbell");
+		TB_VERIFY_STR(a->GetText(), "turbo badger");
+		TB_VERIFY_STR(b->GetText(), "turbo badger");
+		TB_VERIFY_STR(c->GetText(), "turbo badger");
 	}
 
 	TB_TEST(change_value)

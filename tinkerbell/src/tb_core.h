@@ -1,6 +1,6 @@
-/** @mainpage TinkerBell UI toolkit
+/** @mainpage Turbo Badger - Fast UI toolkit
 
-TinkerBell UI toolkit
+Turbo Badger
 Copyright (C) 2011-2014 Emil Segerås
 
 License:

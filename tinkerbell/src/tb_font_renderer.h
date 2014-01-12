@@ -68,7 +68,7 @@ public:
 };
 
 /** TBFontGlyph holds glyph metrics and bitmap fragment.
-	There's one of theese for all rendered (both successful
+	There's one of these for all rendered (both successful
 	and missing) glyphs in TBFontFace. */
 class TBFontGlyph : public TBLinkOf<TBFontGlyph>
 {

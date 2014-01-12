@@ -17,7 +17,7 @@ public:
 	virtual tinkerbell::TBRenderer *GetRenderer() = 0;
 };
 
-/** Application interface, for setting up the application using tinkerbell. */
+/** Application interface, for setting up the application using turbo badger. */
 class Application
 {
 public:

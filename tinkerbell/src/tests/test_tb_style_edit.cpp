@@ -51,7 +51,7 @@ TB_TEST_GROUP(tb_editfield)
 
 	TB_TEST(settext_singleline_malformed_utf8)
 	{
-		// Should not detect theese sequences as having new line character
+		// Should not detect these sequences as having new line character
 
 		edit->SetText("\xC0\x8A", TB_CARET_POS_END);
 		TB_VERIFY(sedit->blocks.CountLinks() == 1);

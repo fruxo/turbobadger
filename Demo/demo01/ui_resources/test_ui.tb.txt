@@ -1,5 +1,5 @@
 WindowInfo
-	title TinkerBell demo
+	title Turbo Badger
 	position 10 50
 	size 250 630
 TBLayout: axis: y, distribution-position: left top

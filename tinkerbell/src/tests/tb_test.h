@@ -13,8 +13,8 @@
 	might be more suitable if you need extensive testing of your target
 	application.
 
-	I've chosen to not use any other framework for tinkerbells internal
-	testing to minimize dependences.
+	I've chosen to not use any other framework for internal testing of
+	Turbo Badger to minimize dependences.
 
 	Test groups and tests:
 	---------------------

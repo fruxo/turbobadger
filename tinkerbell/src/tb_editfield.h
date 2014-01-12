@@ -12,7 +12,7 @@
 
 namespace tinkerbell {
 
-/** EDIT_TYPE - Theese types does not restrict input (may change in the future).
+/** EDIT_TYPE - These types does not restrict input (may change in the future).
 	They are just hints for virtual keyboard, so it can show special keys. */
 enum EDIT_TYPE {
 	EDIT_TYPE_TEXT,

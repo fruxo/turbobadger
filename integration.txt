@@ -74,7 +74,7 @@ Font system
 
 There is font implementations for freetype and stb_truetype.h, and a bitmap font
 system (tbbf - "turbo badger bitmap font") that is very simple to use and supports
-any range or characters, glow & shadow. You can choose any of theese or add your own.
+any range or characters, glow & shadow. You can choose any of these or add your own.
 It possible to use multiple backends, so you can f.ex use tbbf for some bitmap fonts,
 and a freetype backend for other fonts.
 

@@ -994,7 +994,7 @@ void TBBlock::Layout(bool update_fragments, bool propagate_height)
 			line_height = MAX(fragment->GetHeight(styledit->font), line_height);
 			line_baseline = MAX(fragment->GetBaseline(styledit->font), line_baseline);
 
-			// Theese positions are not final. Will be adjusted below.
+			// These positions are not final. Will be adjusted below.
 			fragment->ypos = line_ypos;
 
 			if (fragment == last_fragment_on_line)
@@ -1015,7 +1015,7 @@ void TBBlock::Layout(bool update_fragments, bool propagate_height)
 		fragment = first_fragment_on_line;
 		while (fragment)
 		{
-			// The fragment need to know theese later.
+			// The fragment need to know these later.
 			fragment->line_ypos = line_ypos;
 			fragment->line_height = line_height;
 

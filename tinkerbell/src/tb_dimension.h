@@ -21,7 +21,7 @@ class TBValue;
 
 /** TBDimensionConverter converts device independant points
 	to pixels, based on two DPI values.
-	Dimensions tinkerbell are normally in pixels (if not specified differently)
+	Dimensions in Turbo Badger are normally in pixels (if not specified differently)
 	and conversion normally take place when loading skin. */
 class TBDimensionConverter
 {

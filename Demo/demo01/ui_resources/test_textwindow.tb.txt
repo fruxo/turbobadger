@@ -18,9 +18,9 @@ TBLayout: axis: y, distribution: available
 				TBTextField: text: Menu
 				skin TBButton.flat
 	TBEditField: multiline: 1, styling: 1, gravity: all, id: editfield, autofocus: 1
-		text: "TinkerBell UI Toolkit\n\n" \
+		text: "Turbo Badger - Fast UI toolkit\n\n" \
 				"<color #0794f8>Test zone</color>\n" \
-				"The menu to the left spawns some examples of what tinkerbell can do.\n\n" \
+				"The menu to the left spawns some examples of features in turbo badger.\n\n" \
 				"The code in Demo/* is more like a developers test zone than organized tutorial-like samples. " \
 				"This would be good to fix of course (help is welcome! ;)\n\n" \
 				"<color #0794f8>Some things to try out</color>\n" \
@@ -30,5 +30,5 @@ TBLayout: axis: y, distribution: available
 				" • Keyboard navigation using tab.\n" \
 				" • <u>Underline</u>, <color #f44>Red</color>, <color #6f6>Green</color>, <color #aaf>Blue</color>\n\n" \
 				"<color #0794f8>Good to know</color>\n" \
-				" • The text widget handles styling and embedded content (Example: <widget TBSkinImage: skin: 'Icon16'> <widget TBButton: text: 'Nice!'>), but does not handle editing of those fully. Undo/Redo should work fine, but caret movement and position updates doesn't.\n" \
+				" • The text widget handles styling and embedded content (Example: <widget TBSkinImage: skin: 'Icon16'> <widget TBButton: text: 'Nice!'>), but does not handle editing of those fully. Those features are only ment for read-only text widgets for now.\n" \
 				" • All resources are UTF-8.\n"
