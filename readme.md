@@ -1,19 +1,17 @@
-TinkerBell UI Toolkit
+
+Turbo Badger - Fast UI toolkit for hardware accelerated games & applications.
 -----------------------------------------------------------------------------------
 
-I created TinkerBell UI toolkit because i wanted a small UI toolkit for use in
-games and hardware accelerated applications across multiple platforms (that target
-both desktop and mobile).
+I created Turbo Badger because i wanted a small UI toolkit for use in games and
+hardware accelerated applications across multiple platforms (that target both
+desktop and mobile).
 
 The goal is a toolkit that can be easily integrated into an existing codebase to
 make UI with skinning.
 
 It has no dependency on stl, RTTI or exceptions. Compiling without these features
 makes footprint very small. Utility classes (such as string, lists, hash table,
-etc.) are quite minimal for the basic needs of TinkerBell itself.
-
-I named it TinkerBell UI (TBUI for short) because it's lightweight (small
-footprint) compared to many other UI toolkits.
+etc.) are quite minimal for the basic needs of Turbo Badger itself.
 
 See [integration.txt](integration.txt) for details about integrating image loading,
 renderer, font system etc.
@@ -53,7 +51,7 @@ following restrictions:
 What features does it have
 -----------------------------------------------------------------------------------
 
-TinkerBell core:
+Core:
 
   * Widgets (many common standard widgets)
   * Text editing widget (With clipboard, undo/redo, styling functionality,
@@ -84,7 +82,7 @@ TinkerBell core:
   * Unit tests.
 
 
-The code design & developing TinkerBell
+The code design & developing Turbo Badger
 -----------------------------------------------------------------------------------
 
 If you try to familiarize yourself with the code, you might notice the heavily used
@@ -95,8 +93,8 @@ substitute for enums and all kind of things needing custom IDs.
 With compilers supporting C++ 11 `constexpr`, the string to integer conversion is
 done compile time.
 
-If you want to add new stuff to TinkerBell, here are some hints that will make it
-easier to get a pull requests accepted:
+If you want to add new stuff, here are some hints that will make it easier to get a
+pull requests accepted:
 
   * Do not make it dependant on exceptions, RTTI or stl (or boost or similar)
 
@@ -149,6 +147,11 @@ scripts).
 Author
 -----------------------------------------------------------------------------------
 
-Emil Segerås (emilsegers (at) gmail (dot) com)  
+Emil Segerås
 Web: <http://fiffigt.com>  
-TinkerBell home: <https://github.com/fruxo/tinkerbell>  
+
+Turbo Badger home: <https://github.com/fruxo/tinkerbell>  
+Mailing list: turbobadger@googlegroups.com
+
+Please use the mailing list for questions & suggestions instead of mailing me
+directly!

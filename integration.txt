@@ -1,21 +1,21 @@
 ﻿// ================================================================================
-// == This file is a part of TinkerBell UI Toolkit. (C) 2011-2014, Emil Segerås  ==
+// ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
-TinkerBell Integration guide
+Turbo Badger Integration guide
 -----------------------------
 
-This is a short guide to integrating tinkerbell in a game or application.
+This is a short guide to integrating Turbo Badger in a game or application.
 It basically list what you most probably want to do.
 More details is found in the method definitions.
 
 Input
 -----
 
-You need to create a "root widget" for your UI widgets. A TBWidget that act
-as receiver for input, painting etc, and is parent to your other widgets.
-TinkerBell will handle input capture, focus, etc. automatically.
+You need to create at least one "root widget" for your UI widgets. A TBWidget that
+act as receiver for input, painting etc, and is parent to your other widgets.
+Turbo Badger will handle input capture, focus, etc. automatically.
 
 List of input triggers (root is your root TBWidget):
 
@@ -56,13 +56,13 @@ it needs to run next is changed.
 Rendering
 ---------
 
-TBRenderer & TBBitmap are the interfaces that implements everything that tinkerbell
+TBRenderer & TBBitmap are the interfaces that implements everything that Turbo Badger
 needs for rendering. There is already a OpenGL renderer implementation, using fixed
 function pipeline.
 
 Some apps need to unload all graphics and reload it again, f.ex when the app
 is put to sleep in the background and the graphics context is lost.
-TinkerBell implements a renderer listener to handle this in all places that needs
+Turbo Badger implements a renderer listener to handle this in all places that needs
 it, so the only thing you need to do is to call:
 
 	g_renderer->InvokeContextLost(); // Forget all bitmaps
@@ -73,7 +73,7 @@ Font system
 -----------
 
 There is font implementations for freetype and stb_truetype.h, and a bitmap font
-system (tbbf - "tinker bell bitmap font") that is very simple to use and supports
+system (tbbf - "turbo badger bitmap font") that is very simple to use and supports
 any range or characters, glow & shadow. You can choose any of theese or add your own.
 It possible to use multiple backends, so you can f.ex use tbbf for some bitmap fonts,
 and a freetype backend for other fonts.
