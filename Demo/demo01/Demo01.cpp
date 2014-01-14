@@ -805,7 +805,7 @@ int app_main()
 	tb_core_init(application_backend->GetRenderer(), "resources/language/lng_en.tb.txt");
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
-	g_tb_skin->Load("tinkerbell/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
+	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
 
 	// Register tbbf font renderer
 	void register_tbbf_font_renderer();
@@ -817,8 +817,8 @@ int app_main()
 
 	// Add a font to the font manager.
 	// If you use the freetype or stb backend, you can add true type files
-	//g_font_manager->AddFontInfo("vera.ttf", "Vera");
-	g_font_manager->AddFontInfo("tinkerbell/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
+	//g_font_manager->AddFontInfo("resources/vera.ttf", "Vera");
+	g_font_manager->AddFontInfo("resources/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
 	g_font_manager->AddFontInfo("Demo/fonts/neon.tb.txt", "Neon");
 	g_font_manager->AddFontInfo("Demo/fonts/orangutang.tb.txt", "Orangutang");
 	g_font_manager->AddFontInfo("Demo/fonts/orange.tb.txt", "Orange");
