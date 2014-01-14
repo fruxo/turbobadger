@@ -36,396 +36,396 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\tinkerbell\src\tb_language.cpp">
+    <ClCompile Include="..\..\src\tb\tb_language.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_layout.cpp">
+    <ClCompile Include="..\..\src\tb\tb_layout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_linklist.cpp">
+    <ClCompile Include="..\..\src\tb\tb_linklist.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_list.cpp">
+    <ClCompile Include="..\..\src\tb\tb_list.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_message_window.cpp">
+    <ClCompile Include="..\..\src\tb\tb_message_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_msg.cpp">
+    <ClCompile Include="..\..\src\tb\tb_msg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_renderer.cpp">
+    <ClCompile Include="..\..\src\tb\tb_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_scroll_container.cpp">
+    <ClCompile Include="..\..\src\tb\tb_scroll_container.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_select.cpp">
+    <ClCompile Include="..\..\src\tb\tb_select.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_skin.cpp">
+    <ClCompile Include="..\..\src\tb\tb_skin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_style_edit.cpp">
+    <ClCompile Include="..\..\src\tb\tb_style_edit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_style_edit_content.cpp">
+    <ClCompile Include="..\..\src\tb\tb_style_edit_content.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_system_win.cpp">
+    <ClCompile Include="..\..\src\tb\tb_system_win.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_tab_container.cpp">
+    <ClCompile Include="..\..\src\tb\tb_tab_container.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_tempbuffer.cpp">
+    <ClCompile Include="..\..\src\tb\tb_tempbuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_toggle_container.cpp">
+    <ClCompile Include="..\..\src\tb\tb_toggle_container.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_value.cpp">
+    <ClCompile Include="..\..\src\tb\tb_value.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_widget_skin_condition_context.cpp">
+    <ClCompile Include="..\..\src\tb\tb_widget_skin_condition_context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_widget_value.cpp">
+    <ClCompile Include="..\..\src\tb\tb_widget_value.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_widgets.cpp">
+    <ClCompile Include="..\..\src\tb\tb_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_widgets_common.cpp">
+    <ClCompile Include="..\..\src\tb\tb_widgets_common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_widgets_listener.cpp">
+    <ClCompile Include="..\..\src\tb\tb_widgets_listener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_widgets_reader.cpp">
+    <ClCompile Include="..\..\src\tb\tb_widgets_reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_window.cpp">
+    <ClCompile Include="..\..\src\tb\tb_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_addon.cpp">
+    <ClCompile Include="..\..\src\tb\tb_addon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_bitmap_fragment.cpp">
+    <ClCompile Include="..\..\src\tb\tb_bitmap_fragment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_editfield.cpp">
+    <ClCompile Include="..\..\src\tb\tb_editfield.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer.cpp">
+    <ClCompile Include="..\..\src\tb\tb_font_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_font_renderer_tbbf.cpp">
+    <ClCompile Include="..\..\src\tb\tb_font_renderer_tbbf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_hash.cpp">
+    <ClCompile Include="..\..\src\tb\tb_hash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_hashtable.cpp">
+    <ClCompile Include="..\..\src\tb\tb_hashtable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.cpp">
+    <ClCompile Include="..\..\src\tb\addons\tbimage\tb_image_widget.cpp">
       <Filter>Source Files\addons\tbimage</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.cpp">
+    <ClCompile Include="..\..\src\tb\addons\tbimage\tb_image_manager.cpp">
       <Filter>Source Files\addons\tbimage</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_style_edit.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_style_edit.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_tempbuffer.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_tempbuffer.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_test.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_test.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_widget_value.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_widget_value.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\tb_test.cpp">
+    <ClCompile Include="..\..\src\tb\tests\tb_test.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_linklist.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_linklist.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_parser.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_parser.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_value.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_value.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_space_allocator.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_space_allocator.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\utf8\utf8.cpp">
+    <ClCompile Include="..\..\src\tb\utf8\utf8.cpp">
       <Filter>Source Files\utf8</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_select_item.cpp">
+    <ClCompile Include="..\..\src\tb\tb_select_item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_inline_select.cpp">
+    <ClCompile Include="..\..\src\tb\tb_inline_select.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_clipboard_win.cpp">
+    <ClCompile Include="..\..\src\tb\tb_clipboard_win.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_skin_util.cpp">
+    <ClCompile Include="..\..\src\tb\tb_skin_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_color.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_color.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_object.cpp">
+    <ClCompile Include="..\..\src\tb\tb_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_object.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_object.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_popup_window.cpp">
+    <ClCompile Include="..\..\src\tb\tb_popup_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_menu_window.cpp">
+    <ClCompile Include="..\..\src\tb\tb_menu_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_dimension.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_dimension.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_debug.cpp">
+    <ClCompile Include="..\..\src\tb\tb_debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_scroller.cpp">
+    <ClCompile Include="..\..\src\tb\tb_scroller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_geometry.cpp">
+    <ClCompile Include="..\..\src\tb\tb_geometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_geometry.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_geometry.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_node_tree.cpp">
+    <ClCompile Include="..\..\src\tb\tb_node_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\parser\tb_parser.cpp">
+    <ClCompile Include="..\..\src\tb\parser\tb_parser.cpp">
       <Filter>Source Files\parser</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\renderers\tb_renderer_batcher.cpp">
+    <ClCompile Include="..\..\src\tb\renderers\tb_renderer_batcher.cpp">
       <Filter>Source Files\renderers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\renderers\tb_renderer_gl.cpp">
+    <ClCompile Include="..\..\src\tb\renderers\tb_renderer_gl.cpp">
       <Filter>Source Files\renderers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_image_loader_stb.cpp">
+    <ClCompile Include="..\..\src\tb\tb_image_loader_stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_node_ref_tree.cpp">
+    <ClCompile Include="..\..\src\tb\tb_node_ref_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tests\test_tb_node_ref_tree.cpp">
+    <ClCompile Include="..\..\src\tb\tests\test_tb_node_ref_tree.cpp">
       <Filter>Source Files\tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_dimension.cpp">
+    <ClCompile Include="..\..\src\tb\tb_dimension.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_str.cpp">
+    <ClCompile Include="..\..\src\tb\tb_str.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_id.cpp">
+    <ClCompile Include="..\..\src\tb\tb_id.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_color.cpp">
+    <ClCompile Include="..\..\src\tb\tb_color.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\tb_core.cpp">
+    <ClCompile Include="..\..\src\tb\tb_core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\animation\tb_animation.cpp">
+    <ClCompile Include="..\..\src\tb\animation\tb_animation.cpp">
       <Filter>Source Files\animation</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tinkerbell\src\animation\tb_widget_animation.cpp">
+    <ClCompile Include="..\..\src\tb\animation\tb_widget_animation.cpp">
       <Filter>Source Files\animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\tinkerbell\src\tb_language.h">
+    <ClInclude Include="..\..\src\tb\tb_language.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_layout.h">
+    <ClInclude Include="..\..\src\tb\tb_layout.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_linklist.h">
+    <ClInclude Include="..\..\src\tb\tb_linklist.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_list.h">
+    <ClInclude Include="..\..\src\tb\tb_list.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_message_window.h">
+    <ClInclude Include="..\..\src\tb\tb_message_window.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_msg.h">
+    <ClInclude Include="..\..\src\tb\tb_msg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_renderer.h">
+    <ClInclude Include="..\..\src\tb\tb_renderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_scroll_container.h">
+    <ClInclude Include="..\..\src\tb\tb_scroll_container.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_select.h">
+    <ClInclude Include="..\..\src\tb\tb_select.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_skin.h">
+    <ClInclude Include="..\..\src\tb\tb_skin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_style_edit.h">
+    <ClInclude Include="..\..\src\tb\tb_style_edit.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_style_edit_content.h">
+    <ClInclude Include="..\..\src\tb\tb_style_edit_content.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_system.h">
+    <ClInclude Include="..\..\src\tb\tb_system.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_tab_container.h">
+    <ClInclude Include="..\..\src\tb\tb_tab_container.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_tempbuffer.h">
+    <ClInclude Include="..\..\src\tb\tb_tempbuffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_toggle_container.h">
+    <ClInclude Include="..\..\src\tb\tb_toggle_container.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_types.h">
+    <ClInclude Include="..\..\src\tb\tb_types.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_value.h">
+    <ClInclude Include="..\..\src\tb\tb_value.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_widget_skin_condition_context.h">
+    <ClInclude Include="..\..\src\tb\tb_widget_skin_condition_context.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_widget_value.h">
+    <ClInclude Include="..\..\src\tb\tb_widget_value.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_widgets.h">
+    <ClInclude Include="..\..\src\tb\tb_widgets.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_widgets_common.h">
+    <ClInclude Include="..\..\src\tb\tb_widgets_common.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_widgets_listener.h">
+    <ClInclude Include="..\..\src\tb\tb_widgets_listener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_widgets_reader.h">
+    <ClInclude Include="..\..\src\tb\tb_widgets_reader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_window.h">
+    <ClInclude Include="..\..\src\tb\tb_window.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_addon.h">
+    <ClInclude Include="..\..\src\tb\tb_addon.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_bitmap_fragment.h">
+    <ClInclude Include="..\..\src\tb\tb_bitmap_fragment.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_editfield.h">
+    <ClInclude Include="..\..\src\tb\tb_editfield.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_font_renderer.h">
+    <ClInclude Include="..\..\src\tb\tb_font_renderer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_hash.h">
+    <ClInclude Include="..\..\src\tb\tb_hash.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_hashtable.h">
+    <ClInclude Include="..\..\src\tb\tb_hashtable.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_manager.h">
+    <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_manager.h">
       <Filter>Source Files\addons\tbimage</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\addons\tbimage\tb_image_widget.h">
+    <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_widget.h">
       <Filter>Source Files\addons\tbimage</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tests\tb_test.h">
+    <ClInclude Include="..\..\src\tb\tests\tb_test.h">
       <Filter>Source Files\tests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\utf8\utf8.h">
+    <ClInclude Include="..\..\src\tb\utf8\utf8.h">
       <Filter>Source Files\utf8</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_select_item.h">
+    <ClInclude Include="..\..\src\tb\tb_select_item.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_inline_select.h">
+    <ClInclude Include="..\..\src\tb\tb_inline_select.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_skin_util.h">
+    <ClInclude Include="..\..\src\tb\tb_skin_util.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_object.h">
+    <ClInclude Include="..\..\src\tb\tb_object.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_popup_window.h">
+    <ClInclude Include="..\..\src\tb\tb_popup_window.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_menu_window.h">
+    <ClInclude Include="..\..\src\tb\tb_menu_window.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_debug.h">
+    <ClInclude Include="..\..\src\tb\tb_debug.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_config.h">
+    <ClInclude Include="..\..\src\tb\tb_config.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_scroller.h">
+    <ClInclude Include="..\..\src\tb\tb_scroller.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_node_tree.h">
+    <ClInclude Include="..\..\src\tb\tb_node_tree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\parser\tb_parser.h">
+    <ClInclude Include="..\..\src\tb\parser\tb_parser.h">
       <Filter>Source Files\parser</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\renderers\tb_renderer_batcher.h">
+    <ClInclude Include="..\..\src\tb\renderers\tb_renderer_batcher.h">
       <Filter>Source Files\renderers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\renderers\tb_renderer_gl.h">
+    <ClInclude Include="..\..\src\tb\renderers\tb_renderer_gl.h">
       <Filter>Source Files\renderers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_node_ref_tree.h">
+    <ClInclude Include="..\..\src\tb\tb_node_ref_tree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_dimension.h">
+    <ClInclude Include="..\..\src\tb\tb_dimension.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_str.h">
+    <ClInclude Include="..\..\src\tb\tb_str.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_id.h">
+    <ClInclude Include="..\..\src\tb\tb_id.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_font_desc.h">
+    <ClInclude Include="..\..\src\tb\tb_font_desc.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_color.h">
+    <ClInclude Include="..\..\src\tb\tb_color.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\tb_core.h">
+    <ClInclude Include="..\..\src\tb\tb_core.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\tbanimation\tb_animation_utils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\animation\tb_animation.h">
+    <ClInclude Include="..\..\src\tb\animation\tb_animation.h">
       <Filter>Source Files\animation</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\animation\tb_animation_utils.h">
+    <ClInclude Include="..\..\src\tb\animation\tb_animation_utils.h">
       <Filter>Source Files\animation</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\tinkerbell\src\animation\tb_widget_animation.h">
+    <ClInclude Include="..\..\src\tb\animation\tb_widget_animation.h">
       <Filter>Source Files\animation</Filter>
     </ClInclude>
   </ItemGroup>

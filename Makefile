@@ -4,7 +4,7 @@ CC = gcc
 LD = g++
 LDFLAGS =
 LIBS =
-INCPATH = -I"tinkerbell/src" -I"Demo" -I"Demo/thirdparty/glfw/include" -I"."
+INCPATH = -I"src/tb" -I"Demo" -I"Demo/thirdparty/glfw/include" -I"."
 
 ifeq ($(DEBUG),YES)
  CFLAGS = -D_DEBUG -g $(INCPATH)
@@ -28,77 +28,77 @@ CFLAGS += -D_GLFW_USE_OPENGL -D_GLFW_GLX
 CXXFLAGS += -D_GLFW_USE_OPENGL -D_GLFW_GLX
 
 TARGET = RunDemo
-SRC = tinkerbell/src/tb_layout.cpp \
-      tinkerbell/src/tb_scroller.cpp \
-      tinkerbell/src/tb_scroll_container.cpp \
-      tinkerbell/src/tb_skin.cpp \
-      tinkerbell/src/tb_skin_util.cpp \
-      tinkerbell/src/tb_bitmap_fragment.cpp \
-      tinkerbell/src/tb_inline_select.cpp \
-      tinkerbell/src/tb_select.cpp \
-      tinkerbell/src/tb_select_item.cpp \
-      tinkerbell/src/tb_editfield.cpp \
-      tinkerbell/src/tb_system_linux.cpp \
-      tinkerbell/src/tb_clipboard_glfw.cpp \
-      tinkerbell/src/tb_tab_container.cpp \
-      tinkerbell/src/tb_widgets.cpp \
-      tinkerbell/src/tb_widgets_common.cpp \
-      tinkerbell/src/tb_toggle_container.cpp \
-      tinkerbell/src/tb_widgets_reader.cpp \
-      tinkerbell/src/tb_widget_value.cpp \
-      tinkerbell/src/tb_widget_skin_condition_context.cpp \
-      tinkerbell/src/tb_window.cpp \
-      tinkerbell/src/tb_debug.cpp \
-      tinkerbell/src/tb_message_window.cpp \
-      tinkerbell/src/tb_popup_window.cpp \
-      tinkerbell/src/tb_menu_window.cpp \
-      tinkerbell/src/tb_addon.cpp \
-      tinkerbell/src/tb_core.cpp \
-      tinkerbell/src/tb_dimension.cpp \
-      tinkerbell/src/tb_id.cpp \
-      tinkerbell/src/tb_str.cpp \
-      tinkerbell/src/tb_color.cpp \
-      tinkerbell/src/tb_tempbuffer.cpp \
-      tinkerbell/src/tb_hash.cpp \
-      tinkerbell/src/tb_hashtable.cpp \
-      tinkerbell/src/tb_value.cpp \
-      tinkerbell/src/tb_linklist.cpp \
-      tinkerbell/src/tb_list.cpp \
-      tinkerbell/src/tb_style_edit.cpp \
-      tinkerbell/src/tb_style_edit_content.cpp \
-      tinkerbell/src/tb_language.cpp \
-      tinkerbell/src/tb_msg.cpp \
-      tinkerbell/src/tb_object.cpp \
-      tinkerbell/src/tb_widgets_listener.cpp \
-      tinkerbell/src/tb_renderer.cpp \
-      tinkerbell/src/tb_font_renderer.cpp \
-      tinkerbell/src/tb_font_renderer_tbbf.cpp \
-      tinkerbell/src/tb_geometry.cpp \
-      tinkerbell/src/tb_node_tree.cpp \
-      tinkerbell/src/tb_node_ref_tree.cpp \
-      tinkerbell/src/tb_image_loader_stb.cpp \
-      tinkerbell/src/parser/tb_parser.cpp \
-      tinkerbell/src/utf8/utf8.cpp \
-      tinkerbell/src/animation/tb_animation.cpp \
-      tinkerbell/src/animation/tb_widget_animation.cpp \
-      tinkerbell/src/addons/tbimage/tb_image_manager.cpp \
-      tinkerbell/src/addons/tbimage/tb_image_widget.cpp \
-      tinkerbell/src/renderers/tb_renderer_batcher.cpp \
-      tinkerbell/src/renderers/tb_renderer_gl.cpp \
-      tinkerbell/src/tests/tb_test.cpp \
-      tinkerbell/src/tests/test_tb_style_edit.cpp \
-      tinkerbell/src/tests/test_tb_space_allocator.cpp \
-      tinkerbell/src/tests/test_tb_widget_value.cpp \
-      tinkerbell/src/tests/test_tb_linklist.cpp \
-      tinkerbell/src/tests/test_tb_object.cpp \
-      tinkerbell/src/tests/test_tb_parser.cpp \
-      tinkerbell/src/tests/test_tb_node_ref_tree.cpp \
-      tinkerbell/src/tests/test_tb_value.cpp \
-      tinkerbell/src/tests/test_tb_tempbuffer.cpp \
-      tinkerbell/src/tests/test_tb_test.cpp \
-      tinkerbell/src/tests/test_tb_color.cpp \
-      tinkerbell/src/tests/test_tb_dimension.cpp \
-      tinkerbell/src/tests/test_tb_geometry.cpp \
+SRC = src/tb/tb_layout.cpp \
+      src/tb/tb_scroller.cpp \
+      src/tb/tb_scroll_container.cpp \
+      src/tb/tb_skin.cpp \
+      src/tb/tb_skin_util.cpp \
+      src/tb/tb_bitmap_fragment.cpp \
+      src/tb/tb_inline_select.cpp \
+      src/tb/tb_select.cpp \
+      src/tb/tb_select_item.cpp \
+      src/tb/tb_editfield.cpp \
+      src/tb/tb_system_linux.cpp \
+      src/tb/tb_clipboard_glfw.cpp \
+      src/tb/tb_tab_container.cpp \
+      src/tb/tb_widgets.cpp \
+      src/tb/tb_widgets_common.cpp \
+      src/tb/tb_toggle_container.cpp \
+      src/tb/tb_widgets_reader.cpp \
+      src/tb/tb_widget_value.cpp \
+      src/tb/tb_widget_skin_condition_context.cpp \
+      src/tb/tb_window.cpp \
+      src/tb/tb_debug.cpp \
+      src/tb/tb_message_window.cpp \
+      src/tb/tb_popup_window.cpp \
+      src/tb/tb_menu_window.cpp \
+      src/tb/tb_addon.cpp \
+      src/tb/tb_core.cpp \
+      src/tb/tb_dimension.cpp \
+      src/tb/tb_id.cpp \
+      src/tb/tb_str.cpp \
+      src/tb/tb_color.cpp \
+      src/tb/tb_tempbuffer.cpp \
+      src/tb/tb_hash.cpp \
+      src/tb/tb_hashtable.cpp \
+      src/tb/tb_value.cpp \
+      src/tb/tb_linklist.cpp \
+      src/tb/tb_list.cpp \
+      src/tb/tb_style_edit.cpp \
+      src/tb/tb_style_edit_content.cpp \
+      src/tb/tb_language.cpp \
+      src/tb/tb_msg.cpp \
+      src/tb/tb_object.cpp \
+      src/tb/tb_widgets_listener.cpp \
+      src/tb/tb_renderer.cpp \
+      src/tb/tb_font_renderer.cpp \
+      src/tb/tb_font_renderer_tbbf.cpp \
+      src/tb/tb_geometry.cpp \
+      src/tb/tb_node_tree.cpp \
+      src/tb/tb_node_ref_tree.cpp \
+      src/tb/tb_image_loader_stb.cpp \
+      src/tb/parser/tb_parser.cpp \
+      src/tb/utf8/utf8.cpp \
+      src/tb/animation/tb_animation.cpp \
+      src/tb/animation/tb_widget_animation.cpp \
+      src/tb/addons/tbimage/tb_image_manager.cpp \
+      src/tb/addons/tbimage/tb_image_widget.cpp \
+      src/tb/renderers/tb_renderer_batcher.cpp \
+      src/tb/renderers/tb_renderer_gl.cpp \
+      src/tb/tests/tb_test.cpp \
+      src/tb/tests/test_tb_style_edit.cpp \
+      src/tb/tests/test_tb_space_allocator.cpp \
+      src/tb/tests/test_tb_widget_value.cpp \
+      src/tb/tests/test_tb_linklist.cpp \
+      src/tb/tests/test_tb_object.cpp \
+      src/tb/tests/test_tb_parser.cpp \
+      src/tb/tests/test_tb_node_ref_tree.cpp \
+      src/tb/tests/test_tb_value.cpp \
+      src/tb/tests/test_tb_tempbuffer.cpp \
+      src/tb/tests/test_tb_test.cpp \
+      src/tb/tests/test_tb_color.cpp \
+      src/tb/tests/test_tb_dimension.cpp \
+      src/tb/tests/test_tb_geometry.cpp \
       Demo/demo01/Demo01.cpp \
       Demo/demo01/ListWindow.cpp \
       Demo/demo01/ResourceEditWindow.cpp \
