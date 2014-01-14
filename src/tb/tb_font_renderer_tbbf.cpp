@@ -22,7 +22,7 @@ struct GLYPH {
 	glyphs for a given size. The number of glyphs that the font contains is
 	defined by the glyph string defined in the text file.
 
-	Text file format (in tb.txt format parsed by tinkerbell/parser/tb_parser.h):
+	Text file format (in tb.txt format parsed by parser/tb_parser.h):
 
 		- info>glyph_str			Should specify which characters the image
 								file contains.

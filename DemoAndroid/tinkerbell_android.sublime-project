@@ -10,7 +10,7 @@
 			"path": "../Demo/renderers/"
 		},
 		{
-			"path": "../tinkerbell/",
+			"path": "../src/",
 			"folder_exclude_patterns": ["icon"],
 			"file_exclude_patterns": ["*.png"]
 		}

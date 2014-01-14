@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
-	<Type Name="tinkerbell::TBStr">
+	<Type Name="tb::TBStr">
 		<DisplayString>{s}</DisplayString>
-		<StringView>s</StringView> 
+		<StringView>s</StringView>
 	</Type>
-	<Type Name="tinkerbell::TBRect">
+	<Type Name="tb::TBRect">
 		<DisplayString>{{x={x} y={y} w={w} h={h}}}</DisplayString>
 	</Type>
-	<Type Name="tinkerbell::TBID_not_needed_sdfasdfa">
-		<DisplayString>{id} ({debug_string.s})</DisplayString>
-	</Type>
-	<Type Name="tinkerbell::TBFontDescription">
+	<Type Name="tb::TBFontDescription">
 		<DisplayString Condition="m_id.id == 0 &amp;&amp; m_packed_init == 0">Unspecified font (inherit)</DisplayString>
 		<DisplayString Condition="m_id.id == 0">Test dummy font, size: {m_packed.size}</DisplayString>
 		<DisplayString>{m_id.debug_string.s}, size: {m_packed.size}</DisplayString>
 	</Type>
-	<Type Name="tinkerbell::TBValue">
+	<Type Name="tb::TBValue">
 		<DisplayString Condition="m_packed.type == 0">NULL</DisplayString>
 		<DisplayString Condition="m_packed.type == 1">{val_str}</DisplayString>
 		<DisplayString Condition="m_packed.type == 2">{val_float}</DisplayString>
 		<DisplayString Condition="m_packed.type == 3">{val_int}</DisplayString>
 		<DisplayString Condition="m_packed.type == 4">array {val_arr}</DisplayString>
 	</Type>
-	<Type Name="tinkerbell::TBValueArray">
+	<Type Name="tb::TBValueArray">
 		<DisplayString>{m_list}</DisplayString>
 	</Type>
-	<Type Name="tinkerbell::TBListBackend">
+	<Type Name="tb::TBListBackend">
 		<DisplayString Condition="m_data != 0">length = {m_data->num}</DisplayString>
 		<DisplayString>length = 0</DisplayString>
 	</Type>
-	<Type Name="tinkerbell::TBWidgetEvent">
+	<Type Name="tb::TBWidgetEvent">
 		<DisplayString>type={type}</DisplayString>
 	</Type>
 </AutoVisualizer>
