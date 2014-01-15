@@ -1,4 +1,4 @@
-package com.demo.tinkerbell;
+package com.fiffigt.tb.demo;
 
 import android.app.Activity;
 import android.content.res.AssetManager;
@@ -7,10 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class TinkerbellActivity extends Activity
+public class TBActivity extends Activity
 {
 	static AssetManager sAssetManager;
-	TinkerbellView mView;
+	TBView mView;
 
 	// On applications creation
 	@Override protected void onCreate(Bundle savedInstanceState)
@@ -19,10 +19,10 @@ public class TinkerbellActivity extends Activity
 
 		// Pass the asset manager to the native code
 		sAssetManager = getAssets();
-		TinkerbellLib.createAssetManager(sAssetManager);
+		TBLib.createAssetManager(sAssetManager);
 
 		// Create our view for OpenGL rendering
-		mView = new TinkerbellView(getApplication());
+		mView = new TBView(getApplication());
 
 		setContentView(mView);
 	}
@@ -42,7 +42,7 @@ public class TinkerbellActivity extends Activity
 	@Override public void onBackPressed ()
 	{
 		// FIX: Queue event to correct thread but wait for return value!
-		// if (TinkerbellLib.OnBackKey() == 0)
+		// if (TBLib.OnBackKey() == 0)
 		super.onBackPressed();
 	}
 
@@ -52,7 +52,7 @@ public class TinkerbellActivity extends Activity
 		{
 			mView.queueEvent(new Runnable() {
 				public void run() {
-					TinkerbellLib.OnMenuKey();
+					TBLib.OnMenuKey();
 				}});
 		}
 		return false; */
@@ -65,7 +65,7 @@ public class TinkerbellActivity extends Activity
 		// Exit
 		mView.queueEvent(new Runnable() {
 			public void run() {
-				TinkerbellLib.ShutDownApp();
+				TBLib.ShutDownApp();
 			}});
 		return false;
 	}

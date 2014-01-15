@@ -1,13 +1,12 @@
-package com.demo.tinkerbell;
+package com.fiffigt.tb.demo;
 
 import android.content.res.AssetManager;
-import com.demo.tinkerbell.TinkerbellView;
 
-public class TinkerbellLib
+public class TBLib
 {
 	static
 	{
-		System.loadLibrary("Tinkerbell");
+		System.loadLibrary("TurboBadger");
 	}
 	static boolean sInitiated = false;
 
@@ -34,6 +33,6 @@ public class TinkerbellLib
 
 	// Methods called from the C++ code
 	public static void ShowKeyboard(int show) {
-		TinkerbellView.ShowKeyboard(show);
+		TBView.ShowKeyboard(show);
 	}
 }

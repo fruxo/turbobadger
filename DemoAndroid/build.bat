@@ -3,7 +3,7 @@
 
 call update_assets.bat
 
-set INSTALL=adb install -r bin/TinkerbellDemo-debug.apk
-set RUN=adb shell am start -n com.demo.tinkerbell/.TinkerbellActivity
+set INSTALL=adb install -r bin/TBDemo-debug.apk
+set RUN=adb shell am start -n com.fiffigt.tb.demo/.TBActivity
 
-ndk-build && ant debug && %INSTALL% && %RUN%
+ndk-build -j 4 && ant debug && %INSTALL% && %RUN%

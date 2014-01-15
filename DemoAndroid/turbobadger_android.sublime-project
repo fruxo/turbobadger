@@ -7,9 +7,6 @@
 			"file_exclude_patterns": ["RunDemo", "*.png"]
 		},
 		{
-			"path": "../Demo/renderers/"
-		},
-		{
 			"path": "../src/",
 			"folder_exclude_patterns": ["icon"],
 			"file_exclude_patterns": ["*.png"]

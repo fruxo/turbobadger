@@ -1,4 +1,4 @@
-package com.demo.tinkerbell;
+package com.fiffigt.tb.demo;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -14,43 +14,43 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 import javax.microedition.khronos.opengles.GL10;
 
-class EventRunnable implements Runnable {
-	float m_x, m_y, m_x2, m_y2;
-	int m_action;
-	public EventRunnable(float x, float y, float x2, float y2, int action) {
-		m_x = x;
-		m_y = y;
-		m_x2 = x2;
-		m_y2 = y2;
-		m_action = action;
-	}
-	public void run() {
-		if (m_action == MotionEvent.ACTION_POINTER_DOWN) {
-			TinkerbellLib.OnPointer2(m_x2, m_y2, 1);
-		}
-		else if (m_action == MotionEvent.ACTION_POINTER_UP) {
-			TinkerbellLib.OnPointer2(m_x2, m_y2, 0);
-		}
-		else if (m_action == MotionEvent.ACTION_DOWN) {
-			TinkerbellLib.OnPointer(m_x, m_y, 1);
-		}
-		else if (m_action == MotionEvent.ACTION_UP) {
-			TinkerbellLib.OnPointer(m_x, m_y, 0);
-		}
-		else if (m_action == MotionEvent.ACTION_MOVE) {
-			TinkerbellLib.OnPointerMove(m_x, m_y, m_x2, m_y2);
-		}
-		// FIX: ACTION_SCROLL
-	}
-}
-
-class TinkerbellView extends GLSurfaceView
+class TBView extends GLSurfaceView
 {
-	private static TinkerbellView instance;
-	private static boolean show_keyboard;
-	private TinkerbellRenderer renderer;
+	static class EventRunnable implements Runnable {
+		float m_x, m_y, m_x2, m_y2;
+		int m_action;
+		public EventRunnable(float x, float y, float x2, float y2, int action) {
+			m_x = x;
+			m_y = y;
+			m_x2 = x2;
+			m_y2 = y2;
+			m_action = action;
+		}
+		public void run() {
+			if (m_action == MotionEvent.ACTION_POINTER_DOWN) {
+				TBLib.OnPointer2(m_x2, m_y2, 1);
+			}
+			else if (m_action == MotionEvent.ACTION_POINTER_UP) {
+				TBLib.OnPointer2(m_x2, m_y2, 0);
+			}
+			else if (m_action == MotionEvent.ACTION_DOWN) {
+				TBLib.OnPointer(m_x, m_y, 1);
+			}
+			else if (m_action == MotionEvent.ACTION_UP) {
+				TBLib.OnPointer(m_x, m_y, 0);
+			}
+			else if (m_action == MotionEvent.ACTION_MOVE) {
+				TBLib.OnPointerMove(m_x, m_y, m_x2, m_y2);
+			}
+			// FIX: ACTION_SCROLL
+		}
+	}
 
-	public TinkerbellView(Context context) {
+	private static TBView instance;
+	private static boolean show_keyboard;
+	private TBRenderer renderer;
+
+	public TBView(Context context) {
 		super(context);
 
 		instance = this;
@@ -68,7 +68,7 @@ class TinkerbellView extends GLSurfaceView
 		setEGLConfigChooser(8, 8, 8, 0, 0, 0);
 
 		// Set the renderer associated with this view
-		renderer = new TinkerbellRenderer();
+		renderer = new TBRenderer();
 		setRenderer(renderer);
 	}
 
@@ -77,7 +77,7 @@ class TinkerbellView extends GLSurfaceView
 		// FIX: We should probably wait here until the queued event has been processed.
 		queueEvent(new Runnable() {
 			public void run() {
-				TinkerbellLib.OnPauseApp();
+				TBLib.OnPauseApp();
 			}});
 	}
 
@@ -85,7 +85,7 @@ class TinkerbellView extends GLSurfaceView
 		super.onResume();
 		queueEvent(new Runnable() {
 			public void run() {
-				TinkerbellLib.OnResumeApp();
+				TBLib.OnResumeApp();
 			}});
 	}
 
@@ -104,11 +104,11 @@ class TinkerbellView extends GLSurfaceView
 		super.surfaceDestroyed(holder);
 		queueEvent(new Runnable() {
 			public void run() {
-				TinkerbellLib.OnContextLost();
+				TBLib.OnContextLost();
 			}});
 	}
 
-	private static class TinkerbellRenderer implements GLSurfaceView.Renderer
+	private static class TBRenderer implements GLSurfaceView.Renderer
 	{
 		private int m_width, m_height;
 		public void onDrawFrame(GL10 gl) {
@@ -128,30 +128,30 @@ class TinkerbellView extends GLSurfaceView
 					handleSurfaceSizeChanged(w[0], h[0]);
 			}
 
-			TinkerbellLib.RunSlice();
+			TBLib.RunSlice();
 		}
 
 		public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-			if (TinkerbellLib.sInitiated) {
-				TinkerbellLib.OnContextRestored();
+			if (TBLib.sInitiated) {
+				TBLib.OnContextRestored();
 			}
 		}
 
 		public void onSurfaceChanged(GL10 gl, int width, int height) {
-			if (!TinkerbellLib.sInitiated) {
-				TinkerbellLib.sInitiated = true;
-				TinkerbellLib.InitApp(width, height, "", "");
+			if (!TBLib.sInitiated) {
+				TBLib.sInitiated = true;
+				TBLib.InitApp(width, height, "", "");
 			}
 			handleSurfaceSizeChanged(width, height);
 		}
 
 		private void handleSurfaceSizeChanged(int width, int height) {
-			if (!TinkerbellLib.sInitiated ||
+			if (!TBLib.sInitiated ||
 				(width == m_width && height == m_height))
 				return;
 			m_width = width;
 			m_height = height;
-			TinkerbellLib.OnSurfaceResized(width, height);
+			TBLib.OnSurfaceResized(width, height);
 		}
 	}
 
@@ -168,7 +168,7 @@ class TinkerbellView extends GLSurfaceView
 					imm.showSoftInput(instance, 0);
 				else
 					imm.hideSoftInputFromWindow(instance.getWindowToken(), 0);
-				Log.d("tinkerbell", show_keyboard ? "ShowKeyboard" : "HideKeyboard");
+				Log.d("TB", show_keyboard ? "ShowKeyboard" : "HideKeyboard");
 			}
 		}, 20);
 	}
