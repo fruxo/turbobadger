@@ -1,12 +1,12 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo", "Demo.vcxproj", "{C3FDE1FE-1FCB-4156-BB37-2E38F5C2DFE7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{156102D7-F2DD-4618-B2EB-2DFE607EE6DD} = {156102D7-F2DD-4618-B2EB-2DFE607EE6DD}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinkerbell_static", "tinkerbell_static.vcxproj", "{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tb_static", "tb_static.vcxproj", "{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

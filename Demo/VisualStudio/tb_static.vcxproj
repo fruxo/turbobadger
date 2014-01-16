@@ -151,7 +151,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{156102D7-F2DD-4618-B2EB-2DFE607EE6DD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>tinkerbell_static</RootNamespace>
+    <RootNamespace>tb_static</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
