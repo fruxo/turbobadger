@@ -150,7 +150,7 @@ Author
 Emil Segerås
 Web: <http://fiffigt.com>  
 
-Turbo Badger home: <https://github.com/fruxo/tinkerbell>  
+Turbo Badger home: <https://github.com/fruxo/turbobadger>  
 Mailing list: turbobadger@googlegroups.com
 
 Please use the mailing list for questions & suggestions instead of mailing me
