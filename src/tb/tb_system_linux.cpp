@@ -33,6 +33,11 @@ double TBSystem::GetTimeMS()
 //{
 //}
 
+int TBSystem::GetLongClickDelayMS()
+{
+	return 500;
+}
+
 int TBSystem::GetPanThreshold()
 {
 	return 5 * GetDPI() / 96;

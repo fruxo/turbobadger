@@ -183,6 +183,7 @@ public:
 		switch (type)
 		{
 		case EVENT_TYPE_CLICK:			return "CLICK";
+		case EVENT_TYPE_LONG_CLICK:		return "LONG_CLICK";
 		case EVENT_TYPE_POINTER_DOWN:	return "POINTER_DOWN";
 		case EVENT_TYPE_POINTER_UP:		return "POINTER_UP";
 		case EVENT_TYPE_POINTER_MOVE:	return "POINTER_MOVE";

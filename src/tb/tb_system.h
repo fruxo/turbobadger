@@ -34,6 +34,10 @@ public:
 		It may also be TB_NOT_SOON which means that ProcessMessages doesn't need to be called. */
 	static void RescheduleTimer(double fire_time);
 
+	/** Get how many milliseconds it should take after a touch down event should generate a long click
+		event. */
+	static int GetLongClickDelayMS();
+
 	/** Get how many pixels of dragging should start panning scrollable widgets. */
 	static int GetPanThreshold();
 

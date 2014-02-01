@@ -32,6 +32,26 @@ bool TBWidget::update_widget_states = true;
 bool TBWidget::update_skin_states = true;
 bool TBWidget::show_focus_state = false;
 
+// == TBLongClickTimer ==================================================================
+
+/** One shot timer for long click event */
+class TBLongClickTimer : private TBMessageHandler
+{
+public:
+	TBLongClickTimer(TBWidget *widget, bool touch) : m_widget(widget), m_touch(touch)
+	{
+		PostMessageDelayed(TBIDC("TBLongClickTimer"), nullptr, TBSystem::GetLongClickDelayMS());
+	}
+	virtual void OnMessageReceived(TBMessage *msg)
+	{
+		assert(msg->message == TBIDC("TBLongClickTimer"));
+		m_widget->MaybeInvokeLongClickOrContextMenu(m_touch);
+	}
+private:
+	TBWidget *m_widget;
+	bool m_touch;
+};
+
 // == TBWidget::PaintProps ==============================================================
 
 TBWidget::PaintProps::PaintProps()
@@ -50,6 +70,7 @@ TBWidget::TBWidget()
 	, m_gravity(WIDGET_GRAVITY_DEFAULT)
 	, m_layout_params(nullptr)
 	, m_scroller(nullptr)
+	, m_long_click_timer(nullptr)
 	, m_packed_init(0)
 {
 #ifdef TB_RUNTIME_DEBUG_INFO
@@ -75,6 +96,8 @@ TBWidget::~TBWidget()
 
 	delete m_scroller;
 	delete m_layout_params;
+
+	StopLongClickTimer();
 
 	assert(!m_listeners.HasLinks()); // There's still listeners added to this widget!
 }
@@ -1100,6 +1123,7 @@ bool TBWidget::InvokeEvent(TBWidgetEvent &ev)
 	switch (ev.type)
 	{
 	case EVENT_TYPE_CLICK:
+	case EVENT_TYPE_LONG_CLICK:
 	case EVENT_TYPE_CHANGED:
 	case EVENT_TYPE_KEY_DOWN:
 	case EVENT_TYPE_KEY_UP:
@@ -1116,6 +1140,20 @@ bool TBWidget::InvokeEvent(TBWidgetEvent &ev)
 	return handled;
 }
 
+void TBWidget::StartLongClickTimer(bool touch)
+{
+	StopLongClickTimer();
+	m_long_click_timer = new TBLongClickTimer(this, touch);
+}
+
+void TBWidget::StopLongClickTimer()
+{
+	if (!m_long_click_timer)
+		return;
+	delete m_long_click_timer;
+	m_long_click_timer = nullptr;
+}
+
 void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch)
 {
 	if (!captured_widget)
@@ -1127,6 +1165,10 @@ void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 		// Hide focus when we use the pointer, if it's not on the focused widget.
 		if (focused_widget != captured_widget)
 			SetAutoFocusState(false);
+
+		// Start long click timer. Only for touch events for now.
+		if (touch && captured_widget && captured_widget->GetWantLongClick())
+			captured_widget->StartLongClickTimer(touch);
 
 		// Get the closest parent window and bring it to the top
 		TBWindow *window = captured_widget ? captured_widget->GetParentWindow() : nullptr;
@@ -1186,6 +1228,28 @@ void TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool to
 	}
 }
 
+void TBWidget::MaybeInvokeLongClickOrContextMenu(bool touch)
+{
+	StopLongClickTimer();
+	if (captured_widget == this &&
+		!cancel_click &&
+		captured_widget->GetHitStatus(pointer_move_widget_x, pointer_move_widget_y))
+	{
+		// Invoke long click
+		TBWidgetEvent ev_long_click(EVENT_TYPE_LONG_CLICK, pointer_move_widget_x, pointer_move_widget_y, touch, TB_MODIFIER_NONE);
+		bool handled = captured_widget->InvokeEvent(ev_long_click);
+		if (!handled)
+		{
+			// Long click not handled so invoke a context menu event instead
+			TBWidgetEvent ev_context_menu(EVENT_TYPE_CONTEXT_MENU, pointer_move_widget_x, pointer_move_widget_y, touch, TB_MODIFIER_NONE);
+			handled = captured_widget->InvokeEvent(ev_context_menu);
+		}
+		// If any event was handled, suppress click when releasing pointer.
+		if (handled)
+			cancel_click = true;
+	}
+}
+
 void TBWidget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch)
 {
 	SetHoveredWidget(GetWidgetAt(x, y, true), touch);
@@ -1220,6 +1284,9 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 	// Do panning, or attempt starting panning (we don't know if any widget is scrollable yet)
 	if (captured_widget->m_packed.is_panning || maybe_start_panning_x || maybe_start_panning_y)
 	{
+		// The threshold is met for not invoking any long click
+		captured_widget->StopLongClickTimer();
+
 		int start_compensation_x = 0, start_compensation_y = 0;
 		if (!captured_widget->m_packed.is_panning)
 		{
@@ -1408,10 +1475,10 @@ void TBWidget::SetCapturedWidget(TBWidget *widget)
 	if (widget && widget->GetState(WIDGET_STATE_DISABLED))
 		return;
 
-	// Stop panning when capture change (most likely changing to nullptr because of InvokePointerUp)
-	// Notify any active scroller so it may begin scrolling.
 	if (TBWidget::captured_widget)
 	{
+		// Stop panning when capture change (most likely changing to nullptr because of InvokePointerUp)
+		// Notify any active scroller so it may begin scrolling.
 		if (TBScroller *scroller = TBWidget::captured_widget->FindStartedScroller())
 		{
 			if (TBWidget::captured_widget->m_packed.is_panning)
@@ -1420,14 +1487,15 @@ void TBWidget::SetCapturedWidget(TBWidget *widget)
 				scroller->Stop();
 		}
 		TBWidget::captured_widget->m_packed.is_panning = false;
+
+		// We apply pressed state automatically so the widget might need to be updated.
+		TBWidget::captured_widget->Invalidate();
+
+		TBWidget::captured_widget->StopLongClickTimer();
 	}
 	cancel_click = false;
 
 	TBWidget *old_capture = TBWidget::captured_widget;
-
-	// We apply pressed state automatically so the widget might need to be updated.
-	if (TBWidget::captured_widget)
-		TBWidget::captured_widget->Invalidate();
 
 	TBWidget::captured_widget = widget;
 

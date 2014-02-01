@@ -38,6 +38,7 @@ TBEditField::TBEditField()
 	, m_virtual_width(250)
 {
 	SetIsFocusable(true);
+	SetWantLongClick(true);
 	AddChild(&m_scrollbar_x);
 	AddChild(&m_scrollbar_y);
 	AddChild(&m_root);

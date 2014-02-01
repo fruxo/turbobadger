@@ -21,6 +21,7 @@ class TBWidget;
 class TBFontFace;
 class TBScroller;
 class TBWidgetListener;
+class TBLongClickTimer;
 
 // == Generic widget stuff =================================================
 
@@ -32,7 +33,7 @@ enum TB_ALIGN {
 };
 
 enum EVENT_TYPE {
-	/** CLICK event is what should be used to trig actions in almost all cases.
+	/** Click event is what should be used to trig actions in almost all cases.
 
 		It is invoked on a widget after POINTER_UP if the pointer is still inside
 		its hit area. It can also be invoked by keyboard on some clickable widgets
@@ -41,6 +42,15 @@ enum EVENT_TYPE {
 		If panning of scrollable widgets start while the pointer is down, CLICK
 		won't be invoked when releasing the pointer (since that should stop panning). */
 	EVENT_TYPE_CLICK,
+
+	/** Long click event is sent when the pointer has been down for some time
+		without moving much.
+
+		It is invoked on a widget that has enabled it (TBWidget::SetWantLongClick
+		If this event isn't handled, the widget will invoke a CONTEXT_MENU event.
+		If any of those are handled, the CLICK event that would normally be
+		invoked after the pending POINTER_UP will be suppressed. */
+	EVENT_TYPE_LONG_CLICK,
 	EVENT_TYPE_POINTER_DOWN,
 	EVENT_TYPE_POINTER_UP,
 	EVENT_TYPE_POINTER_MOVE,
@@ -60,7 +70,9 @@ enum EVENT_TYPE {
 			"cut", "copy", "paste", "selectall", "undo", "redo". */
 	EVENT_TYPE_SHORTCUT,
 
-	/** Invoked when a context menu should be opened at the event x and y coordinates. */
+	/** Invoked when a context menu should be opened at the event x and y coordinates.
+		It may be invoked automatically for a widget on long click, if nothing handles
+		the long click event. */
 	EVENT_TYPE_CONTEXT_MENU
 };
 
@@ -332,7 +344,8 @@ public:
 		F.ex if a action availability changes, some widget might have to become enabled/disabled,
 		or a skin might need to change due to different conditions.
 		This is done automatically for all invoked events of type:
-			EVENT_TYPE_CLICK, EVENT_TYPE_CHANGED, EVENT_TYPE_KEYDOWN, EVENT_TYPE_KEYUP. */
+			EVENT_TYPE_CLICK, EVENT_TYPE_LONG_CLICK, EVENT_TYPE_CHANGED, EVENT_TYPE_KEYDOWN,
+			EVENT_TYPE_KEYUP. */
 	void InvalidateStates();
 
 	/** Delete the widget with the possibility for some extended life during animations.
@@ -465,6 +478,11 @@ public:
 	/** Set if this widget should emulate a click when it's focused and pressing enter or space. */
 	void SetClickByKey(bool click_by_key) { m_packed.click_by_key = click_by_key; }
 	bool GetClickByKey() const { return m_packed.click_by_key; }
+
+	/** Set if this widget should generate long-click event (or context menu event if nothing
+		handles the long click event). The default is false. */
+	void SetWantLongClick(bool want_long_click) { m_packed.want_long_click = want_long_click; }
+	bool GetWantLongClick() const { return m_packed.want_long_click; }
 
 	/** Set if this widget should ignore input, as if it didn't exist. */
 	void SetIgnoreInput(bool ignore_input) { m_packed.ignore_input = ignore_input; }
@@ -897,6 +915,7 @@ private:
 	SizeConstraints m_cached_sc;	///< Cached size constraints.
 	LayoutParams *m_layout_params;	///< Layout params, or nullptr.
 	TBScroller *m_scroller;
+	TBLongClickTimer *m_long_click_timer;
 	union {
 		struct {
 			uint16 is_group_root : 1;
@@ -908,6 +927,7 @@ private:
 			uint16 is_cached_ps_valid : 1;
 			uint16 no_automatic_hover_state : 1;
 			uint16 is_panning : 1;
+			uint16 want_long_click : 1;
 		} m_packed;
 		uint16 m_packed_init;
 	};
@@ -945,6 +965,10 @@ private:
 	static void SetHoveredWidget(TBWidget *widget, bool touch);
 	static void SetCapturedWidget(TBWidget *widget);
 	void HandlePanningOnMove(int x, int y);
+	void StartLongClickTimer(bool touch);
+	void StopLongClickTimer();
+	friend class TBLongClickTimer;
+	void MaybeInvokeLongClickOrContextMenu(bool touch);
 };
 
 }; // namespace tb
