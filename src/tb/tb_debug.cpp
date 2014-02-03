@@ -118,7 +118,7 @@ public:
 		str.Append(id.debug_string);
 		str.Append("\"");
 #else
-		str.SetFormatted("%u", ev.target->GetID());
+		str.SetFormatted("%u", (uint32)id);
 #endif
 		return str;
 	}
