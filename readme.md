@@ -1,4 +1,3 @@
-
 Turbo Badger - Fast UI toolkit for hardware accelerated games & applications.
 -----------------------------------------------------------------------------------
 
@@ -155,3 +154,11 @@ Mailing list: turbobadger@googlegroups.com
 
 Please use the mailing list for questions & suggestions instead of mailing me
 directly!
+
+
+Screenshot
+-----------------------------------------------------------------------------------
+
+Some of the windows in the Demo application for desktop, using the default skin.
+
+![Default skin](Demo/screenshot/screenshot_01.png)
