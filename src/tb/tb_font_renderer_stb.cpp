@@ -7,15 +7,14 @@
 #include "tb_renderer.h"
 #include "tb_system.h"
 
+#ifdef TB_FONT_RENDERER_STB
+
 using namespace tb;
 
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
-#include "stb_truetype.h"
+#include "thirdparty/stb_truetype.h"
 
-/** STBFontRenderer renders fonts using stb_truetype.h (http://nothings.org/).
-	It's a *very unsafe* font library to use except for fonts that's known
-	to work. Freetype generates much prettier glyphs (using hinting) but is
-	a lot larger. This implementation is kept here as long as it compiles. */
+/** STBFontRenderer renders fonts using stb_truetype.h (http://nothings.org/) */
 
 class STBFontRenderer : public TBFontRenderer
 {
@@ -121,3 +120,5 @@ void register_stb_font_renderer()
 	if (STBFontRenderer *fr = new STBFontRenderer)
 		g_font_manager->AddRenderer(fr);
 }
+
+#endif // TB_FONT_RENDERER_STB

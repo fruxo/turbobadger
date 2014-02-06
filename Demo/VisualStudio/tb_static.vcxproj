@@ -27,6 +27,8 @@
     <ClCompile Include="..\..\src\tb\tb_dimension.cpp" />
     <ClCompile Include="..\..\src\tb\tb_editfield.cpp" />
     <ClCompile Include="..\..\src\tb\tb_font_renderer.cpp" />
+    <ClCompile Include="..\..\src\tb\tb_font_renderer_freetype.cpp" />
+    <ClCompile Include="..\..\src\tb\tb_font_renderer_stb.cpp" />
     <ClCompile Include="..\..\src\tb\tb_font_renderer_tbbf.cpp" />
     <ClCompile Include="..\..\src\tb\tb_geometry.cpp" />
     <ClCompile Include="..\..\src\tb\tb_hash.cpp" />

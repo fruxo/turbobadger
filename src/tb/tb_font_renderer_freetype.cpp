@@ -7,6 +7,8 @@
 #include "tb_renderer.h"
 #include "tb_system.h"
 
+#ifdef TB_FONT_RENDERER_FREETYPE
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_SIZES_H
@@ -194,3 +196,5 @@ void register_freetype_font_renderer()
 	if (FreetypeFontRenderer *fr = new FreetypeFontRenderer)
 		g_font_manager->AddRenderer(fr);
 }
+
+#endif // TB_FONT_RENDERER_FREETYPE

@@ -10,6 +10,8 @@
 #include "tb_node_tree.h"
 #include "tb_hashtable.h"
 
+#ifdef TB_FONT_RENDERER_TBBF
+
 using namespace tb;
 
 struct GLYPH {
@@ -278,3 +280,5 @@ void register_tbbf_font_renderer()
 	if (TBBFRenderer *fr = new TBBFRenderer)
 		g_font_manager->AddRenderer(fr);
 }
+
+#endif // TB_FONT_RENDERER_TBBF

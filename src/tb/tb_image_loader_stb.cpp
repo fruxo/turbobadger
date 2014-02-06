@@ -6,6 +6,8 @@
 #include "tb_bitmap_fragment.h"
 #include "tb_system.h"
 
+#ifdef TB_IMAGE_LOADER_STB
+
 namespace tb {
 
 // Remove image formats we don't use to limit binary size.
@@ -86,3 +88,5 @@ TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
 }
 
 }; // namespace tb
+
+#endif // TB_IMAGE_LOADER_STB

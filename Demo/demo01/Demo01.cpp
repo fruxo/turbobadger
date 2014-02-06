@@ -807,25 +807,38 @@ int app_main()
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
 	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
 
-	// Register tbbf font renderer
+	// Register font renderers.
+#ifdef TB_FONT_RENDERER_TBBF
 	void register_tbbf_font_renderer();
 	register_tbbf_font_renderer();
+#endif
+#ifdef TB_FONT_RENDERER_STB
+	void register_stb_font_renderer();
+	register_stb_font_renderer();
+#endif
+#ifdef TB_FONT_RENDERER_FREETYPE
+	void register_freetype_font_renderer();
+	register_freetype_font_renderer();
+#endif
 
-	// Register freetype font renderer - if you compile with tb_font_renderer_freetype.cpp
-	//void register_freetype_font_renderer();
-	//register_freetype_font_renderer();
-
-	// Add a font to the font manager.
-	// If you use the freetype or stb backend, you can add true type files
-	//g_font_manager->AddFontInfo("resources/vera.ttf", "Vera");
+	// Add fonts we can use to the font manager.
+#if defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
+	g_font_manager->AddFontInfo("resources/vera.ttf", "Vera");
+#endif
+#ifdef TB_FONT_RENDERER_TBBF
 	g_font_manager->AddFontInfo("resources/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
 	g_font_manager->AddFontInfo("Demo/fonts/neon.tb.txt", "Neon");
 	g_font_manager->AddFontInfo("Demo/fonts/orangutang.tb.txt", "Orangutang");
 	g_font_manager->AddFontInfo("Demo/fonts/orange.tb.txt", "Orange");
+#endif
 
 	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;
+#ifdef TB_FONT_RENDERER_TBBF
 	fd.SetID(TBIDC("Segoe"));
+#else
+	fd.SetID(TBIDC("Vera"));
+#endif
 	fd.SetSize(g_tb_skin->GetDimensionConverter()->DpToPx(14));
 	g_font_manager->SetDefaultFontDescription(fd);
 
