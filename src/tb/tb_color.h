@@ -6,7 +6,6 @@
 #ifndef TB_COLOR_H
 #define TB_COLOR_H
 
-#include "tb_config.h"
 #include "tb_types.h"
 
 namespace tb {

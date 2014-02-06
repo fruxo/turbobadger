@@ -6,7 +6,7 @@
 #ifndef TB_DEBUG_H
 #define TB_DEBUG_H
 
-#include "tb_config.h"
+#include "tb_types.h"
 
 #ifdef _DEBUG
 #define TB_IF_DEBUG(debug) debug

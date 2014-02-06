@@ -6,7 +6,7 @@
 #ifndef TB_ID_H
 #define TB_ID_H
 
-#include "tb_config.h"
+#include "tb_types.h"
 #include "tb_hash.h"
 #include "tb_str.h"
 

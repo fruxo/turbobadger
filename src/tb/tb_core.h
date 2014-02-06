@@ -28,7 +28,7 @@ freely, subject to the following restrictions:
 #ifndef TB_CORE_H
 #define TB_CORE_H
 
-#include "tb_config.h"
+#include "tb_types.h"
 #include "tb_hash.h"
 #include "tb_debug.h"
 

@@ -6,7 +6,7 @@
 #ifndef TB_FONT_DESC_H
 #define TB_FONT_DESC_H
 
-#include "tb_config.h"
+#include "tb_types.h"
 #include "tb_id.h"
 
 namespace tb {

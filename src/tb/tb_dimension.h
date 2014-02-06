@@ -6,7 +6,7 @@
 #ifndef TB_DIMENSION_H
 #define TB_DIMENSION_H
 
-#include "tb_config.h"
+#include "tb_types.h"
 #include "tb_debug.h"
 #include "tb_str.h"
 

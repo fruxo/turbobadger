@@ -2,6 +2,11 @@
 // ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
+//
+// This file contains defines for the default configuration of Turbo Badger.
+// You may change these here, but to make upgrades easier it's better to create a
+// copy of this file in a include path that is searched before Turbo Badger during
+// build (F.ex the solution directory for Visual Studio).
 
 #ifndef TB_CONFIG_H
 #define TB_CONFIG_H

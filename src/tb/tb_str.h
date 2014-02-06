@@ -6,8 +6,8 @@
 #ifndef TB_STR_H
 #define TB_STR_H
 
+#include "tb_types.h"
 #include <string.h>
-#include "tb_config.h"
 
 namespace tb {
 
