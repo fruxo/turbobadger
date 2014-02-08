@@ -13,6 +13,7 @@ namespace tb {
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 uint32 dbg_begin_paint_batch_id = 0;
+uint32 dbg_frame_triangle_count = 0;
 #endif // TB_RUNTIME_DEBUG_INFO
 
 #define VER_COL(r, g, b, a) (((a)<<24) + ((b)<<16) + ((g)<<8) + r)
@@ -40,6 +41,10 @@ void TBRendererBatcher::Batch::Flush(TBRendererBatcher *batch_renderer)
 #ifdef TB_RUNTIME_DEBUG_INFO
 	if (TB_DEBUG_SETTING(RENDER_BATCHES))
 	{
+		// This assumes we're drawing triangles. Need to modify this
+		// if we start using strips, fans or whatever.
+		dbg_frame_triangle_count += vertex_count / 3;
+
 		// Draw the triangles again using a random color based on the batch
 		// id. This indicates which triangles belong to the same batch.
 		uint32 id = batch_id - dbg_begin_paint_batch_id;
@@ -85,6 +90,7 @@ void TBRendererBatcher::BeginPaint(int render_target_w, int render_target_h)
 {
 #ifdef TB_RUNTIME_DEBUG_INFO
 	dbg_begin_paint_batch_id = batch.batch_id;
+	dbg_frame_triangle_count = 0;
 #endif // TB_RUNTIME_DEBUG_INFO
 
 	m_screen_rect.Set(0, 0, render_target_w, render_target_h);
@@ -97,7 +103,9 @@ void TBRendererBatcher::EndPaint()
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 	if (TB_DEBUG_SETTING(RENDER_BATCHES))
-		TBDebugPrint("Frame rendered using %d batches.\n", batch.batch_id - dbg_begin_paint_batch_id);
+		TBDebugPrint("Frame rendered using %d batches and a total of %d triangles.\n",
+						batch.batch_id - dbg_begin_paint_batch_id,
+						dbg_frame_triangle_count);
 #endif // TB_RUNTIME_DEBUG_INFO
 }
 
