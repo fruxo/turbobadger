@@ -22,6 +22,7 @@ public:
 	int GetIndexFromChild(TBWidget *child) const;
 
 	virtual void OnChildAdded(TBWidget *child);
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 };
 
 /** TBTabContainer - A container with tabs for multiple pages. */

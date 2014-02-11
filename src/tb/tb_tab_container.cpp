@@ -29,6 +29,19 @@ void TBTabLayout::OnChildAdded(TBWidget *child)
 	}
 }
 
+PreferredSize TBTabLayout::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
+{
+	PreferredSize ps = TBLayout::OnCalculatePreferredContentSize(constraints);
+	// Make sure the number of tabs doesn't grow parents.
+	// It is only the content that should do that. The tabs
+	// will scroll anyway.
+	if (GetAxis() == AXIS_X)
+		ps.min_w = 1;
+	else
+		ps.min_h = 1;
+	return ps;
+}
+
 // == TBTabContainer ====================================================================
 
 TBTabContainer::TBTabContainer()
