@@ -62,7 +62,7 @@ int TBDimensionConverter::MmToPx(int mm) const
 
 int TBDimensionConverter::GetPxFromString(const char *str, int def_value) const
 {
-	if (!str || !isdigit(*str))
+	if (!str || !is_start_of_number(str))
 		return def_value;
 	int len = strlen(str);
 	int val = atoi(str);
