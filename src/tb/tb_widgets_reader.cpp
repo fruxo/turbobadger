@@ -45,7 +45,8 @@ TB_WIDGET_FACTORY(TBEditField, TBValue::TYPE_STRING, WIDGET_Z_TOP)
 	widget->SetReadOnly(info->node->GetValueInt("readonly", 0) ? true : false);
 	widget->SetWrapping(info->node->GetValueInt("wrap", widget->GetWrapping()) ? true : false);
 	widget->SetAdaptToContentSize(info->node->GetValueInt("adapt-to-content", widget->GetAdaptToContentSize()) ? true : false);
-	widget->SetVirtualWidth(info->node->GetValueInt("virtual-width", widget->GetVirtualWidth()));
+	if (const char *virtual_width = info->node->GetValueString("virtual-width", nullptr))
+		widget->SetVirtualWidth(g_tb_skin->GetDimensionConverter()->GetPxFromString(virtual_width, widget->GetVirtualWidth()));
 	if (const char *text = info->node->GetValueString("placeholder", nullptr))
 		widget->SetPlaceholderText(text);
 	if (const char *type = info->node->GetValueString("type", nullptr))
@@ -64,8 +65,8 @@ TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP)
 {
 	const char *axis = info->node->GetValueString("axis", "x");
 	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-	int spacing_dp = info->node->GetValueInt("spacing", SPACING_FROM_SKIN);
-	widget->SetSpacing(g_tb_skin->GetDimensionConverter()->DpToPx(spacing_dp));
+	if (const char *spacing = info->node->GetValueString("spacing", nullptr))
+		widget->SetSpacing(g_tb_skin->GetDimensionConverter()->GetPxFromString(spacing, SPACING_FROM_SKIN));
 	widget->SetGravity(WIDGET_GRAVITY_ALL);
 	if (const char *size = info->node->GetValueString("size", nullptr))
 	{

@@ -95,11 +95,11 @@ elements
 
 	# == button_group is not a widget. It's specified on widgets that should group TBButton =======
 	button_group
-		spacing -1
+		spacing -1px
 
 	# == TBSection skins ==========================================================================
 	TBSection.layout
-		spacing -1
+		spacing -1px
 	TBSection.container
 		bitmap TBSectionContainer.png
 		type StretchBorder
@@ -146,7 +146,7 @@ elements
 
 	# == TBTabContainer skins - Create strong overrides for the tab buttons four alignments ============
 	TBTabContainer.rootlayout
-		spacing -1
+		spacing -1px
 	TBTabContainer.tablayout_x
 		padding 0 10
 	TBTabContainer.tablayout_y
