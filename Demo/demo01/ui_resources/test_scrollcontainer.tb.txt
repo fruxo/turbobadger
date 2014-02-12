@@ -36,8 +36,8 @@ TBLayout
 			TBTextField: text: "TBButton containing TBEditField:"
 			TBLayout
 				TBButton
-					TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt-to-content: 1
-						text: "A button with text that is able to wrap to multiple lines."
+					TBEditField: gravity: all, skin: 0, multiline: 1, readonly: 1, adapt-to-content: 1, styling: 1
+						text: "A <color #0794f8>TBButton</color> with styled text that is able to wrap to multiple lines."
 			TBTextField: text: "Showing menu manually, and TBSelectDropdown:"
 			TBLayout
 				TBButton
