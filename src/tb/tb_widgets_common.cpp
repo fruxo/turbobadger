@@ -105,7 +105,11 @@ PreferredSize TBTextField::OnCalculatePreferredContentSize(const SizeConstraints
 	if (m_cached_text_width == UPDATE_TEXT_WIDTH_CACHE)
 		m_cached_text_width = m_text.GetWidth(this);
 	ps.pref_w = m_cached_text_width;
-	ps.pref_h = ps.min_h = ps.max_h = m_text.GetHeight(this);
+	ps.pref_h = ps.min_h = m_text.GetHeight(this);
+	// If gravity pull both up and down, use default max_h (grow as much as possible).
+	// Otherwise it makes sense to only accept one line height.
+	if (!((GetGravity() & WIDGET_GRAVITY_TOP) && (GetGravity() & WIDGET_GRAVITY_BOTTOM)))
+		ps.max_h = ps.pref_h;
 	if (!m_squeezable)
 		ps.min_w = ps.pref_w;
 	return ps;
