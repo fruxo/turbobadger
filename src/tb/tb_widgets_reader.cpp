@@ -380,6 +380,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 	if (TBNode *lp = node->GetNode("lp"))
 	{
 		LayoutParams layout_params;
+		if (new_widget->GetLayoutParams())
+			layout_params = *new_widget->GetLayoutParams();
 		const TBDimensionConverter *dc = g_tb_skin->GetDimensionConverter();
 		if (const char *str = lp->GetValueString("width", nullptr))
 			layout_params.SetWidth(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
