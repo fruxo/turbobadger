@@ -330,7 +330,10 @@ void TBWidget::SetZ(WIDGET_Z z)
 
 void TBWidget::SetGravity(WIDGET_GRAVITY g)
 {
+	if (m_gravity == g)
+		return;
 	m_gravity = g;
+	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 }
 
 void TBWidget::SetSkinBg(const TBID &skin_bg, WIDGET_INVOKE_INFO info)
