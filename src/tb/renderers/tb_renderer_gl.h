@@ -6,7 +6,7 @@
 #ifndef TB_RENDERER_GL_H
 #define TB_RENDERER_GL_H
 
-#ifdef USE_GLES
+#ifdef TB_RENDERER_GLES_1
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 #elif defined(_WIN32)
@@ -16,8 +16,6 @@
 #include <OpenGL/gl.h>
 #elif defined(ANDROID)
 #include <GLES/gl.h>
-//#include <GLES2/gl2.h>
-//#include <GLES2/gl2ext.h>
 #else
 #include <GL/gl.h>
 #endif

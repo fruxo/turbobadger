@@ -65,7 +65,7 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../src/tb/renderers/tb_renderer_gl.cpp \
 
 LOCAL_MODULE     := libTurboBadger
-LOCAL_CFLAGS     := -Werror -DANDROID -D__ANDROID__ -DUSE_GLES -DTB_ALWAYS_SHOW_EDIT_FOCUS
+LOCAL_CFLAGS     := -Werror -DANDROID -D__ANDROID__ -DTB_RENDERER_GLES_1 -DTB_ALWAYS_SHOW_EDIT_FOCUS
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../.. $(LOCAL_PATH)/../../src/tb $(LOCAL_PATH)/../../Demo/renderers
 LOCAL_LDLIBS     := -llog -landroid -lGLESv1_CM
 LOCAL_CPPFLAGS   := -fno-rtti -fno-exceptions -std=c++0x
