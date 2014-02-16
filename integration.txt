@@ -10,6 +10,13 @@ This is a short guide to integrating Turbo Badger in a game or application.
 It basically list what you most probably want to do.
 More details is found in the method definitions.
 
+Build configuration
+-----
+
+There are defines in tb_config.h that control some features & implementation
+details. This file may be overridden by your own configuration (see tb_config.h for
+more info).
+
 Input
 -----
 
