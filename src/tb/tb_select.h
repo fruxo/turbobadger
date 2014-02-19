@@ -135,6 +135,9 @@ public:
 	/** Open the window if the model has items. */
 	void OpenWindow();
 
+	/** Close the window if it is open. */
+	void CloseWindow();
+
 	/** Return the menu window if it's open, or nullptr. */
 	TBMenuWindow *GetMenuIfOpen() const;
 

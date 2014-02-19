@@ -400,6 +400,7 @@ TBSelectDropdown::~TBSelectDropdown()
 {
 	GetContentRoot()->RemoveChild(&m_arrow);
 	SetSource(nullptr);
+	CloseWindow();
 }
 
 void TBSelectDropdown::OnSourceChanged()
@@ -446,6 +447,12 @@ void TBSelectDropdown::OpenWindow()
 		window->SetSkinBg("TBSelectDropdown.window");
 		window->Show(m_source, TBPopupAlignment(), GetValue());
 	}
+}
+
+void TBSelectDropdown::CloseWindow()
+{
+	if (TBMenuWindow *window = GetMenuIfOpen())
+		window->Close();
 }
 
 TBMenuWindow *TBSelectDropdown::GetMenuIfOpen() const
