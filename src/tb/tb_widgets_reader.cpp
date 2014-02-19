@@ -335,6 +335,12 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 	if (TBNode *data_node = node->GetNode("data"))
 		new_widget->data.Copy(data_node->GetValue());
 
+	new_widget->SetIsGroupRoot(node->GetValueInt("is-group-root", new_widget->GetIsGroupRoot()) ? true : false);
+
+	new_widget->SetIsFocusable(node->GetValueInt("is-focusable", new_widget->GetIsFocusable()) ? true : false);
+
+	new_widget->SetWantLongClick(node->GetValueInt("want-long-click", new_widget->GetWantLongClick()) ? true : false);
+
 	new_widget->SetIgnoreInput(node->GetValueInt("ignore-input", new_widget->GetIgnoreInput()) ? true : false);
 
 	if (const char *text = node->GetValueString("text", nullptr))

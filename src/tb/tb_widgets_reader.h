@@ -108,6 +108,10 @@ public:
 	group-id			TBWidget::m_group_id		TBID (string or int)
 	value				TBWidget::SetValue			integer
 	data				TBWidget::m_data			integer
+	is-group-root		TBWidget::SetIsGroupRoot	boolean
+	is-focusable		TBWidget::SetIsFocusable	boolean
+	want-long-click		TBWidget::SetWantLongClick	boolean
+	ignore-input		TBWidget::SetIgnoreInput	boolean
 	text				TBWidget::SetText			string
 	connection			TBWidget::Connect			string
 	gravity				TBWidget::SetGravity		string (combination of left, top, right, bottom, or all)
