@@ -21,7 +21,7 @@ enum TB_MSG {
 class TBMessageWindowSettings
 {
 public:
-	TBMessageWindowSettings() : msg(TB_MSG_OK), dimmer(false) {}
+	TBMessageWindowSettings() : msg(TB_MSG_OK), dimmer(false), styling(false) {}
 	TBMessageWindowSettings(TB_MSG msg, TBID icon_skin) : msg(msg), icon_skin(icon_skin), dimmer(false), styling(false) {}
 public:
 	TB_MSG msg;			///< The type of response for the message.
