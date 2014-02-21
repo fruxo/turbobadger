@@ -106,6 +106,8 @@ public:
 
 	virtual TBWidget *GetContentRoot() { return m_toggle_container.GetContentRoot(); }
 	virtual void OnProcessAfterChildren();
+
+	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 private:
 	TBLayout m_layout;
 	TBSectionHeader m_header;

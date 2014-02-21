@@ -81,6 +81,14 @@ void TBSection::OnProcessAfterChildren()
 	}
 }
 
+PreferredSize TBSection::OnCalculatePreferredSize(const SizeConstraints &constraints)
+{
+	PreferredSize ps = TBWidget::OnCalculatePreferredContentSize(constraints);
+	// We should not grow larger than we are, when there's extra space available.
+	ps.max_h = ps.pref_h;
+	return ps;
+}
+
 // == TBToggleContainer ===================================
 
 TB_WIDGET_FACTORY(TBToggleContainer, TBValue::TYPE_INT, WIDGET_Z_TOP)
