@@ -103,6 +103,8 @@ void TBLinkListIterator::RemoveLink(TBLink *link)
 
 TBLinkList::~TBLinkList()
 {
+	RemoveAll();
+
 	// Make sure any live iterators for this linklist are cleared!
 	while (first_iterator)
 		first_iterator->UnregisterAndClear();
