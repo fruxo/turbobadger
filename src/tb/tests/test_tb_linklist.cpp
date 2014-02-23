@@ -82,12 +82,21 @@ TB_TEST_GROUP(tb_linklist)
 		for (int i = 0; i < 3; i++)
 			apple_refs->AddLast(&apples[i]);
 
+		TB_VERIFY(apples[0].IsInList());
+		TB_VERIFY(apples[1].IsInList());
+		TB_VERIFY(apples[2].IsInList());
+
 		// Lets pretend we do some iteration in a list...
 		TBLinkListOf<Apple>::Iterator iterator = apple_refs->IterateForward();
 		TB_VERIFY(iterator.Get());
 
 		// Now the list itself gets deallocated.
 		delete apple_refs;
+
+		// Since the list is gone, the links should not be added anymore.
+		TB_VERIFY(!apples[0].IsInList());
+		TB_VERIFY(!apples[1].IsInList());
+		TB_VERIFY(!apples[2].IsInList());
 
 		// Now the iterator should not point to anything,
 		// and we should not crash.

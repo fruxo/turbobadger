@@ -70,6 +70,9 @@ class TBLink
 {
 public:
 	TBLink() : prev(nullptr), next(nullptr), linklist(nullptr) {}
+
+	/** Return true if the link is currently added to a list. */
+	bool IsInList() const { return linklist ? true : false; }
 public:
 	TBLink *prev;
 	TBLink *next;
@@ -103,6 +106,8 @@ public:
 	void AddAfter(TBLink *link, TBLink *reference);
 
 	bool ContainsLink(TBLink *link) const { return link->linklist == this; }
+
+	bool HasLinks() const { return first ? true : false; }
 
 	int CountLinks() const;
 public:
@@ -151,7 +156,7 @@ public:
 	T *GetLast() const { return (T *) static_cast<TBLinkOf<T>*>(m_linklist.last); }
 
 	/** Return true if this linklist contains any links. */
-	bool HasLinks() const { return m_linklist.first ? true : false; }
+	bool HasLinks() const { return m_linklist.HasLinks(); }
 
 	/** Count the number of links in this list by iterating through all links. */
 	int CountLinks() const { return m_linklist.CountLinks(); }
