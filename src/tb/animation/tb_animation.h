@@ -10,6 +10,8 @@
 
 namespace tb {
 
+class TBAnimationObject;
+
 /** Defines how the animation progress value is interpolated. */
 enum ANIMATION_CURVE {
 	ANIMATION_CURVE_LINEAR,		///< Linear
@@ -44,6 +46,26 @@ enum ANIMATION_TIME {
 #define ANIMATION_DEFAULT_CURVE			ANIMATION_CURVE_SLOW_DOWN
 #define ANIMATION_DEFAULT_DURATION		200
 
+/** TBAnimationListener - Listens to the progress of TBAnimationObject. */
+
+class TBAnimationListener : public TBLinkOf<TBAnimationListener>
+{
+public:
+	virtual ~TBAnimationListener() {};
+
+	/** Called after the animation object handled its own OnAnimationStart.
+		See TBAnimationObject::OnAnimationStart for details. */
+	virtual void OnAnimationStart(TBAnimationObject *obj) = 0;
+
+	/** Called after the animation object handled its own OnAnimationStart.
+		See TBAnimationObject::OnAnimationUpdate for details. */
+	virtual void OnAnimationUpdate(TBAnimationObject *obj, float progress) = 0;
+
+	/** Called after the animation object handled its own OnAnimationStart.
+		See TBAnimationObject::OnAnimationStop for details. */
+	virtual void OnAnimationStop(TBAnimationObject *obj, bool aborted) = 0;
+};
+
 /** TBAnimationObject - Base class for all animated object */
 
 class TBAnimationObject : public TBLinkOf<TBAnimationObject>
@@ -56,6 +78,8 @@ public:
 public:
 	bool IsAnimating() { return linklist ? true : false; }
 
+	virtual ~TBAnimationObject() {}
+
 	/** Called on animation start */
 	virtual void OnAnimationStart() = 0;
 
@@ -65,10 +89,21 @@ public:
 	virtual void OnAnimationUpdate(float progress) = 0;
 
 	/** Called on animation stop. aborted is true if it was aborted before completion.
-		Note that if a animation is started when it's already running,
-		it will first be aborted and then started again. Except in that case, no pointers
-		are kept to the TBAnimationObject after this call so it is safe to delete it. */
+		Note that if a animation is started when it's already running, it will first
+		be aborted and then started again. */
 	virtual void OnAnimationStop(bool aborted) = 0;
+
+	/** Add an listener to this animation object. */
+	void AddListener(TBAnimationListener *listener) { m_listeners.AddLast(listener); }
+
+	/** Remove an listener from this animation object. */
+	void RemoveListener(TBAnimationListener *listener) { m_listeners.Remove(listener); }
+private:
+	friend class TBAnimationManager;
+	TBLinkListOf<TBAnimationListener> m_listeners;
+	void InvokeOnAnimationStart();
+	void InvokeOnAnimationUpdate(float progress);
+	void InvokeOnAnimationStop(bool aborted);
 };
 
 /** TBAnimationManager - System class that manages all animated object */
@@ -88,7 +123,13 @@ public:
 								ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
 								double animation_duration = ANIMATION_DEFAULT_DURATION,
 								ANIMATION_TIME animation_time = ANIMATION_TIME_FIRST_UPDATE);
-	static void AbortAnimation(TBAnimationObject *obj);
+	/** Abort the animation. If delete_animation is true, the animation will be deleted in
+		this call after running callbacks and listeners callbacks. In rare situations,
+		you might want to keep the animation around and delete it later (or start it
+		again). */
+	static void AbortAnimation(TBAnimationObject *obj, bool delete_animation);
+
+	/** Abort and delete all animations. */
 	static void AbortAllAnimations();
 
 	/** Return true if new animations are blocked. */

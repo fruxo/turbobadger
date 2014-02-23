@@ -67,7 +67,6 @@ void TBWidgetAnimationOpacity::OnAnimationStop(bool aborted)
 	}
 	else
 		m_widget->SetOpacity(m_dst_opacity);
-	delete this;
 }
 
 // == TBWidgetAnimationRect ===============================================================
@@ -108,7 +107,7 @@ void TBWidgetAnimationRect::OnAnimationUpdate(float progress)
 		{
 			// Widget hasn't been laid out yet,
 			// the animation was started too soon.
-			TBAnimationManager::AbortAnimation(this);
+			TBAnimationManager::AbortAnimation(this, true);
 			return;
 		}
 		if (m_mode == MODE_DELTA_IN)
@@ -139,7 +138,6 @@ void TBWidgetAnimationRect::OnAnimationStop(bool aborted)
 {
 	if (m_mode == MODE_SRC_TO_DST) // m_dst_rect may still be unset if aborted.
 		m_widget->SetRect(m_dst_rect);
-	delete this;
 }
 
 // == TBWidgetsAnimationManager =====================================================
@@ -164,8 +162,8 @@ void TBWidgetsAnimationManager::AbortAnimations(TBWidget *widget)
 		if (wao->m_widget == widget)
 		{
 			// Abort the animation. This will both autoremove itself
-			// and autodelete, so no need to do it here.
-			TBAnimationManager::AbortAnimation(wao);
+			// and delete it, so no need to do it here.
+			TBAnimationManager::AbortAnimation(wao, true);
 		}
 	}
 }

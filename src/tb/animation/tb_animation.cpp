@@ -30,6 +30,30 @@ static float SmoothCurve(float x, float a)
 
 // == TBAnimationObject ===============================================
 
+void TBAnimationObject::InvokeOnAnimationStart()
+{
+	TBLinkListOf<TBAnimationListener>::Iterator li = m_listeners.IterateForward();
+	OnAnimationStart();
+	while (TBAnimationListener *listener = li.GetAndStep())
+		listener->OnAnimationStart(this);
+}
+
+void TBAnimationObject::InvokeOnAnimationUpdate(float progress)
+{
+	TBLinkListOf<TBAnimationListener>::Iterator li = m_listeners.IterateForward();
+	OnAnimationUpdate(progress);
+	while (TBAnimationListener *listener = li.GetAndStep())
+		listener->OnAnimationUpdate(this, progress);
+}
+
+void TBAnimationObject::InvokeOnAnimationStop(bool aborted)
+{
+	TBLinkListOf<TBAnimationListener>::Iterator li = m_listeners.IterateForward();
+	OnAnimationStop(aborted);
+	while (TBAnimationListener *listener = li.GetAndStep())
+		listener->OnAnimationStop(this, aborted);
+}
+
 // == TBAnimationManager ==============================================
 
 TBLinkListOf<TBAnimationObject> TBAnimationManager::animating_objects;
@@ -39,7 +63,7 @@ static int block_animations_counter = 0;
 void TBAnimationManager::AbortAllAnimations()
 {
 	while (TBAnimationObject *obj = animating_objects.GetFirst())
-		AbortAnimation(obj);
+		AbortAnimation(obj, true);
 }
 
 //static
@@ -88,13 +112,14 @@ void TBAnimationManager::Update()
 		};
 
 		// Update animation
-		obj->OnAnimationUpdate(progress);
+		obj->InvokeOnAnimationUpdate(progress);
 
 		// Remove completed animations
 		if (progress == 1.0f)
 		{
 			animating_objects.Remove(obj);
-			obj->OnAnimationStop(false);
+			obj->InvokeOnAnimationStop(false);
+			delete obj;
 		}
 	}
 }
@@ -109,24 +134,26 @@ bool TBAnimationManager::HasAnimationsRunning()
 void TBAnimationManager::StartAnimation(TBAnimationObject *obj, ANIMATION_CURVE animation_curve, double animation_duration, ANIMATION_TIME animation_time)
 {
 	if (obj->IsAnimating())
-		AbortAnimation(obj);
+		AbortAnimation(obj, false);
 	if (IsAnimationsBlocked())
 		animation_duration = 0;
 	obj->adjust_start_time = (animation_time == ANIMATION_TIME_FIRST_UPDATE ? true : false);
 	obj->animation_start_time = TBSystem::GetTimeMS();
 	obj->animation_duration = MAX(animation_duration, 0.0);
 	obj->animation_curve = animation_curve;
-	obj->OnAnimationStart();
 	animating_objects.AddLast(obj);
+	obj->InvokeOnAnimationStart();
 }
 
 //static
-void TBAnimationManager::AbortAnimation(TBAnimationObject *obj)
+void TBAnimationManager::AbortAnimation(TBAnimationObject *obj, bool delete_animation)
 {
 	if (obj->IsAnimating())
 	{
 		animating_objects.Remove(obj);
-		obj->OnAnimationStop(true);
+		obj->InvokeOnAnimationStop(true);
+		if (delete_animation)
+			delete obj;
 	}
 }
 
