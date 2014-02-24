@@ -18,7 +18,7 @@ namespace tb {
 	-TBSkinImage showing the arrow for items with a submenu.
 	It also handles submenu events. */
 
-class TBSimpleLayoutItemWidget : public TBLayout
+class TBSimpleLayoutItemWidget : public TBLayout, private TBWidgetListener
 {
 public:
 	TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const char *str);
@@ -29,13 +29,17 @@ private:
 	TBTextField m_textfield;
 	TBSkinImage m_image;
 	TBSkinImage m_image_arrow;
-	TBWidgetSafePointer m_window_pointer; ///< Points to the submenu window if opened
+	TBMenuWindow *m_menu; ///< Points to the submenu window if opened
+	virtual void OnWidgetDelete(TBWidget *widget);
+	void OpenSubMenu();
+	void CloseSubMenu();
 };
 
 // == TBSimpleLayoutItemWidget ==============================================================================
 
 TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const char *str)
 	: m_source(source)
+	, m_menu(nullptr)
 {
 	SetSkinBg("TBSelectItem");
 	SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
@@ -68,24 +72,50 @@ TBSimpleLayoutItemWidget::~TBSimpleLayoutItemWidget()
 	RemoveChild(&m_textfield);
 	if (m_image.GetParent())
 		RemoveChild(&m_image);
+	CloseSubMenu();
 }
 
 bool TBSimpleLayoutItemWidget::OnEvent(const TBWidgetEvent &ev)
 {
 	if (m_source && ev.type == EVENT_TYPE_CLICK && ev.target == this)
 	{
-		if (!m_window_pointer.Get())
-		{
-			// Open a new menu window for the submenu with this widget as target
-			if (TBMenuWindow *menu = new TBMenuWindow(this, TBIDC("submenu")))
-			{
-				m_window_pointer.Set(menu);
-				menu->Show(m_source, TBPopupAlignment(TB_ALIGN_RIGHT), -1);
-			}
-		}
+		OpenSubMenu();
 		return true;
 	}
 	return false;
+}
+
+void TBSimpleLayoutItemWidget::OnWidgetDelete(TBWidget *widget)
+{
+	assert(widget == m_menu);
+	CloseSubMenu();
+}
+
+void TBSimpleLayoutItemWidget::OpenSubMenu()
+{
+	if (m_menu)
+		return;
+
+	// Open a new menu window for the submenu with this widget as target
+	m_menu = new TBMenuWindow(this, TBIDC("submenu"));
+	if (m_menu)
+	{
+		SetState(WIDGET_STATE_SELECTED, true);
+		m_menu->AddListener(this);
+		m_menu->Show(m_source, TBPopupAlignment(TB_ALIGN_RIGHT), -1);
+	}
+}
+
+void TBSimpleLayoutItemWidget::CloseSubMenu()
+{
+	if (!m_menu)
+		return;
+
+	SetState(WIDGET_STATE_SELECTED, false);
+	m_menu->RemoveListener(this);
+	if (!m_menu->GetIsDying())
+		m_menu->Close();
+	m_menu = nullptr;
 }
 
 // == TBSelectItemViewer ==============================================================================
