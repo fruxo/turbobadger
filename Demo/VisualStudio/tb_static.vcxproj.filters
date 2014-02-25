@@ -436,7 +436,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\readme.txt" />
     <None Include="..\..\integration.txt" />
+    <None Include="..\..\readme.md" />
   </ItemGroup>
 </Project>
