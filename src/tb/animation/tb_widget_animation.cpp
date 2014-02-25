@@ -43,8 +43,7 @@ void TBWidgetAnimationOpacity::OnAnimationStart()
 {
 	// Make sure we don't stay idle if nothing is scheduled (hack).
 	// FIX: fix this properly
-	if (!TBAnimationManager::HasAnimationsRunning())
-		m_widget->Invalidate();
+	m_widget->Invalidate();
 
 	m_widget->SetOpacity(m_src_opacity);
 }
@@ -91,8 +90,7 @@ void TBWidgetAnimationRect::OnAnimationStart()
 {
 	// Make sure we don't stay idle if nothing is scheduled (hack).
 	// FIX: fix this properly
-	if (!TBAnimationManager::HasAnimationsRunning())
-		m_widget->Invalidate();
+	m_widget->Invalidate();
 
 	if (m_mode == MODE_SRC_TO_DST)
 		m_widget->SetRect(m_src_rect);
