@@ -281,6 +281,7 @@ static void scroll_callback(GLFWwindow *window, double x, double y)
 }
 
 /** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
+	If fire_time is 0, it should be fired ASAP.
 	If force is true, it will ask the platform to schedule it again, even if
 	the fire_time is the same as last time. */
 static void ReschedulePlatformTimer(double fire_time, bool force)
@@ -291,7 +292,7 @@ static void ReschedulePlatformTimer(double fire_time, bool force)
 		set_fire_time = -1;
 		glfwKillTimer();
 	}
-	else if (fire_time != set_fire_time || force)
+	else if (fire_time != set_fire_time || force || fire_time == 0)
 	{
 		set_fire_time = fire_time;
 		double delay = fire_time - tb::TBSystem::GetTimeMS();
