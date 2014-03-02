@@ -529,10 +529,20 @@ MainWindow::MainWindow()
 
 void MainWindow::OnMessageReceived(TBMessage *msg)
 {
-	if (msg->message == TBIDC("delayedmsg"))
+	if (msg->message == TBIDC("instantmsg"))
+	{
+		TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("test_dialog"));
+		msg_win->Show("Message window", "Instant message received!");
+	}
+	else if (msg->message == TBIDC("busy"))
+	{
+		// Keep the message queue busy by posting another "busy" message.
+		PostMessage(TBIDC("busy"), nullptr);
+	}
+	else if (msg->message == TBIDC("delayedmsg"))
 	{
 		TBStr text;
-		text.SetFormatted("This message window was created when a delayed message fired!\n\n"
+		text.SetFormatted("Delayed message received!\n\n"
 							"It was received %d ms after its intended fire time.",
 							(int)(TBSystem::GetTimeMS() - msg->GetFireTime()));
 		TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC(""));
@@ -551,8 +561,30 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		if (ev.target->GetID() == TBIDC("msg"))
 		{
-			TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("test_dialog"));
-			msg_win->Show("Message window", "Message!");
+			PostMessage(TBIDC("instantmsg"), nullptr);
+			return true;
+		}
+		else if (ev.target->GetID() == TBIDC("busymsg"))
+		{
+			if (ev.target->GetValue() == 1)
+			{
+				// Post the first "busy" message when we check the checkbox.
+				assert(!GetMessageByID(TBIDC("busy")));
+				if (!GetMessageByID(TBIDC("busy")))
+				{
+					PostMessage(TBIDC("busy"), nullptr);
+					TBMessageWindow *msg_win = new TBMessageWindow(this, TBIDC("test_dialog"));
+					msg_win->Show("Message window", "The message loop is now constantly busy with messages to process.\n\n"
+								"The main thread should be working hard, but input & animations should still be running smoothly.");
+				}
+			}
+			else
+			{
+				// Remove any pending "busy" message when we uncheck the checkbox.
+				assert(GetMessageByID(TBIDC("busy")));
+				if (TBMessage *busymsg = GetMessageByID(TBIDC("busy")))
+					DeleteMessage(busymsg);
+			}
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("delayedmsg"))
