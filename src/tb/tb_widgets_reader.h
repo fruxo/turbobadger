@@ -112,6 +112,7 @@ public:
 	is-focusable		TBWidget::SetIsFocusable	boolean
 	want-long-click		TBWidget::SetWantLongClick	boolean
 	ignore-input		TBWidget::SetIgnoreInput	boolean
+	opacity				TBWidget::SetOpacity		float (0 - 1)
 	text				TBWidget::SetText			string
 	connection			TBWidget::Connect			string
 	gravity				TBWidget::SetGravity		string (combination of left, top, right, bottom, or all)

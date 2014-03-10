@@ -343,6 +343,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	new_widget->SetIgnoreInput(node->GetValueInt("ignore-input", new_widget->GetIgnoreInput()) ? true : false);
 
+	new_widget->SetOpacity(node->GetValueFloat("opacity", new_widget->GetOpacity()));
+
 	if (const char *text = node->GetValueString("text", nullptr))
 		new_widget->SetText(text);
 
