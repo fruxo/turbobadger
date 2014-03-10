@@ -660,14 +660,12 @@ void TBSlider::UpdateHandle()
 		int handle_pixels = horizontal ? ps.pref_w : ps.pref_h;
 		m_to_pixel_factor = (double)(available_pixels - handle_pixels) / (m_max - m_min)/*+ 0.5*/;
 
-		// Invert the value for vertical slider (increasing value goes up)
-		double tmp_val = horizontal ? m_value : m_max - m_value;
-		int pixel_pos = (int)((tmp_val - m_min) * m_to_pixel_factor);
+		int pixel_pos = (int)((m_value - m_min) * m_to_pixel_factor);
 
 		if (horizontal)
 			rect.Set(pixel_pos, (GetRect().h - ps.pref_h) / 2, ps.pref_w, ps.pref_h);
 		else
-			rect.Set((GetRect().w - ps.pref_w) / 2, pixel_pos, ps.pref_w, ps.pref_h);
+			rect.Set((GetRect().w - ps.pref_w) / 2, GetRect().h - handle_pixels - pixel_pos, ps.pref_w, ps.pref_h);
 	}
 	else
 		m_to_pixel_factor = 0;
