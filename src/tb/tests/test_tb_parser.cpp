@@ -44,6 +44,14 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY_STR(node.GetValueString("strings_compact>string13", ""), "#ffdd00");
 	}
 
+	TB_TEST(numbers)
+	{
+		TB_VERIFY(node.GetValueInt("numbers>integer1", 0) == 42);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers>float1", 0), 1.1);
+		TB_VERIFY(node.GetValueInt("numbers>integer2", 0) == 42);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers>float2", 0), 1.1);
+	}
+
 	TB_TEST(numbers_compact)
 	{
 		TB_VERIFY(node.GetValueInt("numbers_compact>integer1", 0) == -10);
@@ -52,6 +60,8 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float2", 0), -1.0);
 		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float3", 0), -.2);
 		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float4", 0), -.2);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float5", 0), 1.1);
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_compact>float6", 0), 1.1);
 	}
 
 	TB_TEST(numbers_with_unit)
@@ -68,6 +78,8 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number5", ""), "-2.1px");
 		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_with_unit>number6", 0), -.1);
 		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number6", ""), "-.1px");
+		TB_VERIFY_FLOAT(node.GetValueFloat("numbers_with_unit>number7", 0), 1.f);
+		TB_VERIFY_STR(node.GetValueString("numbers_with_unit>number7", ""), "1px ");
 	}
 
 	TB_TEST(compact_with_children)
@@ -106,6 +118,16 @@ TB_TEST_GROUP(tb_parser)
 		TB_VERIFY_FLOAT(arr->GetValue(2)->GetFloat(), 0.5);
 		TB_VERIFY_FLOAT(arr->GetValue(3)->GetFloat(), 1.0E-8);
 		TB_VERIFY(arr->GetValue(4)->GetInt() == 1000000000);
+	}
+
+	TB_TEST(arrays_dimensions)
+	{
+		TBNode *arr_n = node.GetNode("arrays>dimensions");
+		TB_VERIFY(arr_n);
+		TB_VERIFY(arr_n->GetValue().GetArrayLength() == 2);
+		TBValueArray *arr = arr_n->GetValue().GetArray();
+		TB_VERIFY(arr->GetValue(0)->GetInt() == 1);
+		TB_VERIFY(arr->GetValue(1)->GetInt() == 2);
 	}
 
 //FIX: Not supported yet

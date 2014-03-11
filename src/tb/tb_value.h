@@ -18,7 +18,12 @@ class TBTypedObject;
 	Ex: 100, -.2, 1.0E-8, 5px will all return true. */
 bool is_start_of_number(const char *str);
 
+/** Returns true if the given string contains space that
+	is not at the end of the string. */
+bool contains_non_trailing_space(const char *str);
+
 /** Return true if the string can be represented as a number.
+	It ignores trailing white space.
 	Ex: 100, -.2 will return true.
 	Ex: 1.0E-8, 5px will return false. */
 bool is_number_only(const char *str);

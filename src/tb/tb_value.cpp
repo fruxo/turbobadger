@@ -30,12 +30,25 @@ bool is_start_of_number(const char *str)
 	return *str >= '0' && *str <= '9';
 }
 
+bool contains_non_trailing_space(const char *str)
+{
+	if (const char *p = strstr(str, " "))
+	{
+		while (*p == ' ')
+			p++;
+		return *p != '\0';
+	}
+	return false;
+}
+
 bool is_number_only(const char *s)
 {
 	if (!s || *s == 0 || *s == ' ')
 		return 0;
 	char *p;
-	strtod (s, &p);
+	strtod(s, &p);
+	while (*p == ' ')
+		p++;
 	return *p == '\0';
 }
 
@@ -261,9 +274,9 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 		else
 			SetInt(atoi(str));
 	}
-	else if (is_start_of_number(str) && strstr(str, " "))
+	else if (is_start_of_number(str) && contains_non_trailing_space(str))
 	{
-		// If the number has spaces, we'll assume a list of numbers (example: "10 -4 3.5")
+		// If the number has nontrailing space, we'll assume a list of numbers (example: "10 -4 3.5")
 		SetNull();
 		if (TBValueArray *arr = new TBValueArray)
 		{
