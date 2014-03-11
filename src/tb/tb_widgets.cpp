@@ -220,6 +220,8 @@ void TBWidget::SetOpacity(float opacity)
 	opacity = Clamp(opacity, 0.f, 1.f);
 	if (m_opacity == opacity)
 		return;
+	if (opacity == 0) // Invalidate after setting opacity 0 will do nothing.
+		Invalidate();
 	m_opacity = opacity;
 	Invalidate();
 }
