@@ -26,7 +26,7 @@ public:
 		float x, y;
 		float u, v;
 		union {
-			unsigned char r, g, b, a;
+			struct { unsigned char r, g, b, a; };
 			uint32 col;
 		};
 	};
