@@ -544,6 +544,7 @@ public:
 		RemoveListener before the widget is deleted. */
 	void AddListener(TBWidgetListener *listener);
 	void RemoveListener(TBWidgetListener *listener);
+	bool HasListener(TBWidgetListener *listener) const;
 
 	/** Callback for handling events.
 		Return true if the event is handled and should not
@@ -969,6 +970,8 @@ private:
 	void StopLongClickTimer();
 	friend class TBLongClickTimer;
 	void MaybeInvokeLongClickOrContextMenu(bool touch);
+	/** Returns the opacity for this widget multiplied with its skin opacity and state opacity. */
+	float CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element) const;
 };
 
 }; // namespace tb

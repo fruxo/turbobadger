@@ -223,6 +223,9 @@ public:
 		State elements with state "all" will be ignored. */
 	bool HasState(SKIN_STATE state, TBSkinConditionContext &context);
 
+	/** Return true if this element has overlay elements. */
+	bool HasOverlayElements() const { return m_overlay_elements.HasStateElements(); }
+
 	void Load(TBNode *n, TBSkin *skin, const char *skin_path);
 };
 

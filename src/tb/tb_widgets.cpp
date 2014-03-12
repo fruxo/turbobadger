@@ -696,6 +696,11 @@ void TBWidget::RemoveListener(TBWidgetListener *listener)
 	m_listeners.Remove(listener);
 }
 
+bool TBWidget::HasListener(TBWidgetListener *listener) const
+{
+	return m_listeners.ContainsLink(listener);
+}
+
 void TBWidget::OnPaintChildren(const PaintProps &paint_props)
 {
 	if (!m_children.GetFirst())
@@ -720,8 +725,19 @@ void TBWidget::OnPaintChildren(const PaintProps &paint_props)
 	{
 		if (clip_rect.Intersects(child->m_rect))
 		{
-			TBWidgetSkinConditionContext context(child);
-			g_tb_skin->PaintSkinOverlay(child->m_rect, child->GetSkinBgElement(), static_cast<SKIN_STATE>(child->GetAutoState()), context);
+			TBSkinElement *skin_element = child->GetSkinBgElement();
+			if (skin_element && skin_element->HasOverlayElements())
+			{
+				// Update the renderer with the widgets opacity
+				WIDGET_STATE state = child->GetAutoState();
+				float old_opacity = g_renderer->GetOpacity();
+				g_renderer->SetOpacity(old_opacity * child->CalculateOpacityInternal(state, skin_element));
+
+				TBWidgetSkinConditionContext context(child);
+				g_tb_skin->PaintSkinOverlay(child->m_rect, skin_element, static_cast<SKIN_STATE>(state), context);
+
+				g_renderer->SetOpacity(old_opacity);
+			}
 		}
 	}
 
@@ -1029,6 +1045,16 @@ void TBWidget::InvokeProcessStates(bool force_update)
 		child->InvokeProcessStates(true);
 }
 
+float TBWidget::CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element) const
+{
+	float opacity = m_opacity;
+	if (skin_element)
+		opacity *= skin_element->opacity;
+	if (state & WIDGET_STATE_DISABLED)
+		opacity *= g_tb_skin->GetDefaultDisabledOpacity();
+	return opacity;
+}
+
 void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 {
 	// Don't paint invisible widgets
@@ -1040,11 +1066,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 
 	// Multiply current opacity with widget opacity, skin opacity and state opacity.
 	float old_opacity = g_renderer->GetOpacity();
-	float opacity = old_opacity * m_opacity;
-	if (skin_element)
-		opacity *= skin_element->opacity;
-	if (state & WIDGET_STATE_DISABLED)
-		opacity *= g_tb_skin->GetDefaultDisabledOpacity();
+	float opacity = old_opacity * CalculateOpacityInternal(state, skin_element);
 	if (opacity == 0)
 		return;
 
