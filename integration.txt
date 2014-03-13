@@ -11,7 +11,7 @@ It basically list what you most probably want to do.
 More details is found in the method definitions.
 
 Build configuration
------
+-------------------
 
 There are defines in tb_config.h that control some features & implementation
 details. This file may be overridden by your own configuration (see tb_config.h for
@@ -30,14 +30,15 @@ List of input triggers (root is your root TBWidget):
 	root->InvokeWheel                 - Mouse wheel input
 	root->InvokeKey                   - Keyboard input
 
-Layout & Painting
------------------
+Animations, Layout and Painting
+-------------------------------
 
-Before painting, it is a good time to update widgets input states and layouts
-that might affect the rendering. This is done by calling:
+Before painting, it is a good time to run animations, update widgets input states
+and layout, since all that affect the rendering. This is done by calling:
 
-	root->InvokeProcessStates
-	root->InvokeProcess
+	TBAnimationManager::Update()
+	root->InvokeProcessStates()
+	root->InvokeProcess()
 
 Before painting the root widget (and all its children), you need to prepare
 the renderer to set up the correct matrix etc.
@@ -64,8 +65,8 @@ Rendering
 ---------
 
 TBRenderer & TBBitmap are the interfaces that implements everything that Turbo Badger
-needs for rendering. There is already a OpenGL renderer implementation, using fixed
-function pipeline.
+needs for rendering. There is already a OpenGL renderer implementation that can be
+used, or you can implement your own (See tb_config.h).
 
 Some apps need to unload all graphics and reload it again, f.ex when the app
 is put to sleep in the background and the graphics context is lost.
