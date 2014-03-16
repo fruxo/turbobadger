@@ -530,6 +530,8 @@ public:
 	TBWidget *GetLastLeaf() const;
 	inline TBWidget *GetFirstChild() const { return m_children.GetFirst(); }
 	inline TBWidget *GetLastChild() const { return m_children.GetLast(); }
+	TBLinkListOf<TBWidget>::Iterator GetIteratorForward() { return m_children.IterateForward(); }
+	TBLinkListOf<TBWidget>::Iterator GetIteratorBackward() { return m_children.IterateBackward(); }
 
 	/** Return true if this widget is the same or a ancestor of other_widget. */
 	bool IsAncestorOf(TBWidget *other_widget) const;
