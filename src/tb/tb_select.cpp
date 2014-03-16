@@ -57,7 +57,7 @@ TBSelectList::TBSelectList()
 {
 	SetSource(&m_default_source);
 	SetIsFocusable(true);
-	SetSkinBg("TBSelectList", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBSelectList"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	m_container.SetGravity(WIDGET_GRAVITY_ALL);
 	m_container.SetRect(GetPaddingRect());
 	AddChild(&m_container);
@@ -391,8 +391,8 @@ TBSelectDropdown::TBSelectDropdown()
 	: m_value(-1)
 {
 	SetSource(&m_default_source);
-	SetSkinBg("TBSelectDropdown", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-	m_arrow.SetSkinBg("TBSelectDropdown.arrow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBSelectDropdown"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	m_arrow.SetSkinBg(TBIDC("TBSelectDropdown.arrow"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	GetContentRoot()->AddChild(&m_arrow);
 }
 
@@ -444,7 +444,7 @@ void TBSelectDropdown::OpenWindow()
 	if (TBMenuWindow *window = new TBMenuWindow(this, TBIDC("TBSelectDropdown.window")))
 	{
 		m_window_pointer.Set(window);
-		window->SetSkinBg("TBSelectDropdown.window");
+		window->SetSkinBg(TBIDC("TBSelectDropdown.window"));
 		window->Show(m_source, TBPopupAlignment(), GetValue());
 	}
 }

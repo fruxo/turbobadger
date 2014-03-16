@@ -13,16 +13,16 @@ namespace tb {
 TBWindow::TBWindow()
 	: m_settings(WINDOW_SETTINGS_DEFAULT)
 {
-	SetSkinBg("TBWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBWindow"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	AddChild(&m_mover);
 	AddChild(&m_resizer);
-	m_mover.SetSkinBg("TBWindow.mover");
+	m_mover.SetSkinBg(TBIDC("TBWindow.mover"));
 	m_mover.AddChild(&m_textfield);
 	m_textfield.SetIgnoreInput(true);
 	m_mover.AddChild(&m_close_button);
-	m_close_button.SetSkinBg("TBWindow.close");
+	m_close_button.SetSkinBg(TBIDC("TBWindow.close"));
 	m_close_button.SetIsFocusable(false);
-	m_close_button.GetID().Set("TBWindow.close");
+	m_close_button.SetID(TBIDC("TBWindow.close"));
 	SetIsGroupRoot(true);
 }
 

@@ -74,7 +74,7 @@ TBPopupWindow::TBPopupWindow(TBWidget *target)
 	: m_target(target)
 {
 	TBWidgetListener::AddGlobalListener(this);
-	SetSkinBg("TBPopupWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBPopupWindow"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	SetSettings(WINDOW_SETTINGS_NONE);
 }
 

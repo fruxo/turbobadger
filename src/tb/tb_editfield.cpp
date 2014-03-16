@@ -53,7 +53,7 @@ TBEditField::TBEditField()
 	m_scrollbar_x.SetOpacity(0);
 	m_scrollbar_y.SetOpacity(0);
 
-	SetSkinBg("TBEditField", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBEditField"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	m_style_edit.SetListener(this);
 
 	m_root.SetRect(GetVisibleRect());

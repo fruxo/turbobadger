@@ -19,7 +19,7 @@ TBInlineSelect::TBInlineSelect()
 	, m_min(0)
 	, m_max(100)
 {
-	SetSkinBg("TBInlineSelect");
+	SetSkinBg(TBIDC("TBInlineSelect"));
 	AddChild(&m_layout);
 	m_layout.AddChild(&m_buttons[0]);
 	m_layout.AddChild(&m_editfield);
@@ -27,14 +27,14 @@ TBInlineSelect::TBInlineSelect()
 	m_layout.SetRect(GetPaddingRect());
 	m_layout.SetGravity(WIDGET_GRAVITY_ALL);
 	m_layout.SetSpacing(0);
-	m_buttons[0].SetSkinBg("TBButton.flat");
-	m_buttons[1].SetSkinBg("TBButton.flat");
-	m_buttons[0].GetContentRoot()->AddChild(new TBSkinImage("arrow.left"));
-	m_buttons[1].GetContentRoot()->AddChild(new TBSkinImage("arrow.right"));
+	m_buttons[0].SetSkinBg(TBIDC("TBButton.flat"));
+	m_buttons[1].SetSkinBg(TBIDC("TBButton.flat"));
+	m_buttons[0].GetContentRoot()->AddChild(new TBSkinImage(TBIDC("arrow.left")));
+	m_buttons[1].GetContentRoot()->AddChild(new TBSkinImage(TBIDC("arrow.right")));
 	m_buttons[0].SetIsFocusable(false);
 	m_buttons[1].SetIsFocusable(false);
-	m_buttons[0].GetID().Set("dec");
-	m_buttons[1].GetID().Set("inc");
+	m_buttons[0].SetID(TBIDC("dec"));
+	m_buttons[1].SetID(TBIDC("inc"));
 	m_buttons[0].SetAutoRepeat(true);
 	m_buttons[1].SetAutoRepeat(true);
 	m_editfield.SetTextAlign(TB_TEXT_ALIGN_CENTER);

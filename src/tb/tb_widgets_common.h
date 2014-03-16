@@ -252,7 +252,7 @@ public:
 	// For safe typecasting
 	TBOBJECT_SUBCLASS(TBCheckBox, TBRadioCheckBox);
 
-	TBCheckBox() { SetSkinBg("TBCheckBox", WIDGET_INVOKE_INFO_NO_CALLBACKS); }
+	TBCheckBox() { SetSkinBg(TBIDC("TBCheckBox"), WIDGET_INVOKE_INFO_NO_CALLBACKS); }
 };
 
 /** TBRadioButton is a button which unselects other radiobuttons of the same
@@ -264,7 +264,7 @@ public:
 	// For safe typecasting
 	TBOBJECT_SUBCLASS(TBRadioButton, TBRadioCheckBox);
 
-	TBRadioButton() { SetSkinBg("TBRadioButton", WIDGET_INVOKE_INFO_NO_CALLBACKS); }
+	TBRadioButton() { SetSkinBg(TBIDC("TBRadioButton"), WIDGET_INVOKE_INFO_NO_CALLBACKS); }
 };
 
 /** TBScrollBar is a scroll bar in the given axis. */

@@ -24,7 +24,7 @@ void TBTabLayout::OnChildAdded(TBWidget *child)
 	if (TBButton *button = TBSafeCast<TBButton>(child))
 	{
 		button->SetSqueezable(true);
-		button->SetSkinBg("TBTabContainer.tab");
+		button->SetSkinBg(TBIDC("TBTabContainer.tab"));
 		button->SetID(TBIDC("tab"));
 	}
 }
@@ -59,12 +59,12 @@ TBTabContainer::TBTabContainer()
 	m_root_layout.SetGravity(WIDGET_GRAVITY_ALL);
 	m_root_layout.SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
 	m_root_layout.SetLayoutOrder(LAYOUT_ORDER_TOP_TO_BOTTOM);
-	m_root_layout.SetSkinBg("TBTabContainer.rootlayout");
+	m_root_layout.SetSkinBg(TBIDC("TBTabContainer.rootlayout"));
 	m_tab_layout.SetLayoutDistributionPosition(LAYOUT_DISTRIBUTION_POSITION_CENTER);
-	m_tab_layout.SetSkinBg("TBTabContainer.tablayout_x");
+	m_tab_layout.SetSkinBg(TBIDC("TBTabContainer.tablayout_x"));
 	m_tab_layout.SetLayoutPosition(LAYOUT_POSITION_RIGHT_BOTTOM);
 	m_content_root.SetGravity(WIDGET_GRAVITY_ALL);
-	m_content_root.SetSkinBg("TBTabContainer.container");
+	m_content_root.SetSkinBg(TBIDC("TBTabContainer.container"));
 }
 
 TBTabContainer::~TBTabContainer()
@@ -78,7 +78,8 @@ void TBTabContainer::SetAxis(AXIS axis)
 {
 	m_root_layout.SetAxis(axis);
 	m_tab_layout.SetAxis(axis == AXIS_X ? AXIS_Y : AXIS_X);
-	m_tab_layout.SetSkinBg(axis == AXIS_X ? "TBTabContainer.tablayout_y" : "TBTabContainer.tablayout_x");
+	m_tab_layout.SetSkinBg(axis == AXIS_X ? TBIDC("TBTabContainer.tablayout_y") :
+											TBIDC("TBTabContainer.tablayout_x"));
 }
 
 void TBTabContainer::SetCurrentPage(int index)

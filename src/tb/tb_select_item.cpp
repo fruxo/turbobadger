@@ -41,7 +41,7 @@ TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSourc
 	: m_source(source)
 	, m_menu(nullptr)
 {
-	SetSkinBg("TBSelectItem");
+	SetSkinBg(TBIDC("TBSelectItem"));
 	SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
 	SetPaintOverflowFadeout(false);
 
@@ -59,7 +59,7 @@ TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSourc
 
 	if (source)
 	{
-		m_image_arrow.SetSkinBg("arrow.right");
+		m_image_arrow.SetSkinBg(TBIDC("arrow.right"));
 		m_image_arrow.SetIgnoreInput(true);
 		AddChild(&m_image_arrow);
 	}
@@ -166,7 +166,7 @@ TBWidget *TBSelectItemSource::CreateItemWidget(int index, TBSelectItemViewer *vi
 		if (TBSeparator *separator = new TBSeparator)
 		{
 			separator->SetGravity(WIDGET_GRAVITY_ALL);
-			separator->SetSkinBg("TBSelectItem.separator");
+			separator->SetSkinBg(TBIDC("TBSelectItem.separator"));
 			return separator;
 		}
 	}

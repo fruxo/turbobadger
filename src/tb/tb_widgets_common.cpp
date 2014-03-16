@@ -77,7 +77,7 @@ TBTextField::TBTextField()
 	: m_cached_text_width(UPDATE_TEXT_WIDTH_CACHE)
 	, m_squeezable(false)
 {
-	SetSkinBg("TBTextField", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBTextField"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 bool TBTextField::SetText(const char *text)
@@ -137,7 +137,7 @@ TBButton::TBButton()
 {
 	SetIsFocusable(true);
 	SetClickByKey(true);
-	SetSkinBg("TBButton", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBButton"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	AddChild(&m_layout);
 	// Set the textfield gravity to all, even though it would display the same with default gravity.
 	// This will make the buttons layout expand if there is space available, without forcing the parent
@@ -275,7 +275,7 @@ PreferredSize TBSkinImage::OnCalculatePreferredSize(const SizeConstraints &const
 
 TBSeparator::TBSeparator()
 {
-	SetSkinBg("TBSeparator", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBSeparator"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	SetState(WIDGET_STATE_DISABLED, true);
 }
 
@@ -289,8 +289,8 @@ TBProgressSpinner::TBProgressSpinner()
 	: m_value(0)
 	, m_frame(0)
 {
-	SetSkinBg("TBProgressSpinner", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-	m_skin_fg.Set("TBProgressSpinner.fg");
+	SetSkinBg(TBIDC("TBProgressSpinner"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	m_skin_fg.Set(TBIDC("TBProgressSpinner.fg"));
 }
 
 void TBProgressSpinner::SetValue(int value)
@@ -427,13 +427,13 @@ void TBScrollBar::SetAxis(AXIS axis)
 	m_axis = axis;
 	if (axis == AXIS_X)
 	{
-		SetSkinBg("TBScrollBarBgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-		m_handle.SetSkinBg("TBScrollBarFgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		SetSkinBg(TBIDC("TBScrollBarBgX"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg(TBIDC("TBScrollBarFgX"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	else
 	{
-		SetSkinBg("TBScrollBarBgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-		m_handle.SetSkinBg("TBScrollBarFgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		SetSkinBg(TBIDC("TBScrollBarBgY"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg(TBIDC("TBScrollBarFgY"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	Invalidate();
 }
@@ -573,13 +573,13 @@ void TBSlider::SetAxis(AXIS axis)
 	m_axis = axis;
 	if (axis == AXIS_X)
 	{
-		SetSkinBg("TBSliderBgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-		m_handle.SetSkinBg("TBSliderFgX", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		SetSkinBg(TBIDC("TBSliderBgX"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg(TBIDC("TBSliderFgX"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	else
 	{
-		SetSkinBg("TBSliderBgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-		m_handle.SetSkinBg("TBSliderFgY", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		SetSkinBg(TBIDC("TBSliderBgY"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
+		m_handle.SetSkinBg(TBIDC("TBSliderFgY"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	}
 	Invalidate();
 }
@@ -682,14 +682,14 @@ void TBSlider::OnResized(int old_w, int old_h)
 
 TBContainer::TBContainer()
 {
-	SetSkinBg("TBContainer", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBContainer"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 // == TBMover =======================================
 
 TBMover::TBMover()
 {
-	SetSkinBg("TBMover", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBMover"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 bool TBMover::OnEvent(const TBWidgetEvent &ev)
@@ -718,7 +718,7 @@ bool TBMover::OnEvent(const TBWidgetEvent &ev)
 
 TBResizer::TBResizer()
 {
-	SetSkinBg("TBResizer", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBResizer"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 WIDGET_HIT_STATUS TBResizer::GetHitStatus(int x, int y)
@@ -757,7 +757,7 @@ bool TBResizer::OnEvent(const TBWidgetEvent &ev)
 
 TBDimmer::TBDimmer()
 {
-	SetSkinBg("TBDimmer", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBDimmer"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	SetGravity(WIDGET_GRAVITY_ALL);
 }
 

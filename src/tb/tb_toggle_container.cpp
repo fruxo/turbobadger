@@ -15,7 +15,7 @@ TB_WIDGET_FACTORY(TBSectionHeader, TBValue::TYPE_INT, WIDGET_Z_TOP) { }
 
 TBSectionHeader::TBSectionHeader()
 {
-	SetSkinBg("TBSectionHeader");
+	SetSkinBg(TBIDC("TBSectionHeader"));
 	SetGravity(WIDGET_GRAVITY_LEFT | WIDGET_GRAVITY_RIGHT);
 	SetToggleMode(true);
 }
@@ -44,10 +44,10 @@ TBSection::TBSection()
 {
 	SetGravity(WIDGET_GRAVITY_LEFT | WIDGET_GRAVITY_RIGHT);
 
-	SetSkinBg("TBSection", WIDGET_INVOKE_INFO_NO_CALLBACKS);
-	m_layout.SetSkinBg("TBSection.layout", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBSection"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	m_layout.SetSkinBg(TBIDC("TBSection.layout"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 
-	m_toggle_container.SetSkinBg("TBSection.container");
+	m_toggle_container.SetSkinBg(TBIDC("TBSection.container"));
 	m_toggle_container.SetToggle(TBToggleContainer::TOGGLE_EXPANDED);
 	m_toggle_container.SetGravity(WIDGET_GRAVITY_ALL);
 	m_layout.SetAxis(AXIS_Y);
@@ -107,7 +107,7 @@ TBToggleContainer::TBToggleContainer()
 	, m_invert(false)
 	, m_value(0)
 {
-	SetSkinBg("TBToggleContainer", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBToggleContainer"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
 void TBToggleContainer::SetToggle(TOGGLE toggle)

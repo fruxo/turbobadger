@@ -366,7 +366,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 		{
 			TBButton *button = TBSafeCast<TBButton>(ev.target);
 			TBSkinImage *skin_image = new TBSkinImage;
-			skin_image->SetSkinBg("Icon16");
+			skin_image->SetSkinBg(TBIDC("Icon16"));
 			button->GetContentRoot()->AddChild(skin_image, WIDGET_Z_BOTTOM);
 			return true;
 		}
@@ -886,7 +886,7 @@ int app_main()
 							"¡Ã¢Ã£Ã¤Ã¥Ã¦Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã°Ã±Ã²Ã³Ã´ÃµÃ¶Ã·Ã¸Ã¹ÃºÃ»Ã¼Ã½Ã¾Ã¿");
 
 	// Give the root widget a background skin
-	application->GetRoot()->SetSkinBg("background");
+	application->GetRoot()->SetSkinBg(TBIDC("background"));
 
 	application->Init();
 	application->Run();

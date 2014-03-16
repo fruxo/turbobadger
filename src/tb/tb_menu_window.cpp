@@ -14,7 +14,7 @@ TBMenuWindow::TBMenuWindow(TBWidget *target, TBID id)
 	: TBPopupWindow(target)
 {
 	SetID(id);
-	SetSkinBg("TBMenuWindow", WIDGET_INVOKE_INFO_NO_CALLBACKS);
+	SetSkinBg(TBIDC("TBMenuWindow"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	m_select_list.GetScrollContainer()->SetAdaptToContentSize(true);
 	m_select_list.SetIsFocusable(false); ///< Avoid it autoclosing its window on click
 	m_select_list.SetSkinBg("");

@@ -8,7 +8,7 @@ AdvancedItemWidget::AdvancedItemWidget(AdvancedItem *item, AdvancedItemSource *s
 	, m_source_viewer(source_viewer)
 	, m_index(index)
 {
-	SetSkinBg("TBSelectItem");
+	SetSkinBg(TBIDC("TBSelectItem"));
 	SetLayoutDistribution(LAYOUT_DISTRIBUTION_GRAVITY);
 	SetLayoutDistributionPosition(LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP);
 	SetPaintOverflowFadeout(false);
