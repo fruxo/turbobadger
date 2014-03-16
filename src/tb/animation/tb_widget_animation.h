@@ -22,6 +22,9 @@ namespace tb {
 class TBWidgetAnimationObject : public TBAnimationObject, public TBLinkOf<TBWidgetAnimationObject>
 {
 public:
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(TBWidgetAnimationObject, TBAnimationObject);
+
 	TBWidgetAnimationObject(TBWidget *widget);
 	virtual ~TBWidgetAnimationObject();
 public:
@@ -32,6 +35,9 @@ public:
 class TBWidgetAnimationOpacity : public TBWidgetAnimationObject
 {
 public:
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(TBWidgetAnimationOpacity, TBWidgetAnimationObject);
+
 	TBWidgetAnimationOpacity(TBWidget *widget, float src_opacity, float dst_opacity, bool die);
 	virtual void OnAnimationStart();
 	virtual void OnAnimationUpdate(float progress);
@@ -46,6 +52,9 @@ private:
 class TBWidgetAnimationRect : public TBWidgetAnimationObject
 {
 public:
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(TBWidgetAnimationRect, TBWidgetAnimationObject);
+
 	enum MODE {
 		/** Animate from source to dest. */
 		MODE_SRC_TO_DST,

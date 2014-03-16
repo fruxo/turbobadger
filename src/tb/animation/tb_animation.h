@@ -7,6 +7,7 @@
 #define TB_ANIMATION_H
 
 #include "tb_linklist.h"
+#include "tb_object.h"
 
 namespace tb {
 
@@ -68,7 +69,7 @@ public:
 
 /** TBAnimationObject - Base class for all animated object */
 
-class TBAnimationObject : public TBLinkOf<TBAnimationObject>
+class TBAnimationObject : public TBTypedObject, public TBLinkOf<TBAnimationObject>
 {
 public:
 	ANIMATION_CURVE animation_curve;
@@ -76,9 +77,13 @@ public:
 	double animation_duration;
 	bool adjust_start_time;
 public:
-	bool IsAnimating() { return linklist ? true : false; }
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(TBAnimationObject, TBTypedObject);
 
 	virtual ~TBAnimationObject() {}
+
+	/** Return true if the object is currently animating. */
+	bool IsAnimating() const { return linklist ? true : false; }
 
 	/** Called on animation start */
 	virtual void OnAnimationStart() = 0;

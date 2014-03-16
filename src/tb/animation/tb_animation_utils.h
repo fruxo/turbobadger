@@ -19,6 +19,9 @@ public:
 	float dst_val;
 	float current_progress;
 public:
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(TBAnimatedFloat, TBAnimationObject);
+
 	TBAnimatedFloat(	float initial_value,
 					ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
 					double animation_duration = ANIMATION_DEFAULT_DURATION)
@@ -30,7 +33,7 @@ public:
 
 	float GetValue() { return src_val + (dst_val - src_val) * current_progress; }
 	void SetValueAnimated(float value) { src_val = GetValue(); dst_val = value; TBAnimationManager::StartAnimation(this, animation_curve, animation_duration); }
-	void SetValueImmediately(float value) { TBAnimationManager::AbortAnimation(this); src_val = dst_val = value; OnAnimationUpdate(1.0f); }
+	void SetValueImmediately(float value) { TBAnimationManager::AbortAnimation(this, false); src_val = dst_val = value; OnAnimationUpdate(1.0f); }
 
 	virtual void OnAnimationStart() { current_progress = 0; }
 	virtual void OnAnimationUpdate(float progress) { current_progress = progress; }
@@ -44,6 +47,9 @@ class TBFloatAnimator : public TBAnimatedFloat
 public:
 	float *target_value;
 public:
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(TBFloatAnimator, TBAnimationObject);
+
 	TBFloatAnimator(	float *target_value,
 					ANIMATION_CURVE animation_curve = ANIMATION_DEFAULT_CURVE,
 					double animation_duration = ANIMATION_DEFAULT_DURATION)
