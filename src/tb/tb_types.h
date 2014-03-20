@@ -14,10 +14,6 @@
 
 namespace tb {
 
-#ifndef nullptr
-#define nullptr NULL
-#endif
-
 typedef signed char int8;
 typedef signed short int16;
 typedef signed int int32;
