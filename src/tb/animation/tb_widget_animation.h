@@ -91,6 +91,11 @@ public:
 	/** Abort all animations that are running for the given widget. */
 	static void AbortAnimations(TBWidget *widget);
 
+	/** Abort all animations matching the given type that are running for the given widget.
+		This example will abort all opacity animations:
+			AbortAnimations(widget, TBTypedObject::GetTypeId<TBWidgetAnimationOpacity>()) */
+	static void AbortAnimations(TBWidget *widget, TB_TYPE_ID type_id);
+
 private:
 	// == TBWidgetListener ==================
 	virtual void OnWidgetDelete(TBWidget *widget);
