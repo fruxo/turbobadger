@@ -440,7 +440,7 @@ void TBScrollBar::SetAxis(AXIS axis)
 
 void TBScrollBar::SetLimits(double min, double max, double visible)
 {
-	min = MIN(min, max);
+	max = MAX(min, max);
 	visible = MAX(visible, 0.0);
 	if (min == m_min && max == m_max && m_visible == visible)
 		return;
