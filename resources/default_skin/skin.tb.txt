@@ -443,8 +443,7 @@ elements
 	TBInlineSelect
 		max-width 110
 	TBDimmer
-		bitmap dimmer.png
-		type Stretch Image
+		background-color #00000088
 
 	TBProgressSpinner
 		min-width 28
