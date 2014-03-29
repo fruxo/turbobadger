@@ -546,7 +546,9 @@ TBSkinElement::TBSkinElement()
 	: bitmap(nullptr), cut(0), expand(0), type(SKIN_ELEMENT_TYPE_STRETCH_BOX)
 	, is_painting(false), is_getting(false)
 	, padding_left(0), padding_top(0), padding_right(0), padding_bottom(0)
+	, width(SKIN_VALUE_NOT_SPECIFIED), height(SKIN_VALUE_NOT_SPECIFIED)
 	, min_width(SKIN_VALUE_NOT_SPECIFIED), min_height(SKIN_VALUE_NOT_SPECIFIED)
+	, pref_width(SKIN_VALUE_NOT_SPECIFIED), pref_height(SKIN_VALUE_NOT_SPECIFIED)
 	, max_width(SKIN_VALUE_NOT_SPECIFIED), max_height(SKIN_VALUE_NOT_SPECIFIED)
 	, spacing(SKIN_VALUE_NOT_SPECIFIED)
 	, content_ofs_x(0), content_ofs_y(0)
@@ -561,6 +563,40 @@ TBSkinElement::TBSkinElement()
 
 TBSkinElement::~TBSkinElement()
 {
+}
+
+int TBSkinElement::GetIntrinsicMinWidth() const
+{
+	// Sizes below the skin cut size would start to shrink the skin below pretty,
+	// so assume that's the default minimum size if it's not specified (minus expansion)
+	return cut * 2 - expand * 2;
+}
+
+int TBSkinElement::GetIntrinsicMinHeight() const
+{
+	// Sizes below the skin cut size would start to shrink the skin below pretty,
+	// so assume that's the default minimum size if it's not specified (minus expansion)
+	return cut * 2 - expand * 2;
+}
+
+int TBSkinElement::GetIntrinsicWidth() const
+{
+	if (width != SKIN_VALUE_NOT_SPECIFIED)
+		return width;
+	if (bitmap)
+		return bitmap->Width() - expand * 2;
+	// FIX: We may want to check child elements etc.
+	return SKIN_VALUE_NOT_SPECIFIED;
+}
+
+int TBSkinElement::GetIntrinsicHeight() const
+{
+	if (height != SKIN_VALUE_NOT_SPECIFIED)
+		return height;
+	if (bitmap)
+		return bitmap->Height() - expand * 2;
+	// FIX: We may want to check child elements etc.
+	return SKIN_VALUE_NOT_SPECIFIED;
 }
 
 void TBSkinElement::SetBitmapDPI(const TBDimensionConverter &dim_conv, int bitmap_dpi)
@@ -639,6 +675,10 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 			padding_top = padding_right = padding_bottom = padding_left = dim_conv->GetPxFromValue(&val, 0);
 		}
 	}
+	width = skin->GetPxFromNode(n->GetNode("width"), width);
+	height = skin->GetPxFromNode(n->GetNode("height"), height);
+	pref_width = skin->GetPxFromNode(n->GetNode("pref-width"), pref_width);
+	pref_height = skin->GetPxFromNode(n->GetNode("pref-height"), pref_height);
 	min_width = skin->GetPxFromNode(n->GetNode("min-width"), min_width);
 	min_height = skin->GetPxFromNode(n->GetNode("min-height"), min_height);
 	max_width = skin->GetPxFromNode(n->GetNode("max-width"), max_width);

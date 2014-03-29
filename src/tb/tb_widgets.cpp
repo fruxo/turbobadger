@@ -869,50 +869,52 @@ PreferredSize TBWidget::OnCalculatePreferredSize(const SizeConstraints &constrai
 	assert(ps.pref_w >= ps.min_w);
 	assert(ps.pref_h >= ps.min_h);
 
-	// Grow the contet size by the skin padding to get the preferred size.
 	if (TBSkinElement *e = GetSkinBgElement())
 	{
-		// If the preferred size is not set by the widget, calculate
-		// it based on the size of the skin bitmap (minus expansion)
-		if (ps.pref_w == 0 && e->bitmap)
-			ps.pref_w = e->bitmap->Width() - e->expand * 2;
+		// Override the widgets preferences with skin attributes that has been specified.
+		// If not set by the widget, calculate based on the intrinsic size of the skin.
+
+		const int skin_intrinsic_w = e->GetIntrinsicWidth();
+		if (e->GetPrefWidth() != SKIN_VALUE_NOT_SPECIFIED)
+			ps.pref_w = e->GetPrefWidth();
+		else if (ps.pref_w == 0 && skin_intrinsic_w != SKIN_VALUE_NOT_SPECIFIED)
+			ps.pref_w = skin_intrinsic_w;
 		else
 		{
+			// Grow by padding to get the preferred size from preferred content size.
 			ps.min_w += e->padding_left + e->padding_right;
 			ps.pref_w += e->padding_left + e->padding_right;
 		}
 
-		if (ps.pref_h == 0 && e->bitmap)
-			ps.pref_h = e->bitmap->Height() - e->expand * 2;
+		const int skin_intrinsic_h = e->GetIntrinsicHeight();
+		if (e->GetPrefHeight() != SKIN_VALUE_NOT_SPECIFIED)
+			ps.pref_h = e->GetPrefHeight();
+		else if (ps.pref_h == 0 && skin_intrinsic_h != SKIN_VALUE_NOT_SPECIFIED)
+			ps.pref_h = skin_intrinsic_h;
 		else
 		{
+			// Grow by padding to get the preferred size from preferred content size.
 			ps.min_h += e->padding_top + e->padding_bottom;
 			ps.pref_h += e->padding_top + e->padding_bottom;
 		}
 
-		// Sizes below the skin cut size would start to shrink the skin below pretty,
-		// so assume that's the default minimum size if it's not specified (minus expansion)
-		int skin_min_w = e->cut * 2 - e->expand * 2;
-		int skin_min_h = e->cut * 2 - e->expand * 2;
-
-		if (e->min_width != SKIN_VALUE_NOT_SPECIFIED)
-			ps.min_w = e->min_width;
+		if (e->GetMinWidth() != SKIN_VALUE_NOT_SPECIFIED)
+			ps.min_w = e->GetMinWidth();
 		else
-			ps.min_w = MAX(ps.min_w, skin_min_w);
+			ps.min_w = MAX(ps.min_w, e->GetIntrinsicMinWidth());
 
-		if (e->min_height != SKIN_VALUE_NOT_SPECIFIED)
-			ps.min_h = e->min_height;
+		if (e->GetMinHeight() != SKIN_VALUE_NOT_SPECIFIED)
+			ps.min_h = e->GetMinHeight();
 		else
-			ps.min_h = MAX(ps.min_h, skin_min_h);
+			ps.min_h = MAX(ps.min_h, e->GetIntrinsicMinHeight());
 
-		// Use max size from skin if specified, or add padding
-		if (e->max_width != SKIN_VALUE_NOT_SPECIFIED)
-			ps.max_w = e->max_width;
+		if (e->GetMaxWidth() != SKIN_VALUE_NOT_SPECIFIED)
+			ps.max_w = e->GetMaxWidth();
 		else
 			ps.max_w += e->padding_left + e->padding_right;
 
-		if (e->max_height != SKIN_VALUE_NOT_SPECIFIED)
-			ps.max_h = e->max_height;
+		if (e->GetMaxHeight() != SKIN_VALUE_NOT_SPECIFIED)
+			ps.max_h = e->GetMaxHeight();
 		else
 			ps.max_h += e->padding_top + e->padding_bottom;
 

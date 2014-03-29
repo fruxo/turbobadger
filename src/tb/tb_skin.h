@@ -182,6 +182,10 @@ public:
 	int16 padding_top;		///< Top padding for any content in the element
 	int16 padding_right;	///< Right padding for any content in the element
 	int16 padding_bottom;	///< Bottom padding for any content in the element
+	int16 width;			///< Intrinsic width or SKIN_VALUE_NOT_SPECIFIED
+	int16 height;			///< Intrinsic height or SKIN_VALUE_NOT_SPECIFIED
+	int16 pref_width;		///< Preferred width or SKIN_VALUE_NOT_SPECIFIED
+	int16 pref_height;		///< Preferred height or SKIN_VALUE_NOT_SPECIFIED
 	int16 min_width;		///< Minimum width or SKIN_VALUE_NOT_SPECIFIED
 	int16 min_height;		///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
 	int16 max_width;		///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
@@ -201,6 +205,40 @@ public:
 	TBColor text_color;		///< Color of the text in the widget.
 	TBColor bg_color;		///< Color of the background in the widget.
 	int16 bitmap_dpi;		///< The DPI of the bitmap that was loaded.
+
+	/** Get the minimum width, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
+	int GetMinWidth() const { return min_width; }
+
+	/** Get the minimum height, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
+	int GetMinHeight() const { return min_height; }
+
+	/** Get the intrinsic minimum width. It will be calculated based on the skin properties. */
+	int GetIntrinsicMinWidth() const;
+
+	/** Get the intrinsic minimum height. It will be calculated based on the skin properties. */
+	int GetIntrinsicMinHeight() const;
+
+	/** Get the maximum width, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
+	int GetMaxWidth() const { return max_width; }
+
+	/** Get the maximum height, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
+	int GetMaxHeight() const { return max_height; }
+
+	/** Get the preferred width, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
+	int GetPrefWidth() const { return pref_width; }
+
+	/** Get the preferred height, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
+	int GetPrefHeight() const { return pref_height; }
+
+	/** Get the intrinsic width. If not specified using the "width" attribute, it will be
+		calculated based on the skin properties. If it can't be calculated it will return
+		SKIN_VALUE_NOT_SPECIFIED. */
+	int GetIntrinsicWidth() const;
+
+	/** Get the intrinsic height. If not specified using the "height" attribute, it will be
+		calculated based on the skin properties. If it can't be calculated it will return
+		SKIN_VALUE_NOT_SPECIFIED. */
+	int GetIntrinsicHeight() const;
 
 	/** Set the DPI that the bitmap was loaded in. This may modify properties
 		to compensate for the bitmap resolution. */
