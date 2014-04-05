@@ -111,6 +111,8 @@ class TBView extends GLSurfaceView
 	private static class TBRenderer implements GLSurfaceView.Renderer
 	{
 		private int m_width, m_height;
+		private final int m_w[] = { 0 };
+		private final int m_h[] = { 0 };
 		public void onDrawFrame(GL10 gl) {
 
 			if (EGLContext.getEGL() instanceof EGL10) {
@@ -118,14 +120,12 @@ class TBView extends GLSurfaceView
 				// get one onDrawFrame call before onSurfaceChanged is called after the
 				// surface change size. Work around this by checking the size of the
 				// surface and resize the rendering accordingly.
-				int w[] = { 0 };
-				int h[] = { 0 };
 				EGL10 egl = (EGL10)EGLContext.getEGL();
 				EGLDisplay disp = egl.eglGetCurrentDisplay();
 				EGLSurface surf = egl.eglGetCurrentSurface(EGL10.EGL_DRAW);
-				if (egl.eglQuerySurface(disp, surf, EGL10.EGL_WIDTH, w) &&
-					egl.eglQuerySurface(disp, surf, EGL10.EGL_HEIGHT, h))
-					handleSurfaceSizeChanged(w[0], h[0]);
+				if (egl.eglQuerySurface(disp, surf, EGL10.EGL_WIDTH, m_w) &&
+					egl.eglQuerySurface(disp, surf, EGL10.EGL_HEIGHT, m_h))
+					handleSurfaceSizeChanged(m_w[0], m_h[0]);
 			}
 
 			TBLib.RunSlice();
