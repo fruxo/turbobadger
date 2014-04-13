@@ -202,7 +202,7 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 		OnScroll(m_style_edit.scroll_x, m_scrollbar_y.GetValue());
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_WHEEL)
+	else if (ev.type == EVENT_TYPE_WHEEL && ev.modifierkeys == TB_MODIFIER_NONE)
 	{
 		int old_val = m_scrollbar_y.GetValue();
 		m_scrollbar_y.SetValue(old_val + ev.delta_y * TBSystem::GetPixelsPerLine());

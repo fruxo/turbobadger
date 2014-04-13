@@ -215,7 +215,7 @@ bool TBScrollContainer::OnEvent(const TBWidgetEvent &ev)
 		OnScroll(m_scrollbar_x.GetValue(), m_scrollbar_y.GetValue());
 		return true;
 	}
-	else if (ev.type == EVENT_TYPE_WHEEL)
+	else if (ev.type == EVENT_TYPE_WHEEL && ev.modifierkeys == TB_MODIFIER_NONE)
 	{
 		double old_val = m_scrollbar_y.GetValueDouble();
 		m_scrollbar_y.SetValueDouble(old_val + ev.delta_y * TBSystem::GetPixelsPerLine());

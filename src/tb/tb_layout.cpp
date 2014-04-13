@@ -411,7 +411,7 @@ PreferredSize TBLayout::OnCalculatePreferredContentSize(const SizeConstraints &c
 
 bool TBLayout::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_WHEEL)
+	if (ev.type == EVENT_TYPE_WHEEL && ev.modifierkeys == TB_MODIFIER_NONE)
 	{
 		int old_scroll = GetOverflowScroll();
 		SetOverflowScroll(m_overflow_scroll + ev.delta_y * TBSystem::GetPixelsPerLine());
