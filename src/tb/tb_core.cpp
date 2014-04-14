@@ -42,4 +42,9 @@ void tb_core_shutdown()
 	delete g_tb_lng;
 }
 
+bool tb_core_is_initialized()
+{
+	return g_widgets_reader ? true : false;
+}
+
 }; // namespace tb

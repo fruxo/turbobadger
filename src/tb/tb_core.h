@@ -57,6 +57,9 @@ bool tb_core_init(TBRenderer *renderer, const char *lng_file);
 /** Shutdown turbo badger. Call this after deleting the last widget, to free turbo badger internals. */
 void tb_core_shutdown();
 
+/** Returns true if turbo badger is initialized. */
+bool tb_core_is_initialized();
+
 }; // namespace tb
 
 #endif // TB_CORE_H
