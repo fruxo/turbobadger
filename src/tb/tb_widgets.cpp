@@ -989,6 +989,7 @@ void TBWidget::SetLayoutParams(const LayoutParams &lp)
 
 void TBWidget::InvalidateLayout(INVALIDATE_LAYOUT il)
 {
+	Invalidate();
 	m_packed.is_cached_ps_valid = 0;
 	if (il == INVALIDATE_LAYOUT_RECURSIVE && m_parent)
 		m_parent->InvalidateLayout(il);
