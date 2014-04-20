@@ -160,11 +160,9 @@ bool TBBitmapFragmentMap::Init(int bitmap_w, int bitmap_h)
 	m_bitmap_data = new uint32[bitmap_w * bitmap_h];
 	m_bitmap_w = bitmap_w;
 	m_bitmap_h = bitmap_h;
-	if (m_bitmap_data)
 #ifdef _DEBUG
+	if (m_bitmap_data)
 		memset(m_bitmap_data, 0x88, bitmap_w * bitmap_h * sizeof(uint32));
-#else
-		memset(m_bitmap_data, 0x00, bitmap_w * bitmap_h * sizeof(uint32));
 #endif
 	return m_bitmap_data ? true : false;
 }
