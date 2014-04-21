@@ -348,6 +348,23 @@ static void window_size_callback(GLFWwindow *window, int w, int h)
 		backend->GetRoot()->SetRect(TBRect(0, 0, w, h));
 }
 
+static void drop_callback(GLFWwindow *window, int count, const char **files_utf8)
+{
+	ApplicationBackendGLFW *backend = GetBackend(window);
+	TBWidget *target = TBWidget::hovered_widget;
+	if (!target)
+		target = TBWidget::focused_widget;
+	if (!target)
+		target = backend->GetRoot();
+	if (target)
+	{
+		TBWidgetEventFileDrop ev;
+		for (int i = 0; i < count; i++)
+			ev.files.Add(new TBStr(files_utf8[i]));
+		target->InvokeEvent(ev);
+	}
+}
+
 //static
 ApplicationBackend *ApplicationBackend::Create(Application *app, int width, int height, const char *title)
 {
@@ -385,6 +402,9 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
     glfwSetKeyCallback(mainWindow, key_callback);
     glfwSetCharCallback(mainWindow, char_callback);
     glfwSetTimerCallback(timer_callback);
+#if (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 1)
+	glfwSetDropCallback(mainWindow, drop_callback);
+#endif
 
 	m_renderer = new TBRendererGL();
 	m_root.SetRect(TBRect(0, 0, width, height));

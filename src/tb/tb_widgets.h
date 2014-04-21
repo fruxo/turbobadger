@@ -73,7 +73,14 @@ enum EVENT_TYPE {
 	/** Invoked when a context menu should be opened at the event x and y coordinates.
 		It may be invoked automatically for a widget on long click, if nothing handles
 		the long click event. */
-	EVENT_TYPE_CONTEXT_MENU
+	EVENT_TYPE_CONTEXT_MENU,
+
+	/** Invoked by the platform when one or multiple files has been dropped on
+		the widget. The event is guaranteed to be a TBWidgetEventFileDrop. */
+	EVENT_TYPE_FILE_DROP,
+
+	/** Custom event. Not used internally. ref_id may be used for additional type info. */
+	EVENT_TYPE_CUSTOM
 };
 
 enum MODIFIER_KEYS {
@@ -95,10 +102,10 @@ enum SPECIAL_KEY
 	TB_KEY_F7, TB_KEY_F8, TB_KEY_F9, TB_KEY_F10, TB_KEY_F11, TB_KEY_F12
 };
 
-class TBWidgetEvent
+class TBWidgetEvent : public TBTypedObject
 {
 public:
-	TBWidget *target;		///< The widget that invoked the event
+	TBWidget *target;	///< The widget that invoked the event
 	EVENT_TYPE type;	///< Which type of event
 	int target_x;		///< X position in target widget. Set for all pointer events, click and wheel.
 	int target_y;		///< Y position in target widget. Set for all pointer events, click and wheel.
@@ -111,6 +118,8 @@ public:
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 	bool touch;			///< Set for pointer events. True if the event is a touch event (finger or pen on screen)
 						///< False if mouse or other cursor input.
+
+	TBOBJECT_SUBCLASS(TBWidgetEvent, TBTypedObject);
 
 	TBWidgetEvent(EVENT_TYPE type) : target(nullptr), type(type), target_x(0), target_y(0), delta_x(0), delta_y(0), count(1),
 											key(0), special_key(TB_KEY_UNDEFINED), modifierkeys(TB_MODIFIER_NONE), touch(false) {}
@@ -130,6 +139,18 @@ public:
 											type == EVENT_TYPE_POINTER_MOVE; }
 	bool IsKeyEvent() const { return	type == EVENT_TYPE_KEY_DOWN ||
 										type == EVENT_TYPE_KEY_UP; }
+};
+
+/** TBWidgetEventFileDrop is a event of type EVENT_TYPE_FILE_DROP.
+	It contains a list of filenames of the files that was dropped. */
+class TBWidgetEventFileDrop : public TBWidgetEvent
+{
+public:
+	TBListAutoDeleteOf<TBStr> files;
+
+	TBOBJECT_SUBCLASS(TBWidgetEventFileDrop, TBWidgetEvent);
+
+	TBWidgetEventFileDrop() : TBWidgetEvent(EVENT_TYPE_FILE_DROP) {}
 };
 
 /** TBWidget state types (may be combined).
