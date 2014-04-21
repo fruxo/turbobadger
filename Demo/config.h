@@ -4,13 +4,6 @@
 // This sucks, we need to define this to be able to build glfw without
 // an extra step after checkout (to generate config.h using cmake).
 
-#ifdef MACOSX
-# define _GLFW_NSGL
-#else
-# define _GLFW_X11_GLX
-# define _GLFW_HAS_GLXGETPROCADDRESS
-#endif
-
 #define _GLFW_VERSION_FULL "3.0.1"
 
 #endif // DEMO_CONFIG_H
