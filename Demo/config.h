@@ -4,10 +4,7 @@
 // This sucks, we need to define this to be able to build glfw without
 // an extra step after checkout (to generate config.h using cmake).
 
-#ifdef WIN32
-# define _GLFW_USE_OPENGL
-# define _GLFW_WGL
-#elif defined(MACOSX)
+#ifdef MACOSX
 # define _GLFW_NSGL
 #else
 # define _GLFW_X11_GLX
