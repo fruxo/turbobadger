@@ -295,9 +295,10 @@ private:
 	const char *m_filename;
 };
 
-bool TBNode::ReadFile(const char *filename)
+bool TBNode::ReadFile(const char *filename, TB_NODE_READ_FLAGS flags)
 {
-	Clear();
+	if (!(flags & TB_NODE_READ_FLAGS_APPEND))
+		Clear();
 	FileParser p;
 	TBNodeTarget t(this, filename);
 	if (p.Read(filename, &t))
@@ -308,14 +309,15 @@ bool TBNode::ReadFile(const char *filename)
 	return false;
 }
 
-void TBNode::ReadData(const char *data)
+void TBNode::ReadData(const char *data, TB_NODE_READ_FLAGS flags)
 {
-	ReadData(data, strlen(data));
+	ReadData(data, strlen(data), flags);
 }
 
-void TBNode::ReadData(const char *data, int data_len)
+void TBNode::ReadData(const char *data, int data_len, TB_NODE_READ_FLAGS flags)
 {
-	Clear();
+	if (!(flags & TB_NODE_READ_FLAGS_APPEND))
+		Clear();
 	DataParser p;
 	TBNodeTarget t(this, "{data}");
 	p.Read(data, data_len, &t);

@@ -11,6 +11,14 @@
 
 namespace tb {
 
+enum TB_NODE_READ_FLAGS {
+	TB_NODE_READ_FLAGS_NONE	= 0,
+	/** Read nodes without clearing first. Can be used to append
+		data from multiple sources, or inject dependencies. */
+	TB_NODE_READ_FLAGS_APPEND = 1,
+};
+MAKE_ENUM_FLAG_COMBO(TB_NODE_READ_FLAGS);
+
 /** TBNode is a tree node with a string name and a value (TBValue).
 	It may have a parent TBNode and child TBNodes.
 
@@ -29,13 +37,13 @@ public:
 	static TBNode *Create(const char *name);
 
 	/** Read a tree of nodes from file into this node. Returns true on success. */
-	bool ReadFile(const char *filename);
+	bool ReadFile(const char *filename, TB_NODE_READ_FLAGS flags = TB_NODE_READ_FLAGS_NONE);
 
 	/** Read a tree of nodes from a null terminated string buffer. */
-	void ReadData(const char *data);
+	void ReadData(const char *data, TB_NODE_READ_FLAGS flags = TB_NODE_READ_FLAGS_NONE);
 
 	/** Read a tree of nodes from a buffer with a known length. */
-	void ReadData(const char *data, int data_len);
+	void ReadData(const char *data, int data_len, TB_NODE_READ_FLAGS flags = TB_NODE_READ_FLAGS_NONE);
 
 	/** Clear the contens of this node. */
 	void Clear();
