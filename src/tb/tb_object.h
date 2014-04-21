@@ -45,6 +45,12 @@ template<class T> T *TBSafeCast(TBTypedObject *obj) {
 	return obj ? obj->SafeCastTo<T>() : nullptr;
 }
 
+/** Returns the given object as the given type, or nullptr if it's not that type
+	or if the object is nullptr. */
+template<class T> const T *TBSafeCast(const TBTypedObject *obj) {
+	return obj ? obj->SafeCastTo<T>() : nullptr;
+}
+
 /** Implement the methods for safe typecasting without requiring RTTI. */
 #define TBOBJECT_SUBCLASS(clazz, baseclazz) \
 	virtual const char *GetClassName() const { return #clazz; } \
