@@ -56,7 +56,8 @@ public:
 	FreetypeFontRenderer();
 	~FreetypeFontRenderer();
 
-	virtual TBFontFace *Create(const char *filename, int size);
+	virtual TBFontFace *Create(TBFontManager *font_manager, const char *filename,
+								const TBFontDescription &font_desc);
 
 	virtual TBFontMetrics GetMetrics();
 	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
@@ -165,7 +166,7 @@ bool FreetypeFontRenderer::Load(const char *filename, int size)
 	return Load(m_face, size);
 }
 
-TBFontFace *FreetypeFontRenderer::Create(const char *filename, int size)
+TBFontFace *FreetypeFontRenderer::Create(TBFontManager *font_manager, const char *filename, const TBFontDescription &font_desc)
 {
 	if (FreetypeFontRenderer *fr = new FreetypeFontRenderer())
 	{
@@ -174,15 +175,15 @@ TBFontFace *FreetypeFontRenderer::Create(const char *filename, int size)
 		if (f)
 		{
 			++f->refCount;
-			if (fr->Load(f, size))
-				if (TBFontFace *font = new TBFontFace(fr, size))
+			if (fr->Load(f, (int) font_desc.GetSize()))
+				if (TBFontFace *font = new TBFontFace(font_manager->GetGlyphCache(), fr, font_desc))
 					return font;
 		}
-		else if (fr->Load(filename, size))
+		else if (fr->Load(filename, (int) font_desc.GetSize()))
 		{
 			if (ft_face_cache.Add(face_cache_id, fr->m_face))
 				fr->m_face->hashID = face_cache_id;
-			if (TBFontFace *font = new TBFontFace(fr, size))
+			if (TBFontFace *font = new TBFontFace(font_manager->GetGlyphCache(), fr, font_desc))
 				return font;
 		}
 

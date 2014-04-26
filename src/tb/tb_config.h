@@ -57,4 +57,10 @@
 	It is using GL ES version 1. */
 //#define TB_RENDERER_GLES_1
 
+/** The width of the font glyph cache. Must be a power of two. */
+#define TB_GLYPH_CACHE_WIDTH 512
+
+/** The height of the font glyph cache. Must be a power of two. */
+#define TB_GLYPH_CACHE_HEIGHT 512
+
 #endif // TB_CONFIG_H

@@ -68,7 +68,8 @@ public:
 	bool FindGlyphs();
 	GLYPH *FindNext(UCS4 cp, int x);
 
-	virtual TBFontFace *Create(const char *filename, int size);
+	virtual TBFontFace *Create(TBFontManager *font_manager, const char *filename,
+								const TBFontDescription &font_desc);
 
 	virtual TBFontMetrics GetMetrics();
 	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
@@ -261,14 +262,14 @@ GLYPH *TBBFRenderer::FindNext(UCS4 cp, int x)
 	return glyph;
 }
 
-TBFontFace *TBBFRenderer::Create(const char *filename, int size)
+TBFontFace *TBBFRenderer::Create(TBFontManager *font_manager, const char *filename, const TBFontDescription &font_desc)
 {
 	if (!strstr(filename, ".tb.txt"))
 		return nullptr;
 	if (TBBFRenderer *fr = new TBBFRenderer())
 	{
-		if (fr->Load(filename, size))
-			if (TBFontFace *font = new TBFontFace(fr, size))
+		if (fr->Load(filename, (int) font_desc.GetSize()))
+			if (TBFontFace *font = new TBFontFace(font_manager->GetGlyphCache(), fr, font_desc))
 				return font;
 		delete fr;
 	}

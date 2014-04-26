@@ -24,7 +24,8 @@ public:
 
 	bool Load(const char *filename, int size);
 
-	virtual TBFontFace *Create(const char *filename, int size);
+	virtual TBFontFace *Create(TBFontManager *font_manager, const char *filename,
+								const TBFontDescription &font_desc);
 
 	virtual TBFontMetrics GetMetrics();
 	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
@@ -103,12 +104,12 @@ bool STBFontRenderer::Load(const char *filename, int size)
 	return true;
 }
 
-TBFontFace *STBFontRenderer::Create(const char *filename, int size)
+TBFontFace *STBFontRenderer::Create(TBFontManager *font_manager, const char *filename, const TBFontDescription &font_desc)
 {
 	if (STBFontRenderer *fr = new STBFontRenderer())
 	{
-		if (fr->Load(filename, size))
-			if (TBFontFace *font = new TBFontFace(fr, size))
+		if (fr->Load(filename, (int) font_desc.GetSize()))
+			if (TBFontFace *font = new TBFontFace(font_manager->GetGlyphCache(), fr, font_desc))
 				return font;
 		delete fr;
 	}
