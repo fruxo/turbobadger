@@ -18,6 +18,7 @@ int mouse_y = 0;
 bool key_alt = false;
 bool key_ctrl = false;
 bool key_shift = false;
+bool key_super = false;
 
 class ApplicationBackendGLFW;
 
@@ -81,6 +82,7 @@ MODIFIER_KEYS GetModifierKeys()
 	if (key_alt)	code |= TB_ALT;
 	if (key_ctrl)	code |= TB_CTRL;
 	if (key_shift)	code |= TB_SHIFT;
+	if (key_super)	code |= TB_SUPER;
 	return code;
 }
 
@@ -90,6 +92,7 @@ MODIFIER_KEYS GetModifierKeys(int modifier)
 	if (modifier & GLFW_MOD_ALT)		code |= TB_ALT;
 	if (modifier & GLFW_MOD_CONTROL)	code |= TB_CTRL;
 	if (modifier & GLFW_MOD_SHIFT)		code |= TB_SHIFT;
+	if (modifier & GLFW_MOD_SUPER)		code |= TB_SUPER;
 	return code;
 }
 
@@ -113,7 +116,7 @@ static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modif
 	if (!TBWidget::focused_widget || !down)
 		return false;
 #ifdef MACOSX
-	bool shortcut_key = (modifierkeys & TB_ALT) ? true : false;
+	bool shortcut_key = (modifierkeys & TB_SUPER) ? true : false;
 #else
 	bool shortcut_key = (modifierkeys & TB_CTRL) ? true : false;
 #endif
@@ -215,6 +218,10 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 	case GLFW_KEY_LEFT_ALT:
 	case GLFW_KEY_RIGHT_ALT:
 		key_alt = down;
+		break;
+	case GLFW_KEY_LEFT_SUPER:
+	case GLFW_KEY_RIGHT_SUPER:
+		key_super = down;
 		break;
 	default:
 		// glfw calls key_callback instead of char_callback
