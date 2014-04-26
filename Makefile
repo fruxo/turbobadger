@@ -17,7 +17,7 @@ endif
 ifeq ($(UNAME),Darwin)
  CFLAGS += -DMACOSX -Dnullptr=0 -D_GLFW_COCOA -D_GLFW_NSGL
  CXXFLAGS += -DMACOSX -Dnullptr=0 -D_GLFW_COCOA -D_GLFW_NSGL
- LIBS +=  -framework OpenGL -framework AppKit -framework IOKit -lobjc
+ LIBS +=  -framework OpenGL -framework AppKit -framework IOKit -framework QuartzCore -lobjc
 else
  CFLAGS += -DLINUX -Dnullptr=0 -D_GLFW_X11 -D_GLFW_HAS_GLXGETPROCADDRESS
  CXXFLAGS += -DLINUX -Dnullptr=0 --std=c++0x -D_GLFW_X11 -D_GLFW_HAS_GLXGETPROCADDRESS
