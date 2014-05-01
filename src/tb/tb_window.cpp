@@ -34,7 +34,7 @@ TBWindow::~TBWindow()
 	m_mover.RemoveChild(&m_textfield);
 }
 
-void TBWindow::ResizeToFitContent(RESIZE_FIT fit)
+TBRect TBWindow::GetResizeToFitContentRect(RESIZE_FIT fit)
 {
 	PreferredSize ps = GetPreferredSize();
 	int new_w = ps.pref_w;
@@ -54,7 +54,12 @@ void TBWindow::ResizeToFitContent(RESIZE_FIT fit)
 		new_w = MIN(new_w, GetParent()->GetRect().w);
 		new_h = MIN(new_h, GetParent()->GetRect().h);
 	}
-	SetRect(TBRect(GetRect().x, GetRect().y, new_w, new_h));
+	return TBRect(GetRect().x, GetRect().y, new_w, new_h);
+}
+
+void TBWindow::ResizeToFitContent(RESIZE_FIT fit)
+{
+	SetRect(GetResizeToFitContentRect(fit));
 }
 
 void TBWindow::Close()

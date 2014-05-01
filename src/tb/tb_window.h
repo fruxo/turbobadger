@@ -74,8 +74,12 @@ public:
 		RESIZE_FIT_CURRENT_OR_NEEDED	///< Fit the minimal or maximum size only if needed. Will keep
 										///< the new size as close as possible to the current size.
 	};
-	/** Resize the window to fit the its content.
-		It can fit in a few different ways (See RESIZE_FIT). */
+
+	/** Get a suitable rect for the window based on the contents and the given fit. */
+	TBRect GetResizeToFitContentRect(RESIZE_FIT fit = RESIZE_FIT_PREFERRED);
+
+	/** Resize the window to fit the its content. This is the same as doing
+		SetRect(GetResizeToFitContentRect(fit)). */
 	void ResizeToFitContent(RESIZE_FIT fit = RESIZE_FIT_PREFERRED);
 
 	/** Set the window title. */
