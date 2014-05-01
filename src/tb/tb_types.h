@@ -35,6 +35,16 @@ template <class T>
 T Clamp(const T& value, const T& min, const T& max)
 	{ return (value > max) ? max : ((value < min) ? min : value); }
 
+/** Returns value clamped to min and max. If max is greater than min,
+	max will be clipped to min. */
+template <class T>
+T ClampClipMax(const T& value, const T& min, const T& max)
+{
+	return (value > max)
+		? (max > min ? max : min)
+		: ((value < min) ? min : value);
+}
+
 #ifndef MAX
 /** This is deprecated! Use Max(a, b)! */
 #define MAX(a, b) Max(a, b)
