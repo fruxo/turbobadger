@@ -44,6 +44,13 @@ public:
 	inline TBRect Expand(int tx, int ty) const		{ return Shrink(-tx, -ty); }
 	inline TBRect Offset(int dx, int dy) const		{ return TBRect(x + dx, y + dy, w, h); }
 
+	/** Return a rect moved inside bounding_rect. If the rect doesn't fit inside
+		bounding_rect, it will be placed so the x and/or y matches bounding_rect. */
+	TBRect MoveIn(const TBRect &bounding_rect) const;
+
+	/** Return a rect centered in bounding_rect. */
+	TBRect CenterIn(const TBRect &bounding_rect) const;
+
 	TBRect Union(const TBRect &rect) const;
 	TBRect Clip(const TBRect &clip_rect) const;
 };

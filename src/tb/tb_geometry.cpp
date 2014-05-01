@@ -20,6 +20,18 @@ bool TBRect::Intersects(const TBRect &rect) const
 	return false;
 }
 
+TBRect TBRect::MoveIn(const TBRect &bounding_rect) const
+{
+	return TBRect(ClampClipMax(x, bounding_rect.x, bounding_rect.x + bounding_rect.w - w),
+				ClampClipMax(y, bounding_rect.y, bounding_rect.y + bounding_rect.h - h),
+				w, h);
+}
+
+TBRect TBRect::CenterIn(const TBRect &bounding_rect) const
+{
+	return TBRect((bounding_rect.w - w) / 2, (bounding_rect.h - h) / 2, w, h);
+}
+
 TBRect TBRect::Union(const TBRect &rect) const
 {
 	assert(!IsInsideOut());
