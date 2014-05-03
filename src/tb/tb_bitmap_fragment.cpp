@@ -217,25 +217,27 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 	//needed_w = (needed_w + granularity - 1) / granularity * granularity;
 	//needed_h = (needed_h + granularity - 1) / granularity * granularity;
 
-	if (!rows.GetNumItems())
+	if (!m_rows.GetNumItems())
 	{
 		// Create a row covering the entire bitmap.
 		TBFragmentSpaceAllocator *row;
-		if (!rows.GrowIfNeeded() || !(row = new TBFragmentSpaceAllocator(0, m_bitmap_w, m_bitmap_h)))
+		if (!m_rows.GrowIfNeeded() || !(row = new TBFragmentSpaceAllocator(0, m_bitmap_w, m_bitmap_h)))
 			return nullptr;
-		rows.Add(row);
+		m_rows.Add(row);
 	}
 	// Get the smallest row where we fit
+	int best_row_index = -1;
 	TBFragmentSpaceAllocator *best_row = nullptr;
-	for (int i = 0; i < rows.GetNumItems(); i++)
+	for (int i = 0; i < m_rows.GetNumItems(); i++)
 	{
-		TBFragmentSpaceAllocator *row = rows[i];
+		TBFragmentSpaceAllocator *row = m_rows[i];
 		if (!best_row || row->height < best_row->height)
 		{
 			// This is the best row so far, if we fit
 			if (needed_h <= row->height && row->HasSpace(needed_w))
 			{
 				best_row = row;
+				best_row_index = i;
 				if (needed_h == row->height)
 					break; // We can't find a smaller line, so we're done
 			}
@@ -248,9 +250,10 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 	if (best_row->IsAllAvailable() && needed_h < best_row->height)
 	{
 		TBFragmentSpaceAllocator *row;
-		if (!rows.GrowIfNeeded() || !(row = new TBFragmentSpaceAllocator(best_row->y + needed_h, m_bitmap_w, best_row->height - needed_h)))
+		if (!m_rows.GrowIfNeeded() || !(row = new TBFragmentSpaceAllocator(best_row->y + needed_h, m_bitmap_w, best_row->height - needed_h)))
 			return nullptr;
-		rows.Add(row);
+		// Keep the rows sorted from top to bottom
+		m_rows.Add(row, best_row_index + 1);
 		best_row->height = needed_h;
 	}
 	// Allocate the fragment and copy the fragment data into the map data.
@@ -296,7 +299,27 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 
 	m_allocated_pixels -= frag->m_space->width * frag->m_row->height;
 	frag->m_row->FreeSpace(frag->m_space);
+	frag->m_space = nullptr;
 	frag->m_row_height = 0;
+
+	// If the row is now empty, merge empty rows so larger fragments
+	// have a chance of allocating the space.
+	if (frag->m_row->IsAllAvailable())
+	{
+		for (int i = 0; i < m_rows.GetNumItems() - 1; i++)
+		{
+			assert(i >= 0);
+			assert(i < m_rows.GetNumItems() - 1);
+			TBFragmentSpaceAllocator *row = m_rows.Get(i);
+			TBFragmentSpaceAllocator *next_row = m_rows.Get(i + 1);
+			if (row->IsAllAvailable() && next_row->IsAllAvailable())
+			{
+				row->height += next_row->height;
+				m_rows.Delete(i + 1);
+				i--;
+			}
+		}
+	}
 }
 
 void TBBitmapFragmentMap::CopyData(TBBitmapFragment *frag, int data_stride, uint32 *frag_data, int border)

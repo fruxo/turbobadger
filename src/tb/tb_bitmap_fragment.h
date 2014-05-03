@@ -126,7 +126,7 @@ private:
 	bool ValidateBitmap();
 	void DeleteBitmap();
 	void CopyData(TBBitmapFragment *frag, int data_stride, uint32 *frag_data, int border);
-	TBListAutoDeleteOf<TBFragmentSpaceAllocator> rows;
+	TBListAutoDeleteOf<TBFragmentSpaceAllocator> m_rows;
 	int m_bitmap_w, m_bitmap_h;
 	uint32 *m_bitmap_data;
 	TBBitmap *m_bitmap;
