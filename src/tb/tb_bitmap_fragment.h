@@ -141,20 +141,25 @@ class TBBitmapFragment
 {
 public:
 	/** Return the width of the bitmap fragment. */
-	int Width() { return m_rect.w; }
+	int Width() const { return m_rect.w; }
 
 	/** Return the height of the bitmap fragment. */
-	int Height() { return m_rect.h; }
+	int Height() const { return m_rect.h; }
 
 	/** Return the bitmap for this fragment.
 		By default, the bitmap is validated if needed before returning (See TB_VALIDATE_TYPE) */
 	TBBitmap *GetBitmap(TB_VALIDATE_TYPE validate_type = TB_VALIDATE_ALWAYS) { return m_map->GetBitmap(validate_type); }
+
+	/** Return the height allocated to this fragment. This may be larger than Height() depending
+		of the internal allocation of fragments in a map. It should rarely be used. */
+	int GetAllocatedHeight() const { return m_row_height; }
 public:
 	TBBitmapFragmentMap *m_map;
 	TBRect m_rect;
 	TBFragmentSpaceAllocator *m_row;
 	TBFragmentSpaceAllocator::Space *m_space;
 	TBID m_id;
+	int m_row_height;
 
 	/** This uint32 is reserved for batching renderer backends. It's not used
 		internally, but always initialized to 0xffffffff for all new fragments. */

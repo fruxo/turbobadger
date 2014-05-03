@@ -261,6 +261,7 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 			frag->m_row = best_row;
 			frag->m_space = space;
 			frag->m_rect.Set(space->x + border, best_row->y + border, frag_w, frag_h);
+			frag->m_row_height = best_row->height;
 			frag->m_batch_id = 0xffffffff;
 			CopyData(frag, data_stride, frag_data, border);
 			m_need_update = true;
@@ -293,6 +294,7 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 
 	m_allocated_pixels -= frag->m_space->width * frag->m_row->height;
 	frag->m_row->FreeSpace(frag->m_space);
+	frag->m_row_height = 0;
 }
 
 void TBBitmapFragmentMap::CopyData(TBBitmapFragment *frag, int data_stride, uint32 *frag_data, int border)
