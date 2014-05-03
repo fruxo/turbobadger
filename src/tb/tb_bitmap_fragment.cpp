@@ -136,18 +136,19 @@ void TBSpaceAllocator::FreeSpace(Space *space)
 		}
 		fs = next_fs;
 	}
+
 	// We're done and can remove the space from the used list
 	m_used_space_list.Delete(space);
 
 #ifdef _DEBUG
 	// Check that free space is in order
-	fs = m_free_space_list.GetFirst();
+	Space *tmp = m_free_space_list.GetFirst();
 	int x = 0;
-	while (fs)
+	while (tmp)
 	{
-		assert(fs->x >= x);
-		x = fs->x + fs->width;
-		fs = fs->GetNext();
+		assert(tmp->x >= x);
+		x = tmp->x + tmp->width;
+		tmp = tmp->GetNext();
 	}
 #endif // _DEBUG
 }
@@ -285,7 +286,8 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 	// see & debug the allocation & deallocation of fragments in maps.
 	if (uint32 *data32 = new uint32[frag->m_space->width * frag->m_row->height])
 	{
-		memset(data32, 255, sizeof(uint32) * frag->m_space->width * frag->m_row->height);
+		static int c = 0;
+		memset(data32, (c++) * 32, sizeof(uint32) * frag->m_space->width * frag->m_row->height);
 		CopyData(frag, frag->m_space->width, data32, false);
 		m_need_update = true;
 		delete [] data32;
