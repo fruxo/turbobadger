@@ -63,7 +63,7 @@ public:
 	bool IsAllAvailable() const { return !m_used_space_list.HasLinks(); }
 
 	/** Return true if the given width is currently available. */
-	bool HasSpace(int needed_w) { return !!GetSmallestAvailableSpace(needed_w); }
+	bool HasSpace(int needed_w) const;
 
 	/** Allocate the given space and return the Space, or nullptr on error. */
 	Space *AllocSpace(int needed_w);

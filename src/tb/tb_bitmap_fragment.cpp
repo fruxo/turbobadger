@@ -20,6 +20,20 @@ int TBGetNearestPowerOfTwo(int val)
 
 // == TBSpaceAllocator ======================================================================================
 
+bool TBSpaceAllocator::HasSpace(int needed_w) const
+{
+	if (needed_w > m_available_space)
+		return false;
+	if (IsAllAvailable())
+		return true;
+	for (Space *fs = m_free_space_list.GetFirst(); fs; fs = fs->GetNext())
+	{
+		if (needed_w <= fs->width)
+			return true;
+	}
+	return false;
+}
+
 TBSpaceAllocator::Space *TBSpaceAllocator::AllocSpace(int needed_w)
 {
 	if (Space *available_space = GetSmallestAvailableSpace(needed_w))
