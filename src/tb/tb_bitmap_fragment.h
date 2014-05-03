@@ -223,6 +223,9 @@ public:
 		the fragment creation will fail. Set to 0 for unlimited (default). */
 	void SetNumMapsLimit(int num_maps_limit);
 
+	/** Set the default size of new fragment maps. These must be power of two. */
+	void SetDefaultMapSize(int w, int h);
+
 	/** Get the amount (in percent) of space that is currently occupied by all maps
 		in this fragment manager. */
 	int GetUseRatio() const;
@@ -235,6 +238,8 @@ private:
 	TBHashTableOf<TBBitmapFragment> m_fragments;
 	int m_num_maps_limit;
 	bool m_add_border;
+	int m_default_map_w;
+	int m_default_map_h;
 };
 
 }; // namespace tb

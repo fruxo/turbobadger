@@ -9,11 +9,6 @@
 
 namespace tb {
 
-// FIX: Make customizable, so we use 256x256 for the glyph bitmap! That should probably be enough
-// and also reduce stress on the fragment calculations!
-const int default_frag_map_w = 512;
-const int default_frag_map_h = 512;
-
 int TBGetNearestPowerOfTwo(int val)
 {
 	int i;
@@ -356,6 +351,8 @@ void TBBitmapFragmentMap::DeleteBitmap()
 TBBitmapFragmentManager::TBBitmapFragmentManager()
 	: m_num_maps_limit(0)
 	, m_add_border(false)
+	, m_default_map_w(512)
+	, m_default_map_h(512)
 {
 }
 
@@ -406,8 +403,8 @@ TBBitmapFragment *TBBitmapFragmentManager::CreateNewFragment(const TBID &id, boo
 	bool allow_another_map = (m_num_maps_limit == 0 || m_fragment_maps.GetNumItems() < m_num_maps_limit);
 	if (!frag && allow_another_map && m_fragment_maps.GrowIfNeeded())
 	{
-		int po2w = TBGetNearestPowerOfTwo(MAX(data_w, default_frag_map_w));
-		int po2h = TBGetNearestPowerOfTwo(MAX(data_h, default_frag_map_h));
+		int po2w = TBGetNearestPowerOfTwo(MAX(data_w, m_default_map_w));
+		int po2h = TBGetNearestPowerOfTwo(MAX(data_h, m_default_map_h));
 		if (dedicated_map)
 		{
 			po2w = TBGetNearestPowerOfTwo(data_w);
@@ -477,6 +474,14 @@ void TBBitmapFragmentManager::DeleteBitmaps()
 void TBBitmapFragmentManager::SetNumMapsLimit(int num_maps_limit)
 {
 	m_num_maps_limit = num_maps_limit;
+}
+
+void TBBitmapFragmentManager::SetDefaultMapSize(int w, int h)
+{
+	assert(TBGetNearestPowerOfTwo(w) == w);
+	assert(TBGetNearestPowerOfTwo(h) == h);
+	m_default_map_w = w;
+	m_default_map_h = h;
 }
 
 int TBBitmapFragmentManager::GetUseRatio() const
