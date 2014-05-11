@@ -21,6 +21,7 @@ TB_WIDGET_FACTORY(TBButton, TBValue::TYPE_NULL, WIDGET_Z_BOTTOM)
 {
 	const char *axis = info->node->GetValueString("axis", "x");
 	widget->SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
+	widget->SetToggleMode(info->node->GetValueInt("toggle-mode", widget->GetToggleMode()) ? true : false);
 }
 
 TB_WIDGET_FACTORY(TBInlineSelect, TBValue::TYPE_INT, WIDGET_Z_TOP)
