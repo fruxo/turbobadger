@@ -47,6 +47,7 @@ TBSpaceAllocator::Space *TBSpaceAllocator::AllocSpace(int needed_w)
 			// Consume the used space from the available space
 			available_space->x += needed_w;
 			available_space->width -= needed_w;
+			m_available_space -= needed_w;
 
 			// Remove it if empty
 			if (!available_space->width)
@@ -76,7 +77,9 @@ TBSpaceAllocator::Space *TBSpaceAllocator::GetSmallestAvailableSpace(int needed_
 	Space *best_fs = nullptr;
 	for (Space *fs = m_free_space_list.GetFirst(); fs; fs = fs->GetNext())
 	{
-		if (needed_w <= fs->width)
+		if (needed_w == fs->width)
+			return fs; // It can't be better than a perfect match!
+		if (needed_w < fs->width)
 			if (!best_fs || fs->width < best_fs->width)
 				best_fs = fs;
 	}
@@ -85,6 +88,11 @@ TBSpaceAllocator::Space *TBSpaceAllocator::GetSmallestAvailableSpace(int needed_
 
 void TBSpaceAllocator::FreeSpace(Space *space)
 {
+	m_used_space_list.Remove(space);
+	m_available_space += space->width;
+
+	// Find where in m_free_space_list we should insert the space,
+	// or which existing space we can extend.
 	Space *preceeding = nullptr;
 	Space *succeeding = nullptr;
 	for (Space *fs = m_free_space_list.GetFirst(); fs; fs = fs->GetNext())
@@ -100,25 +108,24 @@ void TBSpaceAllocator::FreeSpace(Space *space)
 	if (preceeding && preceeding->x + preceeding->width == space->x)
 	{
 		preceeding->width += space->width;
+		delete space;
 	}
 	else if (succeeding && succeeding->x == space->x + space->width)
 	{
 		succeeding->x -= space->width;
 		succeeding->width += space->width;
+		delete space;
 	}
 	else
 	{
-		Space *new_fs = new Space();
-		new_fs->x = space->x;
-		new_fs->width = space->width;
 		if (preceeding)
-			m_free_space_list.AddAfter(new_fs, preceeding);
+			m_free_space_list.AddAfter(space, preceeding);
 		else if (succeeding)
-			m_free_space_list.AddBefore(new_fs, succeeding);
+			m_free_space_list.AddBefore(space, succeeding);
 		else
 		{
 			assert(!m_free_space_list.HasLinks());
-			m_free_space_list.AddLast(new_fs);
+			m_free_space_list.AddLast(space);
 		}
 	}
 	// Merge free spaces
@@ -136,9 +143,6 @@ void TBSpaceAllocator::FreeSpace(Space *space)
 		}
 		fs = next_fs;
 	}
-
-	// We're done and can remove the space from the used list
-	m_used_space_list.Delete(space);
 
 #ifdef _DEBUG
 	// Check that free space is in order
