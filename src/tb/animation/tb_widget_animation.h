@@ -100,8 +100,8 @@ private:
 	// == TBWidgetListener ==================
 	virtual void OnWidgetDelete(TBWidget *widget);
 	virtual bool OnWidgetDying(TBWidget *widget);
-	virtual void OnWidgetAdded(TBWidget *widget);
-	virtual void OnWidgetRemove(TBWidget *widget);
+	virtual void OnWidgetAdded(TBWidget *parent, TBWidget *child);
+	virtual void OnWidgetRemove(TBWidget *parent, TBWidget *child);
 };
 
 }; // namespace tb

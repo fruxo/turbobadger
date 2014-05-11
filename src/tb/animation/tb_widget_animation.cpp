@@ -209,7 +209,7 @@ bool TBWidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 	return handled;
 }
 
-void TBWidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
+void TBWidgetsAnimationManager::OnWidgetAdded(TBWidget *parent, TBWidget *widget)
 {
 	if (TBWindow *window = TBSafeCast<TBWindow>(widget))
 	{
@@ -231,7 +231,7 @@ void TBWidgetsAnimationManager::OnWidgetAdded(TBWidget *widget)
 	}
 }
 
-void TBWidgetsAnimationManager::OnWidgetRemove(TBWidget *widget)
+void TBWidgetsAnimationManager::OnWidgetRemove(TBWidget *parent, TBWidget *widget)
 {
 }
 

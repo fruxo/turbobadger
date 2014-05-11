@@ -279,7 +279,7 @@ void TBWidget::AddChildRelative(TBWidget *child, WIDGET_Z_REL z, TBWidget *refer
 	{
 		OnChildAdded(child);
 		child->OnAdded();
-		TBWidgetListener::InvokeWidgetAdded(child);
+		TBWidgetListener::InvokeWidgetAdded(this, child);
 	}
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 	Invalidate();
@@ -298,7 +298,7 @@ void TBWidget::RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info)
 
 		OnChildRemove(child);
 		child->OnRemove();
-		TBWidgetListener::InvokeWidgetRemove(child);
+		TBWidgetListener::InvokeWidgetRemove(this, child);
 	}
 
 	m_children.Remove(child);

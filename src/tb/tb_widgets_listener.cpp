@@ -43,24 +43,24 @@ bool TBWidgetListener::InvokeWidgetDying(TBWidget *widget)
 	return handled;
 }
 
-void TBWidgetListener::InvokeWidgetAdded(TBWidget *widget)
+void TBWidgetListener::InvokeWidgetAdded(TBWidget *parent, TBWidget *child)
 {
 	TBLinkListOf<TBWidgetListenerGlobalLink>::Iterator global_i = g_listeners.IterateForward();
-	TBLinkListOf<TBWidgetListener>::Iterator local_i = widget->m_listeners.IterateForward();
+	TBLinkListOf<TBWidgetListener>::Iterator local_i = parent->m_listeners.IterateForward();
 	while (TBWidgetListener *listener = local_i.GetAndStep())
-		listener->OnWidgetAdded(widget);
+		listener->OnWidgetAdded(parent, child);
 	while (TBWidgetListenerGlobalLink *link = global_i.GetAndStep())
-		static_cast<TBWidgetListener*>(link)->OnWidgetAdded(widget);
+		static_cast<TBWidgetListener*>(link)->OnWidgetAdded(parent, child);
 }
 
-void TBWidgetListener::InvokeWidgetRemove(TBWidget *widget)
+void TBWidgetListener::InvokeWidgetRemove(TBWidget *parent, TBWidget *child)
 {
 	TBLinkListOf<TBWidgetListenerGlobalLink>::Iterator global_i = g_listeners.IterateForward();
-	TBLinkListOf<TBWidgetListener>::Iterator local_i = widget->m_listeners.IterateForward();
+	TBLinkListOf<TBWidgetListener>::Iterator local_i = parent->m_listeners.IterateForward();
 	while (TBWidgetListener *listener = local_i.GetAndStep())
-		listener->OnWidgetRemove(widget);
+		listener->OnWidgetRemove(parent, child);
 	while (TBWidgetListenerGlobalLink *link = global_i.GetAndStep())
-		static_cast<TBWidgetListener*>(link)->OnWidgetRemove(widget);
+		static_cast<TBWidgetListener*>(link)->OnWidgetRemove(parent, child);
 }
 
 void TBWidgetListener::InvokeWidgetFocusChanged(TBWidget *widget, bool focused)

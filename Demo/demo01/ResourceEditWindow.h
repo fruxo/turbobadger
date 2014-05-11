@@ -50,8 +50,8 @@ public:
 
 	// == TBWidgetListener ========================================================
 	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev);
-	virtual void OnWidgetAdded(TBWidget *widget);
-	virtual void OnWidgetRemove(TBWidget *widget);
+	virtual void OnWidgetAdded(TBWidget *parent, TBWidget *child);
+	virtual void OnWidgetRemove(TBWidget *parent, TBWidget *child);
 private:
 	TBSelectList *m_widget_list;
 	TBSelectItemSourceList<ResourceItem> m_widget_list_source;

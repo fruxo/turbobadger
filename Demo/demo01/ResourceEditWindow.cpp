@@ -231,15 +231,15 @@ bool ResourceEditWindow::OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEve
 	return false;
 }
 
-void ResourceEditWindow::OnWidgetAdded(TBWidget *widget)
+void ResourceEditWindow::OnWidgetAdded(TBWidget *parent, TBWidget *child)
 {
-	if (m_build_container && m_build_container->IsAncestorOf(widget))
+	if (m_build_container && m_build_container->IsAncestorOf(child))
 		UpdateWidgetList(false);
 }
 
-void ResourceEditWindow::OnWidgetRemove(TBWidget *widget)
+void ResourceEditWindow::OnWidgetRemove(TBWidget *parent, TBWidget *child)
 {
-	if (m_build_container && m_build_container->IsAncestorOf(widget))
+	if (m_build_container && m_build_container->IsAncestorOf(child))
 		UpdateWidgetList(false);
 }
 

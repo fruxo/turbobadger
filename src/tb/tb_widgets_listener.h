@@ -44,11 +44,13 @@ public:
 		use TBWidgetSafePointer to safely handle that. */
 	virtual bool OnWidgetDying(TBWidget *widget) { return false; }
 
-	/** Called when widget has been added to a parent, after its parents OnChildAdded. */
-	virtual void OnWidgetAdded(TBWidget *widget) {}
+	/** Called when the child has been added to parent, after its parents OnChildAdded.
+		Local listeners are invoked on the parent widget. */
+	virtual void OnWidgetAdded(TBWidget *parent, TBWidget *child) {}
 
-	/** Called when widget is about to be removed from a parent, after its parents OnChildRemove. */
-	virtual void OnWidgetRemove(TBWidget *widget) {}
+	/** Called when the child is about to be removed from parent, after its parents OnChildRemove.
+		Local listeners are invoked on the parent widget. */
+	virtual void OnWidgetRemove(TBWidget *parent, TBWidget *child) {}
 
 	/** Called when widget focus has changed on a widget. */
 	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused) {}
@@ -61,8 +63,8 @@ private:
 	friend class TBWidget;
 	static void InvokeWidgetDelete(TBWidget *widget);
 	static bool InvokeWidgetDying(TBWidget *widget);
-	static void InvokeWidgetAdded(TBWidget *widget);
-	static void InvokeWidgetRemove(TBWidget *widget);
+	static void InvokeWidgetAdded(TBWidget *parent, TBWidget *child);
+	static void InvokeWidgetRemove(TBWidget *parent, TBWidget *child);
 	static void InvokeWidgetFocusChanged(TBWidget *widget, bool focused);
 	static bool InvokeWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev);
 };
