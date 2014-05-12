@@ -61,6 +61,7 @@ private:
 	TBStr m_resource_filename;
 	TBWidgetSafePointer m_selected_widget;
 	void AddWidgetListItemsRecursive(TBWidget *widget, int depth);
+	bool OnDropFileEvent(const TBWidgetEvent &ev);
 };
 
 #endif // ResourceEditWindow_H

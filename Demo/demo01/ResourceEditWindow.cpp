@@ -181,6 +181,11 @@ bool ResourceEditWindow::OnEvent(const TBWidgetEvent &ev)
 	else if (ev.target->GetID() == TBIDC("constrained"))
 	{
 		m_scroll_container->SetAdaptContentSize(ev.target->GetValue() ? true : false);
+		return true;
+	}
+	else if (ev.type == EVENT_TYPE_FILE_DROP)
+	{
+		return OnDropFileEvent(ev);
 	}
 	return TBWindow::OnEvent(ev);
 }
@@ -218,6 +223,9 @@ bool ResourceEditWindow::OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEve
 		// Select widget when clicking
 		if (ev.type == EVENT_TYPE_POINTER_DOWN)
 			SetSelectedWidget(ev.target);
+
+		if (ev.type == EVENT_TYPE_FILE_DROP)
+			OnDropFileEvent(ev);
 		return true;
 	}
 	return false;
@@ -233,4 +241,12 @@ void ResourceEditWindow::OnWidgetRemove(TBWidget *widget)
 {
 	if (m_build_container && m_build_container->IsAncestorOf(widget))
 		UpdateWidgetList(false);
+}
+
+bool ResourceEditWindow::OnDropFileEvent(const TBWidgetEvent &ev)
+{
+	const TBWidgetEventFileDrop *fd_event = TBSafeCast<TBWidgetEventFileDrop>(&ev);
+	if (fd_event->files.GetNumItems() > 0)
+		Load(*fd_event->files.Get(0));
+	return true;
 }
