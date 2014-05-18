@@ -116,6 +116,7 @@ public:
 	text				TBWidget::SetText			string
 	connection			TBWidget::Connect			string
 	gravity				TBWidget::SetGravity		string (combination of left, top, right, bottom, or all)
+	visibility			TBWidget::SetVisibility		string (visible, invisible, gone)
 	state				TBWidget::SetState			string (disabled)
 	skin				TBWidget::SetSkinBg			TBID (string or int)
 	lp>width			TBWidget::SetLayoutParams	dimension

@@ -311,6 +311,13 @@ enum WIDGET_Z_REL {
 	WIDGET_Z_REL_AFTER			///< After the reference widget (visually above reference).
 };
 
+/** Defines widget visibility, used with TBWidget::SetVisibility. */
+enum WIDGET_VISIBILITY {
+	WIDGET_VISIBILITY_VISIBLE,		///< Visible (default)
+	WIDGET_VISIBILITY_INVISIBLE,	///< Invisible, but layouted. Interaction disabled.
+	WIDGET_VISIBILITY_GONE			///< Invisible and no layout. Interaction disabled.
+};
+
 enum WIDGET_INVOKE_INFO {
 	WIDGET_INVOKE_INFO_NORMAL,
 	WIDGET_INVOKE_INFO_NO_CALLBACKS
@@ -434,8 +441,14 @@ public:
 	void SetOpacity(float opacity);
 	float GetOpacity() const { return m_opacity; }
 
-	/** Return true if this widget and all its parents are visible (has a opacity > 0) */
-	bool GetVisibility() const;
+	/** Set visibility for this widget and its children.
+		If visibility is not WIDGET_VISIBILITY_VISIBLE, the widget won't receive any input. */
+	void SetVisibilility(WIDGET_VISIBILITY vis);
+	WIDGET_VISIBILITY GetVisibility() const;
+
+	/** Return true if this widget and all its ancestors are visible
+		(has a opacity > 0 and visibility WIDGET_VISIBILITY_VISIBLE) */
+	bool GetVisibilityCombined() const;
 
 	/** Return true if this widget or any of its parents are disabled (has state WIDGET_STATE_DISABLED). */
 	bool GetDisabled() const;
@@ -511,7 +524,7 @@ public:
 	bool GetIgnoreInput() const { return m_packed.ignore_input; }
 
 	/** Get if this widget wants interaction depending on various states.
-		Cares about zero opacity, flag set by SetIgnoreInput, disabled state,
+		Cares about zero opacity, visibility, flag set by SetIgnoreInput, disabled state,
 		and if the widget is currently dying. */
 	bool GetIsInteractable() const;
 
@@ -953,6 +966,7 @@ private:
 			uint16 no_automatic_hover_state : 1;
 			uint16 is_panning : 1;
 			uint16 want_long_click : 1;
+			uint16 visibility : 2;
 		} m_packed;
 		uint16 m_packed_init;
 	};

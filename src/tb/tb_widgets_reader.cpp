@@ -376,6 +376,12 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 			g |= WIDGET_GRAVITY_TOP;
 		new_widget->SetGravity(g);
 	}
+	if (const char *visibility = node->GetValueString("visibility", nullptr))
+	{
+		if (!strcmp(visibility, "visible"))			new_widget->SetVisibilility(WIDGET_VISIBILITY_VISIBLE);
+		else if (!strcmp(visibility, "invisible"))	new_widget->SetVisibilility(WIDGET_VISIBILITY_INVISIBLE);
+		else if (!strcmp(visibility, "gone"))		new_widget->SetVisibilility(WIDGET_VISIBILITY_GONE);
+	}
 	if (const char *state = node->GetValueString("state", nullptr))
 	{
 		if (strstr(state, "disabled"))

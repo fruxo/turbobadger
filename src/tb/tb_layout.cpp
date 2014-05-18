@@ -156,7 +156,7 @@ WIDGET_GRAVITY RotGravity(WIDGET_GRAVITY gravity, AXIS axis)
 	return r;
 }
 
-bool TBLayout::QualifyForExpansion(WIDGET_GRAVITY gravity)
+bool TBLayout::QualifyForExpansion(WIDGET_GRAVITY gravity) const
 {
 	if (m_packed.layout_mode_dist == LAYOUT_DISTRIBUTION_AVAILABLE)
 		return true;
@@ -166,7 +166,7 @@ bool TBLayout::QualifyForExpansion(WIDGET_GRAVITY gravity)
 	return false;
 }
 
-int TBLayout::GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, int available_height)
+int TBLayout::GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, int available_height) const
 {
 	int height = 0;
 	switch (m_packed.layout_mode_size)
@@ -186,12 +186,46 @@ int TBLayout::GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, i
 	return height;
 }
 
-TBWidget *TBLayout::GetFirstInLayoutOrder()
+
+TBWidget *TBLayout::GetNextNonCollapsedWidget(TBWidget *child) const
+{
+	TBWidget *next = GetNextInLayoutOrder(child);
+	while (next && next->GetVisibility() == WIDGET_VISIBILITY_GONE)
+		next = GetNextInLayoutOrder(next);
+	return next;
+}
+
+int TBLayout::GetTrailingSpace(TBWidget *child, int spacing) const
+{
+	if (spacing == 0)
+		return 0;
+	if (!GetNextNonCollapsedWidget(child))
+		return 0;
+	return spacing;
+}
+
+int TBLayout::CalculateSpacing()
+{
+	// Get spacing from skin, if not specified
+	int spacing = m_spacing;
+	if (spacing == SPACING_FROM_SKIN)
+	{
+		if (TBSkinElement *e = GetSkinBgElement())
+			spacing = e->spacing;
+
+		assert(SPACING_FROM_SKIN == SKIN_VALUE_NOT_SPECIFIED);
+		if (spacing == SPACING_FROM_SKIN /*|| spacing == SKIN_VALUE_NOT_SPECIFIED*/)
+			spacing = g_tb_skin->GetDefaultSpacing();
+	}
+	return spacing;
+}
+
+TBWidget *TBLayout::GetFirstInLayoutOrder() const
 {
 	return m_packed.mode_reverse_order ? GetLastChild() : GetFirstChild();
 }
 
-TBWidget *TBLayout::GetNextInLayoutOrder(TBWidget *child)
+TBWidget *TBLayout::GetNextInLayoutOrder(TBWidget *child) const
 {
 	return m_packed.mode_reverse_order ? child->GetPrev() : child->GetNext();
 }
@@ -215,18 +249,7 @@ void TBLayout::ValidateLayout(const SizeConstraints &constraints, PreferredSize 
 		calculate_ps->max_w = calculate_ps->max_h = 0;
 	}
 
-	// Get spacing from skin, if not specified
-	int spacing = m_spacing;
-	if (spacing == SPACING_FROM_SKIN)
-	{
-		if (TBSkinElement *e = GetSkinBgElement())
-			spacing = e->spacing;
-
-		assert(SPACING_FROM_SKIN == SKIN_VALUE_NOT_SPECIFIED);
-		if (spacing == SPACING_FROM_SKIN /*|| spacing == SKIN_VALUE_NOT_SPECIFIED*/)
-			spacing = g_tb_skin->GetDefaultSpacing();
-	}
-
+	const int spacing = CalculateSpacing();
 	const TBRect padding_rect = GetPaddingRect();
 	const TBRect layout_rect = RotRect(padding_rect, m_axis);
 
@@ -237,21 +260,14 @@ void TBLayout::ValidateLayout(const SizeConstraints &constraints, PreferredSize 
 	int total_preferred_w = 0;
 	int total_min_pref_diff_w = 0;
 	int total_max_pref_diff_w = 0;
-
-	bool last_child_is_collapsed = false;
-	int last_added_spacing = 0;
-
 	for (TBWidget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
 	{
-		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
-		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(inner_sc), m_axis);
-		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
-
-		// Collapse empty widgets completly if there is other widgets.
-		last_child_is_collapsed = (ps.pref_w == 0 && GetFirstChild() != GetLastChild());
-		if (last_child_is_collapsed)
+		if (child->GetVisibility() == WIDGET_VISIBILITY_GONE)
 			continue;
-		last_added_spacing = ending_space;
+
+		const int ending_space = GetTrailingSpace(child, spacing);
+		const PreferredSize ps = RotPreferredSize(child->GetPreferredSize(inner_sc), m_axis);
+		const WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		total_preferred_w += ps.pref_w + ending_space;
 		total_min_pref_diff_w += ps.pref_w - ps.min_w;
@@ -281,17 +297,6 @@ void TBLayout::ValidateLayout(const SizeConstraints &constraints, PreferredSize 
 		}
 	}
 
-	// If the last child collapsed, we have added spacing that should not be there.
-	if (last_child_is_collapsed)
-	{
-		total_preferred_w -= last_added_spacing;
-		if (calculate_ps)
-		{
-			calculate_ps->min_w -= last_added_spacing;
-			calculate_ps->pref_w -= last_added_spacing;
-			calculate_ps->max_w -= last_added_spacing;
-		}
-	}
 	if (calculate_ps)
 	{
 		// We just wanted to calculate preferred size, so return without layouting.
@@ -326,16 +331,12 @@ void TBLayout::ValidateLayout(const SizeConstraints &constraints, PreferredSize 
 	int used_space = 0;
 	for (TBWidget *child = GetFirstInLayoutOrder(); child; child = GetNextInLayoutOrder(child))
 	{
-		int ending_space = GetNextInLayoutOrder(child) ? spacing : 0;
-		PreferredSize ps = RotPreferredSize(child->GetPreferredSize(inner_sc), m_axis);
-		WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
-
-		// Collapse empty widgets completly if there is other widgets
-		if (ps.pref_w == 0 && GetFirstChild() != GetLastChild())
-		{
-			child->SetRect(TBRect());
+		if (child->GetVisibility() == WIDGET_VISIBILITY_GONE)
 			continue;
-		}
+
+		const int ending_space = GetTrailingSpace(child, spacing);
+		const PreferredSize ps = RotPreferredSize(child->GetPreferredSize(inner_sc), m_axis);
+		const WIDGET_GRAVITY gravity = RotGravity(child->GetGravity(), m_axis);
 
 		// Calculate width. May shrink if space is missing, or grow if we have extra space.
 		int width = ps.pref_w;
@@ -393,9 +394,6 @@ void TBLayout::ValidateLayout(const SizeConstraints &constraints, PreferredSize 
 
 		child->SetRect(RotRect(rect, m_axis));
 	}
-	// If the last child collapsed, we have added spacing that should not be there.
-	if (last_child_is_collapsed)
-		used_space -= last_added_spacing;
 	// Update overflow and overflow scroll
 	m_overflow = MAX(0, used_space - layout_rect.w);
 	SetOverflowScroll(m_overflow_scroll);

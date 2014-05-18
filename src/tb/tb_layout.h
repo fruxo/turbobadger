@@ -34,9 +34,7 @@ enum LAYOUT_POSITION {
 };
 
 /** Specifies which width widgets in a AXIS_X layout should have,
-	or which height widgets in a AXIS_Y layout should have.
-	This */
-
+	or which height widgets in a AXIS_Y layout should have. */
 enum LAYOUT_DISTRIBUTION {
 	LAYOUT_DISTRIBUTION_PREFERRED,	///< Size will be the preferred so each widget may be sized differently.
 	LAYOUT_DISTRIBUTION_AVAILABLE,	///< Size should grow to all available space
@@ -44,6 +42,9 @@ enum LAYOUT_DISTRIBUTION {
 									///< towards both directions, it should grow to all available space)
 };
 
+/** Specifies how widgets should be moved horizontally in a AXIS_X
+	layout (or vertically in a AXIS_Y layout) if there is extra space
+	available. */
 enum LAYOUT_DISTRIBUTION_POSITION {
 	LAYOUT_DISTRIBUTION_POSITION_CENTER,
 	LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP,
@@ -150,10 +151,13 @@ protected:
 		uint32 m_packed_init;
 	};
 	void ValidateLayout(const SizeConstraints &constraints, PreferredSize *calculate_ps = nullptr);
-	bool QualifyForExpansion(WIDGET_GRAVITY gravity);
-	int GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, int available_height);
-	TBWidget *GetFirstInLayoutOrder();
-	TBWidget *GetNextInLayoutOrder(TBWidget *child);
+	bool QualifyForExpansion(WIDGET_GRAVITY gravity) const;
+	int GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, int available_height) const;
+	TBWidget *GetNextNonCollapsedWidget(TBWidget *child) const;
+	int GetTrailingSpace(TBWidget *child, int spacing) const;
+	int CalculateSpacing();
+	TBWidget *GetFirstInLayoutOrder() const;
+	TBWidget *GetNextInLayoutOrder(TBWidget *child) const;
 };
 
 };

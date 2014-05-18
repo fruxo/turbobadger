@@ -33,6 +33,8 @@ public:
 	bool SetText(const char *text) { return m_text.Set(text); }
 	bool GetText(TBStr &text) const { return text.Set(m_text); }
 
+	bool IsEmpty() const { return m_text.IsEmpty(); }
+
 	/** Set which alignment the text should have if the space
 		given when painting is larger than the text. */
 	void SetTextAlign(TB_TEXT_ALIGN align) { m_text_align = align; }
@@ -56,6 +58,8 @@ public:
 	virtual bool SetText(const char *text);
 	virtual bool GetText(TBStr &text) { return m_text.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
+
+	bool IsEmpty() const { return m_text.IsEmpty(); }
 
 	/** Set which alignment the text should have if the space
 		given when painting is larger than the text. */
@@ -108,7 +112,7 @@ public:
 	bool GetToggleMode() const { return m_toggle_mode; }
 
 	/** Set the text of the button. */
-	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
+	virtual bool SetText(const char *text);
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
@@ -126,7 +130,13 @@ public:
 	// == TBMessageHandler ==============================================================
 	virtual void OnMessageReceived(TBMessage *msg);
 protected:
-	TBLayout m_layout;
+	void UpdateTextFieldVisibility();
+	class ButtonLayout : public TBLayout
+	{
+		virtual void OnChildAdded(TBWidget *child);
+		virtual void OnChildRemove(TBWidget *child);
+	};
+	ButtonLayout m_layout;
 	TBTextField m_textfield;
 	bool m_auto_repeat_click;
 	bool m_toggle_mode;

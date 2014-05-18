@@ -152,28 +152,12 @@ void TBToggleContainer::UpdateInternal()
 		SetOpacity(on ? 1.f : 0);
 		break;
 	case TOGGLE_EXPANDED:
-		// Relayout. GetPreferredSize() will apply the changed size.
-		InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+		SetVisibilility(on ? WIDGET_VISIBILITY_VISIBLE : WIDGET_VISIBILITY_GONE);
+
 		// Also disable when collapsed so tab focus skips the children.
 		SetState(WIDGET_STATE_DISABLED, !on);
 		break;
 	};
-}
-
-PreferredSize TBToggleContainer::OnCalculatePreferredSize(const SizeConstraints &constraints)
-{
-	PreferredSize ps = TBWidget::OnCalculatePreferredSize(constraints);
-	if (m_toggle == TOGGLE_EXPANDED)
-	{
-		if (!GetIsOn())
-		{
-			if (GetParent()->GetAxis() == AXIS_X)
-				ps.min_w = ps.pref_w = ps.max_w = 0;
-			else
-				ps.min_h = ps.pref_h = ps.max_h = 0;
-		}
-	}
-	return ps;
 }
 
 }; // namespace tb

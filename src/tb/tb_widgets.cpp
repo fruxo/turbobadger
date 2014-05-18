@@ -118,7 +118,7 @@ void TBWidget::SetRect(const TBRect &rect)
 
 void TBWidget::Invalidate()
 {
-	if (!GetVisibility() && !m_rect.IsEmpty())
+	if (!GetVisibilityCombined() && !m_rect.IsEmpty())
 		return;
 	TBWidget *tmp = this;
 	while (tmp)
@@ -226,12 +226,36 @@ void TBWidget::SetOpacity(float opacity)
 	Invalidate();
 }
 
-bool TBWidget::GetVisibility() const
+void TBWidget::SetVisibilility(WIDGET_VISIBILITY vis)
+{
+	if (m_packed.visibility == vis)
+		return;
+
+	// Invalidate after making it invisible will do nothing.
+	if (vis != WIDGET_VISIBILITY_VISIBLE)
+		Invalidate();
+	if (vis == WIDGET_VISIBILITY_GONE)
+		InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+
+	WIDGET_VISIBILITY old_vis = GetVisibility();
+	m_packed.visibility = vis;
+
+	Invalidate();
+	if (old_vis == WIDGET_VISIBILITY_GONE)
+		InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+}
+
+WIDGET_VISIBILITY TBWidget::GetVisibility() const
+{
+	return static_cast<WIDGET_VISIBILITY>(m_packed.visibility);
+}
+
+bool TBWidget::GetVisibilityCombined() const
 {
 	const TBWidget *tmp = this;
 	while (tmp)
 	{
-		if (tmp->GetOpacity() == 0)
+		if (tmp->GetOpacity() == 0 || tmp->GetVisibility() != WIDGET_VISIBILITY_VISIBLE)
 			return false;
 		tmp = tmp->m_parent;
 	}
@@ -491,7 +515,7 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 {
 	if (focused_widget == this)
 		return true;
-	if (GetDisabled() || !GetIsFocusable() || !GetVisibility() || GetIsDying())
+	if (GetDisabled() || !GetIsFocusable() || !GetVisibilityCombined() || GetIsDying())
 		return false;
 
 	// Update windows last focus
@@ -610,7 +634,8 @@ TBWidget *TBWidget::GetLastLeaf() const
 
 bool TBWidget::GetIsInteractable() const
 {
-	return !(m_opacity == 0 || GetIgnoreInput() || GetState(WIDGET_STATE_DISABLED) || GetIsDying());
+	return !(m_opacity == 0 || GetIgnoreInput() || GetState(WIDGET_STATE_DISABLED) ||
+			GetIsDying() || GetVisibility() != WIDGET_VISIBILITY_VISIBLE);
 }
 
 WIDGET_HIT_STATUS TBWidget::GetHitStatus(int x, int y)
@@ -723,7 +748,7 @@ void TBWidget::OnPaintChildren(const PaintProps &paint_props)
 	// Invoke paint of overlay elements on all children that are in the current visible rect.
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
 	{
-		if (clip_rect.Intersects(child->m_rect))
+		if (clip_rect.Intersects(child->m_rect) && child->GetVisibility() == WIDGET_VISIBILITY_VISIBLE)
 		{
 			TBSkinElement *skin_element = child->GetSkinBgElement();
 			if (skin_element && skin_element->HasOverlayElements())
@@ -731,12 +756,16 @@ void TBWidget::OnPaintChildren(const PaintProps &paint_props)
 				// Update the renderer with the widgets opacity
 				WIDGET_STATE state = child->GetAutoState();
 				float old_opacity = g_renderer->GetOpacity();
-				g_renderer->SetOpacity(old_opacity * child->CalculateOpacityInternal(state, skin_element));
+				float opacity = old_opacity * child->CalculateOpacityInternal(state, skin_element);
+				if (opacity > 0)
+				{
+					g_renderer->SetOpacity(opacity);
 
-				TBWidgetSkinConditionContext context(child);
-				g_tb_skin->PaintSkinOverlay(child->m_rect, skin_element, static_cast<SKIN_STATE>(state), context);
+					TBWidgetSkinConditionContext context(child);
+					g_tb_skin->PaintSkinOverlay(child->m_rect, skin_element, static_cast<SKIN_STATE>(state), context);
 
-				g_renderer->SetOpacity(old_opacity);
+					g_renderer->SetOpacity(old_opacity);
+				}
 			}
 		}
 	}
@@ -762,10 +791,10 @@ void TBWidget::OnResized(int old_w, int old_h)
 {
 	int dw = m_rect.w - old_w;
 	int dh = m_rect.h - old_h;
-
-	TBWidget *child = GetFirstChild();
-	while (child)
+	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
 	{
+		if (child->GetVisibility() == WIDGET_VISIBILITY_GONE)
+			continue;
 		TBRect rect = child->m_rect;
 		if ((child->m_gravity & WIDGET_GRAVITY_LEFT) && (child->m_gravity & WIDGET_GRAVITY_RIGHT))
 			rect.w += dw;
@@ -776,12 +805,14 @@ void TBWidget::OnResized(int old_w, int old_h)
 		else if (child->m_gravity & WIDGET_GRAVITY_BOTTOM)
 			rect.y += dh;
 		child->SetRect(rect);
-		child = child->GetNext();
 	}
 }
 
 void TBWidget::OnInflateChild(TBWidget *child)
 {
+	if (child->GetVisibility() == WIDGET_VISIBILITY_GONE)
+		return;
+
 	// If the child pull towards only one edge (per axis), stick to that edge
 	// and use the preferred size. Otherwise fill up all available space.
 	TBRect padding_rect = GetPaddingRect();
@@ -831,15 +862,8 @@ PreferredSize TBWidget::OnCalculatePreferredContentSize(const SizeConstraints &c
 	// otherwise don't grow more than the largest child.
 	bool apply_max_w = !((m_gravity & WIDGET_GRAVITY_LEFT) && (m_gravity & WIDGET_GRAVITY_RIGHT));
 	bool apply_max_h = !((m_gravity & WIDGET_GRAVITY_TOP) && (m_gravity & WIDGET_GRAVITY_BOTTOM));
-
+	bool has_layouting_children = false;
 	PreferredSize ps;
-	if (GetFirstChild())
-	{
-		if (apply_max_w)
-			ps.max_w = 0;
-		if (apply_max_h)
-			ps.max_h = 0;
-	}
 
 	TBSkinElement *bg_skin = GetSkinBgElement();
 	int horizontal_padding = bg_skin ? bg_skin->padding_left + bg_skin->padding_right : 0;
@@ -848,6 +872,16 @@ PreferredSize TBWidget::OnCalculatePreferredContentSize(const SizeConstraints &c
 
 	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
 	{
+		if (child->GetVisibility() == WIDGET_VISIBILITY_GONE)
+			continue;
+		if (!has_layouting_children)
+		{
+			has_layouting_children = true;
+			if (apply_max_w)
+				ps.max_w = 0;
+			if (apply_max_h)
+				ps.max_h = 0;
+		}
 		PreferredSize child_ps = child->GetPreferredSize(inner_sc);
 		ps.pref_w = MAX(ps.pref_w, child_ps.pref_w);
 		ps.pref_h = MAX(ps.pref_h, child_ps.pref_h);
@@ -989,8 +1023,10 @@ void TBWidget::SetLayoutParams(const LayoutParams &lp)
 
 void TBWidget::InvalidateLayout(INVALIDATE_LAYOUT il)
 {
-	Invalidate();
 	m_packed.is_cached_ps_valid = 0;
+	if (GetVisibility() == WIDGET_VISIBILITY_GONE)
+		return;
+	Invalidate();
 	if (il == INVALIDATE_LAYOUT_RECURSIVE && m_parent)
 		m_parent->InvalidateLayout(il);
 }
@@ -1061,7 +1097,7 @@ float TBWidget::CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin
 void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 {
 	// Don't paint invisible widgets
-	if (m_opacity == 0 || m_rect.IsEmpty())
+	if (m_opacity == 0 || m_rect.IsEmpty() || GetVisibility() != WIDGET_VISIBILITY_VISIBLE)
 		return;
 
 	WIDGET_STATE state = GetAutoState();

@@ -155,6 +155,13 @@ TBButton::~TBButton()
 	RemoveChild(&m_layout);
 }
 
+bool TBButton::SetText(const char *text)
+{
+	bool ret = m_textfield.SetText(text);
+	UpdateTextFieldVisibility();
+	return ret;
+}
+
 void TBButton::OnCaptureChanged(bool captured)
 {
 	if (captured && m_auto_repeat_click)
@@ -212,6 +219,25 @@ WIDGET_HIT_STATUS TBButton::GetHitStatus(int x, int y)
 {
 	// Never hit any of the children to the button. We always want to the button itself.
 	return TBWidget::GetHitStatus(x, y) ? WIDGET_HIT_STATUS_HIT_NO_CHILDREN : WIDGET_HIT_STATUS_NO_HIT;
+}
+
+void TBButton::UpdateTextFieldVisibility()
+{
+	// Auto-collapse the textfield if the text is empty and there are other
+	// widgets added apart from the textfield. This removes the extra spacing
+	// added between the textfield and the other widget.
+	bool collapse_textfield = m_textfield.IsEmpty() && m_layout.GetFirstChild() != m_layout.GetLastChild();
+	m_textfield.SetVisibilility(collapse_textfield ? WIDGET_VISIBILITY_GONE : WIDGET_VISIBILITY_VISIBLE);
+}
+
+void TBButton::ButtonLayout::OnChildAdded(TBWidget *child)
+{
+	static_cast<TBButton*>(GetParent())->UpdateTextFieldVisibility();
+}
+
+void TBButton::ButtonLayout::OnChildRemove(TBWidget *child)
+{
+	static_cast<TBButton*>(GetParent())->UpdateTextFieldVisibility();
 }
 
 // == TBClickLabel ==========================================================================================
