@@ -348,6 +348,11 @@ static void window_refresh_callback(GLFWwindow *window)
 
 	backend->has_pending_update = false;
 
+	// Bail out if we get here with invalid dimensions.
+	// This may happen when minimizing windows (GLFW 3.0.4, Windows 8.1).
+	if (backend->GetWidth() == 0 || backend->GetHeight() == 0)
+		return;
+
 	backend->m_application->RenderFrame(backend->GetWidth(), backend->GetHeight());
 
 	glfwSwapBuffers(window);
