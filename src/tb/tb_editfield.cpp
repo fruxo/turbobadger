@@ -265,16 +265,16 @@ bool TBEditField::OnEvent(const TBWidgetEvent &ev)
 		TBPoint pos_in_root(ev.target_x, ev.target_y);
 		ev.target->ConvertToRoot(pos_in_root.x, pos_in_root.y);
 
-		if (TBGenericStringItemSource *source = new TBGenericStringItemSource)
+		if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu")))
 		{
+			TBGenericStringItemSource *source = menu->GetList()->GetDefaultSource();
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("cut")), TBIDC("cut")));
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("copy")), TBIDC("copy")));
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("paste")), TBIDC("paste")));
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("delete")), TBIDC("delete")));
 			source->AddItem(new TBGenericStringItem("-"));
 			source->AddItem(new TBGenericStringItem(g_tb_lng->GetString(TBIDC("selectall")), TBIDC("selectall")));
-			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu")))
-				menu->Show(source, TBPopupAlignment(pos_in_root), -1);
+			menu->Show(source, TBPopupAlignment(pos_in_root), -1);
 		}
 		return true;
 	}
