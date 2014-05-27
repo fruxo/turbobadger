@@ -5,34 +5,72 @@
 
 #include "parser/tb_parser.h"
 #include "tb_tempbuffer.h"
+#include "utf8/utf8.h"
 #include <assert.h>
+#include <ctype.h>
 
 namespace tb {
 
 // == Util functions ====================================================================
 
+static bool is_hex(char c)
+{
+	return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
+}
+
+static uint32 parse_hex(char *&src, int max_count)
+{
+	uint32 hex = 0;
+	for (int i = 0; i < max_count; i++)
+	{
+		char c = *src;
+		if (!is_hex(c))
+			break;
+		hex <<= 4;
+		hex |= isdigit(c) ? c - '0' : tolower(c) - 'a' + 10;
+		src++;
+	}
+	return hex;
+}
+
 void UnescapeString(char *str)
 {
+	// fast forward to any escape sequence
+	while (*str && *str != '\\')
+		str++;
+
 	char *dst = str, *src = str;
 	while (*src)
 	{
 		if (*src == '\\')
 		{
 			bool code_found = true;
-			if (src[1] == 'n')
-				*dst = '\n';
-			else if (src[1] == 'r')
-				*dst = '\r';
-			else if (src[1] == 't')
-				*dst = '\t';
-			else if (src[1] == '\"')
-				*dst = '\"';
-			else if (src[1] == '\'')
-				*dst = '\'';
-			else if (src[1] == '\\')
-				*dst = '\\';
-			else
+			switch (src[1])
+			{
+			case 'a': *dst = '\a'; break;
+			case 'b': *dst = '\b'; break;
+			case 'f': *dst = '\f'; break;
+			case 'n': *dst = '\n'; break;
+			case 'r': *dst = '\r'; break;
+			case 't': *dst = '\t'; break;
+			case 'v': *dst = '\v'; break;
+			case '0': *dst = '\0'; break;
+			case '\"': *dst = '\"'; break;
+			case '\'': *dst = '\''; break;
+			case '\\': *dst = '\\'; break;
+			case 'x': // \xXX
+			case 'u': // \uXXXX
+			{
+				// This should be safe. A utf-8 character can be at most 4 bytes,
+				// and we have 4 bytes to use for \xXX and 6 for \uXXXX.
+				src += 2;
+				if (UCS4 hex = parse_hex(src, src[1] == 'x' ? 2 : 4))
+					dst += utf8::encode(hex, dst);
+				continue;
+			}
+			default:
 				code_found = false;
+			}
 			if (code_found)
 			{
 				src += 2;
@@ -66,9 +104,7 @@ bool is_start_of_color(const char *str)
 	if (*str++ != '#')
 		return false;
 	int digit_count = 0;
-	while ((*str >= '0' && *str <= '9') ||
-			(*str >= 'a' && *str <= 'f') ||
-			(*str >= 'A' && *str <= 'F'))
+	while (is_hex(*str))
 	{
 		str++;
 		digit_count++;
