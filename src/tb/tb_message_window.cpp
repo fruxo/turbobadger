@@ -77,10 +77,12 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 
 	// Size to fit content. This will use the default size of the textfield.
 	ResizeToFitContent();
+	TBRect rect = GetRect();
 
 	// Get how much we overflow the textfield has given the current width, and grow our height to show all we can.
-	int new_height = GetRect().h + editfield->GetStyleEdit()->GetOverflowY();
-	new_height = MIN(new_height, root->GetRect().h - 50); // 50px for some window title and padding
+	// FIX: It would be better to use adapt-to-content on the editfield to achieve the most optimal size.
+	// At least when we do full blown multi pass size checking.
+	rect.h += editfield->GetStyleEdit()->GetOverflowY();
 
 	// Create background dimmer
 	if (settings->dimmer)
@@ -93,9 +95,8 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 	}
 
 	// Center and size to the new height
-	SetRect(TBRect((root->GetRect().w - GetRect().w) / 2,
-					(root->GetRect().h - new_height) / 2,
-					GetRect().w, new_height));
+	TBRect bounds(0, 0, root->GetRect().w, root->GetRect().h);
+	SetRect(rect.CenterIn(bounds).MoveIn(bounds).Clip(bounds));
 	root->AddChild(this);
 	return true;
 }

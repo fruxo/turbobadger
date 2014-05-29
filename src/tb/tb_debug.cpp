@@ -49,9 +49,8 @@ public:
 
 		output = GetWidgetByIDAndType<TBEditField>(TBIDC("output"));
 
-		ResizeToFitContent();
-		SetPosition(TBPoint((root->GetRect().w - GetRect().w) / 2,
-							(root->GetRect().h - GetRect().h) / 2));
+		TBRect bounds(0, 0, root->GetRect().w, root->GetRect().h);
+		SetRect(GetResizeToFitContentRect().CenterIn(bounds).MoveIn(bounds).Clip(bounds));
 
 		root->AddChild(this);
 
