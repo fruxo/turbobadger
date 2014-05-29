@@ -321,6 +321,9 @@ TBProgressSpinner::TBProgressSpinner()
 
 void TBProgressSpinner::SetValue(int value)
 {
+	if (value == m_value)
+		return;
+	InvalidateSkinStates();
 	assert(value >= 0); // If this happens, you probably have unballanced Begin/End calls.
 	m_value = value;
 	if (value > 0)

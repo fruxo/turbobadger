@@ -370,12 +370,17 @@ public:
 	void Invalidate();
 
 	/** Call if something changes that might need other widgets to update their state.
-		F.ex if a action availability changes, some widget might have to become enabled/disabled,
-		or a skin might need to change due to different conditions.
+		F.ex if a action availability changes, some widget might have to become enabled/disabled.
+		Calling this will result in a later call to OnProcessStates().
 		This is done automatically for all invoked events of type:
 			EVENT_TYPE_CLICK, EVENT_TYPE_LONG_CLICK, EVENT_TYPE_CHANGED, EVENT_TYPE_KEYDOWN,
 			EVENT_TYPE_KEYUP. */
 	void InvalidateStates();
+
+	/** Call if something changes that might cause any skin to change due to different state
+		or conditions. This is called automatically from InvalidateStates(), when event
+		EVENT_TYPE_CHANGED is invoked, and in various other situations. */
+	void InvalidateSkinStates();
 
 	/** Delete the widget with the possibility for some extended life during animations.
 
@@ -392,7 +397,7 @@ public:
 	/** Set the id reference for this widgets. This id is 0 by default.
 		You can use this id to receive the widget from GetWidgetByID (or
 		preferable TBSafeGetByID to avoid dangerous casts). */
-	void SetID(const TBID &id) { m_id = id; }
+	void SetID(const TBID &id);
 	TBID &GetID() { return m_id; }
 
 	/** Set the group id reference for this widgets. This id is 0 by default.
@@ -883,7 +888,7 @@ public:
 		Note: When invoking event EVENT_TYPE_CHANGED, this will update the value of other widgets connected
 			  to the same group.
 
-		Note: Some event types will automatically invalidate states (See InvalidateStates())
+		Note: Some event types will automatically invalidate states (See InvalidateStates(), InvalidateSkinStates())
 
 		Note: Remember that this widgets may be deleted after this call! So if you really must do something after
 		this call and are not sure what the event will cause, use TBWidgetSafePointer to detect self deletion. */

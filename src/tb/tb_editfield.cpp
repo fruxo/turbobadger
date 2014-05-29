@@ -108,9 +108,13 @@ void TBEditField::SetVirtualWidth(int virtual_width)
 
 void TBEditField::SetMultiline(bool multiline)
 {
+	if (multiline == GetMultiline())
+		return;
 	UpdateScrollbarVisibility(multiline);
 	m_style_edit.SetMultiline(multiline);
 	SetWrapping(multiline);
+	InvalidateSkinStates();
+	TBWidget::Invalidate();
 }
 
 void TBEditField::SetStyling(bool styling)
@@ -120,7 +124,11 @@ void TBEditField::SetStyling(bool styling)
 
 void TBEditField::SetReadOnly(bool readonly)
 {
+	if (readonly == GetReadOnly())
+		return;
 	m_style_edit.SetReadOnly(readonly);
+	InvalidateSkinStates();
+	TBWidget::Invalidate();
 }
 
 void TBEditField::SetWrapping(bool wrapping)
@@ -141,6 +149,7 @@ void TBEditField::SetEditType(EDIT_TYPE type)
 		return;
 	m_edit_type = type;
 	m_style_edit.SetPassword(type == EDIT_TYPE_PASSWORD);
+	InvalidateSkinStates();
 	TBWidget::Invalidate();
 }
 

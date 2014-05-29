@@ -136,6 +136,7 @@ void TBToggleContainer::SetValue(int value)
 		return;
 	m_value = value;
 	UpdateInternal();
+	InvalidateSkinStates();
 }
 
 void TBToggleContainer::UpdateInternal()

@@ -33,6 +33,7 @@ void TBLayout::SetAxis(AXIS axis)
 		return;
 	m_axis = axis;
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+	InvalidateSkinStates();
 }
 
 void TBLayout::SetSpacing(int spacing)

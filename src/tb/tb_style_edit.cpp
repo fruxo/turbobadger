@@ -1987,29 +1987,21 @@ void TBStyleEdit::SetAlign(TB_TEXT_ALIGN align)
 
 void TBStyleEdit::SetMultiline(bool multiline)
 {
-	if (packed.multiline_on == multiline)
-		return;
 	packed.multiline_on = multiline;
 }
 
 void TBStyleEdit::SetStyling(bool styling)
 {
-	if (packed.styling_on == styling)
-		return;
 	packed.styling_on = styling;
 }
 
 void TBStyleEdit::SetReadOnly(bool readonly)
 {
-	if (packed.read_only == readonly)
-		return;
 	packed.read_only = readonly;
 }
 
 void TBStyleEdit::SetSelection(bool selection)
 {
-	if (packed.selection_on == selection)
-		return;
 	packed.selection_on = selection;
 }
 

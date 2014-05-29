@@ -131,6 +131,11 @@ void TBWidget::Invalidate()
 void TBWidget::InvalidateStates()
 {
 	update_widget_states = true;
+	InvalidateSkinStates();
+}
+
+void TBWidget::InvalidateSkinStates()
+{
 	update_skin_states = true;
 }
 
@@ -175,12 +180,19 @@ int TBWidget::GetValueByID(const TBID &id)
 	return 0;
 }
 
+void TBWidget::SetID(const TBID &id)
+{
+	m_id = id;
+	InvalidateSkinStates();
+}
+
 void TBWidget::SetStateRaw(WIDGET_STATE state)
 {
 	if (m_state == state)
 		return;
 	m_state = state;
 	Invalidate();
+	InvalidateSkinStates();
 }
 
 void TBWidget::SetState(WIDGET_STATE state, bool on)
@@ -307,6 +319,7 @@ void TBWidget::AddChildRelative(TBWidget *child, WIDGET_Z_REL z, TBWidget *refer
 	}
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 	Invalidate();
+	InvalidateSkinStates();
 }
 
 void TBWidget::RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info)
@@ -330,6 +343,7 @@ void TBWidget::RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info)
 
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 	Invalidate();
+	InvalidateSkinStates();
 }
 
 void TBWidget::DeleteAllChildren()
@@ -375,6 +389,7 @@ void TBWidget::SetSkinBg(const TBID &skin_bg, WIDGET_INVOKE_INFO info)
 	m_skin_bg_expected = skin_bg;
 
 	Invalidate();
+	InvalidateSkinStates();
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 
 	if (info == WIDGET_INVOKE_INFO_NORMAL)
@@ -529,9 +544,17 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 			return true;
 	}
 
+	if (focused_widget)
+	{
+		focused_widget->Invalidate();
+		focused_widget->InvalidateSkinStates();
+	}
+
 	TBWidgetSafePointer old_focus(focused_widget);
 	focused_widget = this;
+
 	Invalidate();
+	InvalidateSkinStates();
 
 	if (reason == WIDGET_FOCUS_REASON_NAVIGATION)
 		ScrollIntoViewRecursive();
@@ -1045,16 +1068,15 @@ void TBWidget::InvokeSkinUpdatesInternal(bool force_update)
 
 	// Check if the skin we get is different from what we expect. That might happen
 	// if the skin has some strong override dependant a condition that has changed.
-	// If that happens, call OnSkinChanged so the widget can react to that (possibly
-	// invalidating its layout).
+	// If that happens, call OnSkinChanged so the widget can react to that, and
+	// invalidate layout to apply new skin properties.
 	if (TBSkinElement *skin_elm = GetSkinBgElement())
 	{
 		if (skin_elm->id != m_skin_bg_expected)
 		{
 			OnSkinChanged();
 			m_skin_bg_expected = skin_elm->id;
-			// FIX: We should probably invalidate layout here automatically!
-			// InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+			InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 		}
 	}
 
@@ -1180,7 +1202,10 @@ bool TBWidget::InvokeEvent(TBWidgetEvent &ev)
 		return true; // We got removed so we actually handled this event.
 
 	if (ev.type == EVENT_TYPE_CHANGED)
+	{
+		InvalidateSkinStates();
 		m_connection.SyncFromWidget(this);
+	}
 
 	if (!this_widget.Get())
 		return true; // We got removed so we actually handled this event.
@@ -1519,13 +1544,17 @@ void TBWidget::SetHoveredWidget(TBWidget *widget, bool touch)
 
 	// We may apply hover state automatically so the widget might need to be updated.
 	if (TBWidget::hovered_widget)
+	{
 		TBWidget::hovered_widget->Invalidate();
+		TBWidget::hovered_widget->InvalidateSkinStates();
+	}
 
 	TBWidget::hovered_widget = widget;
 
 	if (TBWidget::hovered_widget)
 	{
 		TBWidget::hovered_widget->Invalidate();
+		TBWidget::hovered_widget->InvalidateSkinStates();
 
 		// Cursor based movement should set hover state automatically, but touch
 		// events should not (since touch doesn't really move unless pressed).
@@ -1556,6 +1585,7 @@ void TBWidget::SetCapturedWidget(TBWidget *widget)
 
 		// We apply pressed state automatically so the widget might need to be updated.
 		TBWidget::captured_widget->Invalidate();
+		TBWidget::captured_widget->InvalidateSkinStates();
 
 		TBWidget::captured_widget->StopLongClickTimer();
 	}
@@ -1571,6 +1601,7 @@ void TBWidget::SetCapturedWidget(TBWidget *widget)
 	if (TBWidget::captured_widget)
 	{
 		TBWidget::captured_widget->Invalidate();
+		TBWidget::captured_widget->InvalidateSkinStates();
 		TBWidget::captured_widget->OnCaptureChanged(true);
 	}
 }
