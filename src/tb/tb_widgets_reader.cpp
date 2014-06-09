@@ -436,6 +436,19 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 
 	target->GetContentRoot()->OnInflateChild(new_widget);
 
+	if (TBNode *rect_node = node->GetNode("rect"))
+	{
+		const TBDimensionConverter *dc = g_tb_skin->GetDimensionConverter();
+		TBValue &val = rect_node->GetValue();
+		if (val.GetArrayLength() == 4)
+		{
+			new_widget->SetRect(TBRect(dc->GetPxFromValue(val.GetArray()->GetValue(0), 0),
+				dc->GetPxFromValue(val.GetArray()->GetValue(1), 0),
+				dc->GetPxFromValue(val.GetArray()->GetValue(2), 0),
+				dc->GetPxFromValue(val.GetArray()->GetValue(3), 0)));
+		}
+	}
+
 	// Iterate through all nodes and create widgets
 	for (TBNode *n = node->GetFirstChild(); n; n = n->GetNext())
 		CreateWidget(new_widget, n, wc->add_child_z);

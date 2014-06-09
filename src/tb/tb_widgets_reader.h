@@ -119,6 +119,7 @@ public:
 	visibility			TBWidget::SetVisibility		string (visible, invisible, gone)
 	state				TBWidget::SetState			string (disabled)
 	skin				TBWidget::SetSkinBg			TBID (string or int)
+	rect				TBWidget::SetRect			4 integers (x, y, width, height)
 	lp>width			TBWidget::SetLayoutParams	dimension
 	lp>min-width		TBWidget::SetLayoutParams	dimension
 	lp>max-width		TBWidget::SetLayoutParams	dimension
