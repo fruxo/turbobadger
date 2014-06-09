@@ -417,8 +417,6 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 		new_widget->SetLayoutParams(layout_params);
 	}
 
-	target->GetContentRoot()->OnInflateChild(new_widget);
-
 	// Add the new widget to the hiearchy
 	target->GetContentRoot()->AddChild(new_widget, add_child_z);
 
@@ -435,6 +433,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 			fd.SetID(name);
 		new_widget->SetFontDescription(fd);
 	}
+
+	target->GetContentRoot()->OnInflateChild(new_widget);
 
 	// Iterate through all nodes and create widgets
 	for (TBNode *n = node->GetFirstChild(); n; n = n->GetNext())

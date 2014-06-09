@@ -618,10 +618,11 @@ TBTextFragmentContent *TBEditFieldContentFactory::CreateFragmentContent(const ch
 		// Its size will adapt to the content.
 		if (TBWidget *widget = new TBWidget())
 		{
-			g_widgets_reader->LoadData(widget, text + 8, text_len - 9);
-
 			if (TBTextFragmentContentWidget *cw = new TBTextFragmentContentWidget(editfield, widget))
+			{
+				g_widgets_reader->LoadData(widget, text + 8, text_len - 9);
 				return cw;
+			}
 			delete widget;
 		}
 	}

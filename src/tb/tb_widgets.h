@@ -672,7 +672,7 @@ public:
 	/** Called when this widget has been scrolled. */
 	virtual void OnScroll(int scroll_x, int scroll_y) {}
 
-	/** Called just before a child is inflated into this widget.
+	/** Called just after a child has been inflated into this widget.
 		The default implementation will resize the child to it's preferred size
 		and position it according to the gravity. If you implement a layouting
 		widget, you should override this to prevent doing unnecessary measuring. */
