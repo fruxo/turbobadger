@@ -24,7 +24,7 @@ TB_TEST_GROUP(tb_editfield)
 		sedit = edit->GetStyleEdit();
 
 		/** Set a size so the layout code will be called and we can do some layout tests. */
-		edit->SetRect(TBRect(0, 0, 100, 100));
+		edit->SetRect(TBRect(0, 0, 1000, 1000));
 
 		/** Force windows style line breaks so testing is the same on all platforms. */
 		sedit->SetWindowsStyleBreak(true);
