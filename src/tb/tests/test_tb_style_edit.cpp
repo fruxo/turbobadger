@@ -76,7 +76,7 @@ TB_TEST_GROUP(tb_editfield)
 
 	TB_TEST(settext_undoredo_ins)
 	{
-		// 1 len insertions in sequence should be merged to word boundary.
+		// 1 character insertions in sequence should be merged to word boundary.
 		sedit->InsertText("O"); sedit->InsertText("N"); sedit->InsertText("E"); sedit->InsertText(" ");
 		sedit->InsertText("T"); sedit->InsertText("W"); sedit->InsertText("O");
 		TB_VERIFY_STR(edit->GetText(), "ONE TWO");
@@ -90,6 +90,13 @@ TB_TEST_GROUP(tb_editfield)
 		TB_VERIFY_STR(edit->GetText(), "ONE ");
 		sedit->Redo();
 		TB_VERIFY_STR(edit->GetText(), "ONE TWO");
+
+		// 1 character insertions that are multi byte utf8 should also merge.
+		// Note: this will also replace "TWO" since redoing keeps the redoed part selected.
+		sedit->InsertText("L"); sedit->InsertText("Ö"); sedit->InsertText("K");
+		TB_VERIFY_STR(edit->GetText(), "ONE LÖK");
+		sedit->Undo();
+		TB_VERIFY_STR(edit->GetText(), "ONE ");
 	}
 
 	TB_TEST(settext_undoredo_ins_scattered)

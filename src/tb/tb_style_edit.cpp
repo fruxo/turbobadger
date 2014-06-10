@@ -2091,10 +2091,11 @@ TBUndoEvent *TBUndoRedoStack::Commit(TBStyleEdit *styledit, int32 gofs, int32 le
 	Clear(false, true);
 
 	// If we're inserting a single character, check if we want to append it to the previous event.
-	if (insert && len == 1 && undos.GetNumItems())
+	if (insert && undos.GetNumItems())
 	{
+		int num_char = utf8::count_characters(text, len);
 		TBUndoEvent *e = undos[undos.GetNumItems() - 1];
-		if (e->insert && e->gofs + e->text.Length() == gofs)
+		if (num_char == 1 && e->insert && e->gofs + e->text.Length() == gofs)
 		{
 			// Appending a space to other space(s) should append
 			if ((text[0] == ' ' && !strpbrk(e->text.CStr(), "\r\n")) ||
