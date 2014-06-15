@@ -10,21 +10,18 @@
 
 namespace tb {
 
-// Remove image formats we don't use to limit binary size.
+// Configure stb image and remove some features we don't use to reduce binary size.
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
+//#define STBI_SIMD
 #define STBI_NO_STDIO
 #define STBI_NO_FAILURE_STRINGS
 #define STBI_NO_HDR
-#define STBI_NO_JPG
-#define STBI_NO_BMP
-#define STBI_NO_GIF
-#define STBI_NO_PSD
-#define STBI_NO_PIC
-#define STBI_NO_TGA
 
 // Include stb image - Tiny portable and reasonable fast image loader from http://nothings.org/
 // Should not be used for content not distributed with your app (May not be secure and doesn't
 // support all formats fully)
-#include "thirdparty/stb_image.c"
+#include "thirdparty/stb_image.h"
 
 class STBI_Loader : public TBImageLoader
 {
