@@ -150,6 +150,16 @@ bool is_pending_multiline(const char *str)
 	return str[0] == '\\' && str[1] == 0;
 }
 
+bool IsEndQuote(const char *buf_start, const char *buf, const char quote_type)
+{
+	if (*buf != quote_type)
+		return false;
+	int num_backslashes = 0;
+	while (buf_start < buf && *(buf-- - 1) == '\\')
+		num_backslashes++;
+	return !(num_backslashes & 1);
+}
+
 // == Parser ============================================================================
 
 TBParser::STATUS TBParser::Read(TBParserStream *stream, TBParserTarget *target)
@@ -318,19 +328,6 @@ void TBParser::OnLine(char *line, TBParserTarget *target)
 		if (is_compact_line)
 			OnCompactLine(line, target);
 	}
-}
-
-/** Check if buf is pointing at a end quote. It may need to iterate
-	buf backwards toward buf_start to check if any preceding backslashes
-	make it a escaped quote (which should not be the end quote) */
-bool IsEndQuote(const char *buf_start, const char *buf, const char quote_type)
-{
-	if (*buf != quote_type)
-		return false;
-	int num_backslashes = 0;
-	while (buf_start < buf && *(buf-- - 1) == '\\')
-		num_backslashes++;
-	return !(num_backslashes & 1);
 }
 
 void TBParser::OnCompactLine(char *line, TBParserTarget *target)

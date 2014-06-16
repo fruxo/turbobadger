@@ -12,6 +12,15 @@
 
 namespace tb {
 
+/** Unescape backslash codes. This is done in place using the string both as source
+	and destination. */
+void UnescapeString(char *str);
+
+/** Check if buf is pointing at a end quote. It may need to iterate
+	buf backwards toward buf_start to check if any preceding backslashes
+	make it a escaped quote (which should not be the end quote) */
+bool IsEndQuote(const char *buf_start, const char *buf, const char quote_type);
+
 class TBParserTarget
 {
 public:
