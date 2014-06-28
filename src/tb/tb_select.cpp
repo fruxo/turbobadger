@@ -7,44 +7,17 @@
 #include "tb_menu_window.h"
 #include "tb_widgets_listener.h"
 #include "tb_language.h"
-#include <assert.h>
-#include <stdlib.h>
-
-// There is no re-entrant qsort in the standard but there is most often qsort_r or qsort_s.
-// In addition to that mess, linux have a different qsort_r from BSD.
-#ifdef WIN32
-# define tb_qsort(base, num, width, cb, context) qsort_s(base, num, width, cb, context)
-# define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
-#elif defined(ANDROID)
-// FIX: There's no sort on android! Implement!
-# define tb_qsort(base, num, width, cb, context)
-# define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
-#elif defined(LINUX)
-# define tb_qsort(base, num, width, cb, context) qsort_r(base, num, width, cb, context)
-# define tb_sort_cb(context, a, b) int select_list_sort_cb(const void *a, const void *b, void *context)
-#else
-# define tb_qsort(base, num, width, cb, context) qsort_r(base, num, width, context, cb)
-# define tb_sort_cb(context, a, b) int select_list_sort_cb(void *context, const void *a, const void *b)
-#endif
+#include "tb_tempbuffer.h"
+#include "tb_sort.h"
 
 namespace tb {
 
 // == Sort callback for sorting items ===================================================
 
-struct SELECT_LIST_SORT_CONTEXT {
-	TBSelectItemSource *source;
-};
-
-tb_sort_cb(_context, _a, _b)
+int select_list_sort_cb(TBSelectItemSource *source, const int *a, const int *b)
 {
-	SELECT_LIST_SORT_CONTEXT *context = static_cast<SELECT_LIST_SORT_CONTEXT *>(_context);
-	int a = *((int*) _a);
-	int b = *((int*) _b);
-	const char *str_a = context->source->GetItemString(a);
-	const char *str_b = context->source->GetItemString(b);
-	if (context->source->GetSort() == TB_SORT_DESCENDING)
-		return -strcmp(str_a, str_b);
-	return strcmp(str_a, str_b);
+	int value = strcmp(source->GetItemString(*a), source->GetItemString(*b));
+	return source->GetSort() == TB_SORT_DESCENDING ? -value : value;
 }
 
 // == TBSelectList ==============================================
@@ -173,22 +146,20 @@ void TBSelectList::ValidateList()
 		return;
 
 	// Create a sorted list of the items we should include using the current filter.
-	int num_sorted_items = 0;
-	int *sorted_index = new int[m_source->GetNumItems()];
-	if (!sorted_index)
+	TBTempBuffer sort_buf;
+	if (!sort_buf.Reserve(m_source->GetNumItems() * sizeof(int)))
 		return; // Out of memory
+	int *sorted_index = (int *) sort_buf.GetData();
 
 	// Populate the sorted index list
+	int num_sorted_items = 0;
 	for (int i = 0; i < m_source->GetNumItems(); i++)
 		if (m_filter.IsEmpty() || m_source->Filter(i, m_filter))
 			sorted_index[num_sorted_items++] = i;
 
 	// Sort
 	if (m_source->GetSort() != TB_SORT_NONE)
-	{
-		SELECT_LIST_SORT_CONTEXT context = { m_source };
-		tb_qsort(sorted_index, num_sorted_items, sizeof(int), select_list_sort_cb, &context);
-	}
+		insertion_sort<TBSelectItemSource*, int>(sorted_index, num_sorted_items, m_source, select_list_sort_cb);
 
 	// Show header if we only show a subset of all items.
 	if (!m_filter.IsEmpty())
@@ -209,7 +180,6 @@ void TBSelectList::ValidateList()
 	// Create new items
 	for (int i = 0; i < num_sorted_items; i++)
 		CreateAndAddItemAfter(sorted_index[i], nullptr);
-	delete [] sorted_index;
 
 	SelectItem(m_value, true);
 
