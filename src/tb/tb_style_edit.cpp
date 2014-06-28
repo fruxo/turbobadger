@@ -1221,7 +1221,7 @@ void TBTextFragment::Paint(int32 translate_x, int32 translate_y, TBTextProps *pr
 		content->Paint(this, translate_x, translate_y, props);
 		return;
 	}
-	TMPDEBUG(listener->DrawRect(TBRect(x, y, GetWidth(), GetHeight()), TBColor(255, 255, 255, 128)));
+	TMPDEBUG(listener->DrawRect(TBRect(x, y, GetWidth(font), GetHeight(font)), TBColor(255, 255, 255, 128)));
 
 	if (block->styledit->packed.password_on)
 	{
