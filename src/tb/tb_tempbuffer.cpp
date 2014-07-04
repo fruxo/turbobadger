@@ -45,17 +45,26 @@ bool TBTempBuffer::Reserve(int size)
 	return true;
 }
 
+int TBTempBuffer::GetAppendReserveSize(int needed_size) const
+{
+	// Reserve some extra memory to reduce the reserve calls.
+	needed_size *= 2;
+	return needed_size < 32 ? 32 : needed_size;
+}
+
 bool TBTempBuffer::Append(const char *data, int size)
 {
-	int needed_size = m_append_pos + size;
-	if (needed_size > m_data_size)
-	{
-		// Reserve some extra memory to reduce the reserve calls.
-		needed_size = needed_size + size + 32;
-		if (!Reserve(needed_size))
-			return false;
-	}
+	if (m_append_pos + size > m_data_size && !Reserve(GetAppendReserveSize(m_append_pos + size)))
+		return false;
 	memcpy(m_data + m_append_pos, data, size);
+	m_append_pos += size;
+	return true;
+}
+
+bool TBTempBuffer::AppendSpace(int size)
+{
+	if (m_append_pos + size > m_data_size && !Reserve(GetAppendReserveSize(m_append_pos + size)))
+		return false;
 	m_append_pos += size;
 	return true;
 }

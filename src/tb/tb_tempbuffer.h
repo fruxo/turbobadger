@@ -34,6 +34,12 @@ public:
 		Returns false on OOM. */
 	bool Append(const char *data, int size);
 
+	/** Increase the append position with size bytes without
+		writing any data. This is useful if you want to write
+		the data later and want to make sure space is reserved.
+		Returns false on OOM. */
+	bool AppendSpace(int size);
+
 	/** Append a null terminated string (including the null termination)
 		at the end of the buffer. The append position will be increased
 		with the length of the text (excluding the null termination) so
@@ -55,6 +61,7 @@ public:
 	/** Return the current append position in in bytes. */
 	int GetAppendPos() const { return m_append_pos; }
 private:
+	int GetAppendReserveSize(int needed_size) const;
 	char *m_data;
 	int m_data_size;
 	int m_append_pos;
