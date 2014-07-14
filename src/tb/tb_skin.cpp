@@ -113,7 +113,8 @@ bool TBSkinCondition::GetCondition(TBSkinConditionContext &context) const
 // == TBSkin ================================================================
 
 TBSkin::TBSkin()
-	: m_default_disabled_opacity(0.3f)
+	: m_listener(nullptr)
+	, m_default_disabled_opacity(0.3f)
 	, m_default_placeholder_opacity(0.2f)
 	, m_default_spacing(0)
 {
@@ -212,6 +213,8 @@ bool TBSkin::LoadInternal(const char *skin_file)
 			}
 
 			e->Load(n, this, skin_path.GetData());
+			if (m_listener)
+				m_listener->OnSkinElementLoaded(this, e, n);
 
 			n = n->GetNext();
 		}

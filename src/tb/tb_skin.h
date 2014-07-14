@@ -12,6 +12,7 @@
 #include "tb_hashtable.h"
 #include "tb_linklist.h"
 #include "tb_dimension.h"
+#include "tb_value.h"
 
 namespace tb {
 
@@ -205,6 +206,7 @@ public:
 	TBColor text_color;		///< Color of the text in the widget.
 	TBColor bg_color;		///< Color of the background in the widget.
 	int16 bitmap_dpi;		///< The DPI of the bitmap that was loaded.
+	TBValue tag;			///< This value is free to use for anything. It's not used internally.
 
 	/** Get the minimum width, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
 	int GetMinWidth() const { return min_width; }
@@ -267,12 +269,26 @@ public:
 	void Load(TBNode *n, TBSkin *skin, const char *skin_path);
 };
 
+class TBSkinListener
+{
+public:
+	/** Called when a skin element has been loaded from the given TBNode.
+		NOTE: This may be called multiple times on elements that occur multiple times
+		in the skin or is overridden in an override skin.
+		This method can be used to f.ex feed custom properties into element->tag. */
+	virtual void OnSkinElementLoaded(TBSkin *skin, TBSkinElement *element, TBNode *node);
+};
+
 /** TBSkin contains a list of TBSkinElement. */
 class TBSkin : private TBRendererListener
 {
 public:
 	TBSkin();
 	~TBSkin();
+
+	/** Set the listener for this skin. */
+	void SetListener(TBSkinListener *listener) { m_listener = listener; }
+	TBSkinListener *GetListener() const { return m_listener;  }
 
 	/** Load the skin file and the bitmaps it refers to.
 
@@ -363,6 +379,7 @@ public:
 	virtual void OnContextRestored();
 private:
 	friend class TBSkinElement;
+	TBSkinListener *m_listener;
 	TBHashTableAutoDeleteOf<TBSkinElement> m_elements;	///< All skin elements for this skin.
 	TBBitmapFragmentManager m_frag_manager;				///< Fragment manager
 	TBDimensionConverter m_dim_conv;					///< Dimension converter
