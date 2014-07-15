@@ -246,6 +246,7 @@ void TBValue::SetString(const char *val, SET set)
 void TBValue::SetObject(TBTypedObject *object)
 {
 	SetNull();
+	m_packed.type = TYPE_OBJECT;
 	m_packed.allocated = true;
 	val_obj = object;
 }
