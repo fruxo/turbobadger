@@ -276,7 +276,7 @@ public:
 		NOTE: This may be called multiple times on elements that occur multiple times
 		in the skin or is overridden in an override skin.
 		This method can be used to f.ex feed custom properties into element->tag. */
-	virtual void OnSkinElementLoaded(TBSkin *skin, TBSkinElement *element, TBNode *node);
+	virtual void OnSkinElementLoaded(TBSkin *skin, TBSkinElement *element, TBNode *node) = 0;
 };
 
 /** TBSkin contains a list of TBSkinElement. */
