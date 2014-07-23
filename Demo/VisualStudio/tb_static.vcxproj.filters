@@ -255,6 +255,9 @@
     <ClCompile Include="..\..\src\tb\tb_font_renderer_stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\tb\tb_tooltips.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\tb\tb_language.h">
@@ -433,6 +436,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\tb\animation\tb_widget_animation.h">
       <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tb\tb_tooltips.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

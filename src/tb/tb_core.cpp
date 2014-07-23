@@ -10,6 +10,7 @@
 #include "tb_font_renderer.h"
 #include "tb_addon.h"
 #include "tb_system.h"
+#include "tb_tooltips.h"
 #include "animation/tb_animation.h"
 
 namespace tb {
@@ -29,6 +30,8 @@ bool tb_core_init(TBRenderer *renderer, const char *lng_file)
 	g_font_manager = new TBFontManager();
 	g_tb_skin = new TBSkin();
 	g_widgets_reader = TBWidgetsReader::Create();
+    g_tooltip_mng = new TBTooltipManager();
+
 	return TBInitAddons();
 }
 
@@ -40,6 +43,7 @@ void tb_core_shutdown()
 	delete g_tb_skin;
 	delete g_font_manager;
 	delete g_tb_lng;
+    delete g_tooltip_mng;
 }
 
 bool tb_core_is_initialized()

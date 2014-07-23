@@ -61,6 +61,7 @@
     <ClCompile Include="..\..\src\tb\tb_tab_container.cpp" />
     <ClCompile Include="..\..\src\tb\tb_tempbuffer.cpp" />
     <ClCompile Include="..\..\src\tb\tb_toggle_container.cpp" />
+    <ClCompile Include="..\..\src\tb\tb_tooltips.cpp" />
     <ClCompile Include="..\..\src\tb\tb_value.cpp" />
     <ClCompile Include="..\..\src\tb\tb_widgets.cpp" />
     <ClCompile Include="..\..\src\tb\tb_widgets_common.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="..\..\src\tb\utf8\utf8.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\tb\tb_tooltips.h" />
     <ClInclude Include="..\..\tbanimation\tb_animation_utils.h" />
     <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_manager.h" />
     <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_widget.h" />
