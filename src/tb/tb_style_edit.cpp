@@ -437,8 +437,8 @@ TBCaret::TBCaret(TBStyleEdit *styledit)
 	, y(0)
 	, width(2)
 	, height(0)
-	, on(false)
 	, wanted_x(0)
+	, on(false)
 	, prefer_first(true)
 {
 }
@@ -1183,7 +1183,6 @@ void TBTextFragment::BuildSelectionRegion(int32 translate_x, int32 translate_y, 
 
 	int x = translate_x + xpos;
 	int y = translate_y + ypos;
-	TBColor color = props->data->text_color;
 	TBFontFace *font = props->GetFont();
 
 	if (content)

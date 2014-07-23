@@ -35,6 +35,7 @@ void TBRendererBatcher::Batch::Flush(TBRendererBatcher *batch_renderer)
 		// Now it's time to ensure the bitmap data is up to date. A call to GetBitmap
 		// with TB_VALIDATE_ALWAYS should guarantee that its data is validated.
 		TBBitmap *frag_bitmap = fragment->GetBitmap(TB_VALIDATE_ALWAYS);
+		((void*)frag_bitmap); // silence warning about unused variable
 		assert(frag_bitmap == bitmap);
 	}
 

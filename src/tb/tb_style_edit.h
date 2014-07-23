@@ -129,13 +129,13 @@ public:
 private:
 	void SwitchBlock(bool second);
 public:
-	int32 x, y; ///< Relative to the styledit
-	int width;
-	int height;
-	bool on;
-	int32 wanted_x;
-	bool prefer_first;
 	TBStyleEdit *styledit;
+	int32 x, y; ///< Relative to the styledit
+	int32 width;
+	int32 height;
+	int32 wanted_x;
+	bool on;
+	bool prefer_first;
 	TBTextOfs pos;
 };
 

@@ -106,7 +106,7 @@ void TBScroller::OnScrollBy(int dx, int dy, bool accumulative)
 		// If new direction is the same as the current direction,
 		// calculate the speed needed for the remaining part and
 		// add that to the new scroll speed.
-		if (ppms_x < 0 == m_scroll_start_speed_ppms_x < 0)
+		if ((ppms_x < 0) == (m_scroll_start_speed_ppms_x < 0))
 		{
 			int distance_x = m_func.GetDistanceAtTimeInt(m_scroll_start_speed_ppms_x,
 				m_func.GetDurationFromSpeed(m_scroll_start_speed_ppms_x));
@@ -114,7 +114,7 @@ void TBScroller::OnScrollBy(int dx, int dy, bool accumulative)
 			distance_remaining_x += m_func.GetDistanceAtTimeInt(ppms_x, m_func.GetDurationFromSpeed(ppms_x));
 			ppms_x = m_func.GetSpeedFromDistance((float)distance_remaining_x);
 		}
-		if (ppms_y < 0 == m_scroll_start_speed_ppms_y < 0)
+		if ((ppms_y < 0) == (m_scroll_start_speed_ppms_y < 0))
 		{
 			int distance_y = m_func.GetDistanceAtTimeInt(m_scroll_start_speed_ppms_y,
 				m_func.GetDurationFromSpeed(m_scroll_start_speed_ppms_y));

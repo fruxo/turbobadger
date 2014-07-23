@@ -82,7 +82,7 @@ TBNode *TBNodeRefTree::FollowNodeRef(TBNode *node)
 	// recursively.
 	// FIX: Switch to hare and teleporting tortouise?
 	static uint32 s_cycle_id = 0;
-	int cycle_id = ++s_cycle_id;
+	uint32 cycle_id = ++s_cycle_id;
 	TBNode *start_node = node;
 
 	while (node->GetValue().IsString())

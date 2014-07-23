@@ -284,7 +284,7 @@ class TBSkin : private TBRendererListener
 {
 public:
 	TBSkin();
-	~TBSkin();
+	virtual ~TBSkin();
 
 	/** Set the listener for this skin. */
 	void SetListener(TBSkinListener *listener) { m_listener = listener; }

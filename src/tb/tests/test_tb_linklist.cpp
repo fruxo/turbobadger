@@ -18,6 +18,7 @@ TB_TEST_GROUP(tb_linklist)
 		Apple() : id(0) { total_apple_count++; }
 		Apple(int id) : id(id) { total_apple_count++; }
 		~Apple() { total_apple_count--; }
+		void eat() {}
 
 		int id;
 		static int total_apple_count;
@@ -50,6 +51,7 @@ TB_TEST_GROUP(tb_linklist)
 		TBLinkListOf<Apple>::Iterator iterator = list.IterateForward();
 		while (Apple *apple = iterator.GetAndStep())
 		{
+			apple->eat();
 			// Lets pretend we do something with apple
 			// that trig deletion of all apples.
 			list.DeleteAll();

@@ -26,7 +26,7 @@ public:
 		"#rrggbbaa", "#rrggbb", "#rgba", "#rgb" */
 	void SetFromString(const char *str, int len);
 
-	operator uint32 () const		{ return *((uint32*)&b); }
+	operator uint32 () const		{ return *((uint32*)this); }
 	bool operator == (const TBColor &c) const { return *this == (uint32)c; }
 	bool operator != (const TBColor &c) const { return !(*this == c); }
 };

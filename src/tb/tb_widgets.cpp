@@ -1614,7 +1614,7 @@ bool TBWidget::SetFontDescription(const TBFontDescription &font_desc)
 	// Set the font description only if we have a matching font, or succeed creating one.
 	if (g_font_manager->HasFontFace(font_desc))
 		m_font_desc = font_desc;
-	else if (TBFontFace * font = g_font_manager->CreateFontFace(font_desc))
+	else if (g_font_manager->CreateFontFace(font_desc))
 		m_font_desc = font_desc;
 	else
 		return false;

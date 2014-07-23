@@ -66,7 +66,7 @@ bool TBWidgetSkinConditionContext::GetCondition(TBWidget *widget, const TBSkinCo
 	case TBSkinCondition::PROPERTY_STATE:
 		return !!(widget->GetAutoState() & info.value);
 	case TBSkinCondition::PROPERTY_VALUE:
-		return widget->GetValue() == info.value;
+		return widget->GetValue() == (int) info.value;
 	case TBSkinCondition::PROPERTY_HOVER:
 		return TBWidget::hovered_widget && widget->IsAncestorOf(TBWidget::hovered_widget);
 	case TBSkinCondition::PROPERTY_CAPTURE:

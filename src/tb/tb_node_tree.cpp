@@ -182,7 +182,7 @@ public:
 		m_data_len = data_len;
 		TBParser p;
 		TBParser::STATUS status = p.Read(this, target);
-		return true;
+		return status == TBParser::STATUS_OK ? true : false;
 	}
 	virtual int GetMoreData(char *buf, int buf_len)
 	{

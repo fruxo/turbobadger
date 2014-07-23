@@ -9,9 +9,6 @@
 #include <stdlib.h>
 #include <memory.h>
 
-static char *p_realloc(char *buf, size_t size) { return (char *) realloc(buf, size); }
-static void p_free(char *buf) { free(buf); }
-
 namespace tb {
 
 bool TBListBackend::Add(void *data)
