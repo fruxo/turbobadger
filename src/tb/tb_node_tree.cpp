@@ -207,11 +207,11 @@ public:
 	}
 	virtual void OnError(int line_nr, const char *error)
 	{
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 		TBStr err;
 		err.SetFormatted("%s(%d):Parse error: %s\n", m_filename, line_nr, error);
 		TBDebugOut(err);
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 	}
 	virtual void OnComment(int line_nr, const char *comment)
 	{

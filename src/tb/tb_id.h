@@ -22,7 +22,7 @@ public:
 	TBID(const char *string)		{ Set(string); }
 	TBID(const TBID &id)			{ Set(id); }
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	void Set(uint32 newid);
 	void Set(const TBID &newid);
 	void Set(const char *string);
@@ -39,7 +39,7 @@ private:
 public:
 	/** This string is here to aid debugging (Only in debug builds!)
 		It should not to be used in your code! */
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	friend class TBLanguage;
 	TBStr debug_string;
 #endif

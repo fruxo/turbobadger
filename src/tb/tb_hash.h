@@ -12,11 +12,12 @@ namespace tb {
 
 // On C++ compilers that support it, use const expr for hash so that
 // TBID comparisions turn into simple uint32 comparisions compiletime.
-// Disabled for debug builds, so TBID string debugging is available.
+// Disabled for TB_RUNTIME_DEBUG_INFO builds, so TBID string debugging
+// is available.
 //
 // Note: GCC may need -std=c++0x or -std=c++11 to enable this feature.
 
-#ifndef _DEBUG
+#ifndef TB_RUNTIME_DEBUG_INFO
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
 #define TB_SUPPORT_CONSTEXPR
 #endif

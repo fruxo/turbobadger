@@ -8,7 +8,7 @@
 
 #include "tb_types.h"
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 #define TB_IF_DEBUG(debug) debug
 #else
 #define TB_IF_DEBUG(debug) 

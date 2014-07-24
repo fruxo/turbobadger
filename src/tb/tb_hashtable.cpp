@@ -29,7 +29,7 @@ TBHashTable::~TBHashTable()
 
 void TBHashTable::RemoveAll(bool delete_content)
 {
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	//Debug();
 #endif
 	for (uint32 i = 0; i < m_num_buckets; i++)
@@ -157,7 +157,7 @@ void TBHashTable::Delete(uint32 key)
 	DeleteContent(Remove(key));
 }
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 
 void TBHashTable::Debug()
 {
@@ -182,7 +182,7 @@ void TBHashTable::Debug()
 	TBDebugOut(line.GetData());
 }
 
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 
 // == TBHashTableIterator ===============================================================
 

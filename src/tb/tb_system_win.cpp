@@ -8,14 +8,14 @@
 #include <mmsystem.h>
 #include <stdio.h>
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 
 void TBDebugOut(const char *str)
 {
 	OutputDebugString(str);
 }
 
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 
 namespace tb {
 

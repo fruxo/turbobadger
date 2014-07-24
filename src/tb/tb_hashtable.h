@@ -51,7 +51,7 @@ public:
 		the current number of items. */
 	uint32 GetSuitableBucketsCount() const;
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	/** Print out some debug info about the hash table. */
 	void Debug();
 #endif

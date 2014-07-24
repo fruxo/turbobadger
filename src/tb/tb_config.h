@@ -14,8 +14,13 @@
 /** Enable for some handy runtime debugging, enabled by modifying
 	the various settings in g_tb_debug. A settings window can be
 	shown by calling ShowDebugInfoSettingsWindow. */
-#ifdef _DEBUG
+#ifndef NDEBUG
 #define TB_RUNTIME_DEBUG_INFO
+#endif
+
+#ifndef NDEBUG
+/** Enable compilation of unit tests. */
+#define TB_UNIT_TESTING
 #endif
 
 /** Enable if the focus state should automatically be set on edit fields even

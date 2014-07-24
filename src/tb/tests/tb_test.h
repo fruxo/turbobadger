@@ -92,10 +92,6 @@ namespace tb {
 /** Setting for TBRunTests to print out more information. */
 #define TB_TEST_VERBOSE				1
 
-#ifdef _DEBUG
-#define TB_UNIT_TESTING
-#endif
-
 #ifdef TB_UNIT_TESTING
 
 /** Run the tests. Return the number of fails. */

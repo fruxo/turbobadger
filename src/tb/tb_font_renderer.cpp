@@ -351,7 +351,7 @@ void TBFontFace::RenderGlyph(TBFontGlyph *glyph)
 
 		delete effect_glyph_data;
 	}
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	//char glyph_str[9];
 	//int len = utf8::encode(cp, glyph_str);
 	//glyph_str[len] = 0;

@@ -241,7 +241,7 @@ bool TBSkin::ReloadBitmaps()
 	if (success)
 		success = m_frag_manager.ValidateBitmaps();
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	TBStr info;
 	info.SetFormatted("Skin loaded using %d bitmaps.\n", m_frag_manager.GetNumMaps());
 	TBDebugOut(info);

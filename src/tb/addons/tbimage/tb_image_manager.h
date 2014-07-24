@@ -84,7 +84,7 @@ public:
 		If it fails, the returned TBImage object will be empty. */
 	TBImage GetImage(const char *filename);
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	/** Render the skin bitmaps on screen, to analyze fragment positioning. */
 	void Debug() { m_frag_manager.Debug(); }
 #endif

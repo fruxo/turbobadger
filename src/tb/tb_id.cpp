@@ -10,7 +10,7 @@ namespace tb {
 
 // == TBID ==============================================================================
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 
 // Hash table for checking if we get any collisions (same hash value for TBID's created
 // from different strings)
@@ -76,6 +76,6 @@ void TBID::Set(const char *string)
 	}
 }
 
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 
 }; // namespace tb

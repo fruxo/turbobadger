@@ -144,7 +144,7 @@ void TBSpaceAllocator::FreeSpace(Space *space)
 		fs = next_fs;
 	}
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	// Check that free space is in order
 	Space *tmp = m_free_space_list.GetFirst();
 	int x = 0;
@@ -154,7 +154,7 @@ void TBSpaceAllocator::FreeSpace(Space *space)
 		x = tmp->x + tmp->width;
 		tmp = tmp->GetNext();
 	}
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 }
 
 // == TBBitmapFragmentMap ===================================================================================
@@ -174,7 +174,7 @@ bool TBBitmapFragmentMap::Init(int bitmap_w, int bitmap_h)
 	m_bitmap_data = new uint32[bitmap_w * bitmap_h];
 	m_bitmap_w = bitmap_w;
 	m_bitmap_h = bitmap_h;
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	if (m_bitmap_data)
 		memset(m_bitmap_data, 0x88, bitmap_w * bitmap_h * sizeof(uint32));
 #endif
@@ -288,7 +288,7 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 		return;
 	assert(frag->m_map == this);
 
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 	// Debug code to clear the area in debug builds so it's easier to
 	// see & debug the allocation & deallocation of fragments in maps.
 	if (uint32 *data32 = new uint32[frag->m_space->width * frag->m_row->height])
@@ -299,7 +299,7 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 		m_need_update = true;
 		delete [] data32;
 	}
-#endif // _DEBUG
+#endif // TB_RUNTIME_DEBUG_INFO
 
 	m_allocated_pixels -= frag->m_space->width * frag->m_row->height;
 	frag->m_row->FreeSpace(frag->m_space);

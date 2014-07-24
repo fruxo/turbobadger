@@ -112,7 +112,7 @@ public:
 	TBStr GetIDString(const TBID &id)
 	{
 		TBStr str;
-#ifdef _DEBUG
+#ifdef TB_RUNTIME_DEBUG_INFO
 		str.Append("\"");
 		str.Append(id.debug_string);
 		str.Append("\"");
