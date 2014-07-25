@@ -4,6 +4,9 @@
 // ================================================================================
 
 #include "tb_system.h"
+
+#ifdef TB_SYSTEM_ANDROID
+
 #include <android/log.h>
 #include <sys/time.h>
 #include <stdio.h>
@@ -115,3 +118,5 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 }
 
 }; // namespace tb
+
+#endif // TB_SYSTEM_ANDROID

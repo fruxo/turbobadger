@@ -11,7 +11,7 @@
 #include <string.h>
 #include <assert.h>
 
-#ifdef WIN32
+#ifdef TB_TARGET_WINDOWS
 #define strtok_r strtok_s
 #endif
 

@@ -4,6 +4,9 @@
 // ================================================================================
 
 #include "tb_system.h"
+
+#ifdef TB_CLIPBOARD_GLFW
+
 #include "GLFW/glfw3.h"
 
 namespace tb {
@@ -47,3 +50,5 @@ bool TBClipboard::GetText(TBStr &text)
 }
 
 }; // namespace tb
+
+#endif // TB_CLIPBOARD_GLFW

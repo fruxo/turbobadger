@@ -4,6 +4,9 @@
 // ================================================================================
 
 #include "tb_system.h"
+
+#ifdef TB_CLIPBOARD_DUMMY
+
 #include <sys/time.h>
 #include <stdio.h>
 
@@ -34,3 +37,5 @@ bool TBClipboard::GetText(TBStr &text)
 }
 
 }; // namespace tb
+
+#endif // TB_CLIPBOARD_DUMMY

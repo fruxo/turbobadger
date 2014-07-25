@@ -4,6 +4,9 @@
 // ================================================================================
 
 #include "tb_system.h"
+
+#ifdef TB_SYSTEM_LINUX
+
 #include <sys/time.h>
 #include <stdio.h>
 
@@ -54,47 +57,6 @@ int TBSystem::GetDPI()
 	return 96;
 }
 
-// == TBFile =====================================
-
-class TBLinuxFile : public TBFile
-{
-public:
-	TBLinuxFile(FILE *f) : file(f) {}
-	virtual ~TBLinuxFile() { fclose(file); }
-
-	virtual long Size()
-	{
-		long oldpos = ftell(file);
-		fseek(file, 0, SEEK_END);
-		long num_bytes = ftell(file);
-		fseek(file, oldpos, SEEK_SET);
-		return num_bytes;
-	}
-	virtual size_t Read(void *buf, size_t elemSize, size_t count)
-	{
-		return fread(buf, elemSize, count, file);
-	}
-private:
-	FILE *file;
-};
-
-TBFile *TBFile::Open(const char *filename, TBFileMode mode)
-{
-	FILE *f = nullptr;
-	switch (mode)
-	{
-	case MODE_READ:
-		f = fopen(filename, "rb");
-		break;
-	default:
-		break;
-	}
-	if (!f)
-		return nullptr;
-	TBLinuxFile *tbf = new TBLinuxFile(f);
-	if (!tbf)
-		fclose(f);
-	return tbf;
-}
-
 }; // namespace tb
+
+#endif // TB_SYSTEM_LINUX

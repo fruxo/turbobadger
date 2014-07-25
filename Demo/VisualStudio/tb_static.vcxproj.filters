@@ -255,6 +255,9 @@
     <ClCompile Include="..\..\src\tb\tb_font_renderer_stb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\tb\tb_file_posix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\tb\tb_language.h">

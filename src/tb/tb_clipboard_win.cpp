@@ -4,6 +4,9 @@
 // ================================================================================
 
 #include "tb_system.h"
+
+#ifdef TB_CLIPBOARD_WINDOWS
+
 #include <Windows.h>
 #include <stdio.h>
 
@@ -77,3 +80,5 @@ bool TBClipboard::GetText(TBStr &text)
 }
 
 }; // namespace tb
+
+#endif // TB_CLIPBOARD_WINDOWS

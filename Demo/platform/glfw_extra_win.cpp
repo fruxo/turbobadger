@@ -1,8 +1,8 @@
-#include "glfw_extra.h"
-#include "tb_msg.h"
 #include "tb_system.h"
 
-#define GLFW_EXPOSE_NATIVE_WIN32_WGL
+#ifdef TB_TARGET_WINDOWS
+#include "glfw_extra.h"
+#include "tb_msg.h"
 #include "GLFW/glfw3native.h"
 
 GLFWtimerfun timerCallback;
@@ -97,3 +97,5 @@ void glfwSetTimerCallback(GLFWtimerfun cbfun)
 {
 	timerCallback = cbfun;
 }
+
+#endif // TB_TARGET_WINDOWS

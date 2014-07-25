@@ -455,7 +455,7 @@ void ApplicationBackendGLFW::Run()
 	} while (!glfwWindowShouldClose(mainWindow));
 }
 
-#ifdef WIN32
+#ifdef TB_TARGET_WINDOWS
 
 #include <mmsystem.h>
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -468,17 +468,17 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SetCurrentDirectory(buf.GetData());
 
 	// Crank up windows timer resolution (it's awfully low res normally). Note: This affects battery time!
-	timeBeginPeriod(1);
+    timeBeginPeriod(1);
 	int ret = app_main();
 	timeEndPeriod(1);
 	return ret;
 }
 
-#else // WIN32
+#else // TB_TARGET_WINDOWS
 
 int main(int argc, char** argv)
 {
 	return app_main();
 }
 
-#endif // !WIN32
+#endif // !TB_TARGET_WINDOWS

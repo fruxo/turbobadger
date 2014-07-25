@@ -1385,7 +1385,7 @@ TBStyleEdit::TBStyleEdit()
 	font_desc = g_font_manager->GetDefaultFontDescription();
 	font = g_font_manager->GetFontFace(font_desc);
 
-#ifdef WIN32
+#ifdef TB_TARGET_WINDOWS
 	packed.win_style_br = 1;
 #endif
 	packed.selection_on = 1;
