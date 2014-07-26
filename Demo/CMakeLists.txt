@@ -29,8 +29,7 @@ add_subdirectory(thirdparty/glfw)
 # Platform specifix
 if(CMAKE_COMPILER_IS_MINGW)
 # Avoid dll dependencies by linking statically.
-# Avoid console window by specifying -mwindows
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static -mwindows")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
 endif(CMAKE_COMPILER_IS_MINGW)
 
 # Mingw discard object files containing unit tests and widget factories
@@ -41,5 +40,5 @@ if(CMAKE_COMPILER_IS_MINGW)
  set(WholeTurboBadgerLib -Wl,--whole-archive TurboBadgerLib -Wl,--no-whole-archive)
 endif(CMAKE_COMPILER_IS_MINGW)
 
-add_executable(TurboBadgerDemo ${LOCAL_SRCS})
+add_executable(TurboBadgerDemo WIN32 ${LOCAL_SRCS})
 target_link_libraries(TurboBadgerDemo ${WholeTurboBadgerLib} ${EXTRA_LIBS} glfw ${GLFW_LIBRARIES})
