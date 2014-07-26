@@ -1,4 +1,8 @@
+# Use project source dir for demo output. We have to set
+# the release and debug specific defines too, for MSVC.
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR})
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
 
 if(CMAKE_SYSTEM MATCHES "Windows")
  add_definitions(-DGLFW_EXPOSE_NATIVE_WIN32)
@@ -26,19 +30,26 @@ include_directories(".")
 include_directories("thirdparty/glfw/include")
 add_subdirectory(thirdparty/glfw)
 
-# Platform specifix
+# Platform specific
 if(CMAKE_COMPILER_IS_MINGW)
-# Avoid dll dependencies by linking statically.
+ # Avoid dll dependencies by linking statically.
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
 endif(CMAKE_COMPILER_IS_MINGW)
 
-# Mingw discard object files containing unit tests and widget factories
-# even though they may be needed, so we must enforce linking of all contents.
+# Append extra flags to link all object files. Some compilers discard object files
+# which doesn't seem to be used even though they are (widget factories etc.)
+set(WHOLE_TB_LIB TurboBadgerLib)
 # TODO: Should probably apply all GCC variants!
-set(WholeTurboBadgerLib TurboBadgerLib)
 if(CMAKE_COMPILER_IS_MINGW)
- set(WholeTurboBadgerLib -Wl,--whole-archive TurboBadgerLib -Wl,--no-whole-archive)
+ set(WHOLE_TB_LIB -Wl,--whole-archive TurboBadgerLib -Wl,--no-whole-archive)
 endif(CMAKE_COMPILER_IS_MINGW)
+if(MSVC)
+ message(WARNING "Note: There are some remaining issues to fix with cmake for MSVC!")
+ # The project needs "Link library dependencies" and "Use library dependency inputs"
+ # set. Something which cmake isn't able to do.
+ # The solution also gets spammed with all glfws disabled sample projects.
+ # set(WHOLE_TB_LIB /OPT:NOREF TurboBadgerLib)
+endif(MSVC)
 
 add_executable(TurboBadgerDemo WIN32 ${LOCAL_SRCS})
-target_link_libraries(TurboBadgerDemo ${WholeTurboBadgerLib} ${EXTRA_LIBS} glfw ${GLFW_LIBRARIES})
+target_link_libraries(TurboBadgerDemo ${WHOLE_TB_LIB} ${EXTRA_LIBS} glfw ${GLFW_LIBRARIES})
