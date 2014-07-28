@@ -10,9 +10,9 @@ if(CMAKE_SYSTEM MATCHES "Windows")
  set(EXTRA_LIBS ${EXTRA_LIBS} winmm)
 endif(CMAKE_SYSTEM MATCHES "Windows")
 
-if(CMAKE_SYSTEM MATCHES "Linux")
- # We probably need something here
-endif(CMAKE_SYSTEM MATCHES "Linux")
+if(APPLE)
+ add_definitions(-DMACOSX)
+endif(APPLE)
 
 # Configure glfw
 set(GLFW_BUILD_EXAMPLES OFF)
@@ -39,10 +39,9 @@ endif(CMAKE_COMPILER_IS_MINGW)
 # Append extra flags to link all object files. Some compilers discard object files
 # which doesn't seem to be used even though they are (widget factories etc.)
 set(WHOLE_TB_LIB TurboBadgerLib)
-# TODO: Should probably apply all GCC variants!
-if(CMAKE_COMPILER_IS_MINGW)
+if(CMAKE_COMPILER_IS_GNUCXX)
  set(WHOLE_TB_LIB -Wl,--whole-archive TurboBadgerLib -Wl,--no-whole-archive)
-endif(CMAKE_COMPILER_IS_MINGW)
+endif(CMAKE_COMPILER_IS_GNUCXX)
 if(MSVC)
  message(WARNING "Note: There are some remaining issues to fix with cmake for MSVC!")
  # The project needs "Link library dependencies" and "Use library dependency inputs"
