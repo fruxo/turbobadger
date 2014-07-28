@@ -7,6 +7,11 @@ if(CMAKE_COMPILER_IS_GNUCXX)
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-exceptions -fno-rtti")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
+if(APPLE)
+ add_definitions(-DMACOSX)
+ add_definitions(-Dnullptr=0)
+endif(APPLE)
+
 if(MSVC)
  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
  add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
