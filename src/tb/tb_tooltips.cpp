@@ -172,7 +172,7 @@ void TBTooltipManager::OnMessageReceived (TBMessage *msg)
 
          int x = TBWidget::pointer_move_widget_x;
          int y = TBWidget::pointer_move_widget_y;
-         tipped_widget->ConvertToRoot(x, y);
+         TBWidget::hovered_widget->ConvertToRoot(x, y);
          y += tooltip_point_offset_y;
 
          m_tooltip->Show(x,  y);
