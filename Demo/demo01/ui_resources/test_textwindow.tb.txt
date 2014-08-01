@@ -9,6 +9,7 @@ TBLayout: axis: y, distribution: available
 		TBButton: id: redo
 			TBSkinImage: skin: arrow.right
 		TBButton: text: Clear, id: clear
+			desc Click for <color #f44>remove</color> all text
 		TBLayout
 			gravity left right
 			distribution-position right bottom

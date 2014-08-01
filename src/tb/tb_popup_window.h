@@ -62,6 +62,8 @@ public:
 	virtual TBWidget *GetEventDestination() { return m_target.Get(); }
 
 	virtual bool OnEvent(const TBWidgetEvent &ev);
+
+   const TBWidgetSafePointer& GetTargetWidget() { return m_target; }
 private:
 	TBWidgetSafePointer m_target;
 	// TBWidgetListener

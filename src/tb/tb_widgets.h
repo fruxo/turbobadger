@@ -802,7 +802,13 @@ public:
 	/** Get the text of this widget. Implemented by most widgets (that has text). */
 	TBStr GetText() { TBStr str; GetText(str); return str; }
 
-	/** Connect this widget to a widget value.
+    /** Get the description string of this widget. Used for tooltips. */
+    virtual TBStr GetDescription() { return m_desc_str; }
+
+    /** Set the description string for this widget. Used for tooltips. */
+    virtual void  SetDescription (const char*desc) { m_desc_str = desc; }
+
+    /** Connect this widget to a widget value.
 
 		When this widget invoke EVENT_TYPE_CHANGED, it will automatically update the
 		connected widget value, and any other widgets that may be connected to it.
@@ -959,6 +965,7 @@ private:
 	LayoutParams *m_layout_params;	///< Layout params, or nullptr.
 	TBScroller *m_scroller;
 	TBLongClickTimer *m_long_click_timer;
+    TBStr m_desc_str;
 	union {
 		struct {
 			uint16 is_group_root : 1;

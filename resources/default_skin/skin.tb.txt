@@ -462,3 +462,9 @@ elements
 		bitmap focus_r4.png
 		cut 11
 		expand 4
+	TBTooltip
+		text-color #fefefe
+		bitmap slider_handle.png
+		cut 13
+		expand 5
+		padding 1 10

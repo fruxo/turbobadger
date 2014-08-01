@@ -417,6 +417,8 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_
 		new_widget->SetLayoutParams(layout_params);
 	}
 
+   new_widget->SetDescription(node->GetValueString("desc", nullptr));
+
 	// Add the new widget to the hiearchy
 	target->GetContentRoot()->AddChild(new_widget, add_child_z);
 
