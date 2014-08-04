@@ -132,10 +132,9 @@ After the first git clone, you need to run:
 
 This will clone GLFW into the right directory.
 
-On Windows, use the project files for Visual Studio 2012 in Demo/VisualStudio.
-On Linux & Mac, simply run make. It will create a executable called RunDemo.
-On Linux & Mac, you can also use the Sublime Text project in the root folder
-that is set up to work with debugging using SublimeGDB.
+There is project files for Visual Studio 2012 in Demo/VisualStudio.
+For other platforms/compilers, you need to first run cmake to generate makefile or
+projects for your favorite IDE.
 
 There's a Sublime Text project for a small Android test app in DemoAndroid with a
 custom build & deploy script (Windows .bat file. There's currently no Linux/Mac
