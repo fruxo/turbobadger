@@ -32,22 +32,5 @@ if(CMAKE_COMPILER_IS_MINGW)
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
 endif(CMAKE_COMPILER_IS_MINGW)
 
-# Append extra flags to link all object files. Some compilers discard object files
-# which doesn't seem to be used even though they are (widget factories etc.)
-set(WHOLE_TB_LIB TurboBadgerLib)
-if(CMAKE_COMPILER_IS_GNUCXX)
- set(WHOLE_TB_LIB -Wl,--whole-archive TurboBadgerLib -Wl,--no-whole-archive)
-endif(CMAKE_COMPILER_IS_GNUCXX)
-if(APPLE)
- set(WHOLE_TB_LIB -all_load TurboBadgerLib)
-endif(CMAKE_COMPILER_IS_GNUCXX)
-if(MSVC)
- message(WARNING "Note: There are some remaining issues to fix with cmake for MSVC!")
- # The project needs "Link library dependencies" and "Use library dependency inputs"
- # set. Something which cmake isn't able to do.
- # The solution also gets spammed with all glfws disabled sample projects.
- # set(WHOLE_TB_LIB /OPT:NOREF TurboBadgerLib)
-endif(MSVC)
-
 add_executable(TurboBadgerDemo WIN32 ${LOCAL_SRCS})
-target_link_libraries(TurboBadgerDemo ${WHOLE_TB_LIB} ${EXTRA_LIBS} glfw ${GLFW_LIBRARIES})
+target_link_libraries(TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS} glfw ${GLFW_LIBRARIES})
