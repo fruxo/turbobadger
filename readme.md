@@ -103,7 +103,6 @@ pull requests accepted:
     documentation etc.)
 
   * Features that may be optional should be optional and not tied to the core.
-    That's what the addons folder is for.
 
 
 Creating custom widgets

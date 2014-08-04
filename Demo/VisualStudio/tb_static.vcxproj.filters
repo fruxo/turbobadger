@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\addons">
-      <UniqueIdentifier>{fc5ee9aa-7458-4068-8a14-eb97b73ec7f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\addons\tbimage">
-      <UniqueIdentifier>{7fa97a11-0cc8-4517-873d-836c0aaa6f20}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\parser">
       <UniqueIdentifier>{4e6b1255-e084-41b7-bbe3-48e48893b9f4}</UniqueIdentifier>
     </Filter>
@@ -33,6 +27,9 @@
     </Filter>
     <Filter Include="Source Files\animation">
       <UniqueIdentifier>{12e88d74-9c68-4f34-b7e1-8141af493ab9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\image">
+      <UniqueIdentifier>{fc5ee9aa-7458-4068-8a14-eb97b73ec7f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -128,12 +125,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\tb\tb_hashtable.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\tb\addons\tbimage\tb_image_widget.cpp">
-      <Filter>Source Files\addons\tbimage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\tb\addons\tbimage\tb_image_manager.cpp">
-      <Filter>Source Files\addons\tbimage</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\tb\tests\test_tb_style_edit.cpp">
       <Filter>Source Files\tests</Filter>
@@ -258,6 +249,12 @@
     <ClCompile Include="..\..\src\tb\tb_file_posix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\tb\image\tb_image_widget.cpp">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\tb\image\tb_image_manager.cpp">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\tb\tb_language.h">
@@ -353,12 +350,6 @@
     <ClInclude Include="..\..\src\tb\tb_hashtable.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_manager.h">
-      <Filter>Source Files\addons\tbimage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_widget.h">
-      <Filter>Source Files\addons\tbimage</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\tb\tests\tb_test.h">
       <Filter>Source Files\tests</Filter>
     </ClInclude>
@@ -436,6 +427,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\tb\animation\tb_widget_animation.h">
       <Filter>Source Files\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tb\image\tb_image_manager.h">
+      <Filter>Source Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tb\image\tb_image_widget.h">
+      <Filter>Source Files\image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

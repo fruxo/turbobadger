@@ -15,7 +15,7 @@
 #include "tb_node_tree.h"
 #include "tb_tempbuffer.h"
 #include "tb_font_renderer.h"
-#include "addons/tbimage/tb_image_manager.h"
+#include "image/tb_image_manager.h"
 #include "utf8/utf8.h"
 
 static Application *application;
@@ -801,8 +801,8 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 	g_renderer->BeginPaint(window_w, window_h);
 	GetRoot()->InvokePaint(TBWidget::PaintProps());
 
-#ifdef TB_RUNTIME_DEBUG_INFO
-	// Enable to debug image manager fragments (if addons/tbimage/* is used)
+#if defined(TB_RUNTIME_DEBUG_INFO) && defined(TB_IMAGE)
+	// Enable to debug image manager fragments
 	//g_image_manager->Debug();
 #endif
 

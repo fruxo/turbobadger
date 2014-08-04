@@ -3,19 +3,13 @@
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
-#include "addons/tbimage/tb_image_widget.h"
+#include "image/tb_image_widget.h"
 #include "tb_widgets_reader.h"
 #include "tb_node_tree.h"
 
+#ifdef TB_IMAGE
+
 namespace tb {
-
-TB_WIDGET_FACTORY(TBImageWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP)
-{
-	if (const char *filename = info->node->GetValueString("filename", nullptr))
-		widget->SetImage(filename);
-}
-
-// == TBImageWidget =======================================
 
 PreferredSize TBImageWidget::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
 {
@@ -29,3 +23,5 @@ void TBImageWidget::OnPaint(const PaintProps &paint_props)
 }
 
 }; // namespace tb
+
+#endif // TB_IMAGE

@@ -57,8 +57,8 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../src/tb/tb_core.cpp \
                    ../../src/tb/animation/tb_animation.cpp \
                    ../../src/tb/animation/tb_widget_animation.cpp \
-                   ../../src/tb/addons/tbimage/tb_image_manager.cpp \
-                   ../../src/tb/addons/tbimage/tb_image_widget.cpp \
+                   ../../src/tb/image/tb_image_manager.cpp \
+                   ../../src/tb/image/tb_image_widget.cpp \
                    ../../src/tb/parser/tb_parser.cpp \
                    ../../src/tb/utf8/utf8.cpp \
                    ../../src/tb/renderers/tb_renderer_batcher.cpp \

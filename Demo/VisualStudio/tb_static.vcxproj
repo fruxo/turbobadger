@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\tb\addons\tbimage\tb_image_manager.cpp" />
-    <ClCompile Include="..\..\src\tb\addons\tbimage\tb_image_widget.cpp" />
     <ClCompile Include="..\..\src\tb\animation\tb_animation.cpp" />
     <ClCompile Include="..\..\src\tb\animation\tb_widget_animation.cpp" />
+    <ClCompile Include="..\..\src\tb\image\tb_image_manager.cpp" />
+    <ClCompile Include="..\..\src\tb\image\tb_image_widget.cpp" />
     <ClCompile Include="..\..\src\tb\parser\tb_parser.cpp" />
     <ClCompile Include="..\..\src\tb\renderers\tb_renderer_batcher.cpp" />
     <ClCompile Include="..\..\src\tb\renderers\tb_renderer_gl.cpp" />
@@ -87,9 +87,9 @@
     <ClCompile Include="..\..\src\tb\utf8\utf8.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\tb\image\tb_image_manager.h" />
+    <ClInclude Include="..\..\src\tb\image\tb_image_widget.h" />
     <ClInclude Include="..\..\tbanimation\tb_animation_utils.h" />
-    <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_manager.h" />
-    <ClInclude Include="..\..\src\tb\addons\tbimage\tb_image_widget.h" />
     <ClInclude Include="..\..\src\tb\animation\tb_animation.h" />
     <ClInclude Include="..\..\src\tb\animation\tb_animation_utils.h" />
     <ClInclude Include="..\..\src\tb\animation\tb_widget_animation.h" />

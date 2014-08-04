@@ -13,6 +13,7 @@
 #include "tb_node_tree.h"
 #include "tb_font_renderer.h"
 #include "tb_toggle_container.h"
+#include "image/tb_image_widget.h"
 
 namespace tb {
 
@@ -231,6 +232,16 @@ TB_WIDGET_FACTORY(TBToggleContainer, TBValue::TYPE_INT, WIDGET_Z_TOP)
 	}
 	widget->SetInvert(info->node->GetValueInt("invert", widget->GetInvert()) ? true : false);
 }
+
+#ifdef TB_IMAGE
+
+TB_WIDGET_FACTORY(TBImageWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP)
+{
+	if (const char *filename = info->node->GetValueString("filename", nullptr))
+		widget->SetImage(filename);
+}
+
+#endif // TB_IMAGE
 
 // == TBWidgetFactory ===================================
 

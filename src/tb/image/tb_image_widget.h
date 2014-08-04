@@ -7,7 +7,10 @@
 #define TB_IMAGE_WIDGET_H
 
 #include "tb_widgets.h"
-#include "addons/tbimage/tb_image_manager.h"
+
+#ifdef TB_IMAGE
+
+#include "image/tb_image_manager.h"
 
 namespace tb {
 
@@ -35,4 +38,5 @@ private:
 
 }; // namespace tb
 
+#endif // TB_IMAGE
 #endif // TB_IMAGE_WIDGET_H

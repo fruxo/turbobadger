@@ -68,6 +68,11 @@
 /** The height of the font glyph cache. Must be a power of two. */
 #define TB_GLYPH_CACHE_HEIGHT 512
 
+// == Optional features ===========================================================
+
+/** Enable support for TBImage, TBImageManager, TBImageWidget. */
+#define TB_IMAGE
+
 // == Additional configuration of platform implementations ========================
 
 /** Define for posix implementation of TBFile. */

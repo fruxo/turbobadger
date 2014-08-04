@@ -6,9 +6,12 @@
 #ifndef TB_IMAGE_MANAGER_H
 #define TB_IMAGE_MANAGER_H
 
+#include "tb_core.h"
+
+#ifdef TB_IMAGE
+
 #include "tb_linklist.h"
 #include "tb_hashtable.h"
-#include "tb_addon.h"
 #include "tb_bitmap_fragment.h"
 #include "tb_renderer.h"
 
@@ -76,9 +79,11 @@ private:
 	Images are forgotten when there are no longer any TBImage objects for a given file.
 */
 
-class TBImageManager : public TBAddon, private TBRendererListener
+class TBImageManager : private TBRendererListener
 {
 public:
+	TBImageManager();
+	~TBImageManager();
 
 	/** Return a image object for the given filename.
 		If it fails, the returned TBImage object will be empty. */
@@ -93,8 +98,6 @@ public:
 	virtual void OnContextLost();
 	virtual void OnContextRestored();
 private:
-	virtual bool Init();
-	virtual void Shutdown();
 	TBBitmapFragmentManager m_frag_manager;
 	TBHashTableOf<TBImageRep> m_image_rep_hash;
 
@@ -107,4 +110,5 @@ extern TBImageManager *g_image_manager;
 
 }; // namespace tb
 
+#endif // TB_IMAGE
 #endif // TB_IMAGE_MANAGER_H

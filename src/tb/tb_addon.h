@@ -12,7 +12,9 @@
 namespace tb {
 
 /** TBAddon provides a simple API with Init/Shutdown callbacks that will
-	be called during tb_core_init and tb_core_shutdown. */
+	be called during tb_core_init and tb_core_shutdown.
+
+	THIS CLASS IS DEPRECATED! */
 
 class TBAddon : public TBLinkOf<TBAddon>
 {
@@ -29,7 +31,9 @@ public:
 /** TBAddonFactory is ment to be subclassed to create a TBAddon, by
 	being declared as a global object. It will then register itself
 	so the addon is created, initiated during tb_core_init and
-	destroyed during tb_core_shutdown. */
+	destroyed during tb_core_shutdown.
+
+	THIS CLASS IS DEPRECATED! */
 class TBAddonFactory
 {
 public:

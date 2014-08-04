@@ -3,13 +3,15 @@
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
-#include "addons/tbimage/tb_image_manager.h"
+#include "image/tb_image_manager.h"
+
+#ifdef TB_IMAGE
+
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
+#include "tb_skin.h"
 
 namespace tb {
-
-TB_ADDON_FACTORY(TBImageManager);
 
 // == TBImageRep ========================================================================
 
@@ -98,14 +100,12 @@ void TBImage::SetImageRep(TBImageRep *image_rep)
 
 TBImageManager *g_image_manager = nullptr;
 
-bool TBImageManager::Init()
+TBImageManager::TBImageManager()
 {
-	g_image_manager = this;
 	g_renderer->AddListener(this);
-	return true;
 }
 
-void TBImageManager::Shutdown()
+TBImageManager::~TBImageManager()
 {
 	g_renderer->RemoveListener(this);
 
@@ -117,7 +117,6 @@ void TBImageManager::Shutdown()
 		image_rep->fragment = nullptr;
 		image_rep->image_manager = nullptr;
 	}
-	g_image_manager = nullptr;
 }
 
 TBImage TBImageManager::GetImage(const char *filename)
@@ -173,3 +172,5 @@ void TBImageManager::OnContextRestored()
 }
 
 }; // namespace tb
+
+#endif // TB_IMAGE
