@@ -11,8 +11,6 @@ namespace tb {
 
 // == TBSectionHeader =====================================
 
-TB_WIDGET_FACTORY(TBSectionHeader, TBValue::TYPE_INT, WIDGET_Z_TOP) { }
-
 TBSectionHeader::TBSectionHeader()
 {
 	SetSkinBg(TBIDC("TBSectionHeader"));
@@ -36,8 +34,6 @@ bool TBSectionHeader::OnEvent(const TBWidgetEvent &ev)
 }
 
 // == TBSectionHeader =====================================
-
-TB_WIDGET_FACTORY(TBSection, TBValue::TYPE_INT, WIDGET_Z_TOP) { }
 
 TBSection::TBSection()
 	: m_pending_scroll(false)
@@ -90,17 +86,6 @@ PreferredSize TBSection::OnCalculatePreferredSize(const SizeConstraints &constra
 }
 
 // == TBToggleContainer ===================================
-
-TB_WIDGET_FACTORY(TBToggleContainer, TBValue::TYPE_INT, WIDGET_Z_TOP)
-{
-	if (const char *toggle = info->node->GetValueString("toggle", nullptr))
-	{
-		if (stristr(toggle, "enabled"))			widget->SetToggle(TBToggleContainer::TOGGLE_ENABLED);
-		else if (stristr(toggle, "opacity"))	widget->SetToggle(TBToggleContainer::TOGGLE_OPACITY);
-		else if (stristr(toggle, "expanded"))	widget->SetToggle(TBToggleContainer::TOGGLE_EXPANDED);
-	}
-	widget->SetInvert(info->node->GetValueInt("invert", widget->GetInvert()) ? true : false);
-}
 
 TBToggleContainer::TBToggleContainer()
 	: m_toggle(TOGGLE_NOTHING)

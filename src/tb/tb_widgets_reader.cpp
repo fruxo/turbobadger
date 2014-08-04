@@ -12,6 +12,7 @@
 #include "tb_editfield.h"
 #include "tb_node_tree.h"
 #include "tb_font_renderer.h"
+#include "tb_toggle_container.h"
 
 namespace tb {
 
@@ -218,6 +219,18 @@ TB_WIDGET_FACTORY(TBSkinImage, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBSeparator, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBProgressSpinner, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSectionHeader, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSection, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBToggleContainer, TBValue::TYPE_INT, WIDGET_Z_TOP)
+{
+	if (const char *toggle = info->node->GetValueString("toggle", nullptr))
+	{
+		if (stristr(toggle, "enabled"))			widget->SetToggle(TBToggleContainer::TOGGLE_ENABLED);
+		else if (stristr(toggle, "opacity"))	widget->SetToggle(TBToggleContainer::TOGGLE_OPACITY);
+		else if (stristr(toggle, "expanded"))	widget->SetToggle(TBToggleContainer::TOGGLE_EXPANDED);
+	}
+	widget->SetInvert(info->node->GetValueInt("invert", widget->GetInvert()) ? true : false);
+}
 
 // == TBWidgetFactory ===================================
 
