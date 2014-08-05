@@ -6,6 +6,25 @@
 #include "tb_test.h"
 #include "tb_system.h"
 
+#ifdef TB_UNIT_TESTING
+// Reference at least one group in each test file, to force
+// linking the object file. This is needed if TB is compiled
+// as an library.
+TB_FORCE_LINK_TEST_GROUP(tb_color);
+TB_FORCE_LINK_TEST_GROUP(tb_dimension_converter);
+TB_FORCE_LINK_TEST_GROUP(tb_geometry);
+TB_FORCE_LINK_TEST_GROUP(tb_linklist);
+TB_FORCE_LINK_TEST_GROUP(tb_node_ref_tree);
+TB_FORCE_LINK_TEST_GROUP(tb_object);
+TB_FORCE_LINK_TEST_GROUP(tb_parser);
+TB_FORCE_LINK_TEST_GROUP(tb_space_allocator);
+TB_FORCE_LINK_TEST_GROUP(tb_editfield);
+TB_FORCE_LINK_TEST_GROUP(tb_tempbuffer);
+TB_FORCE_LINK_TEST_GROUP(tb_test);
+TB_FORCE_LINK_TEST_GROUP(tb_value);
+TB_FORCE_LINK_TEST_GROUP(tb_widget_value_text);
+#endif
+
 namespace tb {
 
 #ifdef TB_UNIT_TESTING

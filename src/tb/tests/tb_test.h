@@ -160,6 +160,7 @@ private:
 			TheGroup() : TBTestGroup(#name) {} \
 		}; \
 		TheGroup the_group_obj; \
+		int force_link = 0; \
 	} \
 	namespace testgroup_##name \
 
@@ -174,6 +175,13 @@ private:
 			TBRegisterCall callname##reg(&the_group_obj, &callname); \
 			const char *CallObj##callname::name() { return #callname; } \
 			void CallObj##callname::exec()
+
+/** Hack to force linking the given test group.
+	This might be needed for test groups in source files that contain
+	nothing else that's referenced by the application, and which are
+	linked in an library. */
+#define TB_FORCE_LINK_TEST_GROUP(name) \
+	namespace testgroup_##name { void force_link_call() { extern int force_link; force_link = 1; }}
 
 TBStr tb_get_test_file_name(const char *testpath, const char *filename);
 
