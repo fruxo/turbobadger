@@ -22,10 +22,6 @@ if(MSVC)
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
 endif(MSVC)
 
-# Add glfw include path - Needed only for the demo and optional platform
-# implementations using glfw. Not a requirement for tb itself.
-include_directories("${PROJECT_SOURCE_DIR}/Demo/thirdparty/glfw/include")
-
 # Add TurboBadgerLib project
 include_directories("${PROJECT_SOURCE_DIR}/src/tb")
 add_subdirectory(src/tb)

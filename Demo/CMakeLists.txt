@@ -23,6 +23,7 @@ aux_source_directory(./platform LOCAL_SRCS)
 include_directories(".")
 
 # Add glfw project
+target_include_directories(TurboBadgerLib PUBLIC "thirdparty/glfw/include")
 include_directories("thirdparty/glfw/include")
 add_subdirectory(thirdparty/glfw)
 
