@@ -71,6 +71,7 @@ public:
 	void SetSqueezable(bool squeezable);
 	bool GetSqueezable() { return m_squeezable; }
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 	virtual void OnFontChanged();
 	virtual void OnPaint(const PaintProps &paint_props);
@@ -119,6 +120,7 @@ public:
 	virtual void SetValue(int value) { SetState(WIDGET_STATE_PRESSED, value ? true : false); }
 	virtual int GetValue() { return GetState(WIDGET_STATE_PRESSED); }
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnCaptureChanged(bool captured);
 	virtual void OnSkinChanged();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -318,6 +320,7 @@ public:
 	virtual void SetValue(int value) { SetValueDouble(value); }
 	virtual int GetValue() { return (int) GetValueDouble(); }
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);
 protected:
@@ -362,6 +365,7 @@ public:
 	virtual void SetValue(int value) { SetValueDouble(value); }
 	virtual int GetValue() { return (int) GetValueDouble(); }
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);
 protected:

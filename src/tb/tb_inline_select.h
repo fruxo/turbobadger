@@ -39,6 +39,7 @@ public:
 	virtual void SetValue(int value) { SetValueInternal(value, true); }
 	virtual int GetValue() { return m_value; }
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnSkinChanged();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 protected:

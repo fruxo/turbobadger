@@ -12,73 +12,74 @@
 namespace tb {
 
 class TBWidgetsReader;
+class TBWidgetFactory;
 class TBWidget;
 class TBNode;
 
-struct CREATE_INFO {
+/** INFLATE_INFO contains info passed to TBWidget::OnInflate during resource loading. */
+struct INFLATE_INFO {
+	INFLATE_INFO(TBWidgetsReader *reader, TBWidget *target, TBNode *node, TBValue::TYPE sync_type)
+		: reader(reader), target(target), node(node), sync_type(sync_type) {}
 	TBWidgetsReader *reader;
+
+	/** The widget that that will be parent to the inflated widget. */
 	TBWidget *target;
+	/** The node containing properties. */
 	TBNode *node;
+	/** The data type that should be synchronized through TBWidgetValue. */
+	TBValue::TYPE sync_type;
 };
 
 /** TBWidgetFactory creates a widget from a TBNode. */
 class TBWidgetFactory : public TBLinkOf<TBWidgetFactory>
 {
 public:
-	TBWidgetFactory(const char *name, TBValue::TYPE sync_type, WIDGET_Z add_child_z);
+	TBWidgetFactory(const char *name, TBValue::TYPE sync_type);
 
 	/** Create and return the new widget or nullptr on out of memory. */
-	virtual TBWidget *Create(CREATE_INFO *info) = 0;
+	virtual TBWidget *Create(INFLATE_INFO *info) = 0;
 
 	void Register();
 public:
 	const char *name;
 	TBValue::TYPE sync_type;
-	WIDGET_Z add_child_z;
 	TBWidgetFactory *next_registered_wf;
 };
 
-/** This macro creates a new TBWidgetFactory for the given class name (that should
-	inherit TBWidget). It register it so it can be used to create widgets from
-	TBWidgetsReader.
+/** This macro creates a new TBWidgetFactory for the given class name so it can
+	be created from resources (using TBWidgetsReader).
 
 	classname - The name of the class.
 	sync_type - The data type that should be synchronized through TBWidgetValue.
 	add_child_z - The order in which children should be added to it by default.
 
-	It should be followed by a section for reading custom data.
+	It should be followed by an empty block (may eventually be removed).
+	Reading custom properties from resources can be done by overriding
+	TBWidget::OnInflate.
 
 	Example:
 
-		TB_WIDGET_FACTORY(MyWidget, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
-
-	Example:
-
-		TB_WIDGET_FACTORY(MyWidget, TBValue::TYPE_INT, WIDGET_Z_TOP)
-		{
-			// If "customstring" is specified in the resource, set it on the widget.
-			if (const char *string = info->node->GetValueString("customstring", nullptr))
-				widget->SetCustomString(string);
-		}
-
+	TB_WIDGET_FACTORY(MyWidget, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 	*/
 #define TB_WIDGET_FACTORY(classname, sync_type, add_child_z) \
 	class classname##WidgetFactory : public TBWidgetFactory \
 	{ \
 	public: \
 		classname##WidgetFactory() \
-			: TBWidgetFactory(#classname, sync_type, add_child_z) { Register(); } \
-		virtual TBWidget *Create(CREATE_INFO *info) \
+			: TBWidgetFactory(#classname, sync_type) { Register(); } \
+		virtual TBWidget *Create(INFLATE_INFO *info) \
 		{ \
 			classname *widget = new classname(); \
-			if (widget) \
+			if (widget) { \
+				widget->GetContentRoot()->SetZInflate(add_child_z); \
 				ReadCustomProps(widget, info); \
+			} \
 			return widget; \
 		} \
-		void ReadCustomProps(classname *widget, CREATE_INFO *info); \
+		void ReadCustomProps(classname *widget, INFLATE_INFO *info); \
 	}; \
 	static classname##WidgetFactory classname##_wf; \
-	void classname##WidgetFactory::ReadCustomProps(classname *widget, CREATE_INFO *info)
+	void classname##WidgetFactory::ReadCustomProps(classname *widget, INFLATE_INFO *info)
 
 /**
 	TBWidgetsReader parse a resource file (or buffer) into a TBNode tree,
@@ -115,6 +116,7 @@ public:
 	opacity				TBWidget::SetOpacity		float (0 - 1)
 	text				TBWidget::SetText			string
 	connection			TBWidget::Connect			string
+	axis				TBWidget::SetAxis			x or y
 	gravity				TBWidget::SetGravity		string (combination of left, top, right, bottom, or all)
 	visibility			TBWidget::SetVisibility		string (visible, invisible, gone)
 	state				TBWidget::SetState			string (disabled)
@@ -145,7 +147,7 @@ public:
 	void RemoveFactory(TBWidgetFactory *wf) { factories.Remove(wf); }
 
 	/** Set the id from the given node. */
-	void SetIDFromNode(TBID &id, TBNode *node);
+	static void SetIDFromNode(TBID &id, TBNode *node);
 
 	bool LoadFile(TBWidget *target, const char *filename);
 	bool LoadData(TBWidget *target, const char *data);
@@ -153,7 +155,7 @@ public:
 	void LoadNodeTree(TBWidget *target, TBNode *node);
 private:
 	bool Init();
-	bool CreateWidget(TBWidget *target, TBNode *node, WIDGET_Z add_child_z);
+	bool CreateWidget(TBWidget *target, TBNode *node);
 	TBLinkListOf<TBWidgetFactory> factories;
 };
 

@@ -81,6 +81,7 @@ public:
 	virtual TBRect GetPaddingRect();
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnProcess();
 	virtual void OnResized(int old_w, int old_h);

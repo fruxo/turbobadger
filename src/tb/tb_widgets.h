@@ -22,6 +22,7 @@ class TBFontFace;
 class TBScroller;
 class TBWidgetListener;
 class TBLongClickTimer;
+struct INFLATE_INFO;
 
 // == Generic widget stuff =================================================
 
@@ -478,6 +479,10 @@ public:
 		placed at the top in the parent (Above previously added widget). SetZ can be used to change the order. */
 	void SetZ(WIDGET_Z z);
 
+	/** Set the z order in which children are added during resource loading. */
+	void SetZInflate(WIDGET_Z z) { m_packed.inflate_child_z = z; }
+	WIDGET_Z GetZInflate() const { return (WIDGET_Z) m_packed.inflate_child_z; }
+
 	/** Set the widget gravity (any combination of WIDGET_GRAVITY).
 		For child widgets in a layout, the gravity affects how the layout is done depending on the layout settings.
 		For child widgets in a non layout widget, it will do some basic resizing/moving:
@@ -677,6 +682,12 @@ public:
 		and position it according to the gravity. If you implement a layouting
 		widget, you should override this to prevent doing unnecessary measuring. */
 	virtual void OnInflateChild(TBWidget *child);
+
+	/** Called when this widget is inflated from resources, before any children
+		has been inflated. This will read generic widget properties and add the
+		widget to the hierarchy if it's not already added. If overridden, you
+		must call the super implementation. */
+	virtual void OnInflate(const INFLATE_INFO &info);
 
 	/** Get hit status tests if this widget should be hit at the given coordinate.
 		The default implementation checks the visibility, ignored input flag, rectangle,
@@ -972,6 +983,7 @@ private:
 			uint16 is_panning : 1;
 			uint16 want_long_click : 1;
 			uint16 visibility : 2;
+			uint16 inflate_child_z : 1; // Should have enough bits to hold WIDGET_Z values.
 		} m_packed;
 		uint16 m_packed_init;
 	};

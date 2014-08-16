@@ -47,6 +47,7 @@ public:
 	virtual void SetValue(int value);
 	virtual int GetValue() { return m_value; }
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 private:
 	void UpdateInternal();
 	TOGGLE m_toggle;

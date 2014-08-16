@@ -31,6 +31,7 @@ public:
 
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnPaint(const PaintProps &paint_props);
 private:
 	TBImage m_image;

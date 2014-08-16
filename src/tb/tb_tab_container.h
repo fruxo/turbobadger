@@ -49,6 +49,7 @@ public:
 	/** Set which page should be selected and visible. */
 	void SetCurrentPage(int index);
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnProcess();
 

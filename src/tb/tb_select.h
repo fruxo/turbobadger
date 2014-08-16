@@ -80,6 +80,7 @@ public:
 	/** Return the scrollcontainer used in this list. */
 	TBScrollContainer *GetScrollContainer() { return &m_container; }
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnSkinChanged();
 	virtual void OnProcess();
 	virtual void OnProcessAfterChildren();
@@ -141,6 +142,7 @@ public:
 	/** Return the menu window if it's open, or nullptr. */
 	TBMenuWindow *GetMenuIfOpen() const;
 
+	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 
 	// == TBSelectItemViewer ==================================================
