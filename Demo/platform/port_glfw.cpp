@@ -9,7 +9,7 @@
 #include "tb_msg.h"
 #include "renderers/tb_renderer_gl.h"
 #include "tb_font_renderer.h"
-#include "platform/Application.h"
+#include "Application.h"
 
 using namespace tb;
 
