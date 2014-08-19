@@ -142,6 +142,8 @@ public:
 	virtual bool GetText(TBStr &text) { return m_style_edit.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
+	using TBWidget::Invalidate; ///< Make Invalidate in base class available.
+
 	/** Set the text and also specify if the caret should be positioned at the beginning
 		or end of the text. */
 	bool SetText(const char *text, TB_CARET_POS pos)
