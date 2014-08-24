@@ -279,6 +279,15 @@ public:
 			//       nodes, we might look up nodes that's already there
 			//       instead of new nodes.
 			refnode = m_root_node->GetNode(refstr, TBNode::GET_MISS_POLICY_NULL);
+
+			// Detect cycles
+			TBNode *cycle_detection = m_target_node;
+			while (cycle_detection && refnode)
+			{
+				if (cycle_detection == refnode)
+					refnode = nullptr; // We have a cycle, so just fail the inclusion.
+				cycle_detection = cycle_detection->GetParent();
+			}
 		}
 		if (refnode)
 			m_target_node->CloneChildren(refnode);
