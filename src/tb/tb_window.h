@@ -44,7 +44,7 @@ public:
 	void Close();
 
 	/** Return true if this window is active. */
-	bool IsActive();
+	bool IsActive() const;
 
 	/** Activate this window if it's not already activated.
 		This will deactivate any currently activated window.

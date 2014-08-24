@@ -67,7 +67,7 @@ void TBWindow::Close()
 	Die();
 }
 
-bool TBWindow::IsActive()
+bool TBWindow::IsActive() const
 {
 	return GetState(WIDGET_STATE_SELECTED);
 }
