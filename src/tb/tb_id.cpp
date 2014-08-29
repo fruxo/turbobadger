@@ -23,11 +23,7 @@ void TBID::Set(uint32 newid)
 	debug_string.Clear();
 	if (!is_adding && tb_core_is_initialized())
 	{
-		if (TBID *other_id = all_id_hash.Get(id))
-		{
-			assert(other_id->debug_string.IsEmpty());
-		}
-		else
+		if (!all_id_hash.Get(id))
 		{
 			is_adding = true;
 			all_id_hash.Add(id, new TBID(*this));
