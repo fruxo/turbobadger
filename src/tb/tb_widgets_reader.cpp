@@ -265,6 +265,8 @@ void TBScrollContainer::OnInflate(const INFLATE_INFO &info)
 TB_WIDGET_FACTORY(TBTabContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 void TBTabContainer::OnInflate(const INFLATE_INFO &info)
 {
+	TBWidget::OnInflate(info);
+
 	if (const char *align = info.node->GetValueString("align", nullptr))
 	{
 		if (!strcmp(align, "left"))			SetAlignment(TB_ALIGN_LEFT);
@@ -283,7 +285,6 @@ void TBTabContainer::OnInflate(const INFLATE_INFO &info)
 		INFLATE_INFO tabs_info(info.reader, tab_layout->GetContentRoot(), tabs, TBValue::TYPE_NULL);
 		tab_layout->OnInflate(tabs_info);
 	}
-	TBWidget::OnInflate(info);
 }
 
 TB_WIDGET_FACTORY(TBScrollBar, TBValue::TYPE_FLOAT, WIDGET_Z_TOP) {}
