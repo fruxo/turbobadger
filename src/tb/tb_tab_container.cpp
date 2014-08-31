@@ -36,9 +36,9 @@ PreferredSize TBTabLayout::OnCalculatePreferredContentSize(const SizeConstraints
 	// It is only the content that should do that. The tabs
 	// will scroll anyway.
 	if (GetAxis() == AXIS_X)
-		ps.min_w = 1;
+		ps.min_w = MIN(ps.min_w, 1);
 	else
-		ps.min_h = 1;
+		ps.min_h = MIN(ps.min_h, 1);
 	return ps;
 }
 
