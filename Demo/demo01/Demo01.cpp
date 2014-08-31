@@ -387,7 +387,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 				TBStr str;
 				str.SetFormatted("Remove %d", i);
 				TBButton *button = new TBButton;
-				button->GetID().Set("remove button");
+				button->SetID(TBIDC("remove button"));
 				button->SetText(str);
 				ev.target->GetParent()->AddChild(button);
 			}
@@ -437,7 +437,7 @@ void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
 			TBStr str;
 			str.SetFormatted("Remove %d", msg->data->v1.GetInt());
 			TBButton *button = new TBButton;
-			button->GetID().Set("remove button");
+			button->SetID(TBIDC("remove button"));
 			button->SetText(str);
 			target->AddChild(button);
 		}

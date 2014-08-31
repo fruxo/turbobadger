@@ -108,7 +108,7 @@ void TBMessageWindow::AddButton(TBID id, bool focused)
 		return;
 	if (TBButton *btn = new TBButton)
 	{
-		btn->GetID().Set(id);
+		btn->SetID(id);
 		btn->SetText(g_tb_lng->GetString(btn->GetID()));
 		layout->AddChild(btn);
 		if (focused)
