@@ -274,16 +274,26 @@ void TBTabContainer::OnInflate(const INFLATE_INFO &info)
 		else if (!strcmp(align, "right"))	SetAlignment(TB_ALIGN_RIGHT);
 		else if (!strcmp(align, "bottom"))	SetAlignment(TB_ALIGN_BOTTOM);
 	}
+	// Allow additional attributes to be specified for the "tabs", "content" and "root" layouts by
+	// calling OnInflate.
 	if (TBNode *tabs = info.node->GetNode("tabs"))
 	{
 		// Inflate the tabs widgets into the tab layout.
 		TBLayout *tab_layout = GetTabLayout();
 		info.reader->LoadNodeTree(tab_layout, tabs);
 
-		// Call OnInflate on the tabs layout with the tabs node, so
-		// any layout properties are applied to it.
-		INFLATE_INFO tabs_info(info.reader, tab_layout->GetContentRoot(), tabs, TBValue::TYPE_NULL);
-		tab_layout->OnInflate(tabs_info);
+		INFLATE_INFO inflate_info(info.reader, tab_layout->GetContentRoot(), tabs, TBValue::TYPE_NULL);
+		tab_layout->OnInflate(inflate_info);
+	}
+	if (TBNode *tabs = info.node->GetNode("content"))
+	{
+		INFLATE_INFO inflate_info(info.reader, GetContentRoot(), tabs, TBValue::TYPE_NULL);
+		GetContentRoot()->OnInflate(inflate_info);
+	}
+	if (TBNode *tabs = info.node->GetNode("root"))
+	{
+		INFLATE_INFO inflate_info(info.reader, &m_root_layout, tabs, TBValue::TYPE_NULL);
+		m_root_layout.OnInflate(inflate_info);
 	}
 }
 
