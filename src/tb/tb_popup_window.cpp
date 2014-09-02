@@ -18,18 +18,27 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 
 	PreferredSize ps = popup->GetPreferredSize(sc);
 
-	TBRect target_rect;
-	TBPoint pos;
+	// Amount of pixels that should be avoided if the target rect needs to be moved.
+	int avoid_w = 0, avoid_h = 0;
+
+	int x = 0, y = 0;
 	int w = MIN(ps.pref_w, root->GetRect().w);
 	int h = MIN(ps.pref_h, root->GetRect().h);
+
 	if (pos_in_root.x != UNSPECIFIED &&
 		pos_in_root.y != UNSPECIFIED)
 	{
-		pos = pos_in_root;
+		x = pos_in_root.x;
+		y = pos_in_root.y;
+		avoid_w = pos_offset.x;
+		avoid_h = pos_offset.y;
+		// Make sure it's moved into view horizontally
+		if (align == TB_ALIGN_TOP || align == TB_ALIGN_BOTTOM)
+			x = Clamp(x, 0, root->GetRect().w - w);
 	}
 	else
 	{
-		target->ConvertToRoot(pos.x, pos.y);
+		target->ConvertToRoot(x, y);
 
 		if (align == TB_ALIGN_TOP || align == TB_ALIGN_BOTTOM)
 		{
@@ -40,31 +49,24 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 			// Being in the center of the root, that is half the root height minus the target rect.
 			h = MIN(h, root->GetRect().h / 2 - target->GetRect().h);
 		}
-		target_rect = target->GetRect();
+		avoid_w = target->GetRect().w;
+		avoid_h = target->GetRect().h;
 	}
 
-	int x, y;
 	if (align == TB_ALIGN_BOTTOM)
-	{
-		x = pos.x;
-		y = pos.y + target_rect.h + h > root->GetRect().h ? pos.y - h : pos.y + target_rect.h;
-	}
+		y = y + avoid_h + h > root->GetRect().h ? y - h : y + avoid_h;
 	else if (align == TB_ALIGN_TOP)
-	{
-		x = pos.x;
-		y = pos.y - h < 0 ? pos.y + target_rect.h : pos.y - h;
-	}
+		y = y - h < 0 ? y + avoid_h : y - h;
 	else if (align == TB_ALIGN_RIGHT)
 	{
-		x = pos.x + target_rect.w + w > root->GetRect().w ? pos.x - w : pos.x + target_rect.w;
-		y = MIN(pos.y, root->GetRect().h - h);
+		x = x + avoid_w + w > root->GetRect().w ? x - w : x + avoid_w;
+		y = MIN(y, root->GetRect().h - h);
 	}
-	else //if (align == TB_ALIGN_LEFT)
+	else // if (align == TB_ALIGN_LEFT)
 	{
-		x = pos.x - w < 0 ? pos.x + target_rect.w : pos.x - w;
-		y = MIN(pos.y, root->GetRect().h - h);
+		x = x - w < 0 ? x + avoid_w : x - w;
+		y = MIN(y, root->GetRect().h - h);
 	}
-
 	return TBRect(x, y, w, h);
 }
 
