@@ -87,6 +87,10 @@ void ResourceEditWindow::RefreshFromSource()
 
 	// Create new widgets from source
 	g_widgets_reader->LoadData(m_build_container, m_source_edit->GetText());
+
+	// Force focus back in case the edited resource has autofocus.
+	// FIX: It would be better to prevent the focus change instead!
+	m_source_edit->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN);
 }
 
 void ResourceEditWindow::UpdateWidgetList(bool immediately)
