@@ -1743,7 +1743,7 @@ bool TBStyleEdit::KeyDown(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifi
 	caret.ResetBlink();
 
 	// Hooks
-	if (!move_caret)
+	if (!move_caret && handled)
 		listener->OnChange();
 	if (special_key == TB_KEY_ENTER && !(modifierkeys & TB_CTRL))
 	{
