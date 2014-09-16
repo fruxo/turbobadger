@@ -197,7 +197,8 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 	case GLFW_KEY_TAB:			InvokeKey(window, 0, TB_KEY_TAB, modifier, down); break;
 	case GLFW_KEY_DELETE:		InvokeKey(window, 0, TB_KEY_DELETE, modifier, down); break;
 	case GLFW_KEY_BACKSPACE:	InvokeKey(window, 0, TB_KEY_BACKSPACE, modifier, down); break;
-	case GLFW_KEY_ENTER:		InvokeKey(window, 0, TB_KEY_ENTER, modifier, down); break;
+	case GLFW_KEY_ENTER:		
+	case GLFW_KEY_KP_ENTER:		InvokeKey(window, 0, TB_KEY_ENTER, modifier, down); break;
 	case GLFW_KEY_ESCAPE:		InvokeKey(window, 0, TB_KEY_ESC, modifier, down); break;
 	case GLFW_KEY_MENU:
 		if (TBWidget::focused_widget && !down)
