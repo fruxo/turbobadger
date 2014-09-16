@@ -217,9 +217,11 @@ bool TBScrollContainer::OnEvent(const TBWidgetEvent &ev)
 	}
 	else if (ev.type == EVENT_TYPE_WHEEL && ev.modifierkeys == TB_MODIFIER_NONE)
 	{
-		double old_val = m_scrollbar_y.GetValueDouble();
-		m_scrollbar_y.SetValueDouble(old_val + ev.delta_y * TBSystem::GetPixelsPerLine());
-		return m_scrollbar_y.GetValueDouble() != old_val;
+		double old_val_y = m_scrollbar_y.GetValueDouble();
+		m_scrollbar_y.SetValueDouble(old_val_y + ev.delta_y * TBSystem::GetPixelsPerLine());
+		double old_val_x = m_scrollbar_x.GetValueDouble();
+		m_scrollbar_x.SetValueDouble(old_val_x + ev.delta_x * TBSystem::GetPixelsPerLine());
+		return (m_scrollbar_x.GetValueDouble() != old_val_x || m_scrollbar_y.GetValueDouble() != old_val_y);
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN)
 	{
