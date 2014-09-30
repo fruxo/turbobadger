@@ -771,13 +771,13 @@ bool DemoApplication::Init()
 	// Give the first item a skin image
 	popup_menu_source.GetItem(0)->SetSkinImage(TBIDC("Icon16"));
 
-	MainWindow *win = new MainWindow();
+	new MainWindow();
 
-	TBWindow *textwindow = new EditWindow;
+	new EditWindow;
 
-	ListWindow *listwindow = new ListWindow(&name_source);
+	new ListWindow(&name_source);
 
-	AdvancedListWindow *listwindow2 = new AdvancedListWindow(&advanced_source);
+	new AdvancedListWindow(&advanced_source);
 
 	new TabContainerWindow();
 

@@ -14,7 +14,6 @@ AdvancedItemWidget::AdvancedItemWidget(AdvancedItem *item, AdvancedItemSource *s
 	SetPaintOverflowFadeout(false);
 
 	g_widgets_reader->LoadFile(GetContentRoot(), "Demo/demo01/ui_resources/test_list_item.tb.txt");
-	TBSkinImage *icon = GetWidgetByIDAndType<TBSkinImage>(TBIDC("icon"));
 	TBCheckBox *checkbox = GetWidgetByIDAndType<TBCheckBox>(TBIDC("check"));
 	TBTextField *name = GetWidgetByIDAndType<TBTextField>(TBIDC("name"));
 	TBTextField *info = GetWidgetByIDAndType<TBTextField>(TBIDC("info"));
