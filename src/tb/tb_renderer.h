@@ -19,6 +19,8 @@ class TBBitmapFragment;
 class TBRendererListener : public TBLinkOf<TBRendererListener>
 {
 public:
+	virtual ~TBRendererListener() {}
+
 	/** Called when the context has been lost and all TBBitmaps need to be deleted.
 		NOTE: Only do cleanup here. It's not safe to do work on any bitmap since the
 		context is already lost. */
