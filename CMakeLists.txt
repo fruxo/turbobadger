@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 2.8)
 
 option(TB_BUILD_DEMO "Build the Demo application. Depends on glfw." ON)
 
-if(CMAKE_COMPILER_IS_GNUCXX)
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-exceptions -fno-rtti")
-endif(CMAKE_COMPILER_IS_GNUCXX)
+endif()
 
 if(APPLE)
  add_definitions(-DMACOSX)
