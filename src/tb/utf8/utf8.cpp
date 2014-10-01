@@ -127,10 +127,10 @@ void move_inc(const char *str, int *i, int i_max)
 
 void move_dec(const char *str, int *i)
 {
-	(void)	((i > 0 && isutf(str[--(*i)])) ||
-			(i > 0 && isutf(str[--(*i)])) ||
-			(i > 0 && isutf(str[--(*i)])) ||
-			(i > 0 && --(*i)));
+	(void)	((*i >= 0 && isutf(str[--(*i)])) ||
+			(*i >= 0 && isutf(str[--(*i)])) ||
+			(*i >= 0 && isutf(str[--(*i)])) ||
+			(*i >= 0 && --(*i)));
 }
 
 int count_characters(const char *str, int i_max)
