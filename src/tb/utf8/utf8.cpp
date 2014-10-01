@@ -119,18 +119,18 @@ UCS4 decode_next(const char *str, int *i, int i_max)
 
 void move_inc(const char *str, int *i, int i_max)
 {
-	(void)	((*i < i_max && isutf(str[++(*i)])) ||
-			(*i < i_max && isutf(str[++(*i)])) ||
-			(*i < i_max && isutf(str[++(*i)])) ||
-			(*i < i_max && ++(*i)));
+	while ((*i)++ < i_max) {
+		if (isutf(str[*i]))
+			break;
+	}
 }
 
 void move_dec(const char *str, int *i)
 {
-	(void)	((i > 0 && isutf(str[--(*i)])) ||
-			(i > 0 && isutf(str[--(*i)])) ||
-			(i > 0 && isutf(str[--(*i)])) ||
-			(i > 0 && --(*i)));
+	while ((*i)-- > 0) {
+		if (isutf(str[*i]))
+			break;
+	}
 }
 
 int count_characters(const char *str, int i_max)
