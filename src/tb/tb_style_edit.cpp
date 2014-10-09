@@ -499,7 +499,7 @@ bool TBCaret::Move(bool forward, bool word)
 		{
 			while (pos.ofs > 0 && is_space(str[pos.ofs - 1]))
 				pos.ofs--;
-			if (is_wordbreak(str[pos.ofs - 1]))
+			if (pos.ofs > 0 && is_wordbreak(str[pos.ofs - 1]))
 			{
 				while (pos.ofs > 0 && is_wordbreak(str[pos.ofs - 1]))
 					pos.ofs--;
@@ -513,22 +513,24 @@ bool TBCaret::Move(bool forward, bool word)
 	}
 	else
 	{
-		// Avoid skipping the first/last character when wrapping to a new box.
-		int i = pos.ofs;
-		if (forward)
-			utf8::move_inc(pos.block->str, &i, pos.block->str_len);
-		else
-			utf8::move_dec(pos.block->str, &i);
-		pos.ofs = i;
-		if (pos.ofs > pos.block->str_len && pos.block->GetNext())
+		if (forward && pos.ofs >= pos.block->str_len && pos.block->GetNext())
 		{
 			pos.block = pos.block->GetNext();
 			pos.ofs = 0;
 		}
-		if (pos.ofs < 0 && pos.block->prev)
+		else if (!forward && pos.ofs <= 0 && pos.block->prev)
 		{
 			pos.block = pos.block->GetPrev();
 			pos.ofs = pos.block->str_len;
+		}
+		else
+		{
+			int i = pos.ofs;
+			if (forward)
+				utf8::move_inc(pos.block->str, &i, pos.block->str_len);
+			else
+				utf8::move_dec(pos.block->str, &i);
+			pos.ofs = i;
 		}
 	}
 	return Place(pos.block, pos.ofs, true, forward);
