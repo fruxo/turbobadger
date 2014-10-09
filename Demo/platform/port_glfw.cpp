@@ -366,6 +366,7 @@ static void window_size_callback(GLFWwindow *window, int w, int h)
 		backend->GetRoot()->SetRect(TBRect(0, 0, w, h));
 }
 
+#if (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 1)
 static void drop_callback(GLFWwindow *window, int count, const char **files_utf8)
 {
 	ApplicationBackendGLFW *backend = GetBackend(window);
@@ -382,6 +383,7 @@ static void drop_callback(GLFWwindow *window, int count, const char **files_utf8
 		target->InvokeEvent(ev);
 	}
 }
+#endif
 
 //static
 ApplicationBackend *ApplicationBackend::Create(Application *app, int width, int height, const char *title)
