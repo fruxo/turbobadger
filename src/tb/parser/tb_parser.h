@@ -44,7 +44,7 @@ class TBParser
 public:
 	enum STATUS {
 		STATUS_OK,
-		STATUS_NO_MEMORY,
+		STATUS_OUT_OF_MEMORY,
 		STATUS_PARSE_ERROR
 	};
 	TBParser() {}

@@ -166,7 +166,7 @@ TBParser::STATUS TBParser::Read(TBParserStream *stream, TBParserTarget *target)
 {
 	TBTempBuffer line, work;
 	if (!line.Reserve(1024) || !work.Reserve(1024))
-		return STATUS_NO_MEMORY;
+		return STATUS_OUT_OF_MEMORY;
 
 	current_indent = 0;
 	current_line_nr = 1;
@@ -201,7 +201,7 @@ TBParser::STATUS TBParser::Read(TBParserStream *stream, TBParserTarget *target)
 				// Skip preceding \r (if we have one)
 				int line_len = line_pos - line_start;
 				if (!line.Append(buf + line_start, line_len))
-					return STATUS_NO_MEMORY;
+					return STATUS_OUT_OF_MEMORY;
 
 				// Strip away trailing '\r' if the line has it
 				char *linebuf = line.GetData();
@@ -211,7 +211,7 @@ TBParser::STATUS TBParser::Read(TBParserStream *stream, TBParserTarget *target)
 
 				// Terminate the line string
 				if (!line.Append("", 1))
-					return STATUS_NO_MEMORY;
+					return STATUS_OUT_OF_MEMORY;
 
 				// Handle line
 				OnLine(line.GetData(), target);
@@ -224,14 +224,14 @@ TBParser::STATUS TBParser::Read(TBParserStream *stream, TBParserTarget *target)
 			}
 			// No more lines here so push the rest and break for more data
 			if (!line.Append(buf + line_start, read_len - line_start))
-				return STATUS_NO_MEMORY;
+				return STATUS_OUT_OF_MEMORY;
 			break;
 		}
 	}
 	if (line.GetAppendPos())
 	{
 		if (!line.Append("", 1))
-			return STATUS_NO_MEMORY;
+			return STATUS_OUT_OF_MEMORY;
 		OnLine(line.GetData(), target);
 		current_line_nr++;
 	}
