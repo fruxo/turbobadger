@@ -11,15 +11,22 @@
 #include <string.h>
 #include <assert.h>
 
-#ifdef TB_TARGET_WINDOWS
-#define strtok_r strtok_s
-#endif
-
 namespace tb {
 
 // FIX: ## Floating point string conversions might be locale dependant. Force "." as decimal!
 
 // == Helper functions ============================
+
+char *next_token(char *&str, const char *delim) {
+	str += strspn(str, delim);
+	if (!*str)
+		return nullptr;
+	char *token = str;
+	str += strcspn(str, delim);
+	if (*str)
+		*str++ = '\0';
+	return token;
+}
 
 bool is_start_of_number(const char *str)
 {
@@ -282,15 +289,13 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 		if (TBValueArray *arr = new TBValueArray)
 		{
 			TBStr tmpstr;
-			char *s3;
 			if (tmpstr.Set(str))
 			{
-				char * pch = strtok_r(tmpstr, ", ", &s3);
-				while (pch)
+				char *str_next = tmpstr.CStr();
+				while (char *token = next_token(str_next, ", "))
 				{
 					if (TBValue *new_val = arr->AddValue())
-						new_val->SetFromStringAuto(pch, SET_NEW_COPY);
-					pch = strtok_r(NULL, ", ", &s3);
+						new_val->SetFromStringAuto(token, SET_NEW_COPY);
 				}
 			}
 			SetArray(arr, SET_TAKE_OWNERSHIP);
