@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 option(TB_BUILD_DEMO "Build the Demo application. Depends on glfw." ON)
 
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
 endif()
 
 if(APPLE)
