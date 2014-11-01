@@ -82,7 +82,7 @@ void TBTabContainer::SetAxis(AXIS axis)
 											TBIDC("TBTabContainer.tablayout_x"));
 }
 
-void TBTabContainer::SetCurrentPage(int index)
+void TBTabContainer::SetValue(int index)
 {
 	if (index == m_current_page)
 		return;
@@ -95,9 +95,17 @@ void TBTabContainer::SetCurrentPage(int index)
 	for (   ; page && tab; page = page->GetNext(), tab = tab->GetNext(), index++)
 	{
 		bool active = index == m_current_page;
-		page->SetOpacity(active ? 1.0f : 0.0f);
+		page->SetVisibilility(active ? WIDGET_VISIBILITY_VISIBLE : WIDGET_VISIBILITY_INVISIBLE);
 		tab->SetValue(active ? 1 : 0);
 	}
+}
+
+int TBTabContainer::GetNumPages()
+{
+	int count = 0;
+	for (TBWidget *tab = GetTabLayout()->GetFirstChild(); tab; tab = tab->GetNext())
+		count++;
+	return count;
 }
 
 void TBTabContainer::SetAlignment(TB_ALIGN align)
@@ -116,7 +124,7 @@ bool TBTabContainer::OnEvent(const TBWidgetEvent &ev)
 		ev.target->GetID() == TBIDC("tab"))
 	{
 		int clicked_index = m_tab_layout.GetIndexFromChild(ev.target);
-		SetCurrentPage(clicked_index);
+		SetValue(clicked_index);
 		return true;
 	}
 	return false;
@@ -127,10 +135,10 @@ void TBTabContainer::OnProcess()
 	if (m_need_page_update)
 	{
 		m_need_page_update = false;
-		// Force update SetCurrentPage
+		// Force update value
 		int current_page = m_current_page;
 		m_current_page = -1;
-		SetCurrentPage(current_page);
+		SetValue(current_page);
 	}
 }
 

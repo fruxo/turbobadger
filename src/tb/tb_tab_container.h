@@ -47,7 +47,13 @@ public:
 	TB_ALIGN GetAlignment() const { return m_align; }
 
 	/** Set which page should be selected and visible. */
-	void SetCurrentPage(int index);
+	virtual void SetValue(int value);
+	virtual int GetValue() { return m_current_page; }
+
+	/** Set which page should be selected and visible. */
+	void SetCurrentPage(int index) { SetValue(index); }
+	int GetCurrentPage() { return GetValue(); }
+	int GetNumPages();
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
