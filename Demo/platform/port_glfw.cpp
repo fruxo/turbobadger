@@ -11,6 +11,10 @@
 #include "tb_font_renderer.h"
 #include "Application.h"
 
+#ifdef TB_TARGET_MACOSX
+#include <unistd.h>
+#endif
+
 using namespace tb;
 
 int mouse_x = 0;
@@ -432,6 +436,11 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	// Create the application object for our demo
 	m_application = app;
 	m_application->OnBackendAttached(this);
+
+#ifdef TB_TARGET_MACOSX
+	// Initializing glfw put us in Resources sub directory.
+	chdir("../");
+#endif
 
 	return true;
 }
