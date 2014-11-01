@@ -255,6 +255,8 @@ void TBWidget::SetVisibilility(WIDGET_VISIBILITY vis)
 	Invalidate();
 	if (old_vis == WIDGET_VISIBILITY_GONE)
 		InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+
+	OnVisibilityChanged();
 }
 
 WIDGET_VISIBILITY TBWidget::GetVisibility() const

@@ -651,6 +651,11 @@ public:
 	/** Called when the focus has changed. */
 	virtual void OnFocusChanged(bool focused) {}
 
+	/** Called when the visibility has changed.
+		Note: This is not called when combined visibility change, so it may change visibility
+		because of ancestors without this being called. */
+	virtual void OnVisibilityChanged() {}
+
 	/** Called when the capture has changed. */
 	virtual void OnCaptureChanged(bool captured) {}
 
