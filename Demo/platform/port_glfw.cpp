@@ -228,7 +228,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 		// GLFW has some platform issues with keyboard handling that needs workaround until
 		// it's fixed properly in glfw. This code must not run on linux with glfw 3.0.4 (it
 		// has changed several times in the past). issue #10.
-#ifndef LINUX
+#if !(defined(__linux) || defined(__linux__))
 		// glfw calls key_callback instead of char_callback
 		// when pressing a character while ctrl is also pressed.
 		if (key_ctrl && !key_alt && key >= 32 && key <= 255)
