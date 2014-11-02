@@ -562,6 +562,16 @@ public:
 		is true, the search will recurse into the childrens children. */
 	TBWidget *GetWidgetAt(int x, int y, bool include_children) const;
 
+	/** Get the child at the given index, or nullptr if there was no child at that index.
+		Note: Avoid calling this in loops since it does iteration. Consider iterating
+		the widgets directly instead! */
+	TBWidget *GetChildFromIndex(int index) const;
+
+	/** Get the child index of the given widget (that must be a child of this widget).
+		Note: Avoid calling this in loops since it does iteration. Consider iterating
+		the widgets directly instead! */
+	int GetIndexFromChild(TBWidget *child) const;
+
 	/** Get the text of a child widget with the given id, or an empty string if there was
 		no widget with that id. */
 	TBStr GetTextByID(const TBID &id);

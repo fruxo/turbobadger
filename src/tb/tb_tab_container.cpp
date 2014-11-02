@@ -10,15 +10,6 @@ namespace tb {
 
 // == TBTabLayout =======================================================================
 
-int TBTabLayout::GetIndexFromChild(TBWidget *child) const
-{
-	int index = 0;
-	for (TBWidget *tmp = GetFirstChild(); tmp; tmp = tmp->GetNext(), index++)
-		if (tmp == child)
-			return index;
-	return -1;
-}
-
 void TBTabLayout::OnChildAdded(TBWidget *child)
 {
 	if (TBButton *button = TBSafeCast<TBButton>(child))
@@ -103,9 +94,14 @@ void TBTabContainer::SetValue(int index)
 int TBTabContainer::GetNumPages()
 {
 	int count = 0;
-	for (TBWidget *tab = GetTabLayout()->GetFirstChild(); tab; tab = tab->GetNext())
+	for (TBWidget *tab = m_tab_layout.GetFirstChild(); tab; tab = tab->GetNext())
 		count++;
 	return count;
+}
+
+TBWidget *TBTabContainer::GetCurrentPageWidget() const
+{
+	return m_content_root.GetChildFromIndex(m_current_page);
 }
 
 void TBTabContainer::SetAlignment(TB_ALIGN align)
@@ -121,7 +117,8 @@ void TBTabContainer::SetAlignment(TB_ALIGN align)
 bool TBTabContainer::OnEvent(const TBWidgetEvent &ev)
 {
 	if ((ev.type == EVENT_TYPE_CLICK || ev.type == EVENT_TYPE_POINTER_DOWN) &&
-		ev.target->GetID() == TBIDC("tab"))
+		ev.target->GetID() == TBIDC("tab") &&
+		ev.target->GetParent() == &m_tab_layout)
 	{
 		int clicked_index = m_tab_layout.GetIndexFromChild(ev.target);
 		SetValue(clicked_index);

@@ -698,6 +698,25 @@ TBWidget *TBWidget::GetWidgetAt(int x, int y, bool include_children) const
 	return last_match;
 }
 
+TBWidget *TBWidget::GetChildFromIndex(int index) const
+{
+	int i = 0;
+	for (TBWidget *child = GetFirstChild(); child; child = child->GetNext())
+		if (i++ == index)
+			return child;
+	return nullptr;
+}
+
+int TBWidget::GetIndexFromChild(TBWidget *child) const
+{
+	assert(child->GetParent() == this);
+	int i = 0;
+	for (TBWidget *tmp = GetFirstChild(); tmp; tmp = tmp->GetNext(), i++)
+		if (tmp == child)
+			return i;
+	return -1; ///< Should not happen!
+}
+
 bool TBWidget::IsAncestorOf(TBWidget *other_widget) const
 {
 	while (other_widget)

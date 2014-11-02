@@ -18,9 +18,6 @@ public:
 	// For safe typecasting
 	TBOBJECT_SUBCLASS(TBTabLayout, TBLayout);
 
-	/** Get the index (in the list of children) of the given child, or -1 if not found. */
-	int GetIndexFromChild(TBWidget *child) const;
-
 	virtual void OnChildAdded(TBWidget *child);
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 };
@@ -54,6 +51,9 @@ public:
 	void SetCurrentPage(int index) { SetValue(index); }
 	int GetCurrentPage() { return GetValue(); }
 	int GetNumPages();
+
+	/** Return the widget that is the current page, or nullptr if none is active. */
+	TBWidget *GetCurrentPageWidget() const;
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
