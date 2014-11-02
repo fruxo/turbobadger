@@ -68,7 +68,7 @@ enum EVENT_TYPE {
 		It's called before InvokeKeyDown (EVENT_TYPE_KEY_DOWN) and if the event
 		is handled (returns true), the KeyDown is canceled.
 		The ref_id will be set to one of the following:
-			"cut", "copy", "paste", "selectall", "undo", "redo". */
+			"cut", "copy", "paste", "selectall", "undo", "redo", "new", "open", "save". */
 	EVENT_TYPE_SHORTCUT,
 
 	/** Invoked when a context menu should be opened at the event x and y coordinates.

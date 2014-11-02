@@ -117,32 +117,43 @@ static int toupr_ascii(int ascii)
 
 static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
-	if (!TBWidget::focused_widget || !down)
-		return false;
 #ifdef MACOSX
 	bool shortcut_key = (modifierkeys & TB_SUPER) ? true : false;
 #else
 	bool shortcut_key = (modifierkeys & TB_CTRL) ? true : false;
 #endif
+	if (!TBWidget::focused_widget || !down || !shortcut_key)
+		return false;
 	bool reverse_key = (modifierkeys & TB_SHIFT) ? true : false;
+	int upper_key = toupr_ascii(key);
 	TBID id;
-	if (toupr_ascii(key) == 'X' && shortcut_key)
+	if (upper_key == 'X')
 		id = TBIDC("cut");
-	else if ((toupr_ascii(key) == 'C' || special_key == TB_KEY_INSERT) && shortcut_key)
+	else if (upper_key == 'C' || special_key == TB_KEY_INSERT)
 		id = TBIDC("copy");
-	else if (((toupr_ascii(key) == 'V' && shortcut_key) ||
-			(special_key == TB_KEY_INSERT && reverse_key)))
+	else if (upper_key == 'V' || (special_key == TB_KEY_INSERT && reverse_key))
 		id = TBIDC("paste");
-	else if (toupr_ascii(key) == 'A' && shortcut_key)
+	else if (upper_key == 'A')
 		id = TBIDC("selectall");
-	else if ((toupr_ascii(key) == 'Z' && shortcut_key) ||
-			(toupr_ascii(key) == 'Y' && shortcut_key))
+	else if (upper_key == 'Z' || upper_key == 'Y')
 	{
-		bool undo = toupr_ascii(key) == 'Z';
+		bool undo = upper_key == 'Z';
 		if (reverse_key)
 			undo = !undo;
 		id = undo ? TBIDC("undo") : TBIDC("redo");
 	}
+	else if (upper_key == 'N')
+		id = TBIDC("new");
+	else if (upper_key == 'O')
+		id = TBIDC("open");
+	else if (upper_key == 'S')
+		id = TBIDC("save");
+	else if (upper_key == 'W')
+		id = TBIDC("close");
+	else if (special_key == TB_KEY_PAGE_UP)
+		id = TBIDC("prev_doc");
+	else if (special_key == TB_KEY_PAGE_DOWN)
+		id = TBIDC("next_doc");
 	else
 		return false;
 
@@ -154,7 +165,7 @@ static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modif
 
 static bool InvokeKey(GLFWwindow *window, unsigned int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
-	if (InvokeShortcut(key, TB_KEY_UNDEFINED, modifierkeys, down))
+	if (InvokeShortcut(key, special_key, modifierkeys, down))
 		return true;
 	GetBackend(window)->GetRoot()->InvokeKey(key, special_key, modifierkeys, down);
 	return true;
