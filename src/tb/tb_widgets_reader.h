@@ -88,7 +88,8 @@ public:
 	a factory by default, and you can also add your own.
 
 	Values may be looked up from any existing TBNodeRefTree using the syntax
-	"@treename>noderequest". In addition to this, strings will be looked up
+	"@treename>noderequest". If treename is left out, the request will be looked
+	up in the same node tree. In addition to this, strings will be looked up
 	from the global TBLanguage by using the syntax "@stringid"
 
 	Branches may be included or not depending on the value of a TBNodeRefTree

@@ -115,6 +115,19 @@ include_branch
 	test2: @include: "styles>Vanilla"
 	# It's also possible to include from named node trees, using "@treename>noderequest"
 
+# Some value defines, looked up from defines_test below
+defines
+	colors
+		highlight #ffdd00
+		recurse @>defines>colors>highlight
+
+# Reference values from defines above
+defines_test
+	test1 @>defines>colors>highlight
+	test2 @>defines>colors>recurse
+	broken @>defines>colors>broken
+	cycle @>defines_test>cycle
+
 conditions
 	@if 1
 		value 42

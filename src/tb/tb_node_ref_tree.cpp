@@ -98,33 +98,43 @@ TBNode *TBNodeRefTree::FollowNodeRef(TBNode *node)
 		if (*name_end == 0)
 			break;
 
-		// We have a "@treename>noderequest" string. Go ahead and look it up.
-		if (TBNodeRefTree *rt = TBNodeRefTree::GetRefTree(name_start, name_end - name_start))
+		TBNode *next_node = nullptr;
+
+		// We have a "@>noderequest" string. Go ahead and do a local look up.
+		if (*name_start == '>')
 		{
-			TBNode *next_node = rt->m_node.GetNode(name_end + 1, TBNode::GET_MISS_POLICY_NULL);
-
-			if (!next_node)
-			{
-				TBDebugPrint("TBNodeRefTree::ResolveNode - Node not found on request \"%s\"\n", node_str);
-				break;
-			}
-			node = next_node;
-
-			// Detect circular reference loop.
-			if (node->m_cycle_id != cycle_id)
-				node->m_cycle_id = cycle_id;
-			else
-			{
-				TBDebugPrint("TBNodeRefTree::ResolveNode - Reference loop detected on request \"%s\" from node \"%s\"\n",
-							 node_str, node->GetValue().GetString());
-				return start_node;
-			}
+			TBNode *local_root = node;
+			while (local_root->GetParent())
+				local_root = local_root->GetParent();
+			next_node  = local_root->GetNode(name_start + 1, TBNode::GET_MISS_POLICY_NULL);
+		}
+		// We have a "@treename>noderequest" string. Go ahead and look it up from the right node tree.
+		else if (TBNodeRefTree *rt = TBNodeRefTree::GetRefTree(name_start, name_end - name_start))
+		{
+			next_node = rt->m_node.GetNode(name_end + 1, TBNode::GET_MISS_POLICY_NULL);
 		}
 		else
 		{
 			TBDebugPrint("TBNodeRefTree::ResolveNode - No tree found for request \"%s\" from node \"%s\"\n",
 						 node_str, node->GetValue().GetString());
 			break;
+		}
+
+		if (!next_node)
+		{
+			TBDebugPrint("TBNodeRefTree::ResolveNode - Node not found on request \"%s\"\n", node_str);
+			break;
+		}
+		node = next_node;
+
+		// Detect circular reference loop.
+		if (node->m_cycle_id != cycle_id)
+			node->m_cycle_id = cycle_id;
+		else
+		{
+			TBDebugPrint("TBNodeRefTree::ResolveNode - Reference loop detected on request \"%s\" from node \"%s\"\n",
+				node_str, node->GetValue().GetString());
+			return start_node;
 		}
 	}
 	return node;
