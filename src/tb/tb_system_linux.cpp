@@ -137,12 +137,14 @@ int TBSystem::PollEvents()
 	}
 	
 	if(timer_state){
+
+		timer_state = false;
 		
 		TBMessageHandler::ProcessMessages();
 		// If we still have things to do (because we didn't process all messages,
 		// or because there are new messages), we need to rescedule, so call RescheduleTimer.
 		TBSystem::RescheduleTimer(TBMessageHandler::GetNextMessageFireTime());
-		timer_state = false;
+
 	}
 
 
