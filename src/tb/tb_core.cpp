@@ -3,6 +3,7 @@
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
+#include "tb_config.h"
 #include "tb_core.h"
 #include "tb_skin.h"
 #include "tb_widgets_reader.h"
@@ -33,6 +34,11 @@ bool tb_core_init(TBRenderer *renderer, const char *lng_file)
 #ifdef TB_IMAGE
 	g_image_manager = new TBImageManager();
 #endif
+
+	#ifdef TB_SYSTEM_LINUX
+	TBSystem::Init();
+	#endif
+	
 	return TBInitAddons();
 }
 
@@ -47,6 +53,10 @@ void tb_core_shutdown()
 	delete g_tb_skin;
 	delete g_font_manager;
 	delete g_tb_lng;
+
+	#ifdef TB_SYSTEM_LINUX
+	TBSystem::Shutdown();
+	#endif
 }
 
 bool tb_core_is_initialized()

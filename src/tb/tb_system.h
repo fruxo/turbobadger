@@ -24,6 +24,29 @@ namespace tb {
 /** TBSystem is porting interface for the underlaying OS. */
 class TBSystem
 {
+
+	/* Linux specific timer implementation */
+#ifdef TB_SYSTEM_LINUX
+
+private:
+	static int timer_fd;
+
+	/* True if since last reschedule timer has fired. Is false if and only
+	   there was no expiration since last reschedule */
+	static bool timer_state;
+public:
+
+	/** Initialize timer descriptor. Return 0 on success, errno otherwise **/
+	static int Init();
+
+	/** Close timer descriptor. Return 0 on success, errno otherwise **/
+	static int Shutdown();
+
+	/** Check for timer expiration. Return 0 on success
+		(it does NOT imply timer fired; Check timer_state) and errno otherwise **/	
+	static int PollEvents();
+
+#endif /* TB_SYSTEM_LINUX */
 public:
 	/** Get the system time in milliseconds since some undefined epoch. */
 	static double GetTimeMS();
@@ -47,6 +70,18 @@ public:
 
 	/** Get Dots Per Inch for the main screen. */
 	static int GetDPI();
+
+
+#ifdef TB_TARGET_LINUX
+
+/** Check whether timer has fired. For now only
+		does work on Linux. On other platforms it defaults to true **/
+	inline static bool GetTimerState(){return timer_state;}
+	
+#else
+	inline static bool GetTimerState(){return true;}
+#endif /* TB_TARGET_LINUX */
+	
 };
 
 /** TBClipboard is a porting interface for the clipboard. */
