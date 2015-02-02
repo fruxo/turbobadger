@@ -1266,8 +1266,9 @@ void TBWidget::StopLongClickTimer()
 	m_long_click_timer = nullptr;
 }
 
-void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch)
+bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch)
 {
+	//If we have a captured widget then the pointer event was handled since focus is changed here
 	if (!captured_widget)
 	{
 		SetCapturedWidget(GetWidgetAt(x, y, true));
@@ -1322,11 +1323,16 @@ void TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 		TBWidgetEvent ev(EVENT_TYPE_POINTER_DOWN, x, y, touch, modifierkeys);
 		ev.count = click_count;
 		captured_widget->InvokeEvent(ev);
+
+		return true;
 	}
+
+	return false;
 }
 
-void TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch)
+bool TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch)
 {
+	//If we have a captured widget then we have a focused widget so the pointer up event was handled
 	if (captured_widget)
 	{
 		captured_widget->ConvertFromRoot(x, y);
@@ -1337,7 +1343,11 @@ void TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool to
 			captured_widget->InvokeEvent(ev_click);
 		if (captured_widget) // && button == captured_button
 			captured_widget->ReleaseCapture();
+
+		return true;
 	}
+
+	return false;
 }
 
 void TBWidget::MaybeInvokeLongClickOrContextMenu(bool touch)
@@ -1366,6 +1376,7 @@ void TBWidget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool 
 {
 	SetHoveredWidget(GetWidgetAt(x, y, true), touch);
 	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
+
 	if (target)
 	{
 		target->ConvertFromRoot(x, y);
@@ -1373,6 +1384,7 @@ void TBWidget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool 
 		pointer_move_widget_y = y;
 
 		TBWidgetEvent ev(EVENT_TYPE_POINTER_MOVE, x, y, touch, modifierkeys);
+
 		if (target->InvokeEvent(ev))
 			return;
 
@@ -1435,9 +1447,11 @@ void TBWidget::HandlePanningOnMove(int x, int y)
 	}
 }
 
-void TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys)
+bool TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys)
 {
 	SetHoveredWidget(GetWidgetAt(x, y, true), true);
+
+	//If we have a target then the wheel event should be consumed
 	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
 	if (target)
 	{
@@ -1448,7 +1462,11 @@ void TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS
 		ev.delta_x = delta_x;
 		ev.delta_y = delta_y;
 		target->InvokeEvent(ev);
+
+		return true;
 	}
+
+	return false;
 }
 
 bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
