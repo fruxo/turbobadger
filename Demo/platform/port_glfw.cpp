@@ -448,7 +448,7 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	m_application = app;
 	m_application->OnBackendAttached(this);
 
-#ifdef TB_TARGET_MACOSX && !defined(TB_USE_CURRENT_DIRECTORY)
+#if defined(TB_TARGET_MACOSX) && !defined(TB_USE_CURRENT_DIRECTORY)
 	// Initializing glfw put us in Resources sub directory.
 	chdir("../");
 #endif
