@@ -212,7 +212,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 	case GLFW_KEY_TAB:			InvokeKey(window, 0, TB_KEY_TAB, modifier, down); break;
 	case GLFW_KEY_DELETE:		InvokeKey(window, 0, TB_KEY_DELETE, modifier, down); break;
 	case GLFW_KEY_BACKSPACE:	InvokeKey(window, 0, TB_KEY_BACKSPACE, modifier, down); break;
-	case GLFW_KEY_ENTER:		
+	case GLFW_KEY_ENTER:
 	case GLFW_KEY_KP_ENTER:		InvokeKey(window, 0, TB_KEY_ENTER, modifier, down); break;
 	case GLFW_KEY_ESCAPE:		InvokeKey(window, 0, TB_KEY_ESC, modifier, down); break;
 	case GLFW_KEY_MENU:
@@ -448,7 +448,7 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	m_application = app;
 	m_application->OnBackendAttached(this);
 
-#ifdef TB_TARGET_MACOSX
+#ifdef TB_TARGET_MACOSX && !defined(TB_USE_CURRENT_DIRECTORY)
 	// Initializing glfw put us in Resources sub directory.
 	chdir("../");
 #endif
@@ -483,7 +483,7 @@ void ApplicationBackendGLFW::Run()
 #include <mmsystem.h>
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-#if !defined(USE_CURRENT_DIRECTORY)
+#if !defined(TB_USE_CURRENT_DIRECTORY)
 	// Set the current path to the directory of the app so we find assets also when visual studio start it.
 	char modname[MAX_PATH];
 	GetModuleFileName(NULL, modname, MAX_PATH);
