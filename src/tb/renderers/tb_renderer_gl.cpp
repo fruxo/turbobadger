@@ -5,9 +5,12 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include "tb_types.h"
 #include "tb_renderer_gl.h"
 #include "tb_bitmap_fragment.h"
 #include "tb_system.h"
+
+#if defined(TB_RENDERER_GLES_1) || defined(TB_RENDERER_GL)
 
 namespace tb {
 
@@ -162,3 +165,4 @@ void TBRendererGL::SetClipRect(const TBRect &rect)
 }
 
 }; // namespace tb
+#endif // defined(TB_RENDERER_GLES_1) || defined(TB_RENDERER_GL)
