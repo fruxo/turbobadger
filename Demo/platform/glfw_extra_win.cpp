@@ -14,7 +14,7 @@ bool prevent_starvation;
 #define GLFW_EXTRA_MSG_NULL		WM_USER + 1
 #define FAKE_WM_TIMER			WM_USER + 2
 
-long PASCAL TimerProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT PASCAL TimerProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if ((message == WM_TIMER || message == FAKE_WM_TIMER) && timerCallback)
 		timerCallback();
