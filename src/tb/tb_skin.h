@@ -374,6 +374,9 @@ public:
 	void Debug();
 #endif
 
+	/** Get the fragment manager. */
+	TBBitmapFragmentManager *GetFragmentManager() { return &m_frag_manager; }
+
 	// Implementing TBRendererListener
 	virtual void OnContextLost();
 	virtual void OnContextRestored();
