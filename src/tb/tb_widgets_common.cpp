@@ -376,12 +376,20 @@ TBRadioCheckBox::TBRadioCheckBox()
 }
 
 //static
-void TBRadioCheckBox::ToggleGroup(TBWidget *root, TBWidget *toggled)
+void TBRadioCheckBox::UpdateGroupWidgets(TBWidget *new_leader)
 {
-	if (root != toggled && root->GetGroupID() == toggled->GetGroupID())
-		root->SetValue(0);
-	for (TBWidget *child = root->GetFirstChild(); child; child = child->GetNext())
-		ToggleGroup(child, toggled);
+	assert(new_leader->GetValue() && new_leader->GetGroupID());
+
+	// Find the group root widget.
+	TBWidget *group = new_leader;
+	while (group && !group->GetIsGroupRoot())
+		group = group->GetParent();
+	if (!group)
+		return;
+
+	for (TBWidget *child = group; child; child = child->GetNextDeep(group))
+		if (child != new_leader && child->GetGroupID() == new_leader->GetGroupID())
+			child->SetValue(0);
 }
 
 void TBRadioCheckBox::SetValue(int value)
@@ -396,17 +404,8 @@ void TBRadioCheckBox::SetValue(int value)
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 
-	if (!value || !GetGroupID())
-		return;
-	// Toggle all other widgets in the same group. First get a root widget
-	// for the search.
-	TBWidget *group = this;
-	while (group && !group->GetIsGroupRoot())
-		group = group->GetParent();
-	if (group)
-	{
-		ToggleGroup(group, this);
-	}
+	if (value && GetGroupID())
+		UpdateGroupWidgets(this);
 }
 
 PreferredSize TBRadioCheckBox::OnCalculatePreferredSize(const SizeConstraints &constraints)

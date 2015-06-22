@@ -251,8 +251,10 @@ public:
 
 	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
+
+	/** Make sure all widgets sharing the same group as new_leader are set to value 0. */
+	static void UpdateGroupWidgets(TBWidget *new_leader);
 protected:
-	void ToggleGroup(TBWidget *root, TBWidget *toggled);
 	int m_value;
 };
 
