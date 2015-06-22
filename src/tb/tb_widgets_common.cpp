@@ -400,10 +400,8 @@ void TBRadioCheckBox::UpdateGroupWidgets(TBWidget *new_leader)
 
 	// Find the group root widget.
 	TBWidget *group = new_leader;
-	while (group && !group->GetIsGroupRoot())
+	while (group && !group->GetIsGroupRoot() && group->GetParent())
 		group = group->GetParent();
-	if (!group)
-		return;
 
 	for (TBWidget *child = group; child; child = child->GetNextDeep(group))
 		if (child != new_leader && child->GetGroupID() == new_leader->GetGroupID())
