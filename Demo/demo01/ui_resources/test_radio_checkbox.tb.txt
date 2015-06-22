@@ -31,3 +31,8 @@ TBLayout: position: left top, axis: y
 		TBCheckBox
 	TBClickLabel: text: Some text to click, state: disabled
 		TBRadioButton
+	TBTextField: text: "Regular buttons with group-id: 'R3'":
+	TBLayout: distribution: preferred
+		TBButton: text: "A", group-id: "R3", value: 1
+		TBButton: text: "B", group-id: "R3"
+		TBButton: text: "C", group-id: "R3"

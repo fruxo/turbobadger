@@ -162,6 +162,28 @@ bool TBButton::SetText(const char *text)
 	return ret;
 }
 
+void TBButton::SetValue(int value)
+{
+	if (value == GetValue())
+		return;
+	SetState(WIDGET_STATE_PRESSED, value ? true : false);
+
+	if (CanToggle())
+	{
+		// Invoke a changed event.
+		TBWidgetEvent ev(EVENT_TYPE_CHANGED);
+		InvokeEvent(ev);
+	}
+
+	if (value && GetGroupID())
+		TBRadioCheckBox::UpdateGroupWidgets(this);
+}
+
+int TBButton::GetValue()
+{
+	return GetState(WIDGET_STATE_PRESSED);
+}
+
 void TBButton::OnCaptureChanged(bool captured)
 {
 	if (captured && m_auto_repeat_click)
@@ -180,17 +202,13 @@ void TBButton::OnSkinChanged()
 
 bool TBButton::OnEvent(const TBWidgetEvent &ev)
 {
-	if (m_toggle_mode && ev.type == EVENT_TYPE_CLICK && ev.target == this)
+	if (CanToggle() && ev.type == EVENT_TYPE_CLICK && ev.target == this)
 	{
 		TBWidgetSafePointer this_widget(this);
-		SetValue(!GetValue());
 
-		if (!this_widget.Get())
-			return true; // We got removed so we actually handled this event.
-
-		// Invoke a changed event.
-		TBWidgetEvent ev(EVENT_TYPE_CHANGED);
-		InvokeEvent(ev);
+		// Toggle the value, if it's not a grouped widget with value on.
+		if (!(GetGroupID() && GetValue()))
+			SetValue(!GetValue());
 
 		if (!this_widget.Get())
 			return true; // We got removed so we actually handled this event.
@@ -400,7 +418,6 @@ void TBRadioCheckBox::SetValue(int value)
 
 	SetState(WIDGET_STATE_SELECTED, value ? true : false);
 
-	Invalidate();
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 
