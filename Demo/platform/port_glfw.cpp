@@ -13,6 +13,7 @@
 
 #ifdef TB_TARGET_MACOSX
 #include <unistd.h>
+#include <mach-o/dyld.h>
 #endif
 
 using namespace tb;
@@ -449,8 +450,15 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	m_application->OnBackendAttached(this);
 
 #ifdef TB_TARGET_MACOSX
-	// Initializing glfw put us in Resources sub directory.
-	chdir("../");
+	// Put is in the root of the repository so the demo resources are found.
+	char exec_path[2048];
+	uint32_t exec_path_size = sizeof(exec_path);
+	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
+	{
+		TBTempBuffer path;
+		path.AppendPath(exec_path);
+		chdir(path.GetData());
+	}
 #endif
 
 	return true;
