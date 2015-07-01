@@ -1268,7 +1268,6 @@ void TBWidget::StopLongClickTimer()
 
 bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch)
 {
-	//If we have a captured widget then the pointer event was handled since focus is changed here
 	if (!captured_widget)
 	{
 		SetCapturedWidget(GetWidgetAt(x, y, true));
@@ -1324,6 +1323,8 @@ bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 		ev.count = click_count;
 		captured_widget->InvokeEvent(ev);
 
+		// Return true when captured instead of InvokeEvent result. If a widget is
+		// hit is more interesting for callers than if the event was handled or not.
 		return true;
 	}
 
@@ -1332,7 +1333,6 @@ bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 
 bool TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch)
 {
-	//If we have a captured widget then we have a focused widget so the pointer up event was handled
 	if (captured_widget)
 	{
 		captured_widget->ConvertFromRoot(x, y);
@@ -1344,6 +1344,8 @@ bool TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool to
 		if (captured_widget) // && button == captured_button
 			captured_widget->ReleaseCapture();
 
+		// Return true when captured instead of InvokeEvent result. If a widget is
+		// hit is more interesting for callers than if the event was handled or not.
 		return true;
 	}
 
@@ -1451,7 +1453,6 @@ bool TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS
 {
 	SetHoveredWidget(GetWidgetAt(x, y, true), true);
 
-	//If we have a target then the wheel event should be consumed
 	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
 	if (target)
 	{
@@ -1463,6 +1464,8 @@ bool TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS
 		ev.delta_y = delta_y;
 		target->InvokeEvent(ev);
 
+		// Return true when we have a target instead of InvokeEvent result. If a widget is
+		// hit is more interesting for callers than if the event was handled or not.
 		return true;
 	}
 
