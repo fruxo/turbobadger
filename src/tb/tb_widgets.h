@@ -920,10 +920,10 @@ public:
 		this call and are not sure what the event will cause, use TBWidgetSafePointer to detect self deletion. */
 	bool InvokeEvent(TBWidgetEvent &ev);
 
-	void InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch);
-	void InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
+	bool InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch);
+	bool InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
 	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
-	void InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
+	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */
