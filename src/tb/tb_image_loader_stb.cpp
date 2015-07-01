@@ -5,6 +5,7 @@
 
 #include "tb_bitmap_fragment.h"
 #include "tb_system.h"
+#include "tb_tempbuffer.h"
 
 #ifdef TB_IMAGE_LOADER_STB
 
@@ -46,45 +47,29 @@ public:
 
 TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
 {
-	// Load directly from file
-	/*int w, h, comp;
-	if (unsigned char *data = stbi_load(filename, &w, &h, &comp, 4))
-	{
-		if (STBI_Loader *img = new STBI_Loader())
-		{
-			img->width = w;
-			img->height = h;
-			img->data = data;
-			return img;
-		}
-		else
-			stbi_image_free(data);
-	}
-	return nullptr;*/
 	if (TBFile *file = TBFile::Open(filename, TBFile::MODE_READ))
 	{
 		long size = file->Size();
-		if (unsigned char *data = new unsigned char[size])
+		TBTempBuffer buf;
+		if (buf.Reserve(size))
 		{
-			size = file->Read(data, 1, size);
+			size = file->Read(buf.GetData(), 1, size);
 
 			int w, h, comp;
-			if (unsigned char *img_data = stbi_load_from_memory(data, size, &w, &h, &comp, 4))
+			if (unsigned char *img_data = stbi_load_from_memory(
+				(unsigned char*) buf.GetData(), size, &w, &h, &comp, 4))
 			{
 				if (STBI_Loader *img = new STBI_Loader())
 				{
 					img->width = w;
 					img->height = h;
 					img->data = img_data;
-					delete [] data;
 					delete file;
 					return img;
 				}
 				else
 					stbi_image_free(img_data);
 			}
-
-			delete data;
 		}
 		delete file;
 	}
