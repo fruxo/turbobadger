@@ -3,35 +3,57 @@
 
 using namespace tb;
 
-void Application::Run()
+// == AppRootWidget ===============================================================================
+
+void AppRootWidget::OnInvalid()
 {
-	m_backend->Run();
+	if (m_app->GetBackend())
+		m_app->GetBackend()->OnAppEvent(AppBackend::EVENT_PAINT_REQUEST);
 }
 
-bool Application::Init()
+// == App =========================================================================================
+
+App::App(int width, int height)
+	: m_backend(nullptr)
+	, m_root(this)
+{
+	// Set initial size which suggest to the backend which size we want the window to be.
+	m_root.SetRect(TBRect(0, 0, width, height));
+}
+
+void App::OnBackendAttached(AppBackend *backend, int width, int height)
+{
+	m_backend = backend;
+	OnResized(width, height);
+}
+
+void App::OnResized(int width, int height)
+{
+	m_root.SetRect(TBRect(0, 0, width, height));
+}
+
+bool App::Init()
 {
 	TBWidgetsAnimationManager::Init();
 	return true;
 }
 
-void Application::ShutDown()
+void App::ShutDown()
 {
 	TBWidgetsAnimationManager::Shutdown();
-	delete m_backend;
-	m_backend = nullptr;
 }
 
-void Application::Process()
+void App::Process()
 {
 	TBAnimationManager::Update();
-	GetRoot()->InvokeProcessStates();
-	GetRoot()->InvokeProcess();
+	m_root.InvokeProcessStates();
+	m_root.InvokeProcess();
 }
 
-void Application::RenderFrame(int window_w, int window_h)
+void App::RenderFrame()
 {
-	g_renderer->BeginPaint(window_w, window_h);
-	GetRoot()->InvokePaint(TBWidget::PaintProps());
+	g_renderer->BeginPaint(m_root.GetRect().w, m_root.GetRect().h);
+	m_root.InvokePaint(TBWidget::PaintProps());
 	g_renderer->EndPaint();
 
 	// If animations are running, reinvalidate immediately

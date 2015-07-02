@@ -1,43 +1,72 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-/** Called from the platform main function. */
-int app_main();
+#include "tb_widgets.h"
 
-class Application;
+// --------------------------------------------------------------------------------------
+// This file contains some platform glue that is optional. It may help you set up a TB UI
+// for a game or application quicker or just function as a sample of how it can be done.
+// --------------------------------------------------------------------------------------
 
-/** Backend interface that handles platform window & creating the renderer. */
-class ApplicationBackend
+class App;
+class AppBackend;
+
+/** The root of widgets in a platform backend. */
+class AppRootWidget : public tb::TBWidget
 {
 public:
-	static ApplicationBackend *Create(Application *app, int width, int height, const char *title);
-	virtual ~ApplicationBackend() {}
-	virtual void Run() = 0;
-	virtual tb::TBWidget *GetRoot() = 0;
-	virtual tb::TBRenderer *GetRenderer() = 0;
+	// For safe typecasting
+	TBOBJECT_SUBCLASS(AppRootWidget, tb::TBWidget);
+
+	AppRootWidget(App *app) : m_app(app) {}
+	virtual void OnInvalid();
+
+	App *GetApp() { return m_app; }
+private:
+	App *m_app;
+};
+
+/** Backend interface that handles platform window & creating the renderer. */
+class AppBackend
+{
+public:
+	enum EVENT {
+		EVENT_PAINT_REQUEST,
+		EVENT_QUIT_REQUEST,
+		EVENT_TITLE_CHANGED
+	};
+	virtual ~AppBackend() {}
+	virtual void OnAppEvent(const EVENT &ev) = 0;
 };
 
 /** Application interface, for setting up the application using turbo badger. */
-class Application
+class App
 {
 public:
-	Application() {}
-	virtual ~Application() {}
+	App(int width, int height);
+	virtual ~App() {}
 
-	tb::TBWidget *GetRoot() { return m_backend->GetRoot(); }
+	virtual const char *GetTitle() const { return ""; }
+	int GetWidth() const { return m_root.GetRect().w; }
+	int GetHeight() const { return m_root.GetRect().h; }
 
-	/** Run the message loop. */
-	void Run();
+	tb::TBWidget *GetRoot() { return &m_root; }
+	AppBackend *GetBackend() { return m_backend; }
 
-	virtual void OnBackendAttached(ApplicationBackend *backend) { m_backend = backend; }
+	virtual void OnBackendAttached(AppBackend *backend, int width, int height);
 	virtual void OnBackendDetached() { m_backend = nullptr; }
+	virtual void OnResized(int width, int height);
 
 	virtual bool Init();
 	virtual void ShutDown();
 	virtual void Process();
-	virtual void RenderFrame(int window_w, int window_h);
+	virtual void RenderFrame();
 protected:
-	ApplicationBackend *m_backend;
+	AppBackend *m_backend;
+	AppRootWidget m_root;
 };
+
+/** Should return new instance of App. */
+App *app_create();
 
 #endif // APPLICATION_H

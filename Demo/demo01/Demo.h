@@ -12,19 +12,21 @@
 
 using namespace tb;
 
-class DemoApplication : public Application
+class DemoApplication : public App
 {
 public:
-	DemoApplication() : Application() {}
+	DemoApplication() : App(1280, 700) {}
 
+	virtual const char *GetTitle() const { return "Demo"; }
+	virtual void OnBackendAttached(AppBackend *backend, int width, int height);
 	virtual bool Init();
-	virtual void RenderFrame(int window_w, int window_h);
+	virtual void RenderFrame();
 };
 
 class DemoWindow : public TBWindow
 {
 public:
-	DemoWindow();
+	DemoWindow(TBWidget *root);
 	bool LoadResourceFile(const char *filename);
 	void LoadResourceData(const char *data);
 	void LoadResource(TBNode &node);
@@ -35,7 +37,7 @@ public:
 class MainWindow : public DemoWindow, public TBMessageHandler
 {
 public:
-	MainWindow();
+	MainWindow(TBWidget *root);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 
 	// Implement TBMessageHandler
@@ -45,14 +47,14 @@ public:
 class ImageWindow : public DemoWindow
 {
 public:
-	ImageWindow();
+	ImageWindow(TBWidget *root);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 class PageWindow : public DemoWindow, public TBScrollerSnapListener
 {
 public:
-	PageWindow();
+	PageWindow(TBWidget *root);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnScrollSnap(TBWidget *target_widget, int &target_x, int &target_y);
 };
@@ -60,7 +62,7 @@ public:
 class AnimationsWindow : public DemoWindow
 {
 public:
-	AnimationsWindow();
+	AnimationsWindow(TBWidget *root);
 	void Animate();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
@@ -68,28 +70,28 @@ public:
 class LayoutWindow : public DemoWindow
 {
 public:
-	LayoutWindow(const char *filename);
+	LayoutWindow(TBWidget *root, const char *filename);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 class TabContainerWindow : public DemoWindow
 {
 public:
-	TabContainerWindow();
+	TabContainerWindow(TBWidget *root);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 class ConnectionWindow : public DemoWindow
 {
 public:
-	ConnectionWindow();
+	ConnectionWindow(TBWidget *root);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
 class ScrollContainerWindow : public DemoWindow, public TBMessageHandler
 {
 public:
-	ScrollContainerWindow();
+	ScrollContainerWindow(TBWidget *root);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 
 	// Implement TBMessageHandler

@@ -5,7 +5,6 @@
 #include <string.h>
 #include "tb_skin.h"
 #include "tb_system.h"
-#include "tb_widgets.h"
 #include "tb_msg.h"
 #include "renderers/tb_renderer_gl.h"
 #include "tb_font_renderer.h"
@@ -25,61 +24,41 @@ bool key_ctrl = false;
 bool key_shift = false;
 bool key_super = false;
 
-class ApplicationBackendGLFW;
+class AppBackendGLFW;
 
-void SetBackend(GLFWwindow *window, ApplicationBackendGLFW *backend)
+void SetBackend(GLFWwindow *window, AppBackendGLFW *backend)
 {
 	glfwSetWindowUserPointer(window, backend);
 }
 
-ApplicationBackendGLFW *GetBackend(GLFWwindow *window)
+AppBackendGLFW *GetBackend(GLFWwindow *window)
 {
-	return static_cast<ApplicationBackendGLFW*>(glfwGetWindowUserPointer(window));
+	return static_cast<AppBackendGLFW*>(glfwGetWindowUserPointer(window));
 }
 
-// The root of all widgets in a GLFW window.
-class RootWidget : public TBWidget
+class AppBackendGLFW : public AppBackend
 {
 public:
-	RootWidget(ApplicationBackendGLFW *backend) : m_backend(backend) {}
-	virtual void OnInvalid();
-private:
-	ApplicationBackendGLFW *m_backend;
-};
+	bool Init(App *app);
+	AppBackendGLFW()	: m_app(nullptr)
+						, m_renderer(nullptr)
+						, mainWindow(0)
+						, m_has_pending_update(false)
+						, m_quit_requested(false) {}
+	~AppBackendGLFW();
 
-class ApplicationBackendGLFW : public ApplicationBackend
-{
-public:
-	bool Init(Application *app, int width, int height, const char *title);
-	ApplicationBackendGLFW() :	m_application(nullptr),
-								m_renderer(nullptr),
-								m_root(this),
-								mainWindow(0),
-								has_pending_update(false) {}
-	~ApplicationBackendGLFW();
+	virtual void OnAppEvent(const EVENT &ev);
 
-	virtual void Run();
-	virtual TBWidget *GetRoot() { return &m_root; }
-	virtual TBRenderer *GetRenderer() { return m_renderer; }
+	TBWidget *GetRoot() const { return m_app->GetRoot(); }
+	int GetWidth() const { return m_app->GetWidth(); }
+	int GetHeight() const { return m_app->GetHeight(); }
 
-	int GetWidth() const { return m_root.GetRect().w; }
-	int GetHeight() const { return m_root.GetRect().h; }
-
-	Application *m_application;
+	App *m_app;
 	TBRendererGL *m_renderer;
-	RootWidget m_root;
 	GLFWwindow *mainWindow;
-	bool has_pending_update;
+	bool m_has_pending_update;
+	bool m_quit_requested;
 };
-
-void RootWidget::OnInvalid()
-{
-	if (!m_backend->has_pending_update)
-	{
-		m_backend->has_pending_update = true;
-		glfwWakeUpMsgLoop(m_backend->mainWindow);
-	}
-}
 
 MODIFIER_KEYS GetModifierKeys()
 {
@@ -359,33 +338,32 @@ void TBSystem::RescheduleTimer(double fire_time)
 
 static void window_refresh_callback(GLFWwindow *window)
 {
-	ApplicationBackendGLFW *backend = GetBackend(window);
+	AppBackendGLFW *backend = GetBackend(window);
 
-	backend->m_application->Process();
+	backend->m_app->Process();
 
-	backend->has_pending_update = false;
-
+	backend->m_has_pending_update = false;
 	// Bail out if we get here with invalid dimensions.
 	// This may happen when minimizing windows (GLFW 3.0.4, Windows 8.1).
 	if (backend->GetWidth() == 0 || backend->GetHeight() == 0)
 		return;
 
-	backend->m_application->RenderFrame(backend->GetWidth(), backend->GetHeight());
+	backend->m_app->RenderFrame();
 
 	glfwSwapBuffers(window);
 }
 
 static void window_size_callback(GLFWwindow *window, int w, int h)
 {
-	ApplicationBackendGLFW *backend = GetBackend(window);
-	if (backend->GetRoot())
-		backend->GetRoot()->SetRect(TBRect(0, 0, w, h));
+	AppBackendGLFW *backend = GetBackend(window);
+	if (backend->m_app)
+		backend->m_app->OnResized(w, h);
 }
 
 #if (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 1)
 static void drop_callback(GLFWwindow *window, int count, const char **files_utf8)
 {
-	ApplicationBackendGLFW *backend = GetBackend(window);
+	AppBackendGLFW *backend = GetBackend(window);
 	TBWidget *target = TBWidget::hovered_widget;
 	if (!target)
 		target = TBWidget::focused_widget;
@@ -401,21 +379,13 @@ static void drop_callback(GLFWwindow *window, int count, const char **files_utf8
 }
 #endif
 
-//static
-ApplicationBackend *ApplicationBackend::Create(Application *app, int width, int height, const char *title)
-{
-	ApplicationBackendGLFW *backend = new ApplicationBackendGLFW();
-	if (backend && backend->Init(app, width, height, title))
-		return backend;
-	delete backend;
-	return nullptr;
-}
-
-bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const char *title)
+bool AppBackendGLFW::Init(App *app)
 {
 	if (!glfwInit())
 		return false;
-	mainWindow = glfwCreateWindow(width, height, title, NULL, NULL);
+	const int width = app->GetWidth() > 0 ? app->GetWidth() : 1920;
+	const int height = app->GetHeight() > 0 ? app->GetHeight() : 1080;
+	mainWindow = glfwCreateWindow(width, height, app->GetTitle(), NULL, NULL);
 	if (!mainWindow)
 	{
 		glfwTerminate();
@@ -442,13 +412,6 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	glfwSetDropCallback(mainWindow, drop_callback);
 #endif
 
-	m_renderer = new TBRendererGL();
-	m_root.SetRect(TBRect(0, 0, width, height));
-
-	// Create the application object for our demo
-	m_application = app;
-	m_application->OnBackendAttached(this);
-
 #ifdef TB_TARGET_MACOSX
 	// Put is in the root of the repository so the demo resources are found.
 	char exec_path[2048];
@@ -461,13 +424,20 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	}
 #endif
 
+	m_renderer = new TBRendererGL();
+	tb_core_init(m_renderer);
+
+	// Create the App object for our demo
+	m_app = app;
+	m_app->OnBackendAttached(this, width, height);
+
 	return true;
 }
 
-ApplicationBackendGLFW::~ApplicationBackendGLFW()
+AppBackendGLFW::~AppBackendGLFW()
 {
-	m_application->OnBackendDetached();
-	m_application = nullptr;
+	m_app->OnBackendDetached();
+	m_app = nullptr;
 
 	tb_core_shutdown();
 
@@ -476,14 +446,54 @@ ApplicationBackendGLFW::~ApplicationBackendGLFW()
 	delete m_renderer;
 }
 
-void ApplicationBackendGLFW::Run()
+void AppBackendGLFW::OnAppEvent(const EVENT &ev)
 {
-	do
+	switch (ev)
 	{
-		if (has_pending_update)
-			window_refresh_callback(mainWindow);
-        glfwWaitMsgLoop(mainWindow);
-	} while (!glfwWindowShouldClose(mainWindow));
+		case EVENT_PAINT_REQUEST:
+			if (!m_has_pending_update)
+			{
+				m_has_pending_update = true;
+				glfwWakeUpMsgLoop(mainWindow);
+			}
+			break;
+		case EVENT_QUIT_REQUEST:
+			m_quit_requested = true;
+			glfwWakeUpMsgLoop(mainWindow);
+			break;
+		case EVENT_TITLE_CHANGED:
+			glfwSetWindowTitle(mainWindow, m_app->GetTitle());
+			break;
+		default:
+			assert(!"Unhandled app event!");
+	}
+}
+
+bool port_main() {
+	App *app = app_create();
+
+	AppBackendGLFW *backend = new AppBackendGLFW();
+	if (!backend || !backend->Init(app))
+		return false;
+
+	bool success = app->Init();
+	if (success) {
+		// Main loop
+		do
+		{
+			if (backend->m_has_pending_update)
+				window_refresh_callback(backend->mainWindow);
+			glfwWaitMsgLoop(backend->mainWindow);
+		} while (!backend->m_quit_requested && !glfwWindowShouldClose(backend->mainWindow));
+
+		app->ShutDown();
+	}
+
+	delete backend;
+
+	delete app;
+
+	return success;
 }
 
 #ifdef TB_TARGET_WINDOWS
@@ -500,16 +510,16 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// Crank up windows timer resolution (it's awfully low res normally). Note: This affects battery time!
     timeBeginPeriod(1);
-	int ret = app_main();
+	bool success = port_main();
 	timeEndPeriod(1);
-	return ret;
+	return success ? 0 : 1;
 }
 
 #else // TB_TARGET_WINDOWS
 
 int main(int argc, char** argv)
 {
-	return app_main();
+	return port_main() ? 0 : 1;
 }
 
 #endif // !TB_TARGET_WINDOWS
