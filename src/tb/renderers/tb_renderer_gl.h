@@ -14,7 +14,7 @@
 #include <GL/gl.h>
 #elif defined(MACOSX)
 #include <OpenGL/gl.h>
-#elif defined(ANDROID)
+#elif defined(ANDROID) || defined(__ANDROID__)
 #include <GLES/gl.h>
 #else
 #include <GL/gl.h>
@@ -57,7 +57,6 @@ public:
 
 	virtual void RenderBatch(Batch *batch);
 	virtual void SetClipRect(const TBRect &rect);
-public:
 };
 
 }; // namespace tb
