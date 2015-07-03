@@ -6,6 +6,9 @@
 #ifndef TB_RENDERER_GL_H
 #define TB_RENDERER_GL_H
 
+#include "renderers/tb_renderer_batcher.h"
+
+#if defined(TB_RENDERER_GLES_1) || defined(TB_RENDERER_GL)
 #ifdef TB_RENDERER_GLES_1
 #include <EGL/egl.h>
 #include <GLES/gl.h>
@@ -19,8 +22,6 @@
 #else
 #include <GL/gl.h>
 #endif
-
-#include "renderers/tb_renderer_batcher.h"
 
 namespace tb {
 
@@ -62,4 +63,5 @@ public:
 
 }; // namespace tb
 
+#endif // defined(TB_RENDERER_GLES_1) || defined(TB_RENDERER_GL)
 #endif // TB_RENDERER_GL_H

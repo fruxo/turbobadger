@@ -25,7 +25,7 @@ void CreateTimerWindow()
 {
 	// Set up and register window class
 	memset(&wndclass, 0, sizeof(WNDCLASS));
-	wndclass.lpfnWndProc = TimerProc;
+	wndclass.lpfnWndProc = (WNDPROC)TimerProc;
 	wndclass.lpszMenuName = "TB_TIMER_WINDOW";
 	wndclass.lpszClassName = "TB_TIMER_WINDOW";
 	RegisterClass((WNDCLASS*)&wndclass);
