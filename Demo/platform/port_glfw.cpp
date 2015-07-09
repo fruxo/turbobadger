@@ -76,7 +76,6 @@ void RootWidget::OnInvalid()
 	if (!m_backend->has_pending_update)
 	{
 		m_backend->has_pending_update = true;
-		glfwWakeUpMsgLoop(m_backend->mainWindow);
 	}
 }
 
@@ -312,6 +311,8 @@ static void scroll_callback(GLFWwindow *window, double x, double y)
 	If fire_time is 0, it should be fired ASAP.
 	If force is true, it will ask the platform to schedule it again, even if
 	the fire_time is the same as last time. */
+
+#ifndef TB_TARGET_LINUX 
 static void ReschedulePlatformTimer(double fire_time, bool force)
 {
 	static double set_fire_time = -1;
@@ -328,6 +329,7 @@ static void ReschedulePlatformTimer(double fire_time, bool force)
 		glfwRescheduleTimer(idelay);
 	}
 }
+
 
 static void timer_callback()
 {
@@ -355,6 +357,7 @@ void TBSystem::RescheduleTimer(double fire_time)
 {
 	ReschedulePlatformTimer(fire_time, false);
 }
+#endif /* TB_TARGET_LINUX */
 
 static void window_refresh_callback(GLFWwindow *window)
 {
@@ -436,7 +439,11 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
     glfwSetScrollCallback(mainWindow, scroll_callback);
     glfwSetKeyCallback(mainWindow, key_callback);
     glfwSetCharCallback(mainWindow, char_callback);
+
+#ifndef TB_SYSTEM_LINUX
     glfwSetTimerCallback(timer_callback);
+#endif
+	
 #if (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 1)
 	glfwSetDropCallback(mainWindow, drop_callback);
 #endif
@@ -445,6 +452,7 @@ bool ApplicationBackendGLFW::Init(Application *app, int width, int height, const
 	m_root.SetRect(TBRect(0, 0, width, height));
 
 	// Create the application object for our demo
+	
 	m_application = app;
 	m_application->OnBackendAttached(this);
 
@@ -472,9 +480,15 @@ void ApplicationBackendGLFW::Run()
 {
 	do
 	{
+		#ifdef TB_TARGET_LINUX
+		TBSystem::PollEvents();
+
+		#endif 
+		glfwPollEvents();
+		
 		if (has_pending_update)
 			window_refresh_callback(mainWindow);
-        glfwWaitMsgLoop(mainWindow);
+
 	} while (!glfwWindowShouldClose(mainWindow));
 }
 
