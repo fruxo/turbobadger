@@ -70,13 +70,13 @@ MODIFIER_KEYS GetModifierKeys()
 	return code;
 }
 
-MODIFIER_KEYS GetModifierKeys(int modifier)
+MODIFIER_KEYS GetModifierKeys(int glfwmod)
 {
 	MODIFIER_KEYS code = TB_MODIFIER_NONE;
-	if (modifier & GLFW_MOD_ALT)		code |= TB_ALT;
-	if (modifier & GLFW_MOD_CONTROL)	code |= TB_CTRL;
-	if (modifier & GLFW_MOD_SHIFT)		code |= TB_SHIFT;
-	if (modifier & GLFW_MOD_SUPER)		code |= TB_SUPER;
+	if (glfwmod & GLFW_MOD_ALT)			code |= TB_ALT;
+	if (glfwmod & GLFW_MOD_CONTROL)		code |= TB_CTRL;
+	if (glfwmod & GLFW_MOD_SHIFT)		code |= TB_SHIFT;
+	if (glfwmod & GLFW_MOD_SUPER)		code |= TB_SUPER;
 	return code;
 }
 
@@ -97,7 +97,7 @@ static int toupr_ascii(int ascii)
 
 static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
-#ifdef MACOSX
+#ifdef TB_TARGET_MACOSX
 	bool shortcut_key = (modifierkeys & TB_SUPER) ? true : false;
 #else
 	bool shortcut_key = (modifierkeys & TB_CTRL) ? true : false;
@@ -226,7 +226,7 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 #ifndef TB_TARGET_LINUX
 		// glfw calls key_callback instead of char_callback
 		// when pressing a character while ctrl is also pressed.
-		if (key_ctrl && !key_alt && key >= 32 && key <= 255)
+		if ((key_ctrl || key_super) && !key_alt && key >= 32 && key <= 255)
 			InvokeKey(window, key, TB_KEY_UNDEFINED, modifier, down);
 #endif
 		break;
@@ -413,7 +413,8 @@ bool AppBackendGLFW::Init(App *app)
 #endif
 
 #ifdef TB_TARGET_MACOSX
-	// Put is in the root of the repository so the demo resources are found.
+	// Change working directory to the executable path. We expect it to be
+	// where the demo resources are.
 	char exec_path[2048];
 	uint32_t exec_path_size = sizeof(exec_path);
 	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
