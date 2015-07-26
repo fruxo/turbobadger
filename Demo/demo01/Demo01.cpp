@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include "tests/tb_test.h"
 #include "tb_system.h"
+#include "tb_language.h"
 #include "tb_inline_select.h"
 #include "tb_select.h"
 #include "tb_menu_window.h"
@@ -17,8 +18,6 @@
 #include "tb_font_renderer.h"
 #include "image/tb_image_manager.h"
 #include "utf8/utf8.h"
-
-static Application *application;
 
 AdvancedItemSource advanced_source;
 TBGenericStringItemSource name_source;
@@ -48,9 +47,9 @@ void const_expr_test()
 
 // == DemoWindow ==============================================================
 
-DemoWindow::DemoWindow()
+DemoWindow::DemoWindow(TBWidget *root)
 {
-	application->GetRoot()->AddChild(this);
+	root->AddChild(this);
 }
 
 bool DemoWindow::LoadResourceFile(const char *filename)
@@ -132,7 +131,7 @@ bool DemoWindow::OnEvent(const TBWidgetEvent &ev)
 class EditWindow : public DemoWindow
 {
 public:
-	EditWindow()
+	EditWindow(TBWidget *root) : DemoWindow(root)
 	{
 		LoadResourceFile("Demo/demo01/ui_resources/test_textwindow.tb.txt");
 	}
@@ -259,7 +258,7 @@ public:
 
 // == LayoutWindow ============================================================
 
-LayoutWindow::LayoutWindow(const char *filename)
+LayoutWindow::LayoutWindow(TBWidget *root, const char *filename) : DemoWindow(root)
 {
 	LoadResourceFile(filename);
 }
@@ -293,7 +292,7 @@ bool LayoutWindow::OnEvent(const TBWidgetEvent &ev)
 
 // == TabContainerWindow ============================================================
 
-TabContainerWindow::TabContainerWindow()
+TabContainerWindow::TabContainerWindow(TBWidget *root) : DemoWindow(root)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_tabcontainer01.tb.txt");
 }
@@ -335,7 +334,7 @@ bool TabContainerWindow::OnEvent(const TBWidgetEvent &ev)
 
 // == ConnectionWindow =========================================================
 
-ConnectionWindow::ConnectionWindow()
+ConnectionWindow::ConnectionWindow(TBWidget *root) : DemoWindow(root)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_connections.tb.txt");
 }
@@ -357,7 +356,7 @@ bool ConnectionWindow::OnEvent(const TBWidgetEvent &ev)
 
 // == ScrollContainerWindow ===================================================
 
-ScrollContainerWindow::ScrollContainerWindow()
+ScrollContainerWindow::ScrollContainerWindow(TBWidget *root) : DemoWindow(root)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_scrollcontainer.tb.txt");
 
@@ -446,7 +445,7 @@ void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
 
 // == ImageWindow =============================================================
 
-ImageWindow::ImageWindow()
+ImageWindow::ImageWindow(TBWidget *root) : DemoWindow(root)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_image_widget.tb.txt");
 }
@@ -465,7 +464,7 @@ bool ImageWindow::OnEvent(const TBWidgetEvent &ev)
 
 // == PageWindow =============================================================
 
-PageWindow::PageWindow()
+PageWindow::PageWindow(TBWidget *root) : DemoWindow(root)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_scroller_snap.tb.txt");
 
@@ -488,7 +487,7 @@ void PageWindow::OnScrollSnap(TBWidget *target_widget, int &target_x, int &targe
 
 // == AnimationsWindow ========================================================
 
-AnimationsWindow::AnimationsWindow()
+AnimationsWindow::AnimationsWindow(TBWidget *root) : DemoWindow(root)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_animations.tb.txt");
 	Animate();
@@ -530,7 +529,7 @@ bool AnimationsWindow::OnEvent(const TBWidgetEvent &ev)
 
 // == MainWindow ==============================================================
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(TBWidget *root) : DemoWindow(root)
 {
 	LoadResourceFile("Demo/demo01/ui_resources/test_ui.tb.txt");
 
@@ -566,7 +565,7 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 	{
 		if (ev.target->GetID() == TBIDC("new"))
 		{
-			new MainWindow();
+			new MainWindow(GetParentRoot());
 			return true;
 		}
 		if (ev.target->GetID() == TBIDC("msg"))
@@ -647,43 +646,43 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		{
 			TBStr resource_file("Demo/demo01/ui_resources/");
 			resource_file.Append(ev.target->data.GetString());
-			new LayoutWindow(resource_file);
+			new LayoutWindow(GetParentRoot(), resource_file);
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-connections"))
 		{
-			new ConnectionWindow();
+			new ConnectionWindow(GetParentRoot());
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-list"))
 		{
-			new AdvancedListWindow(&advanced_source);
+			new AdvancedListWindow(GetParentRoot(), &advanced_source);
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-image"))
 		{
-			new ImageWindow();
+			new ImageWindow(GetParentRoot());
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-page"))
 		{
-			new PageWindow();
+			new PageWindow(GetParentRoot());
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-animations"))
 		{
-			new AnimationsWindow();
+			new AnimationsWindow(GetParentRoot());
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-scroll-container"))
 		{
-			new ScrollContainerWindow();
+			new ScrollContainerWindow(GetParentRoot());
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-skin-conditions"))
 		{
-			(new DemoWindow())->LoadResourceFile("Demo/demo01/ui_resources/test_skin_conditions01.tb.txt");
-			(new DemoWindow())->LoadResourceFile("Demo/demo01/ui_resources/test_skin_conditions02.tb.txt");
+			(new DemoWindow(GetParentRoot()))->LoadResourceFile("Demo/demo01/ui_resources/test_skin_conditions01.tb.txt");
+			(new DemoWindow(GetParentRoot()))->LoadResourceFile("Demo/demo01/ui_resources/test_skin_conditions02.tb.txt");
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-resource-edit"))
@@ -737,7 +736,7 @@ const char *boy_names[] = {
 
 bool DemoApplication::Init()
 {
-	if (!Application::Init())
+	if (!App::Init())
 		return false;
 
 	// Block new animations during Init.
@@ -771,15 +770,15 @@ bool DemoApplication::Init()
 	// Give the first item a skin image
 	popup_menu_source.GetItem(0)->SetSkinImage(TBIDC("Icon16"));
 
-	new MainWindow();
+	new MainWindow(&m_root);
 
-	new EditWindow;
+	new EditWindow(&m_root);
 
-	new ListWindow(&name_source);
+	new ListWindow(&m_root, &name_source);
 
-	new AdvancedListWindow(&advanced_source);
+	new AdvancedListWindow(&m_root, &advanced_source);
 
-	new TabContainerWindow();
+	new TabContainerWindow(&m_root);
 
 	if (num_failed_tests)
 	{
@@ -791,15 +790,15 @@ bool DemoApplication::Init()
 	return true;
 }
 
-void DemoApplication::RenderFrame(int window_w, int window_h)
+void DemoApplication::RenderFrame()
 {
 	// Override RenderFrame without calling super, since we want
 	// to inject code between BeginPaint/EndPaint.
-	// Application::RenderFrame(window_w, window_h);
+	// Application::RenderFrame();
 
 	// Render
-	g_renderer->BeginPaint(window_w, window_h);
-	GetRoot()->InvokePaint(TBWidget::PaintProps());
+	g_renderer->BeginPaint(m_root.GetRect().w, m_root.GetRect().h);
+	m_root.InvokePaint(TBWidget::PaintProps());
 
 #if defined(TB_RUNTIME_DEBUG_INFO) && defined(TB_IMAGE)
 	// Enable to debug image manager fragments
@@ -827,24 +826,21 @@ void DemoApplication::RenderFrame(int window_w, int window_h)
 		str.SetFormatted("FPS: %d Frame %d", fps, frame_counter_total);
 	else
 		str.SetFormatted("Frame %d", frame_counter_total);
-	GetRoot()->GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str);
+	m_root.GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str);
 
 	g_renderer->EndPaint();
 
 	// If we want continous updates or got animations running, reinvalidate immediately
 	if (continuous_repaint || TBAnimationManager::HasAnimationsRunning())
-		GetRoot()->Invalidate();
+		m_root.Invalidate();
 }
 
-int app_main()
+void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int height)
 {
-	application = new DemoApplication();
+	App::OnBackendAttached(backend, width, height);
 
-	ApplicationBackend *application_backend = ApplicationBackend::Create(application, 1280, 700, "Demo");
-	if (!application_backend)
-		return 1;
-
-	tb_core_init(application_backend->GetRenderer(), "resources/language/lng_en.tb.txt");
+	// Load language file
+	g_tb_lng->Load("resources/language/lng_en.tb.txt");
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
 	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
@@ -893,13 +889,9 @@ int app_main()
 		font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
 
 	// Give the root widget a background skin
-	application->GetRoot()->SetSkinBg(TBIDC("background"));
+	m_root.SetSkinBg(TBIDC("background"));
+}
 
-	application->Init();
-	application->Run();
-	application->ShutDown();
-
-	delete application;
-
-	return 0;
+App *app_create() {
+	return new DemoApplication();
 }

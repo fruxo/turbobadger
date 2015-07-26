@@ -71,8 +71,8 @@ LOCAL_LDLIBS     := -llog -landroid -lGLESv1_CM
 LOCAL_CPPFLAGS   := -fno-rtti -fno-exceptions -std=c++0x
 
 #release
-LOCAL_CFLAGS     += -DNDEBUG
+LOCAL_CFLAGS     += -DNDEBUG -DDEBUG=0
 #debug
-#LOCAL_CFLAGS     += -D_DEBUG
+#LOCAL_CFLAGS     += -D_DEBUG -DDEBUG=1
 
 include $(BUILD_SHARED_LIBRARY)

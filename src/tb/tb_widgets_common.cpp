@@ -162,6 +162,28 @@ bool TBButton::SetText(const char *text)
 	return ret;
 }
 
+void TBButton::SetValue(int value)
+{
+	if (value == GetValue())
+		return;
+	SetState(WIDGET_STATE_PRESSED, value ? true : false);
+
+	if (CanToggle())
+	{
+		// Invoke a changed event.
+		TBWidgetEvent ev(EVENT_TYPE_CHANGED);
+		InvokeEvent(ev);
+	}
+
+	if (value && GetGroupID())
+		TBRadioCheckBox::UpdateGroupWidgets(this);
+}
+
+int TBButton::GetValue()
+{
+	return GetState(WIDGET_STATE_PRESSED);
+}
+
 void TBButton::OnCaptureChanged(bool captured)
 {
 	if (captured && m_auto_repeat_click)
@@ -180,17 +202,13 @@ void TBButton::OnSkinChanged()
 
 bool TBButton::OnEvent(const TBWidgetEvent &ev)
 {
-	if (m_toggle_mode && ev.type == EVENT_TYPE_CLICK && ev.target == this)
+	if (CanToggle() && ev.type == EVENT_TYPE_CLICK && ev.target == this)
 	{
 		TBWidgetSafePointer this_widget(this);
-		SetValue(!GetValue());
 
-		if (!this_widget.Get())
-			return true; // We got removed so we actually handled this event.
-
-		// Invoke a changed event.
-		TBWidgetEvent ev(EVENT_TYPE_CHANGED);
-		InvokeEvent(ev);
+		// Toggle the value, if it's not a grouped widget with value on.
+		if (!(GetGroupID() && GetValue()))
+			SetValue(!GetValue());
 
 		if (!this_widget.Get())
 			return true; // We got removed so we actually handled this event.
@@ -376,12 +394,18 @@ TBRadioCheckBox::TBRadioCheckBox()
 }
 
 //static
-void TBRadioCheckBox::ToggleGroup(TBWidget *root, TBWidget *toggled)
+void TBRadioCheckBox::UpdateGroupWidgets(TBWidget *new_leader)
 {
-	if (root != toggled && root->GetGroupID() == toggled->GetGroupID())
-		root->SetValue(0);
-	for (TBWidget *child = root->GetFirstChild(); child; child = child->GetNext())
-		ToggleGroup(child, toggled);
+	assert(new_leader->GetValue() && new_leader->GetGroupID());
+
+	// Find the group root widget.
+	TBWidget *group = new_leader;
+	while (group && !group->GetIsGroupRoot() && group->GetParent())
+		group = group->GetParent();
+
+	for (TBWidget *child = group; child; child = child->GetNextDeep(group))
+		if (child != new_leader && child->GetGroupID() == new_leader->GetGroupID())
+			child->SetValue(0);
 }
 
 void TBRadioCheckBox::SetValue(int value)
@@ -392,21 +416,11 @@ void TBRadioCheckBox::SetValue(int value)
 
 	SetState(WIDGET_STATE_SELECTED, value ? true : false);
 
-	Invalidate();
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);
 
-	if (!value || !GetGroupID())
-		return;
-	// Toggle all other widgets in the same group. First get a root widget
-	// for the search.
-	TBWidget *group = this;
-	while (group && !group->GetIsGroupRoot())
-		group = group->GetParent();
-	if (group)
-	{
-		ToggleGroup(group, this);
-	}
+	if (value && GetGroupID())
+		UpdateGroupWidgets(this);
 }
 
 PreferredSize TBRadioCheckBox::OnCalculatePreferredSize(const SizeConstraints &constraints)

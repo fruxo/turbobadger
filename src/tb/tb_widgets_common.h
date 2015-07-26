@@ -117,8 +117,8 @@ public:
 	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
-	virtual void SetValue(int value) { SetState(WIDGET_STATE_PRESSED, value ? true : false); }
-	virtual int GetValue() { return GetState(WIDGET_STATE_PRESSED); }
+	virtual void SetValue(int value);
+	virtual int GetValue();
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnCaptureChanged(bool captured);
@@ -133,6 +133,7 @@ public:
 	virtual void OnMessageReceived(TBMessage *msg);
 protected:
 	void UpdateTextFieldVisibility();
+	bool CanToggle() { return m_toggle_mode || GetGroupID(); }
 	class ButtonLayout : public TBLayout
 	{
 		virtual void OnChildAdded(TBWidget *child);
@@ -251,8 +252,10 @@ public:
 
 	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
+
+	/** Make sure all widgets sharing the same group as new_leader are set to value 0. */
+	static void UpdateGroupWidgets(TBWidget *new_leader);
 protected:
-	void ToggleGroup(TBWidget *root, TBWidget *toggled);
 	int m_value;
 };
 

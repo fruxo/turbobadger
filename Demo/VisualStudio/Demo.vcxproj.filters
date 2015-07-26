@@ -45,22 +45,10 @@
     <ClCompile Include="..\platform\Application.cpp">
       <Filter>Source Files\platform</Filter>
     </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\time.c">
-      <Filter>Source Files\glfw\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\thirdparty\glfw\src\wgl_context.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\win32_clipboard.c">
-      <Filter>Source Files\glfw\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\win32_gamma.c">
-      <Filter>Source Files\glfw\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\thirdparty\glfw\src\win32_init.c">
-      <Filter>Source Files\glfw\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\win32_joystick.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
     <ClCompile Include="..\thirdparty\glfw\src\win32_monitor.c">
@@ -75,13 +63,7 @@
     <ClCompile Include="..\thirdparty\glfw\src\window.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\clipboard.c">
-      <Filter>Source Files\glfw\src</Filter>
-    </ClCompile>
     <ClCompile Include="..\thirdparty\glfw\src\context.c">
-      <Filter>Source Files\glfw\src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\gamma.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
     <ClCompile Include="..\thirdparty\glfw\src\init.c">
@@ -90,10 +72,13 @@
     <ClCompile Include="..\thirdparty\glfw\src\input.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\joystick.c">
+    <ClCompile Include="..\thirdparty\glfw\src\monitor.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\thirdparty\glfw\src\monitor.c">
+    <ClCompile Include="..\thirdparty\glfw\src\winmm_joystick.c">
+      <Filter>Source Files\glfw\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\thirdparty\glfw\src\win32_tls.c">
       <Filter>Source Files\glfw\src</Filter>
     </ClCompile>
   </ItemGroup>

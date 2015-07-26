@@ -59,9 +59,7 @@ TBLayout
 				TBSkinImage
 					skin Icon48
 				TBButton
-					image back
-				TBButton
-					image forward
+				TBButton: toggle-mode: 1
 			TBTextField: text: "TBEditField:"
 			TBLayout
 				TBEditField

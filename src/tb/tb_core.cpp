@@ -21,12 +21,11 @@ TBWidgetsReader *g_widgets_reader = nullptr;
 TBLanguage *g_tb_lng = nullptr;
 TBFontManager *g_font_manager = nullptr;
 
-bool tb_core_init(TBRenderer *renderer, const char *lng_file)
+bool tb_core_init(TBRenderer *renderer)
 {
 	TBDebugPrint("Initiating Turbo Badger - version %s\n", TB_VERSION_STR);
 	g_renderer = renderer;
 	g_tb_lng = new TBLanguage;
-	g_tb_lng->Load(lng_file);
 	g_font_manager = new TBFontManager();
 	g_tb_skin = new TBSkin();
 	g_widgets_reader = TBWidgetsReader::Create();

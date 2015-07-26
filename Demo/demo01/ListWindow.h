@@ -10,7 +10,7 @@ class AdvancedItemSource;
 class ListWindow : public DemoWindow
 {
 public:
-	ListWindow(TBSelectItemSource *source);
+	ListWindow(TBWidget *root, TBSelectItemSource *source);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 
@@ -18,7 +18,7 @@ public:
 class AdvancedListWindow : public DemoWindow
 {
 public:
-	AdvancedListWindow(AdvancedItemSource *source);
+	AdvancedListWindow(TBWidget *root, AdvancedItemSource *source);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 private:
 	AdvancedItemSource *m_source;
