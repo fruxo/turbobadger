@@ -403,6 +403,7 @@ void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SK
 
 void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element)
 {
+	PaintElementBorderColor(dst_rect, element);
 	PaintElementBGColor(dst_rect, element);
 	if (!element->bitmap)
 		return;
@@ -433,6 +434,13 @@ TBRect TBSkin::GetFlippedRect(const TBRect &src_rect, TBSkinElement *element) co
 		tmp_rect.h = -tmp_rect.h;
 	}
 	return tmp_rect;
+}
+
+void TBSkin::PaintElementBorderColor(const TBRect &dst_rect, TBSkinElement *element)
+{
+	if (element->border_width == 0)
+		return;
+	g_renderer->DrawRectFill(dst_rect.Expand(element->border_width, element->border_width), element->border_color);
 }
 
 void TBSkin::PaintElementBGColor(const TBRect &dst_rect, TBSkinElement *element)
@@ -553,6 +561,7 @@ TBSkinElement::TBSkinElement()
 	, pref_width(SKIN_VALUE_NOT_SPECIFIED), pref_height(SKIN_VALUE_NOT_SPECIFIED)
 	, min_width(SKIN_VALUE_NOT_SPECIFIED), min_height(SKIN_VALUE_NOT_SPECIFIED)
 	, max_width(SKIN_VALUE_NOT_SPECIFIED), max_height(SKIN_VALUE_NOT_SPECIFIED)
+	, border_width(0)
 	, spacing(SKIN_VALUE_NOT_SPECIFIED)
 	, content_ofs_x(0), content_ofs_y(0)
 	, img_ofs_x(0), img_ofs_y(0)
@@ -686,6 +695,7 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 	min_height = skin->GetPxFromNode(n->GetNode("min-height"), min_height);
 	max_width = skin->GetPxFromNode(n->GetNode("max-width"), max_width);
 	max_height = skin->GetPxFromNode(n->GetNode("max-height"), max_height);
+	border_width = skin->GetPxFromNode(n->GetNode("border-width"), border_width);
 	spacing = skin->GetPxFromNode(n->GetNode("spacing"), spacing);
 	content_ofs_x = skin->GetPxFromNode(n->GetNode("content-ofs-x"), content_ofs_x);
 	content_ofs_y = skin->GetPxFromNode(n->GetNode("content-ofs-y"), content_ofs_y);
@@ -702,6 +712,9 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 
 	if (const char *color = n->GetValueString("background-color", nullptr))
 		bg_color.SetFromString(color, strlen(color));
+
+	if (const char *color = n->GetValueString("border-color", nullptr))
+		border_color.SetFromString(color, strlen(color));
 
 	if (const char *type_str = n->GetValueString("type", nullptr))
 		type = StringToType(type_str);

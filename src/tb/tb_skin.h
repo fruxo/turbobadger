@@ -191,6 +191,7 @@ public:
 	int16 min_height;		///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
 	int16 max_width;		///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
 	int16 max_height;		///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
+	int16 border_width;		///< How thick the border should be for the element
 	int16 spacing;			///< Spacing used on layout or SKIN_VALUE_NOT_SPECIFIED.
 	int16 content_ofs_x;	///< X offset of the content in the widget.
 	int16 content_ofs_y;	///< Y offset of the content in the widget.
@@ -205,6 +206,7 @@ public:
 	float opacity;			///< Opacity that should be used for the whole widget (0.f - 1.f).
 	TBColor text_color;		///< Color of the text in the widget.
 	TBColor bg_color;		///< Color of the background in the widget.
+	TBColor border_color;	///< Color of the border in the widget.
 	int16 bitmap_dpi;		///< The DPI of the bitmap that was loaded.
 	TBValue tag;			///< This value is free to use for anything. It's not used internally.
 
@@ -393,6 +395,7 @@ private:
 	bool LoadInternal(const char *skin_file);
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);
+	void PaintElementBorderColor(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementBGColor(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementImage(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementTile(const TBRect &dst_rect, TBSkinElement *element);
