@@ -2,6 +2,8 @@ project(TurboBadger)
 cmake_minimum_required(VERSION 2.8)
 
 option(TB_BUILD_DEMO "Build the Demo application. Depends on glfw." ON)
+option(TB_USE_FREETYPE "Use Freetype font rendering" OFF)
+option(TB_USE_TBBF "Use Turbo Badger bitmap font rendering" ON)
 
 if("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")

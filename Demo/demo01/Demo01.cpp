@@ -872,10 +872,10 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 
 	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;
-#ifdef TB_FONT_RENDERER_TBBF
-	fd.SetID(TBIDC("Segoe"));
+#ifdef TB_FONT_RENDERER_FREETYPE
+    fd.SetID(TBIDC("Vera"));
 #else
-	fd.SetID(TBIDC("Vera"));
+    fd.SetID(TBIDC("Segoe"));
 #endif
 	fd.SetSize(g_tb_skin->GetDimensionConverter()->DpToPx(14));
 	g_font_manager->SetDefaultFontDescription(fd);
