@@ -156,4 +156,4 @@ bool TBStr::Insert(int ofs, const char *ins, int ins_len)
 	return false;
 }
 
-}; // namespace tb
+} // namespace tb

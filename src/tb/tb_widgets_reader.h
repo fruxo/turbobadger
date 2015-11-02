@@ -160,6 +160,6 @@ private:
 	TBLinkListOf<TBWidgetFactory> factories;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TBWIDGETS_READER_H

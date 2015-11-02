@@ -145,6 +145,6 @@ private:
 /** The global value group. */
 extern TBValueGroup g_value_group;
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_WIDGET_VALUE_H

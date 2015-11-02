@@ -49,6 +49,6 @@ bool TBClipboard::GetText(TBStr &text)
 	return false;
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_CLIPBOARD_GLFW

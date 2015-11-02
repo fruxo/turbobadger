@@ -206,6 +206,6 @@ public:
 
 class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem> { };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SELECT_ITEM_H

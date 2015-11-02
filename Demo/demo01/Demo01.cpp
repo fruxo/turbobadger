@@ -40,7 +40,7 @@ void const_expr_test()
 			break;
 		default:
 			break;
-	};
+	}
 }
 
 #endif // TB_SUPPORT_CONSTEXPR

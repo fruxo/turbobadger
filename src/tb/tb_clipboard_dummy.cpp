@@ -36,6 +36,6 @@ bool TBClipboard::GetText(TBStr &text)
 	return text.Set(clipboard);
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_CLIPBOARD_DUMMY

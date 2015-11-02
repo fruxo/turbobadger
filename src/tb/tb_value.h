@@ -143,6 +143,6 @@ private:
 	};
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_VALUE_H

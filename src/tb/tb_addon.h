@@ -62,6 +62,6 @@ void TBShutdownAddons();
 	}; \
 	static classname##AddonFactory classname##_af;
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_ADDON_H

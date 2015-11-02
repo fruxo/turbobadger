@@ -31,6 +31,6 @@ public:
 	bool operator != (const TBColor &c) const { return !(*this == c); }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_COLOR_H

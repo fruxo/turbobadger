@@ -76,6 +76,6 @@ TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
 	return nullptr;
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_IMAGE_LOADER_STB

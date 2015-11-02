@@ -51,6 +51,6 @@ protected:
 	void SetValueInternal(int value, bool update_text);
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_INLINE_SELECT_H

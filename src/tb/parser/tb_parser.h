@@ -62,6 +62,6 @@ private:
 	void ConsumeValue(TBValue &dst_value, char *&line);
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_PARSER_H

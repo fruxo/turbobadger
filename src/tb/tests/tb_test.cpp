@@ -167,4 +167,4 @@ int TBRunTests(uint32 settings)
 
 #endif // TB_UNIT_TESTING
 
-}; // namespace tb
+} // namespace tb

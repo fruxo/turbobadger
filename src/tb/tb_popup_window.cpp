@@ -134,4 +134,4 @@ bool TBPopupWindow::OnWidgetDying(TBWidget *widget)
 	return false;
 }
 
-}; // namespace tb
+} // namespace tb

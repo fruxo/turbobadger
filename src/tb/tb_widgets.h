@@ -1044,6 +1044,6 @@ private:
 	float CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element) const;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_WIDGETS_H

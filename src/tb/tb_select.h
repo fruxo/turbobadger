@@ -158,6 +158,6 @@ protected:
 	TBWidgetSafePointer m_window_pointer; ///< Points to the dropdown window if opened
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SELECT_H

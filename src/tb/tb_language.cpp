@@ -55,4 +55,4 @@ const char *TBLanguage::GetString(const TBID &id)
 #endif
 }
 
-}; // namespace tb
+} // namespace tb

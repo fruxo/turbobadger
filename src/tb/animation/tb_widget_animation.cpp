@@ -235,4 +235,4 @@ void TBWidgetsAnimationManager::OnWidgetRemove(TBWidget *parent, TBWidget *widge
 {
 }
 
-}; // namespace tb
+} // namespace tb

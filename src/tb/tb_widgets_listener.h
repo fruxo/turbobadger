@@ -88,6 +88,6 @@ private:
 	TBWidget *m_widget;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_WIDGETSLISTENER_H

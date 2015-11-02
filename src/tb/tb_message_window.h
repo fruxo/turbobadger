@@ -63,6 +63,6 @@ private:
 	TBWidgetSafePointer m_target;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_MESSAGE_WINDOW_H

@@ -555,4 +555,4 @@ void TBBitmapFragmentManager::Debug()
 }
 #endif // TB_RUNTIME_DEBUG_INFO
 
-}; // namespace tb
+} // namespace tb

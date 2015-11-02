@@ -104,4 +104,4 @@ void TBWidgetSafePointer::OnWidgetDelete(TBWidget *widget)
 		Set(nullptr);
 }
 
-}; // namespace tb
+} // namespace tb

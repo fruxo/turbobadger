@@ -81,6 +81,6 @@ private:
 	virtual bool OnWidgetDying(TBWidget *widget);
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_POPUP_WINDOW_H

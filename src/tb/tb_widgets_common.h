@@ -426,6 +426,6 @@ public:
 	virtual void OnAdded();
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_WIDGETS_COMMON_H

@@ -171,6 +171,6 @@ void TBImageManager::OnContextRestored()
 	// No need to do anything. The bitmaps will be created when drawing.
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_IMAGE

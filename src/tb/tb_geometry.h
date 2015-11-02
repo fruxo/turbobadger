@@ -105,6 +105,6 @@ private:
 	bool GrowIfNeeded();
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_GEOMETRY_H

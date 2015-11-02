@@ -111,6 +111,6 @@ protected:
 	void DeActivate();
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_WINDOW_H

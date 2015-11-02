@@ -231,4 +231,4 @@ const TBRect &TBRegion::GetRect(int index) const
 	return m_rects[index];
 }
 
-}; // namespace tb
+} // namespace tb

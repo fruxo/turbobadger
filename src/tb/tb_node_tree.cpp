@@ -340,4 +340,4 @@ void TBNode::Clear()
 	m_children.DeleteAll();
 }
 
-}; // namespace tb
+} // namespace tb

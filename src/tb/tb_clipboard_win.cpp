@@ -79,6 +79,6 @@ bool TBClipboard::GetText(TBStr &text)
 	return success;
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_CLIPBOARD_WINDOWS

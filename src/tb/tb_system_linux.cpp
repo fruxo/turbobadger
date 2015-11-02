@@ -57,6 +57,6 @@ int TBSystem::GetDPI()
 	return 96;
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SYSTEM_LINUX

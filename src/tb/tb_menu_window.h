@@ -36,6 +36,6 @@ private:
 	TBSelectList m_select_list;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_MENU_WINDOW_H

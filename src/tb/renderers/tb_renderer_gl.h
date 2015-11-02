@@ -59,6 +59,6 @@ public:
 	virtual void SetClipRect(const TBRect &rect);
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_RENDERER_GL_H

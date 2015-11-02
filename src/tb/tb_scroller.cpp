@@ -377,4 +377,4 @@ void TBScroller::OnMessageReceived(TBMessage *msg)
 	}
 }
 
-}; // namespace tb
+} // namespace tb

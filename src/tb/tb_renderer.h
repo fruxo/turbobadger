@@ -149,6 +149,6 @@ private:
 	TBLinkListOf<TBRendererListener> m_listeners;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_RENDERER_H

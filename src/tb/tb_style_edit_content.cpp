@@ -87,4 +87,4 @@ void TBTextFragmentContentStylePop::Paint(TBTextFragment *fragment, int32 transl
 	props->Pop();
 }
 
-}; // namespace tb
+} // namespace tb

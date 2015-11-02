@@ -93,7 +93,7 @@ protected:
 	void FlushAllInternal();
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_RENDERER_BATCHER
 

@@ -23,4 +23,4 @@ void TBRenderer::InvokeContextRestored()
 		listener->OnContextRestored();
 }
 
-}; // namespace tb
+} // namespace tb

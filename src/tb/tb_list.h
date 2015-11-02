@@ -121,6 +121,6 @@ public:
 	~TBListAutoDeleteOf() { TBListOf<T>::DeleteAll(); }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_LIST_H

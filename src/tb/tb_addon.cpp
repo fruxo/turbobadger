@@ -50,4 +50,4 @@ void TBShutdownAddons()
 	}
 }
 
-}; // namespace tb
+} // namespace tb

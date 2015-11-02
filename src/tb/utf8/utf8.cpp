@@ -142,4 +142,4 @@ int count_characters(const char *str, int i_max)
 	return count;
 }
 
-}; // namespace utf8
+} // namespace utf8

@@ -517,4 +517,4 @@ TBFontFace *TBFontManager::CreateFontFace(const TBFontDescription &font_desc)
 	return nullptr;
 }
 
-}; // namespace tb
+} // namespace tb

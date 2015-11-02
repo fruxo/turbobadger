@@ -166,7 +166,7 @@ bool TBEditField::GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &
 		case EDIT_TYPE_PHONE:		return info.value == TBIDC("phone");
 		case EDIT_TYPE_URL:			return info.value == TBIDC("url");
 		case EDIT_TYPE_NUMBER:		return info.value == TBIDC("number");
-		};
+		}
 	}
 	else if (info.custom_prop == TBIDC("multiline"))
 		return !((uint32)info.value) == !GetMultiline();
@@ -630,4 +630,4 @@ TBTextFragmentContent *TBEditFieldContentFactory::CreateFragmentContent(const ch
 	return TBTextFragmentContentFactory::CreateFragmentContent(text, text_len);
 }
 
-}; // namespace tb
+} // namespace tb

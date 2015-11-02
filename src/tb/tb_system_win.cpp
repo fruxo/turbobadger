@@ -61,6 +61,6 @@ int TBSystem::GetDPI()
 	return DPI_x;
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SYSTEM_WINDOWS

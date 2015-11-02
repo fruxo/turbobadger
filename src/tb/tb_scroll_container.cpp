@@ -311,4 +311,4 @@ void TBScrollContainer::OnResized(int old_w, int old_h)
 	ValidateLayout(sc);
 }
 
-}; // namespace tb
+} // namespace tb

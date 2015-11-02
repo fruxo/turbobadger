@@ -79,4 +79,4 @@ bool TBWidgetSkinConditionContext::GetCondition(TBWidget *widget, const TBSkinCo
 	return false;
 }
 
-}; // namespace tb
+} // namespace tb

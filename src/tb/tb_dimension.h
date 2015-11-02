@@ -74,6 +74,6 @@ public:
 	int GetPxFromValue(TBValue *value, int def_value) const;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_DIMENSION_H

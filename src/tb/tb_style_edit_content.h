@@ -81,6 +81,6 @@ public:
 	virtual bool GetAllowBreakAfter() { return true; }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_STYLE_EDIT_CONTENT_H

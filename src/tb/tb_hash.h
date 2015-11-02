@@ -52,7 +52,7 @@ uint32 TBGetHash(const char *str);
 
 #endif // !TB_SUPPORT_CONSTEXPR
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_HASH_H
 

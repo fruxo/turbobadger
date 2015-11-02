@@ -67,6 +67,6 @@ private:
 	};
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_FONT_DESC_H

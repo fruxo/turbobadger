@@ -845,4 +845,4 @@ void TBSkinElementStateList::Load(TBNode *n)
 	}
 }
 
-}; // namespace tb
+} // namespace tb

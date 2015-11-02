@@ -296,6 +296,6 @@ void TBRendererBatcher::FlushBitmapFragment(TBBitmapFragment *bitmap_fragment)
 		batch.Flush(this);
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_RENDERER_BATCHER

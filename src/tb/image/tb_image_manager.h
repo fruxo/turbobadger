@@ -108,7 +108,7 @@ private:
 /** The global TBImageManager. */
 extern TBImageManager *g_image_manager;
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_IMAGE
 #endif // TB_IMAGE_MANAGER_H

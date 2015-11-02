@@ -247,6 +247,6 @@ private:
 	int m_default_map_h;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_BITMAP_FRAGMENT_H

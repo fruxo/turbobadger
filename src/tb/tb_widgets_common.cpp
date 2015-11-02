@@ -809,4 +809,4 @@ void TBDimmer::OnAdded()
 	SetRect(TBRect(0, 0, GetParent()->GetRect().w, GetParent()->GetRect().h));
 }
 
-}; // namespace tb
+} // namespace tb

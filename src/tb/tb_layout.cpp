@@ -182,7 +182,7 @@ int TBLayout::GetWantedHeight(WIDGET_GRAVITY gravity, const PreferredSize &ps, i
 	case LAYOUT_SIZE_AVAILABLE:
 		height = MIN(available_height, ps.max_h);
 		break;
-	};
+	}
 	height = MIN(height, ps.max_h);
 	return height;
 }
@@ -387,7 +387,7 @@ void TBLayout::ValidateLayout(const SizeConstraints &constraints, PreferredSize 
 			break;
 		default: // LAYOUT_POSITION_LEFT_TOP
 			break;
-		};
+		}
 
 		// Done! Set rect and increase used space
 		TBRect rect(used_space + offset, pos, width, height);
@@ -524,4 +524,4 @@ TBWidget::ScrollInfo TBLayout::GetScrollInfo()
 	return info;
 }
 
-}; // namespace tb
+} // namespace tb

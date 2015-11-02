@@ -1242,7 +1242,7 @@ bool TBWidget::InvokeEvent(TBWidgetEvent &ev)
 		InvalidateStates();
 	default:
 		break;
-	};
+	}
 
 	// Call OnEvent on this widgets and travel up through its parents if not handled.
 	bool handled = false;
@@ -1692,4 +1692,4 @@ TBFontFace *TBWidget::GetFont() const
 	return g_font_manager->GetFontFace(GetCalculatedFontDescription());
 }
 
-}; // namespace tb
+} // namespace tb

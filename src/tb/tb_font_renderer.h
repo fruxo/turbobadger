@@ -280,6 +280,6 @@ private:
 	TBFontDescription m_test_font_desc;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_FONT_RENDERER_H

@@ -63,6 +63,6 @@ void ShowDebugInfoSettingsWindow(class TBWidget *root);
 
 #endif // TB_RUNTIME_DEBUG_INFO
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_DEBUG_H

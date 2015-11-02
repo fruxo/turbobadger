@@ -197,6 +197,6 @@ inline int TBRunTests(uint32 settings = TB_TEST_VERBOSE) { return 0; }
 
 #endif
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_TEST_H

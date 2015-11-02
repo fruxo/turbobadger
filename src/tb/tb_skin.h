@@ -402,6 +402,6 @@ private:
 	int GetPxFromNode(TBNode *node, int def_value) const;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SKIN_H

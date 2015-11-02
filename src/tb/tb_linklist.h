@@ -197,6 +197,6 @@ public:
 	~TBLinkListAutoDeleteOf() { TBLinkListOf<T>::DeleteAll(); }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_LINKLIST_H

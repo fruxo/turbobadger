@@ -116,4 +116,4 @@ bool TBListBackend::GrowIfNeeded()
 	return true;
 }
 
-}; // namespace tb
+} // namespace tb
