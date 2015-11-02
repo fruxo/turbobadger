@@ -17,6 +17,6 @@ namespace tb {
 void DrawEdgeFadeout(const TBRect &dst_rect, TBID skin_x, TBID skin_y,
 					 int left, int top, int right, int bottom);
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SKIN_UTIL_H

@@ -136,6 +136,6 @@ friend class TBNodeRefTree;
 	uint32 m_cycle_id;	///< Used to detect circular references.
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_NODE_TREE_H

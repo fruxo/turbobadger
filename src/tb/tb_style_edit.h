@@ -435,6 +435,6 @@ public:
 	bool GetSizeAffectsLayout() const;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif

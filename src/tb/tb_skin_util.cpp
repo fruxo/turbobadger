@@ -47,4 +47,4 @@ void DrawEdgeFadeout(const TBRect &dst_rect, TBID skin_x, TBID skin_y,
 	}
 }
 
-}; // namespace tb
+} // namespace tb

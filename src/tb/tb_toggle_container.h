@@ -115,6 +115,6 @@ private:
 	bool m_pending_scroll;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_TOGGLE_CONTAINER_H

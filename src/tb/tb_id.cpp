@@ -74,4 +74,4 @@ void TBID::Set(const char *string)
 
 #endif // TB_RUNTIME_DEBUG_INFO
 
-}; // namespace tb
+} // namespace tb

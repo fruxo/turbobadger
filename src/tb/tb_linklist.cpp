@@ -217,4 +217,4 @@ int TBLinkList::CountLinks() const
 	return count;
 }
 
-}; // namespace tb
+} // namespace tb

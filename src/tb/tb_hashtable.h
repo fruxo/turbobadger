@@ -120,6 +120,6 @@ protected:
 	virtual void DeleteContent(void *content) { delete (T*) content; }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_HASHTABLE_H

@@ -57,6 +57,6 @@ template<class T> const T *TBSafeCast(const TBTypedObject *obj) {
 	virtual bool IsOfTypeId(const tb::TB_TYPE_ID type_id) const \
 		{ return GetTypeId<clazz>() == type_id ? true : baseclazz::IsOfTypeId(type_id); }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_OBJECT_H

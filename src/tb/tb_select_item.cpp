@@ -209,4 +209,4 @@ void TBSelectItemSource::InvokeAllItemsRemoved()
 		viewer->OnAllItemsRemoved();
 }
 
-}; // namespace tb
+} // namespace tb

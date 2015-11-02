@@ -56,4 +56,4 @@ bool TBMenuWindow::OnEvent(const TBWidgetEvent &ev)
 	return TBPopupWindow::OnEvent(ev);
 }
 
-}; // namespace tb
+} // namespace tb

@@ -186,4 +186,4 @@ void TBNodeRefTree::ResolveConditions(TBNode *parent_node)
 	}
 }
 
-}; // namespace tb
+} // namespace tb

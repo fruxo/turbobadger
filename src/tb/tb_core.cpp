@@ -53,4 +53,4 @@ bool tb_core_is_initialized()
 	return g_widgets_reader ? true : false;
 }
 
-}; // namespace tb
+} // namespace tb

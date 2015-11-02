@@ -139,4 +139,4 @@ void TBTabContainer::OnProcess()
 	}
 }
 
-}; // namespace tb
+} // namespace tb

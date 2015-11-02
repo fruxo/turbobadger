@@ -60,6 +60,6 @@ void tb_core_shutdown();
 /** Returns true if turbo badger is initialized. */
 bool tb_core_is_initialized();
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_CORE_H

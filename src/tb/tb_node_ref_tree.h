@@ -83,6 +83,6 @@ public:
 	virtual void OnDataChanged(TBNodeRefTree *rt, const char *request) = 0;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_NODE_REF_TREE_H

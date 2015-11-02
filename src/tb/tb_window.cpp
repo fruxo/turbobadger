@@ -268,4 +268,4 @@ void TBWindow::OnResized(int old_w, int old_h)
 	m_textfield.SetRect(mover_rect);
 }
 
-}; // namespace tb
+} // namespace tb

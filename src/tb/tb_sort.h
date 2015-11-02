@@ -21,6 +21,6 @@ static void insertion_sort(TYPE *elements, size_t element_count, CONTEXT context
 	}
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SORT_H

@@ -45,6 +45,6 @@ public:
 #endif
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_ID_H

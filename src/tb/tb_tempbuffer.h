@@ -67,6 +67,6 @@ private:
 	int m_append_pos;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_TEMP_BUFFER_H

@@ -59,6 +59,6 @@ public:
 	virtual void OnAnimationUpdate(float progress) { TBAnimatedFloat::OnAnimationUpdate(progress); *target_value = GetValue(); }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_ANIMATION_UTILS_H

@@ -161,4 +161,4 @@ void TBRendererGL::SetClipRect(const TBRect &rect)
 	glScissor(m_clip_rect.x, m_screen_rect.h - (m_clip_rect.y + m_clip_rect.h), m_clip_rect.w, m_clip_rect.h);
 }
 
-}; // namespace tb
+} // namespace tb

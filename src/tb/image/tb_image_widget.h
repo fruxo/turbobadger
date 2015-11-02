@@ -37,7 +37,7 @@ private:
 	TBImage m_image;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_IMAGE
 #endif // TB_IMAGE_WIDGET_H

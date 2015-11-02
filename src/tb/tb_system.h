@@ -79,6 +79,6 @@ public:
 	virtual size_t Read(void *buf, size_t elemSize, size_t count) = 0;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SYSTEM_H

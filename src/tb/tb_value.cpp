@@ -148,7 +148,7 @@ TBValue::TBValue(TYPE type)
 		break;
 	default:
 		assert(!"Not implemented!");
-	};
+	}
 }
 
 TBValue::TBValue(int value)
@@ -361,4 +361,4 @@ const char *TBValue::GetString()
 	return m_packed.type == TYPE_STRING ? val_str : "";
 }
 
-}; // namespace tb
+} // namespace tb

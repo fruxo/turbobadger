@@ -23,6 +23,6 @@ private:
 	TBWidget *m_widget;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_WIDGET_SKIN_CONDITION_CONTEXT_H

@@ -193,7 +193,7 @@ public:
 		case EVENT_TYPE_SHORTCUT:		return "SHORT_CUT";
 		case EVENT_TYPE_CONTEXT_MENU:	return "CONTEXT_MENU";
 		default: return "[UNKNOWN]";
-		};
+		}
 	}
 };
 
@@ -204,4 +204,4 @@ void ShowDebugInfoSettingsWindow(TBWidget *root)
 
 #endif // TB_RUNTIME_DEBUG_INFO
 
-}; // namespace tb
+} // namespace tb

@@ -128,6 +128,6 @@ private:
 	int m_expected_scroll_y;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SCROLLER_H

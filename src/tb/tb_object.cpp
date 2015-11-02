@@ -8,4 +8,4 @@
 
 namespace tb {
 
-}; // namespace tb
+} // namespace tb

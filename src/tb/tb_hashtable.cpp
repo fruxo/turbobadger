@@ -216,4 +216,4 @@ void *TBHashTableIterator::GetNextContent()
 	return m_current_item ? m_current_item->content : nullptr;
 }
 
-}; // namespace tb
+} // namespace tb

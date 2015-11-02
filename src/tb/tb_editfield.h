@@ -202,6 +202,6 @@ private:
 	virtual void CaretBlinkStop();
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_EDITFIELD_H

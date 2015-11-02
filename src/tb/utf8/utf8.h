@@ -47,6 +47,6 @@ void move_dec(const char *str, int *i);
 */
 int count_characters(const char *str, int i_max);
 
-}; // namespace utf8
+} // namespace utf8
 
 #endif // BASIC_UTF8_H

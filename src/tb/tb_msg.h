@@ -121,6 +121,6 @@ private:
 	TBLinkListOf<TBMessage> m_messages;
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_MSG_H

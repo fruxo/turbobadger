@@ -143,7 +143,7 @@ void TBToggleContainer::UpdateInternal()
 		// Also disable when collapsed so tab focus skips the children.
 		SetState(WIDGET_STATE_DISABLED, !on);
 		break;
-	};
+	}
 }
 
-}; // namespace tb
+} // namespace tb

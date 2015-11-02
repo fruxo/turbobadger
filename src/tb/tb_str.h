@@ -73,6 +73,6 @@ public:
 	const TBStr& operator = (const TBStr &str)			{ Set(str); return *this; }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_STR_H

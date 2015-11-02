@@ -88,4 +88,4 @@ int TBDimensionConverter::GetPxFromValue(TBValue *value, int def_value) const
 	return GetPxFromString(value->GetString(), def_value);
 }
 
-}; // namespace tb
+} // namespace tb

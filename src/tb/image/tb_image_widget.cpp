@@ -22,6 +22,6 @@ void TBImageWidget::OnPaint(const PaintProps &paint_props)
 		g_renderer->DrawBitmap(GetPaddingRect(), TBRect(0, 0, m_image.Width(), m_image.Height()), fragment);
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_IMAGE

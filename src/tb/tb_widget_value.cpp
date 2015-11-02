@@ -163,4 +163,4 @@ void TBValueGroup::InvokeOnValueChanged(const TBWidgetValue *value)
 		listener->OnValueChanged(this, value);
 }
 
-}; // namespace tb
+} // namespace tb

@@ -880,7 +880,7 @@ int TBBlock::GetStartIndentation(TBFontFace *font, int first_line_len) const
 		case 0x2022: // BULLET
 			indentation += CalculateStringWidth(font, current_str, 3);
 			continue;
-		};
+		}
 		break;
 	}
 	return indentation;
@@ -2124,4 +2124,4 @@ TBUndoEvent *TBUndoRedoStack::Commit(TBStyleEdit *styledit, int32 gofs, int32 le
 	return nullptr;
 }
 
-}; // namespace tb
+} // namespace tb

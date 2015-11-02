@@ -104,6 +104,6 @@ private:
 	virtual void OnWidgetRemove(TBWidget *parent, TBWidget *child);
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_WIDGET_ANIMATION_H

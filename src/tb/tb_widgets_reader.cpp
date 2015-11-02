@@ -526,4 +526,4 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node)
 	return true;
 }
 
-}; // namespace tb
+} // namespace tb

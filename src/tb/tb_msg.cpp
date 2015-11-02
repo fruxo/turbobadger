@@ -187,4 +187,4 @@ double TBMessageHandler::GetNextMessageFireTime()
 	return TB_NOT_SOON;
 }
 
-}; // namespace tb
+} // namespace tb

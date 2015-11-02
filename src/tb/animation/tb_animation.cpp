@@ -109,7 +109,7 @@ void TBAnimationManager::Update()
 			break;
 		default: // linear (progress is already linear)
 			break;
-		};
+		}
 
 		// Update animation
 		obj->InvokeOnAnimationUpdate(progress);
@@ -176,4 +176,4 @@ void TBAnimationManager::EndBlockAnimations()
 	block_animations_counter--;
 }
 
-}; // namespace tb
+} // namespace tb

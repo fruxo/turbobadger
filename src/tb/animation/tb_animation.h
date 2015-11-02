@@ -159,6 +159,6 @@ public:
 	~TBAnimationBlocker() { TBAnimationManager::EndBlockAnimations(); }
 };
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_ANIMATION_H

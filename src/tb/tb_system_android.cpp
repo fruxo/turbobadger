@@ -117,6 +117,6 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 	return tbf;
 }
 
-}; // namespace tb
+} // namespace tb
 
 #endif // TB_SYSTEM_ANDROID

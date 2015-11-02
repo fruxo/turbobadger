@@ -25,4 +25,4 @@ void TBColor::SetFromString(const char *str, int len)
 		Set(TBColor());
 }
 
-}; // namespace tb
+} // namespace tb

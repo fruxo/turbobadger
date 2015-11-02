@@ -443,4 +443,4 @@ void TBParser::ConsumeValue(TBValue &dst_value, char *&line)
 		multi_line_value.AppendString(dst_value.GetString());
 }
 
-}; // namespace tb
+} // namespace tb

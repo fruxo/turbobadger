@@ -108,4 +108,4 @@ bool TBTempBuffer::AppendPath(const char *full_path_and_filename)
 	return false;
 }
 
-}; // namespace tb
+} // namespace tb

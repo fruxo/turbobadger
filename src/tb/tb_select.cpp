@@ -467,4 +467,4 @@ bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)
 	return false;
 }
 
-}; // namespace tb
+} // namespace tb
