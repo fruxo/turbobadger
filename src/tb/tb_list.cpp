@@ -4,10 +4,8 @@
 // ================================================================================
 
 #include "tb_list.h"
-#include "tb_core.h"
 #include <assert.h>
 #include <stdlib.h>
-#include <memory.h>
 
 namespace tb {
 

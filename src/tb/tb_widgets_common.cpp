@@ -7,7 +7,6 @@
 #include "tb_font_renderer.h"
 #include "tb_widgets_listener.h"
 #include "tb_system.h"
-#include <assert.h>
 
 namespace tb {
 

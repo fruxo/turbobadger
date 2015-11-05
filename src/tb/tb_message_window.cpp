@@ -7,7 +7,6 @@
 #include "tb_widgets_reader.h"
 #include "tb_editfield.h"
 #include "tb_language.h"
-#include <assert.h>
 
 namespace tb {
 

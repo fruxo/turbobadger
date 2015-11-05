@@ -9,9 +9,7 @@
 #include "tb_tab_container.h"
 #include "tb_select.h"
 #include "tb_inline_select.h"
-#include "tb_editfield.h"
 #include "tb_node_tree.h"
-#include "tb_font_renderer.h"
 #include "tb_toggle_container.h"
 #include "image/tb_image_widget.h"
 

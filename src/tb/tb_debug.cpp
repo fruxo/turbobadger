@@ -8,7 +8,6 @@
 #include "tb_window.h"
 #include "tb_editfield.h"
 #include "tb_font_renderer.h"
-#include "tb_tempbuffer.h"
 #include <stdio.h>
 
 namespace tb {

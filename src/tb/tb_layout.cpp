@@ -6,7 +6,6 @@
 #include "tb_layout.h"
 #include "tb_system.h"
 #include "tb_skin_util.h"
-#include <assert.h>
 
 namespace tb {
 

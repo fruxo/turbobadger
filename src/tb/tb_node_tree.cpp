@@ -6,10 +6,8 @@
 #include "tb_node_tree.h"
 #include "tb_node_ref_tree.h"
 #include <stdlib.h>
-#include <string.h>
 #include <assert.h>
 #include "tb_system.h"
-#include "tb_tempbuffer.h"
 #include "tb_language.h"
 
 namespace tb {

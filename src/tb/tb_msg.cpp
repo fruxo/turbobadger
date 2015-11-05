@@ -5,7 +5,6 @@
 
 #include "tb_msg.h"
 #include "tb_system.h"
-#include <stddef.h>
 
 namespace tb {
 
