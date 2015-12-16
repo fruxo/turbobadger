@@ -138,7 +138,7 @@ void TBToggleContainer::UpdateInternal()
 		SetOpacity(on ? 1.f : 0);
 		break;
 	case TOGGLE_EXPANDED:
-		SetVisibilility(on ? WIDGET_VISIBILITY_VISIBLE : WIDGET_VISIBILITY_GONE);
+		SetVisibility(on ? WIDGET_VISIBILITY_VISIBLE : WIDGET_VISIBILITY_GONE);
 
 		// Also disable when collapsed so tab focus skips the children.
 		SetState(WIDGET_STATE_DISABLED, !on);

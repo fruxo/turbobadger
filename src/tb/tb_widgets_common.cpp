@@ -245,7 +245,7 @@ void TBButton::UpdateTextFieldVisibility()
 	// widgets added apart from the textfield. This removes the extra spacing
 	// added between the textfield and the other widget.
 	bool collapse_textfield = m_textfield.IsEmpty() && m_layout.GetFirstChild() != m_layout.GetLastChild();
-	m_textfield.SetVisibilility(collapse_textfield ? WIDGET_VISIBILITY_GONE : WIDGET_VISIBILITY_VISIBLE);
+	m_textfield.SetVisibility(collapse_textfield ? WIDGET_VISIBILITY_GONE : WIDGET_VISIBILITY_VISIBLE);
 }
 
 void TBButton::ButtonLayout::OnChildAdded(TBWidget *child)

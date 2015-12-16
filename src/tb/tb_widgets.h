@@ -449,7 +449,7 @@ public:
 
 	/** Set visibility for this widget and its children.
 		If visibility is not WIDGET_VISIBILITY_VISIBLE, the widget won't receive any input. */
-	void SetVisibilility(WIDGET_VISIBILITY vis);
+	void SetVisibility(WIDGET_VISIBILITY vis);
 	WIDGET_VISIBILITY GetVisibility() const;
 
 	/** Return true if this widget and all its ancestors are visible

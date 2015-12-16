@@ -238,7 +238,7 @@ void TBWidget::SetOpacity(float opacity)
 	Invalidate();
 }
 
-void TBWidget::SetVisibilility(WIDGET_VISIBILITY vis)
+void TBWidget::SetVisibility(WIDGET_VISIBILITY vis)
 {
 	if (m_packed.visibility == vis)
 		return;

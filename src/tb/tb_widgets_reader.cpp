@@ -76,9 +76,9 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 	}
 	if (const char *visibility = info.node->GetValueString("visibility", nullptr))
 	{
-		if (!strcmp(visibility, "visible"))			SetVisibilility(WIDGET_VISIBILITY_VISIBLE);
-		else if (!strcmp(visibility, "invisible"))	SetVisibilility(WIDGET_VISIBILITY_INVISIBLE);
-		else if (!strcmp(visibility, "gone"))		SetVisibilility(WIDGET_VISIBILITY_GONE);
+		if (!strcmp(visibility, "visible"))			SetVisibility(WIDGET_VISIBILITY_VISIBLE);
+		else if (!strcmp(visibility, "invisible"))	SetVisibility(WIDGET_VISIBILITY_INVISIBLE);
+		else if (!strcmp(visibility, "gone"))		SetVisibility(WIDGET_VISIBILITY_GONE);
 	}
 	if (const char *state = info.node->GetValueString("state", nullptr))
 	{
