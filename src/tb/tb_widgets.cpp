@@ -612,10 +612,10 @@ bool TBWidget::MoveFocus(bool forward)
 	TBWidget *current = origin;
 	while (current)
 	{
-		current = forward ? current->GetNextDeep() : current->GetPrevDeep();
+		current = forward ? current->GetNextDeep(root) : current->GetPrevDeep();
 		// Wrap around if we reach the end/beginning
 		if (!current || !root->IsAncestorOf(current))
-			current = forward ? root->GetFirstChild() : root->GetLastLeaf();
+			current = forward ? root : root->GetLastLeaf();
 		// Break if we reached the origin again (we're not finding anything else)
 		if (current == origin)
 			break;
