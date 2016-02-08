@@ -5,14 +5,10 @@
 
 #include "tb_widgets.h"
 #include "tb_window.h"
-#include "tb_widgets_listener.h"
-#include "tb_renderer.h"
-#include "tb_widgets_common.h"
 #include "tb_widget_skin_condition_context.h"
 #include "tb_system.h"
 #include "tb_scroller.h"
 #include "tb_font_renderer.h"
-#include <assert.h>
 #ifdef TB_ALWAYS_SHOW_EDIT_FOCUS
 #include "tb_editfield.h"
 #endif // TB_ALWAYS_SHOW_EDIT_FOCUS

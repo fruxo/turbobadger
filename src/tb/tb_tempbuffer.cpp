@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <memory.h>
-#include <string.h>
 
 namespace tb {
 

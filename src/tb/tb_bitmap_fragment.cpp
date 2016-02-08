@@ -5,7 +5,6 @@
 
 #include "tb_bitmap_fragment.h"
 #include "tb_renderer.h"
-#include "tb_system.h"
 
 namespace tb {
 

@@ -5,7 +5,6 @@
 
 #include "tb_toggle_container.h"
 #include "tb_widgets_reader.h"
-#include "tb_node_tree.h"
 
 namespace tb {
 

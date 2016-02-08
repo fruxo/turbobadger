@@ -4,8 +4,6 @@
 // ================================================================================
 
 #include "tb_font_renderer.h"
-#include "tb_renderer.h"
-#include "tb_system.h"
 #include <math.h>
 
 namespace tb {

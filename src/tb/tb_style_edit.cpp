@@ -4,13 +4,10 @@
 // ================================================================================
 
 #include "tb_style_edit.h"
-#include "tb_widgets_common.h"
 #include "tb_style_edit_content.h"
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
 #include "tb_font_renderer.h"
-#include "utf8/utf8.h"
-#include <assert.h>
 
 namespace tb {
 

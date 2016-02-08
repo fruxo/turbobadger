@@ -4,7 +4,6 @@
 // ================================================================================
 
 #include "tb_inline_select.h"
-#include <assert.h>
 #include <stdlib.h>
 
 namespace tb {

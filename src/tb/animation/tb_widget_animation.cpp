@@ -5,10 +5,7 @@
 
 #include "animation/tb_widget_animation.h"
 #include "tb_window.h"
-#include "tb_widgets.h"
-#include "tb_widgets_common.h"
 #include "tb_message_window.h"
-#include "tb_list.h"
 
 namespace tb {
 

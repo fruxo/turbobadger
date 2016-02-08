@@ -7,9 +7,6 @@
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
 #include "tb_node_tree.h"
-#include <string.h>
-#include <assert.h>
-#include <stdio.h>
 
 namespace tb {
 
