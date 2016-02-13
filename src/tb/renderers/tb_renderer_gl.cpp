@@ -3,11 +3,13 @@
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
-#include <assert.h>
-#include <stdio.h>
 #include "tb_renderer_gl.h"
+
+#ifdef TB_RENDERER_GL
 #include "tb_bitmap_fragment.h"
 #include "tb_system.h"
+#include <assert.h>
+#include <stdio.h>
 
 namespace tb {
 
@@ -162,3 +164,5 @@ void TBRendererGL::SetClipRect(const TBRect &rect)
 }
 
 } // namespace tb
+
+#endif // TB_RENDERER_GL
