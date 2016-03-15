@@ -18,10 +18,8 @@
 #define TB_RUNTIME_DEBUG_INFO
 #endif
 
-#ifndef NDEBUG
 /** Enable compilation of unit tests. */
-#define TB_UNIT_TESTING
-#endif
+${TB_UNIT_TESTING_CONFIG}
 
 /** Enable if the focus state should automatically be set on edit fields even
 	when using the pointer. It is normally set only while moving focus by keyboard. */

@@ -15,6 +15,7 @@ option(TB_RENDERER_BATCHER "Enable to get TBRendererBatcher" ON)
 option(TB_RENDERER_GL "Enable renderer using OpenGL. This renderer depends on TB_RENDERER_BATCHER." ON)
 option(TB_RENDERER_GLES_1 "Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_IMAGE "Enable support for TBImage, TBImageManager, TBImageWidget." ON)
+option(TB_UNIT_TESTING "Enable compilation of unit tests." ON)
 
 # Runtime/subsystem configurations
 # Needs further work
@@ -25,6 +26,10 @@ option(TB_IMAGE "Enable support for TBImage, TBImageManager, TBImageWidget." ON)
 
 if(TB_DEBUG_POSTFIX)
     set(CMAKE_DEBUG_POSTFIX _d)
+endif()
+
+if(TB_UNIT_TESTING)
+    set(TB_UNIT_TESTING_CONFIG "#define TB_UNIT_TESTING")
 endif()
 
 if(TB_FONT_RENDERER_TBBF)
