@@ -81,7 +81,6 @@ add_subdirectory(src/tb)
 
 # Add Demo project
 if(TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
-  message("XX")
  add_subdirectory(Demo)
 endif(TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
 

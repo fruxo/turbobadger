@@ -29,10 +29,10 @@ include_directories(".")
 if(APPLE)
   find_library (GLFW_LIBRARIES glfw )
   find_library (OPENGL_LIBRARY OpenGL )
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY})
-  #message("GLFW_LIBRARIES: ${GLFW_LIBRARIES}")
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES})
   find_path (GLFW_INCLUDE_DIRS GLFW/glfw3.h)
   include_directories(${GLFW_INCLUDE_DIRS})
+  #message("GLFW_LIBRARIES: ${GLFW_LIBRARIES}")
   #message("GLFW_INCLUDE_DIRS: ${GLFW_INCLUDE_DIRS}")
 endif(APPLE)
 
@@ -40,9 +40,8 @@ if (NOT GLFW_LIBRARIES)
   target_include_directories(TurboBadgerLib PUBLIC "thirdparty/glfw/include")
   include_directories("thirdparty/glfw/include")
   add_subdirectory(thirdparty/glfw)
+  set (EXTRA_LIBS ${EXTRA_LIBS} glfw)
 endif (NOT GLFW_LIBRARIES)
-
-set (EXTRA_LIBS ${EXTRA_LIBS} ${GLFW_LIBRARIES})
 
 # Platform specific
 if(CMAKE_COMPILER_IS_MINGW)
@@ -64,10 +63,10 @@ if (TB_BUILD_DEMO_SDL2)
   set(LOCAL_SRCS "")
   aux_source_directory(./demo01 LOCAL_SRCS)
   set (LOCAL_SRCS ${LOCAL_SRCS}
-    ./platform/port_sdl2.cpp)
+    ./platform/port_sdl2.cpp
+    ./platform/Application.cpp)
   include_directories(".")
   
-  message("HI")
   if (APPLE)
     find_package (OpenGL REQUIRED)
     find_library (SDL2_LIBRARIES SDL2)
@@ -76,9 +75,20 @@ if (TB_BUILD_DEMO_SDL2)
     #find_path (SDL2_IMAGE_INCLUDE_DIRS SDL_image.h)
     #link_directories (${SDL2_LIBRARY_DIRS})
   else (APPLE)
+    #find_package (OpenGL REQUIRED)
+    find_library (OPENGL_LIBRARY GL PATHS "/usr/lib64/nvidia" )
+    find_library (GLEW_LIBRARIES GLEW PATHS "/usr/lib64/nvidia" )
+    find_library (SDL2_LIBRARIES SDL2 HINTS "$ENV{HOME}/local/lib")
+    #find_library (SDL2_IMAGE_LIBRARIES SDL2_image)
+    find_path (SDL2_INCLUDE_DIRS "SDL2/SDL.h"
+      HINTS "$ENV{HOME}/local/include/"
+      PATH_SUFFIXES "" "SDL2")
+    set (EXTRA_LIBS ${EXTRA_LIBS} ${GLEW_LIBRARIES} )
+    include_directories(${SDL2_INCLUDE_DIRS})
   endif (APPLE)
   
   set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} )
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${GLEW_LIBRARIES} )
   message ("SDL2 lib : ${SDL2_LIBRARIES}")
   message ("SDL2 incl: ${SDL2_INCLUDE_DIRS}")
 

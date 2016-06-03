@@ -1,9 +1,33 @@
 // -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 
+#ifdef __EMSCRIPTEN__
+#define GL_GLEXT_PROTOTYPES
+#include "SDL/SDL.h"
+//#include "SDL/SDL_opengl.h"
+#include "SDL/SDL_opengles2.h"
+//#include "SDL/SDL_opengles2_gl2ext.h"
+#define glGenVertexArrays glGenVertexArraysOES
+#define glBindVertexArray glBindVertexArrayOES
+#define glDeleteVertexArrays glDeleteVertexArraysOES
+#define glIsVertexArray glIsVertexArrayOES
+#else
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+// linux
+#include <GL/glew.h>
+#include <SDL2/SDL_opengl.h>
+#endif
+#include "SDL2/SDL.h"
+//#include "SDL2/SDL_opengl.h"
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+#include <algorithm>
+#include <iostream>
 #include "tb_skin.h"
 #include "tb_system.h"
 #include "tb_msg.h"
@@ -15,8 +39,6 @@
 #include <unistd.h>
 #include <mach-o/dyld.h>
 #endif
-
-#include "SDL2/SDL.h"
 
 using namespace tb;
 
@@ -55,6 +77,11 @@ public:
 	TBWidget *GetRoot() const { return m_app->GetRoot(); }
 	int GetWidth() const { return m_app->GetWidth(); }
 	int GetHeight() const { return m_app->GetHeight(); }
+
+
+	bool InvokeKey(unsigned int key, SPECIAL_KEY special_key,
+				   MODIFIER_KEYS modifierkeys, bool down);
+	bool HandleSDLEvent(SDL_Event & event);
 
 	App *m_app;
 	TBRendererGL *m_renderer;
@@ -148,168 +175,16 @@ static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modif
 	return TBWidget::focused_widget->InvokeEvent(ev);
 }
 
-static bool InvokeKey(GLFWwindow *window, unsigned int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
+bool
+AppBackendSDL2::InvokeKey(unsigned int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
 	if (InvokeShortcut(key, special_key, modifierkeys, down))
 		return true;
-	GetBackend(window)->GetRoot()->InvokeKey(key, special_key, modifierkeys, down);
-	return true;
+	return m_app->GetRoot()->InvokeKey(key, special_key, modifierkeys, down);
 }
 
-static void char_callback(GLFWwindow *window, unsigned int character)
-{
-	// glfw on osx seems to send us characters from the private
-	// use block when using f.ex arrow keys on osx.
-	if (character >= 0xE000 && character <= 0xF8FF)
-		return;
-
-	InvokeKey(window, character, TB_KEY_UNDEFINED, GetModifierKeys(), true);
-	InvokeKey(window, character, TB_KEY_UNDEFINED, GetModifierKeys(), false);
-}
-
-static void key_callback(GLFWwindow *window, int key, int scancode, int action, int glfwmod)
-{
-	MODIFIER_KEYS modifier = GetModifierKeys(glfwmod);
-	bool down = (action == GLFW_PRESS || action == GLFW_REPEAT);
-	switch (key)
-	{
-	case GLFW_KEY_F1:			InvokeKey(window, 0, TB_KEY_F1, modifier, down); break;
-	case GLFW_KEY_F2:			InvokeKey(window, 0, TB_KEY_F2, modifier, down); break;
-	case GLFW_KEY_F3:			InvokeKey(window, 0, TB_KEY_F3, modifier, down); break;
-	case GLFW_KEY_F4:			InvokeKey(window, 0, TB_KEY_F4, modifier, down); break;
-	case GLFW_KEY_F5:			InvokeKey(window, 0, TB_KEY_F5, modifier, down); break;
-	case GLFW_KEY_F6:			InvokeKey(window, 0, TB_KEY_F6, modifier, down); break;
-	case GLFW_KEY_F7:			InvokeKey(window, 0, TB_KEY_F7, modifier, down); break;
-	case GLFW_KEY_F8:			InvokeKey(window, 0, TB_KEY_F8, modifier, down); break;
-	case GLFW_KEY_F9:			InvokeKey(window, 0, TB_KEY_F9, modifier, down); break;
-	case GLFW_KEY_F10:			InvokeKey(window, 0, TB_KEY_F10, modifier, down); break;
-	case GLFW_KEY_F11:			InvokeKey(window, 0, TB_KEY_F11, modifier, down); break;
-	case GLFW_KEY_F12:			InvokeKey(window, 0, TB_KEY_F12, modifier, down); break;
-	case GLFW_KEY_LEFT:			InvokeKey(window, 0, TB_KEY_LEFT, modifier, down); break;
-	case GLFW_KEY_UP:			InvokeKey(window, 0, TB_KEY_UP, modifier, down); break;
-	case GLFW_KEY_RIGHT:		InvokeKey(window, 0, TB_KEY_RIGHT, modifier, down); break;
-	case GLFW_KEY_DOWN:			InvokeKey(window, 0, TB_KEY_DOWN, modifier, down); break;
-	case GLFW_KEY_PAGE_UP:		InvokeKey(window, 0, TB_KEY_PAGE_UP, modifier, down); break;
-	case GLFW_KEY_PAGE_DOWN:	InvokeKey(window, 0, TB_KEY_PAGE_DOWN, modifier, down); break;
-	case GLFW_KEY_HOME:			InvokeKey(window, 0, TB_KEY_HOME, modifier, down); break;
-	case GLFW_KEY_END:			InvokeKey(window, 0, TB_KEY_END, modifier, down); break;
-	case GLFW_KEY_INSERT:		InvokeKey(window, 0, TB_KEY_INSERT, modifier, down); break;
-	case GLFW_KEY_TAB:			InvokeKey(window, 0, TB_KEY_TAB, modifier, down); break;
-	case GLFW_KEY_DELETE:		InvokeKey(window, 0, TB_KEY_DELETE, modifier, down); break;
-	case GLFW_KEY_BACKSPACE:	InvokeKey(window, 0, TB_KEY_BACKSPACE, modifier, down); break;
-	case GLFW_KEY_ENTER:		
-	case GLFW_KEY_KP_ENTER:		InvokeKey(window, 0, TB_KEY_ENTER, modifier, down); break;
-	case GLFW_KEY_ESCAPE:		InvokeKey(window, 0, TB_KEY_ESC, modifier, down); break;
-	case GLFW_KEY_MENU:
-		if (TBWidget::focused_widget && !down)
-		{
-			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU);
-			ev.modifierkeys = modifier;
-			TBWidget::focused_widget->InvokeEvent(ev);
-		}
-		break;
-	case GLFW_KEY_LEFT_SHIFT:
-	case GLFW_KEY_RIGHT_SHIFT:
-		key_shift = down;
-		break;
-	case GLFW_KEY_LEFT_CONTROL:
-	case GLFW_KEY_RIGHT_CONTROL:
-		key_ctrl = down;
-		break;
-	case GLFW_KEY_LEFT_ALT:
-	case GLFW_KEY_RIGHT_ALT:
-		key_alt = down;
-		break;
-	case GLFW_KEY_LEFT_SUPER:
-	case GLFW_KEY_RIGHT_SUPER:
-		key_super = down;
-		break;
-	default:
-		// glfw calls key_callback instead of char_callback
-		// when pressing a character while ctrl is also pressed.
-		if ((key_ctrl || key_super) && !key_alt && key >= 32 && key <= 255)
-			InvokeKey(window, key, TB_KEY_UNDEFINED, modifier, down);
-		break;
-	}
-}
-
-static void mouse_button_callback(GLFWwindow *window, int button, int action, int glfwmod)
-{
-	MODIFIER_KEYS modifier = GetModifierKeys(glfwmod);
-	int x = mouse_x;
-	int y = mouse_y;
-	if (button == GLFW_MOUSE_BUTTON_LEFT)
-	{
-		if (action == GLFW_PRESS)
-		{
-			// This is a quick fix with n-click support :)
-			static double last_time = 0;
-			static int last_x = 0;
-			static int last_y = 0;
-			static int counter = 1;
-
-			double time = TBSystem::GetTimeMS();
-			if (time < last_time + 600 && last_x == x && last_y == y)
-				counter++;
-			else
-				counter = 1;
-			last_x = x;
-			last_y = y;
-			last_time = time;
-
-			GetBackend(window)->GetRoot()->InvokePointerDown(x, y, counter, modifier, ShouldEmulateTouchEvent());
-		}
-		else
-			GetBackend(window)->GetRoot()->InvokePointerUp(x, y, modifier, ShouldEmulateTouchEvent());
-	}
-	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
-	{
-		GetBackend(window)->GetRoot()->InvokePointerMove(x, y, modifier, ShouldEmulateTouchEvent());
-		if (TBWidget::hovered_widget)
-		{
-			TBWidget::hovered_widget->ConvertFromRoot(x, y);
-			TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, false, modifier);
-			TBWidget::hovered_widget->InvokeEvent(ev);
-		}
-	}
-}
-
-void cursor_position_callback(GLFWwindow *window, double x, double y)
-{
-	mouse_x = (int)x;
-	mouse_y = (int)y;
-	if (GetBackend(window)->GetRoot() && !(ShouldEmulateTouchEvent() && !TBWidget::captured_widget))
-		GetBackend(window)->GetRoot()->InvokePointerMove(mouse_x, mouse_y, GetModifierKeys(), ShouldEmulateTouchEvent());
-}
-
-static void scroll_callback(GLFWwindow *window, double x, double y)
-{
-	if (GetBackend(window)->GetRoot())
-		GetBackend(window)->GetRoot()->InvokeWheel(mouse_x, mouse_y, (int)x, -(int)y, GetModifierKeys());
-}
-
-/** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
-	If fire_time is 0, it should be fired ASAP.
-	If force is true, it will ask the platform to schedule it again, even if
-	the fire_time is the same as last time. */
-static void ReschedulePlatformTimer(double fire_time, bool force)
-{
-	static double set_fire_time = -1;
-	if (fire_time == TB_NOT_SOON)
-	{
-		set_fire_time = -1;
-		glfwKillTimer();
-	}
-	else if (fire_time != set_fire_time || force || fire_time == 0)
-	{
-		set_fire_time = fire_time;
-		double delay = fire_time - tb::TBSystem::GetTimeMS();
-		unsigned int idelay = (unsigned int) MAX(delay, 0.0);
-		glfwRescheduleTimer(idelay);
-	}
-}
-
-static void timer_callback()
+static SDL_TimerID my_timer_id = 0;
+static Uint32 timer_callback(Uint32 interval, void *param)
 {
 	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
 	double now = tb::TBSystem::GetTimeMS();
@@ -318,46 +193,43 @@ static void timer_callback()
 		// We timed out *before* we were supposed to (the OS is not playing nice).
 		// Calling ProcessMessages now won't achieve a thing so force a reschedule
 		// of the platform timer again with the same time.
-		ReschedulePlatformTimer(next_fire_time, true);
-		return;
+		return next_fire_time - now;
 	}
 
 	TBMessageHandler::ProcessMessages();
 
 	// If we still have things to do (because we didn't process all messages,
 	// or because there are new messages), we need to rescedule, so call RescheduleTimer.
-	TBSystem::RescheduleTimer(TBMessageHandler::GetNextMessageFireTime());
+	next_fire_time = TBMessageHandler::GetNextMessageFireTime();
+	if (next_fire_time == TB_NOT_SOON) {
+		my_timer_id = 0;
+		return 0; // never - no longer scheduled
+	}
+	next_fire_time -= tb::TBSystem::GetTimeMS();
+	return std::max((Uint32)next_fire_time, (Uint32)1); // asap
 }
 
 // This doesn't really belong here (it belongs in tb_system_[linux/windows].cpp.
 // This is here since the proper implementations has not yet been done.
+
+/** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
+	If fire_time is 0, it should be fired ASAP.
+	If force is true, it will ask the platform to schedule it again, even if
+	the fire_time is the same as last time. */
 void TBSystem::RescheduleTimer(double fire_time)
 {
-	ReschedulePlatformTimer(fire_time, false);
-}
-
-static void window_refresh_callback(GLFWwindow *window)
-{
-	AppBackendSDL2 *backend = GetBackend(window);
-
-	backend->m_app->Process();
-
-	backend->m_has_pending_update = false;
-	// Bail out if we get here with invalid dimensions.
-	// This may happen when minimizing windows (GLFW 3.0.4, Windows 8.1).
-	if (backend->GetWidth() == 0 || backend->GetHeight() == 0)
-		return;
-
-	backend->m_app->RenderFrame();
-
-	glfwSwapBuffers(window);
-}
-
-static void window_size_callback(GLFWwindow *window, int w, int h)
-{
-	AppBackendSDL2 *backend = GetBackend(window);
-	if (backend->m_app)
-		backend->m_app->OnResized(w, h);
+	// cancel existing timer
+	if (my_timer_id) {
+		SDL_RemoveTimer(my_timer_id);
+		my_timer_id = 0;
+	}
+	// set new timer
+	if (fire_time != TB_NOT_SOON) {
+		double delay = fire_time - tb::TBSystem::GetTimeMS();
+		my_timer_id = SDL_AddTimer(std::max((Uint32)delay, (Uint32)1), timer_callback, NULL);
+		if (!my_timer_id)
+			std::cout << "ERROR: RescheduleTimer failed to SDL_AddTimer\n";
+	}
 }
 
 #if (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 1)
@@ -382,18 +254,18 @@ static void drop_callback(GLFWwindow *window, int count, const char **files_utf8
 bool AppBackendSDL2::Init(App *app)
 {
 
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
 		printf("Unable to initialize SDL: %s\n", SDL_GetError());
 		return 1;
 	}
 	const int width = app->GetWidth() > 0 ? app->GetWidth() : 1920;
 	const int height = app->GetHeight() > 0 ? app->GetHeight() : 1080;
-	_window = SDL_CreateWindow(app->GetTitle(),
-							   SDL_WINDOWPOS_UNDEFINED,
-							   SDL_WINDOWPOS_UNDEFINED,
-							   _width, _height,
-							   SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-	if (!_window) {
+	mainWindow = SDL_CreateWindow(app->GetTitle(),
+								  SDL_WINDOWPOS_UNDEFINED,
+								  SDL_WINDOWPOS_UNDEFINED,
+								  width, height,
+								  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+	if (!mainWindow) {
 		printf("Unable to create window: %s\n", SDL_GetError());
 		return 1;
 	}
@@ -416,6 +288,10 @@ bool AppBackendSDL2::Init(App *app)
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
+	SetBackend(mainWindow, this);
+	glContext = SDL_GL_CreateContext(mainWindow);
+	SDL_GL_MakeCurrent(mainWindow, glContext);
+
 #ifdef __LINUX__
 	//Initialize GLEW
 	glewExperimental = GL_TRUE;
@@ -423,28 +299,6 @@ bool AppBackendSDL2::Init(App *app)
 	if (glewError != GLEW_OK) {
 		printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
 	}
-#endif
-
-	SetBackend(mainWindow, this);
-	glContext = SDL_GL_CreateContext(_window);
-	SDL_GL_MakeCurrent(mainWindow, glContext);
-
-	// Ensure we can capture the escape key being pressed below
-	//glfwSetInputMode(mainWindow, GLFW_STICKY_KEYS, GL_TRUE);
-	//glfwSetInputMode(mainWindow, GLFW_SYSTEM_KEYS, GL_TRUE);
-    //glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-	// Set callback functions
-	glfwSetWindowSizeCallback(mainWindow, window_size_callback);
-	glfwSetWindowRefreshCallback(mainWindow, window_refresh_callback);
-	glfwSetCursorPosCallback(mainWindow, cursor_position_callback);
-    glfwSetMouseButtonCallback(mainWindow, mouse_button_callback);
-    glfwSetScrollCallback(mainWindow, scroll_callback);
-    glfwSetKeyCallback(mainWindow, key_callback);
-    glfwSetCharCallback(mainWindow, char_callback);
-    glfwSetTimerCallback(timer_callback);
-#if (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 1)
-	glfwSetDropCallback(mainWindow, drop_callback);
 #endif
 
 #ifdef TB_TARGET_MACOSX
@@ -484,28 +338,261 @@ AppBackendSDL2::~AppBackendSDL2()
 
 void AppBackendSDL2::OnAppEvent(const EVENT &ev)
 {
-	switch (ev)
-	{
-		case EVENT_PAINT_REQUEST:
-			if (!m_has_pending_update)
-			{
-				m_has_pending_update = true;
-				glfwWakeUpMsgLoop(mainWindow);
-			}
-			break;
-		case EVENT_QUIT_REQUEST:
-			m_quit_requested = true;
-			glfwWakeUpMsgLoop(mainWindow);
-			break;
-		case EVENT_TITLE_CHANGED:
-			SDL_SetWindowTitle(mainWindow, m_app->GetTitle());
-			break;
-		default:
-			assert(!"Unhandled app event!");
+	switch (ev) {
+	case EVENT_PAINT_REQUEST:
+		if (!m_has_pending_update) {
+			m_has_pending_update = true;
+			// queue a user event to cause the event loop to run
+			SDL_Event event;
+			SDL_UserEvent userevent;
+			userevent.type = SDL_USEREVENT;
+			userevent.code = 0;
+			userevent.data1 = NULL;
+			userevent.data2 = NULL;
+			event.type = SDL_USEREVENT;
+			event.user = userevent;
+			SDL_PushEvent(&event);
+		}
+		break;
+	case EVENT_QUIT_REQUEST:
+		m_quit_requested = true;
+		// queue a user event to cause the event loop to run
+		SDL_Event event;
+		SDL_UserEvent userevent;
+		userevent.type = SDL_USEREVENT;
+		userevent.code = 0;
+		userevent.data1 = NULL;
+		userevent.data2 = NULL;
+		event.type = SDL_USEREVENT;
+		event.user = userevent;
+		SDL_PushEvent(&event);
+		break;
+	case EVENT_TITLE_CHANGED:
+		SDL_SetWindowTitle(mainWindow, m_app->GetTitle());
+		break;
+	default:
+		assert(!"Unhandled app event!");
 	}
 }
 
-bool port_main() {
+// Attempt to convert an sdl event to a TB event, return true if handled
+bool
+AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
+{
+	bool handled = true;
+	switch (event.type) {
+	case SDL_KEYUP:
+	case SDL_KEYDOWN: {
+		// SDL_KeyboardEvent
+		// Handle any key presses here.
+		bool down = event.type == SDL_KEYDOWN;
+		MODIFIER_KEYS modifier = GetModifierKeys((SDL_Keymod)event.key.keysym.mod);
+		if (event.key.keysym.sym >= SDLK_SPACE && event.key.keysym.sym <= SDLK_z) {
+			unsigned int character = event.key.keysym.sym;
+			InvokeKey(character, TB_KEY_UNDEFINED, modifier, down);
+		}
+		else {
+			// handle special keys
+			switch (event.key.keysym.sym) {
+			case SDLK_F1:			InvokeKey(0, TB_KEY_F1, modifier, down); break;
+			case SDLK_F2:			InvokeKey(0, TB_KEY_F2, modifier, down); break;
+			case SDLK_F3:			InvokeKey(0, TB_KEY_F3, modifier, down); break;
+			case SDLK_F4:			InvokeKey(0, TB_KEY_F4, modifier, down); break;
+			case SDLK_F5:			InvokeKey(0, TB_KEY_F5, modifier, down); break;
+			case SDLK_F6:			InvokeKey(0, TB_KEY_F6, modifier, down); break;
+			case SDLK_F7:			InvokeKey(0, TB_KEY_F7, modifier, down); break;
+			case SDLK_F8:			InvokeKey(0, TB_KEY_F8, modifier, down); break;
+			case SDLK_F9:			InvokeKey(0, TB_KEY_F9, modifier, down); break;
+			case SDLK_F10:			InvokeKey(0, TB_KEY_F10, modifier, down); break;
+			case SDLK_F11:			InvokeKey(0, TB_KEY_F11, modifier, down); break;
+			case SDLK_F12:			InvokeKey(0, TB_KEY_F12, modifier, down); break;
+			case SDLK_LEFT:			InvokeKey(0, TB_KEY_LEFT, modifier, down); break;
+			case SDLK_UP:			InvokeKey(0, TB_KEY_UP, modifier, down); break;
+			case SDLK_RIGHT:		InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
+			case SDLK_DOWN:			InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
+			case SDLK_PAGEUP:		InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
+			case SDLK_PAGEDOWN:		InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
+			case SDLK_HOME:			InvokeKey(0, TB_KEY_HOME, modifier, down); break;
+			case SDLK_END:			InvokeKey(0, TB_KEY_END, modifier, down); break;
+			case SDLK_INSERT:		InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
+			case SDLK_TAB:			InvokeKey(0, TB_KEY_TAB, modifier, down); break;
+			case SDLK_DELETE:		InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
+			case SDLK_BACKSPACE:	InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
+			case SDLK_RETURN:		
+			case SDLK_KP_ENTER:		InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
+			case SDLK_ESCAPE:		InvokeKey(0, TB_KEY_ESC, modifier, down); break;
+			case SDLK_MENU:
+				if (TBWidget::focused_widget && !down) {
+					TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU);
+					ev.modifierkeys = modifier;
+					TBWidget::focused_widget->InvokeEvent(ev);
+				}
+				break;
+			default:
+				handled = false;
+				break;
+			}
+		}
+
+		break;
+	}
+	case SDL_FINGERMOTION:
+	case SDL_FINGERDOWN:
+	case SDL_FINGERUP:
+		event.tfinger;
+		break;
+
+	case SDL_MOUSEMOTION: {
+		event.motion;
+		if (m_app->GetRoot() && !(ShouldEmulateTouchEvent() && !TBWidget::captured_widget))
+			m_app->GetRoot()->InvokePointerMove(event.motion.x, event.motion.y, 
+												GetModifierKeys(),
+												ShouldEmulateTouchEvent());
+
+		break;
+	}
+	case SDL_MOUSEBUTTONUP:
+	case SDL_MOUSEBUTTONDOWN: {
+		// Handle mouse clicks here.
+		event.button;
+		MODIFIER_KEYS modifier = GetModifierKeys();
+		int x = event.button.x;
+		int y = event.button.y;
+		if (event.button.button == SDL_BUTTON_LEFT) {
+			if (event.type == SDL_MOUSEBUTTONDOWN) {
+				// This is a quick fix with n-click support :)
+				static double last_time = 0;
+				static int last_x = 0;
+				static int last_y = 0;
+				static int counter = 1;
+
+				double time = TBSystem::GetTimeMS();
+				if (time < last_time + 600 && last_x == x && last_y == y)
+					counter++;
+				else
+					counter = 1;
+				last_x = x;
+				last_y = y;
+				last_time = time;
+
+				m_app->GetRoot()->InvokePointerDown(x, y, counter, modifier, ShouldEmulateTouchEvent());
+			}
+			else
+				m_app->GetRoot()->InvokePointerUp(x, y, modifier, ShouldEmulateTouchEvent());
+		}
+		else if (event.button.button == SDL_BUTTON_RIGHT && event.type == SDL_MOUSEBUTTONUP) {
+			m_app->GetRoot()->InvokePointerMove(x, y, modifier, ShouldEmulateTouchEvent());
+			if (TBWidget::hovered_widget) {
+				TBWidget::hovered_widget->ConvertFromRoot(x, y);
+				TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, false, modifier);
+				TBWidget::hovered_widget->InvokeEvent(ev);
+			}
+		}
+	}
+		break;
+	case SDL_MOUSEWHEEL: {
+		event.wheel;
+		int mouse_x, mouse_y;
+		SDL_GetMouseState(&mouse_x, &mouse_y);
+		if (m_app->GetRoot())
+			m_app->GetRoot()->InvokeWheel(mouse_x, mouse_y,
+										  (int)event.wheel.x, -(int)event.wheel.y,
+										  GetModifierKeys());
+		break;
+	}
+	case SDL_MULTIGESTURE:
+		event.mgesture;
+		break;
+	case SDL_SYSWMEVENT:
+		event.syswm;
+		break;
+	case SDL_TEXTEDITING:
+		event.edit;
+		break;
+	case SDL_TEXTINPUT:
+		event.text;
+		break;
+	case SDL_WINDOWEVENT: {
+		event.window;
+#undef SDL_Log
+#define SDL_Log(...) //do { ;} while(0)
+        switch (event.window.event) {
+        case SDL_WINDOWEVENT_SHOWN:
+            SDL_Log("Window %d shown", event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_HIDDEN:
+            SDL_Log("Window %d hidden", event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_EXPOSED:
+            SDL_Log("Window %d exposed", event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_MOVED:
+            SDL_Log("Window %d moved to %d,%d",
+                    event.window.windowID, event.window.data1,
+                    event.window.data2);
+            break;
+        case SDL_WINDOWEVENT_RESIZED:
+			if (m_app)
+				m_app->OnResized(event.window.data1, event.window.data2);
+            SDL_Log("Window %d resized to %dx%d",
+                    event.window.windowID, event.window.data1,
+                    event.window.data2);
+            break;
+        case SDL_WINDOWEVENT_SIZE_CHANGED:
+            SDL_Log("Window %d size changed to %dx%d",
+                    event.window.windowID, event.window.data1,
+                    event.window.data2);
+            break;
+        case SDL_WINDOWEVENT_MINIMIZED:
+            SDL_Log("Window %d minimized", event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_MAXIMIZED:
+            SDL_Log("Window %d maximized", event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_RESTORED:
+            SDL_Log("Window %d restored", event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_ENTER:
+            SDL_Log("Mouse entered window %d",
+                    event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_LEAVE:
+            SDL_Log("Mouse left window %d", event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_FOCUS_GAINED:
+            SDL_Log("Window %d gained keyboard focus",
+                    event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_FOCUS_LOST:
+            SDL_Log("Window %d lost keyboard focus",
+                    event.window.windowID);
+            break;
+        case SDL_WINDOWEVENT_CLOSE:
+            SDL_Log("Window %d closed", event.window.windowID);
+            break;
+        default:
+			handled = false;
+            SDL_Log("Window %d got unknown event %d",
+                    event.window.windowID, event.window.event);
+            break;
+		}
+		break;
+	}
+	case SDL_USEREVENT:
+		// event.user;
+		break;
+	case SDL_QUIT:
+		m_quit_requested = true;
+		return true;
+	default:
+		handled = false;
+	}
+	return handled;
+}
+
+
+bool port_main()
+{
 	App *app = app_create();
 
 	AppBackendSDL2 *backend = new AppBackendSDL2();
@@ -515,18 +602,32 @@ bool port_main() {
 	bool success = app->Init();
 	if (success) {
 		// Main loop
-		do
-		{
-			if (backend->m_has_pending_update)
-				window_refresh_callback(backend->mainWindow);
-			SDL_WaitEvent(NULL /*SDL_Event * event*/);
+		SDL_Event event;
+		do {
+			// draw
+			if (backend->m_has_pending_update) {
+				backend->m_app->Process();
+				backend->m_has_pending_update = false;
+				// Bail out if we get here with invalid dimensions.
+				// This may happen when minimizing windows (GLFW 3.0.4, Windows 8.1).
+				if (backend->GetWidth() == 0 || backend->GetHeight() == 0)
+					; // ignore
+				else {
+					backend->m_app->RenderFrame();
+					SDL_GL_SwapWindow(backend->mainWindow);
+				}
+			}
+			// handle events
+			SDL_WaitEvent(&event);
+			if (!backend->HandleSDLEvent(event))
+				std::cout << "unhandled SDL event: " << event.type << "\n";
+
 		} while (!backend->m_quit_requested /* && !glfwWindowShouldClose(backend->mainWindow) */);
 
 		app->ShutDown();
 	}
 
 	delete backend;
-
 	delete app;
 
 	return success;
