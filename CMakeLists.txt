@@ -1,7 +1,8 @@
 project(TurboBadger)
 cmake_minimum_required(VERSION 2.8)
 
-option(TB_BUILD_DEMO "Build the Demo application. Depends on glfw." ON)
+option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." OFF)
+option(TB_BUILD_DEMO_SDL2 "Build the Demo application. Depends on SDL2." ON)
 option(TB_DEMO_IN_SRC "Build the demo application to the source directory" ON)
 option(TB_DEBUG_POSTFIX "Add _d postfix for debug builds" OFF)
 option(TB_GENERATE_CONFIG "Generate the tb_config.h file from provided parameters in cmake. Default Off" OFF)
@@ -79,9 +80,10 @@ include_directories("${PROJECT_SOURCE_DIR}/src/tb")
 add_subdirectory(src/tb)
 
 # Add Demo project
-if(TB_BUILD_DEMO)
+if(TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
+  message("XX")
  add_subdirectory(Demo)
-endif(TB_BUILD_DEMO)
+endif(TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/tb
     DESTINATION include
