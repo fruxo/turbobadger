@@ -22,14 +22,17 @@ set(GLFW_INSTALL OFF)
 # Add sources
 set(LOCAL_SRCS "")
 aux_source_directory(./demo01 LOCAL_SRCS)
-aux_source_directory(./platform LOCAL_SRCS)
+  set (LOCAL_SRCS ${LOCAL_SRCS}
+    ./platform/port_glfw.cpp
+    ./platform/glfw_extra_linux.cpp
+    ./platform/Application.cpp)
 include_directories(".")
 
 # Add glfw project on MacOSX using 'ports'
 if(APPLE)
   find_library (GLFW_LIBRARIES glfw )
   find_library (OPENGL_LIBRARY OpenGL )
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY})
+  set (EXTRA_LIBS ${EXTRA_LIBS} ${GLFW_LIBRARIES} ${OPENGL_LIBRARY})
   #message("GLFW_LIBRARIES: ${GLFW_LIBRARIES}")
   find_path (GLFW_INCLUDE_DIRS GLFW/glfw3.h)
   include_directories(${GLFW_INCLUDE_DIRS})
