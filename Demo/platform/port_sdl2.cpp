@@ -1,7 +1,7 @@
 // -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 
 #ifdef __EMSCRIPTEN__
-#define GL_GLEXT_PROTOTYPES
+//#define GL_GLEXT_PROTOTYPES
 #include "SDL/SDL.h"
 //#include "SDL/SDL_opengl.h"
 #include "SDL/SDL_opengles2.h"
@@ -12,11 +12,11 @@
 #define glIsVertexArray glIsVertexArrayOES
 #else
 #ifdef __APPLE__
-#include <OpenGL/gl3.h>
+//#include <OpenGL/gl3.h>
 #else
 // linux
-#include <GL/glew.h>
-#include <SDL2/SDL_opengl.h>
+//#include <GL/glew.h>
+//#include <SDL2/SDL_opengl.h>
 #endif
 #include "SDL2/SDL.h"
 //#include "SDL2/SDL_opengl.h"
@@ -41,25 +41,6 @@
 #endif
 
 using namespace tb;
-
-int mouse_x = 0;
-int mouse_y = 0;
-bool key_alt = false;
-bool key_ctrl = false;
-bool key_shift = false;
-bool key_super = false;
-
-class AppBackendSDL2;
-
-void SetBackend(SDL_Window *window, AppBackendSDL2 *backend)
-{
-	SDL_SetWindowData(window, "AppBackendSDL2", backend);
-}
-
-AppBackendSDL2 *GetBackend(SDL_Window *window)
-{
-	return static_cast<AppBackendSDL2*>(SDL_GetWindowData(window, "AppBackendSDL2"));
-}
 
 class AppBackendSDL2 : public AppBackend
 {
@@ -232,25 +213,6 @@ void TBSystem::RescheduleTimer(double fire_time)
 	}
 }
 
-#if (GLFW_VERSION_MAJOR >= 3 && GLFW_VERSION_MINOR >= 1)
-static void drop_callback(GLFWwindow *window, int count, const char **files_utf8)
-{
-	AppBackendSDL2 *backend = GetBackend(window);
-	TBWidget *target = TBWidget::hovered_widget;
-	if (!target)
-		target = TBWidget::focused_widget;
-	if (!target)
-		target = backend->GetRoot();
-	if (target)
-	{
-		TBWidgetEventFileDrop ev;
-		for (int i = 0; i < count; i++)
-			ev.files.Add(new TBStr(files_utf8[i]));
-		target->InvokeEvent(ev);
-	}
-}
-#endif
-
 bool AppBackendSDL2::Init(App *app)
 {
 
@@ -270,7 +232,9 @@ bool AppBackendSDL2::Init(App *app)
 		return 1;
 	}
 
+#if 0
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+#endif
 #ifndef GL_ES_VERSION_2_0
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
@@ -288,11 +252,10 @@ bool AppBackendSDL2::Init(App *app)
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
-	SetBackend(mainWindow, this);
 	glContext = SDL_GL_CreateContext(mainWindow);
 	SDL_GL_MakeCurrent(mainWindow, glContext);
 
-#ifdef __LINUX__
+#if defined(__LINUX__) && 0
 	//Initialize GLEW
 	glewExperimental = GL_TRUE;
 	GLenum glewError = glewInit();
@@ -306,12 +269,11 @@ bool AppBackendSDL2::Init(App *app)
 	// where the demo resources are.
 	char exec_path[2048];
 	uint32_t exec_path_size = sizeof(exec_path);
-	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
-		{
-			TBTempBuffer path;
-			path.AppendPath(exec_path);
-			chdir(path.GetData());
-		}
+	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0) {
+		TBTempBuffer path;
+		path.AppendPath(exec_path);
+		chdir(path.GetData());
+	}
 #endif
 
 	m_renderer = new TBRendererGL();
