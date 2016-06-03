@@ -32,7 +32,7 @@ bool is_number_only(const char *str);
 	Should only be called when you've verified it's a number with is_number(). */
 bool is_number_float(const char *str);
 
-/** TBValueArray is a array of TBValue */
+/** TBValueArray is an array of TBValue */
 class TBValueArray
 {
 public:

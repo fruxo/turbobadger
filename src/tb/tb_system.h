@@ -71,12 +71,15 @@ public:
 class TBFile
 {
 public:
-	enum TBFileMode { MODE_READ };
+	enum TBFileMode { MODE_READ, MODE_WRITETRUNC };
 	static TBFile *Open(const char *filename, TBFileMode mode);
 
 	virtual ~TBFile() {}
 	virtual long Size() = 0;
 	virtual size_t Read(void *buf, size_t elemSize, size_t count) = 0;
+#if defined(TB_RUNTIME_DEBUG_INFO) && defined(TB_FILE_POSIX)
+	virtual size_t Write(void *buf, size_t elemSize, size_t count) = 0;
+#endif
 };
 
 } // namespace tb

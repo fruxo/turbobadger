@@ -815,7 +815,7 @@ public:
 
 	// == Setter shared for many types of widgets ============
 
-	/** Set along which axis the content should be layouted. */
+	/** Set along which axis the content should be layed out. */
 	virtual void SetAxis(AXIS axis) {}
 	virtual AXIS GetAxis() const { return AXIS_X; }
 
