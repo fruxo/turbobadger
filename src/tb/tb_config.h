@@ -58,9 +58,16 @@
 	It is using GL version 1.1, */
 #define TB_RENDERER_GL
 
+/** Enable renderer using OpenGL3. This renderer depends on TB_RENDERER_BATCHER.
+	It is using GL version 3.2, */
+#define TB_RENDERER_GL3
+
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL ES version 1. */
 //#define TB_RENDERER_GLES_1
+#ifdef __EMSCRIPTEN__
+#define TB_RENDERER_GLES_2
+#endif
 
 /** The width of the font glyph cache. Must be a power of two. */
 #define TB_GLYPH_CACHE_WIDTH 512
@@ -98,7 +105,7 @@
 #if defined(ANDROID) || defined(__ANDROID__)
 #define TB_SYSTEM_ANDROID
 #define TB_CLIPBOARD_DUMMY
-#elif defined(__linux) || defined(__linux__)
+#elif defined(__linux) || defined(__linux__) || defined(__EMSCRIPTEN__)
 #define TB_FILE_POSIX
 #define TB_TARGET_LINUX
 #define TB_SYSTEM_LINUX
@@ -115,6 +122,8 @@
 #define TB_TARGET_WINDOWS
 #define TB_CLIPBOARD_WINDOWS
 #define TB_SYSTEM_WINDOWS
+#else
+#warning "no TB system defined"
 #endif
 
 #endif // TB_CONFIG_H

@@ -75,6 +75,13 @@ if(MSVC)
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
 endif(MSVC)
 
+if (EMSCRIPTEN)
+ set (CMAKE_EXECUTABLE_SUFFIX ".html")
+ #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
+ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
+ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
+endif (EMSCRIPTEN)
+
 # Add TurboBadgerLib project
 include_directories("${PROJECT_SOURCE_DIR}/src/tb")
 add_subdirectory(src/tb)

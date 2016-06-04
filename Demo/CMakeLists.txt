@@ -28,15 +28,13 @@ aux_source_directory(./demo01 LOCAL_SRCS)
     ./platform/Application.cpp)
 include_directories(".")
 
-# Add glfw project on MacOSX using 'ports'
+# Add glfw and gl libs on MacOSX
 if(APPLE)
   find_library (GLFW_LIBRARIES glfw )
   find_library (OPENGL_LIBRARY OpenGL )
   set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES})
   find_path (GLFW_INCLUDE_DIRS GLFW/glfw3.h)
   include_directories(${GLFW_INCLUDE_DIRS})
-  #message("GLFW_LIBRARIES: ${GLFW_LIBRARIES}")
-  #message("GLFW_INCLUDE_DIRS: ${GLFW_INCLUDE_DIRS}")
 endif(APPLE)
 
 if (NOT GLFW_LIBRARIES)
@@ -69,31 +67,28 @@ if (TB_BUILD_DEMO_SDL2)
     ./platform/port_sdl2.cpp
     ./platform/Application.cpp)
   include_directories(".")
-  
-  if (APPLE)
+
+  if (EMSCRIPTEN)
+    set (CMAKE_EXECUTABLE_SUFFIX ".html")
+    #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file ")
+  elseif (APPLE)
     find_package (OpenGL REQUIRED)
     find_library (SDL2_LIBRARIES SDL2)
-    #find_library (SDL2_IMAGE_LIBRARIES SDL2_image)
     find_path (SDL2_INCLUDE_DIRS SDL.h)
-    #find_path (SDL2_IMAGE_INCLUDE_DIRS SDL_image.h)
-    #link_directories (${SDL2_LIBRARY_DIRS})
-  else (APPLE)
-    #find_package (OpenGL REQUIRED)
+    set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} )
+  else (EMSCRIPTEN)
     find_library (OPENGL_LIBRARY GL PATHS "/usr/lib64/nvidia" )
-    find_library (GLEW_LIBRARIES GLEW PATHS "/usr/lib64/nvidia" )
     find_library (SDL2_LIBRARIES SDL2 HINTS "$ENV{HOME}/local/lib")
-    #find_library (SDL2_IMAGE_LIBRARIES SDL2_image)
     find_path (SDL2_INCLUDE_DIRS "SDL2/SDL.h"
       HINTS "$ENV{HOME}/local/include/"
       PATH_SUFFIXES "" "SDL2")
-    set (EXTRA_LIBS ${EXTRA_LIBS} ${GLEW_LIBRARIES} )
     include_directories(${SDL2_INCLUDE_DIRS})
-  endif (APPLE)
+    set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} )
+  endif (EMSCRIPTEN)
   
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} )
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${GLEW_LIBRARIES} )
-  message ("SDL2 lib : ${SDL2_LIBRARIES}")
-  message ("SDL2 incl: ${SDL2_INCLUDE_DIRS}")
 
   # Platform specific
   if(CMAKE_COMPILER_IS_MINGW)

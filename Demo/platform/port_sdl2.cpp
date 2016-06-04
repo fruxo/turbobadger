@@ -1,25 +1,9 @@
 // -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 
 #ifdef __EMSCRIPTEN__
-//#define GL_GLEXT_PROTOTYPES
 #include "SDL/SDL.h"
-//#include "SDL/SDL_opengl.h"
-#include "SDL/SDL_opengles2.h"
-//#include "SDL/SDL_opengles2_gl2ext.h"
-#define glGenVertexArrays glGenVertexArraysOES
-#define glBindVertexArray glBindVertexArrayOES
-#define glDeleteVertexArrays glDeleteVertexArraysOES
-#define glIsVertexArray glIsVertexArrayOES
 #else
-#ifdef __APPLE__
-//#include <OpenGL/gl3.h>
-#else
-// linux
-//#include <GL/glew.h>
-//#include <SDL2/SDL_opengl.h>
-#endif
 #include "SDL2/SDL.h"
-//#include "SDL2/SDL_opengl.h"
 #endif
 
 #include <stdlib.h>
@@ -215,7 +199,6 @@ void TBSystem::RescheduleTimer(double fire_time)
 
 bool AppBackendSDL2::Init(App *app)
 {
-
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
 		printf("Unable to initialize SDL: %s\n", SDL_GetError());
 		return 1;
@@ -232,22 +215,22 @@ bool AppBackendSDL2::Init(App *app)
 		return 1;
 	}
 
-#if 0
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-#endif
-#ifndef GL_ES_VERSION_2_0
-	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	//SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	//SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	//SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-#else
-	//#error "GLES2"
+	//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+#if defined(TB_RENDERER_GLES_2)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#elif defined(TB_RENDERER_GL3)
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+#else
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #endif
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
@@ -255,14 +238,7 @@ bool AppBackendSDL2::Init(App *app)
 	glContext = SDL_GL_CreateContext(mainWindow);
 	SDL_GL_MakeCurrent(mainWindow, glContext);
 
-#if defined(__LINUX__) && 0
-	//Initialize GLEW
-	glewExperimental = GL_TRUE;
-	GLenum glewError = glewInit();
-	if (glewError != GLEW_OK) {
-		printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
-	}
-#endif
+	glClearColor(0.3f, 0.3f, 0.3f, 1);
 
 #ifdef TB_TARGET_MACOSX
 	// Change working directory to the executable path. We expect it to be
@@ -401,11 +377,10 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	case SDL_FINGERMOTION:
 	case SDL_FINGERDOWN:
 	case SDL_FINGERUP:
-		event.tfinger;
+		//event.tfinger;
 		break;
 
 	case SDL_MOUSEMOTION: {
-		event.motion;
 		if (m_app->GetRoot() && !(ShouldEmulateTouchEvent() && !TBWidget::captured_widget))
 			m_app->GetRoot()->InvokePointerMove(event.motion.x, event.motion.y, 
 												GetModifierKeys(),
@@ -416,7 +391,6 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	case SDL_MOUSEBUTTONUP:
 	case SDL_MOUSEBUTTONDOWN: {
 		// Handle mouse clicks here.
-		event.button;
 		MODIFIER_KEYS modifier = GetModifierKeys();
 		int x = event.button.x;
 		int y = event.button.y;
@@ -453,7 +427,6 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	}
 		break;
 	case SDL_MOUSEWHEEL: {
-		event.wheel;
 		int mouse_x, mouse_y;
 		SDL_GetMouseState(&mouse_x, &mouse_y);
 		if (m_app->GetRoot())
@@ -463,19 +436,18 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 		break;
 	}
 	case SDL_MULTIGESTURE:
-		event.mgesture;
+		//event.mgesture;
 		break;
 	case SDL_SYSWMEVENT:
-		event.syswm;
+		//event.syswm;
 		break;
 	case SDL_TEXTEDITING:
-		event.edit;
+		//event.edit;
 		break;
 	case SDL_TEXTINPUT:
-		event.text;
+		//event.text;
 		break;
 	case SDL_WINDOWEVENT: {
-		event.window;
 #undef SDL_Log
 #define SDL_Log(...) //do { ;} while(0)
         switch (event.window.event) {

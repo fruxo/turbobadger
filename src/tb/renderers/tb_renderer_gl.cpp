@@ -1,3 +1,4 @@
+// -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 // ================================================================================
 // ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
@@ -10,6 +11,8 @@
 #include "tb_system.h"
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
 
 namespace tb {
 
@@ -19,14 +22,16 @@ uint32 dbg_bitmap_validations = 0;
 
 // == Utilities ===================================================================================
 
+#if !defined(TB_RENDERER_GLES_2) && !defined(TB_RENDERER_GL3)
 static void Ortho2D(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top)
 {
 #ifdef TB_RENDERER_GLES_1
-	glOrthof(left, right, bottom, top, -1.0, 1.0);
+       glOrthof(left, right, bottom, top, -1.0, 1.0);
 #else
-	glOrtho(left, right, bottom, top, -1.0, 1.0);
+       glOrtho(left, right, bottom, top, -1.0, 1.0);
 #endif
 }
+#endif
 
 // == Batching ====================================================================================
 
@@ -90,7 +95,165 @@ void TBBitmapGL::SetData(uint32 *data)
 
 TBRendererGL::TBRendererGL()
 {
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+
+	GLchar vShaderStr[] =  
+#if defined(TB_RENDERER_GL3)
+		"#version 150                    \n"
+		"#define attribute in            \n"
+		"#define varying out             \n"
+#endif
+		"attribute vec2 xy;              \n"
+		"attribute vec2 uv;              \n"
+		"attribute vec4 col;             \n"
+		"uniform mat4 ortho;             \n"
+		"uniform sampler2D tex;          \n"
+		"varying vec2 uvo;               \n"
+		"varying lowp vec4 color;        \n"
+		"void main()                             \n"
+		"{                                       \n"
+		"  //gl_Position = vec4(xy,0,0);         \n"
+		"  gl_Position = ortho * vec4(xy,0,0);   \n"
+		"  uvo = uv;                             \n"
+		"  color = col;                          \n"
+		"}                                       \n";
+	GLchar fShaderStr[] =
+#if defined(TB_RENDERER_GL3)
+		"#version 150                        \n"
+		"#define varying in                  \n"
+		"out vec4 fragData[1];               \n"
+		"#define gl_FragColor fragData[0]    \n"
+		"#define texture2D texture                     \n"
+#endif
+		"precision mediump float;                      \n"
+		"varying vec2 uvo;                             \n"
+		"varying lowp vec4 color;                      \n"
+		"uniform sampler2D tex;                        \n"
+		"void main()                                   \n"
+		"{                                             \n"
+		"  gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);  \n"
+		"  //gl_FragColor = color * texture2D(tex, uvo); \n"
+		"}                                             \n";
+
+	GLuint vertexShader;
+	GLuint fragmentShader;
+	GLint linked;
+
+	vertexShader = LoadShader(GL_VERTEX_SHADER, vShaderStr);
+	fragmentShader = LoadShader(GL_FRAGMENT_SHADER, fShaderStr);
+
+	m_program = glCreateProgram();
+	if (m_program == 0) {
+		TBDebugPrint("glCreateProgram failed.\n", 0);
+		return;
+	}
+
+	glAttachShader(m_program, vertexShader);
+	glAttachShader(m_program, fragmentShader);
+	glBindAttribLocation(m_program, 0, "xy");
+	glBindAttribLocation(m_program, 1, "uv");
+	glBindAttribLocation(m_program, 2, "color");
+	glLinkProgram(m_program);
+	glGetProgramiv(m_program, GL_LINK_STATUS, &linked);
+	if (!linked) {
+		GLint infoLen = 0;
+		glGetProgramiv(m_program, GL_INFO_LOG_LENGTH, &infoLen);
+		if (infoLen > 1) {
+			char * infoLog = (char *)malloc(sizeof(char) * infoLen);
+			glGetProgramInfoLog(m_program, infoLen, NULL, infoLog);
+			TBDebugPrint("Error linking program:\n%s\n", infoLog);
+			free(infoLog);
+		}
+		glDeleteProgram(m_program);
+		TBDebugPrint("glLinkProgram failed.\n", 0);
+		return;
+	}
+
+	m_orthoLoc = glGetUniformLocation(m_program, "ortho");
+	m_texLoc = glGetUniformLocation(m_program, "tex");
+
+	glGenVertexArrays(1, &m_vao);
+	glBindVertexArray(m_vao);
+
+	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	glGenBuffers(1, &m_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+#endif
 }
+
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+GLuint TBRendererGL::LoadShader(GLenum type, const GLchar *shaderSrc)
+{
+	GLuint shader;
+	GLint compiled;
+
+	shader = glCreateShader(type);
+	if (shader == 0)
+		return 0;
+
+	glShaderSource(shader, 1, &shaderSrc, NULL);
+	glCompileShader(shader);
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+	if (!compiled) {
+		GLint infoLen = 0;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+		if (infoLen > 1) {
+			char * infoLog = (char *)malloc(sizeof(char) * infoLen);
+			glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
+			TBDebugPrint("Error compiling shader:\n%s\n", infoLog);
+			free(infoLog);
+		}
+		glDeleteShader(shader);
+		return 0;
+	}
+	return shader;
+}
+
+static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n, float f)
+{
+#if 1
+	ortho[0] = 2 / (r - l);
+	ortho[1] = 0;
+	ortho[2] = 0;
+	ortho[3] = -(r+l)/(r-l);
+
+	ortho[4] = 0;
+	ortho[5] = 2 / (t - b);
+	ortho[6] = 0;
+	ortho[7] = -(t+b)/(t-b);
+
+	ortho[8]  = 0;
+	ortho[9]  = 0;
+	ortho[10] = -2 / (f - n);
+	ortho[11] = -(f+n)/(f-n);
+
+	ortho[12] = 0;
+	ortho[13] = 0;
+	ortho[14] = 0;
+	ortho[15] = 1;
+#else
+	ortho[0] = 2 / (r - l);
+	ortho[4] = 0;
+	ortho[8] = 0;
+	ortho[12] = -(r+l)/(r-l);
+
+	ortho[1] = 0;
+	ortho[5] = 2 / (t - b);
+	ortho[9] = 0;
+	ortho[13] = -(t+b)/(t-b);
+
+	ortho[2]  = 0;
+	ortho[6]  = 0;
+	ortho[10] = -2 / (f - n);
+	ortho[14] = -(f+n)/(f-n);
+
+	ortho[3] = 0;
+	ortho[7] = 0;
+	ortho[11] = 0;
+	ortho[15] = 1;
+#endif
+}
+#endif
 
 void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 {
@@ -103,10 +266,20 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	g_current_texture = (GLuint)-1;
 	g_current_batch = nullptr;
 
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+	glBindVertexArray(m_vao);
+	glUseProgram(m_program);
+	float ortho[16];
+	MakeOrtho(ortho, 0, (GLfloat)render_target_w, (GLfloat)render_target_h, 0, -1.0, 1.0);
+	glUniformMatrix4fv(m_orthoLoc, 1, GL_FALSE, ortho);
+	glUniform1i(m_texLoc, GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0);
+#else
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	Ortho2D(0, (GLfloat)render_target_w, (GLfloat)render_target_h, 0);
 	glMatrixMode(GL_MODELVIEW);
+#endif
 	glViewport(0, 0, render_target_w, render_target_h);
 	glScissor(0, 0, render_target_w, render_target_h);
 
@@ -116,9 +289,11 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	glEnable(GL_SCISSOR_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnableClientState(GL_COLOR_ARRAY);
+#if !defined(TB_RENDERER_GLES_2) && !defined(TB_RENDERER_GL3)
+	glEnableClientState(GL_COLOR_ARRAY); /* GL1.1 */
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
+#endif
 }
 
 void TBRendererGL::EndPaint()
@@ -148,9 +323,23 @@ void TBRendererGL::RenderBatch(Batch *batch)
 	BindBitmap(batch->bitmap);
 	if (g_current_batch != batch)
 	{
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+		glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+		glBufferData(GL_ARRAY_BUFFER, batch->vertex_count * sizeof(Vertex), (void *)&batch->vertex[0], GL_DYNAMIC_DRAW);
+
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(0, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)NULL)->x);
+		glVertexAttribPointer(1, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)NULL)->u);
+		glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(Vertex), &((Vertex *)NULL)->col);
+
+		std::cout << "setup " << batch->vertex_count << " vertices\n";
+#else
 		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (void *) &batch->vertex[0].r);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void *) &batch->vertex[0].u);
 		glVertexPointer(2, GL_FLOAT, sizeof(Vertex), (void *) &batch->vertex[0].x);
+#endif
 		g_current_batch = batch;
 	}
 
