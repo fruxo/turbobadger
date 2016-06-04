@@ -73,7 +73,12 @@ if (TB_BUILD_DEMO_SDL2)
     #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --preload-file ")
+    # default skin resources
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
+    # test files
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser.tb.txt@/")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser_included.tb.txt@/")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser_definitions.tb.txt@/")
   elseif (APPLE)
     find_package (OpenGL REQUIRED)
     find_library (SDL2_LIBRARIES SDL2)
@@ -102,6 +107,12 @@ if (TB_BUILD_DEMO_SDL2)
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
+
+  if (EMSCRIPTEN)
+    add_custom_command(TARGET TurboBadgerDemoSDL
+      PRE_LINK
+      COMMAND rsync -a ../resources /tmp/resources --exclude '*.psd')
+  endif (EMSCRIPTEN)
 
 endif(TB_BUILD_DEMO_SDL2)
 
