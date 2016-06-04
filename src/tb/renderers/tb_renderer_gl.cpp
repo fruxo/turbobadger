@@ -341,7 +341,8 @@ void TBRendererGL::RenderBatch(Batch *batch)
 #endif
 	}
 
-#if 1
+#if 0
+	// Check for nonsensical texture coordinates(!)
 	for (int ii = 0; ii < batch->vertex_count; ii++)
 	{
 		if (batch->vertex[ii].u > 1.0 || batch->vertex[ii].v > 1.0)
