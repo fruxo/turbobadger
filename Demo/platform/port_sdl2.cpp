@@ -166,7 +166,8 @@ static Uint32 timer_callback(Uint32 interval, void *param)
 	// If we still have things to do (because we didn't process all messages,
 	// or because there are new messages), we need to rescedule, so call RescheduleTimer.
 	next_fire_time = TBMessageHandler::GetNextMessageFireTime();
-	if (next_fire_time == TB_NOT_SOON) {
+	if (next_fire_time == TB_NOT_SOON)
+	{
 		my_timer_id = 0;
 		return 0; // never - no longer scheduled
 	}
@@ -184,12 +185,14 @@ static Uint32 timer_callback(Uint32 interval, void *param)
 void TBSystem::RescheduleTimer(double fire_time)
 {
 	// cancel existing timer
-	if (my_timer_id) {
+	if (my_timer_id)
+	{
 		SDL_RemoveTimer(my_timer_id);
 		my_timer_id = 0;
 	}
 	// set new timer
-	if (fire_time != TB_NOT_SOON) {
+	if (fire_time != TB_NOT_SOON)
+	{
 		double delay = fire_time - tb::TBSystem::GetTimeMS();
 		my_timer_id = SDL_AddTimer(std::max((Uint32)delay, (Uint32)1), timer_callback, NULL);
 		if (!my_timer_id)
@@ -199,7 +202,8 @@ void TBSystem::RescheduleTimer(double fire_time)
 
 bool AppBackendSDL2::Init(App *app)
 {
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
+	{
 		printf("Unable to initialize SDL: %s\n", SDL_GetError());
 		return 1;
 	}
@@ -210,7 +214,8 @@ bool AppBackendSDL2::Init(App *app)
 								  SDL_WINDOWPOS_UNDEFINED,
 								  width, height,
 								  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-	if (!mainWindow) {
+	if (!mainWindow)
+	{
 		printf("Unable to create window: %s\n", SDL_GetError());
 		return 1;
 	}
@@ -247,7 +252,8 @@ bool AppBackendSDL2::Init(App *app)
 	// where the demo resources are.
 	char exec_path[2048];
 	uint32_t exec_path_size = sizeof(exec_path);
-	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0) {
+	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
+	{
 		TBTempBuffer path;
 		path.AppendPath(exec_path);
 		chdir(path.GetData());
@@ -278,9 +284,11 @@ AppBackendSDL2::~AppBackendSDL2()
 
 void AppBackendSDL2::OnAppEvent(const EVENT &ev)
 {
-	switch (ev) {
+	switch (ev)
+	{
 	case EVENT_PAINT_REQUEST:
-		if (!m_has_pending_update) {
+		if (!m_has_pending_update)
+		{
 			m_has_pending_update = true;
 			// queue a user event to cause the event loop to run
 			SDL_Event event;
@@ -322,18 +330,22 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	bool handled = true;
 	switch (event.type) {
 	case SDL_KEYUP:
-	case SDL_KEYDOWN: {
+	case SDL_KEYDOWN:
+		{
 		// SDL_KeyboardEvent
 		// Handle any key presses here.
 		bool down = event.type == SDL_KEYDOWN;
 		MODIFIER_KEYS modifier = GetModifierKeys((SDL_Keymod)event.key.keysym.mod);
-		if (event.key.keysym.sym >= SDLK_SPACE && event.key.keysym.sym <= SDLK_z) {
+		if (event.key.keysym.sym >= SDLK_SPACE && event.key.keysym.sym <= SDLK_z)
+		{
 			unsigned int character = event.key.keysym.sym;
 			InvokeKey(character, TB_KEY_UNDEFINED, modifier, down);
 		}
-		else {
+		else
+		{
 			// handle special keys
-			switch (event.key.keysym.sym) {
+			switch (event.key.keysym.sym)
+			{
 			case SDLK_F1:			InvokeKey(0, TB_KEY_F1, modifier, down); break;
 			case SDLK_F2:			InvokeKey(0, TB_KEY_F2, modifier, down); break;
 			case SDLK_F3:			InvokeKey(0, TB_KEY_F3, modifier, down); break;
@@ -362,7 +374,8 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 			case SDLK_KP_ENTER:		InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
 			case SDLK_ESCAPE:		InvokeKey(0, TB_KEY_ESC, modifier, down); break;
 			case SDLK_MENU:
-				if (TBWidget::focused_widget && !down) {
+				if (TBWidget::focused_widget && !down)
+				{
 					TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU);
 					ev.modifierkeys = modifier;
 					TBWidget::focused_widget->InvokeEvent(ev);
@@ -396,8 +409,10 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 		MODIFIER_KEYS modifier = GetModifierKeys();
 		int x = event.button.x;
 		int y = event.button.y;
-		if (event.button.button == SDL_BUTTON_LEFT) {
-			if (event.type == SDL_MOUSEBUTTONDOWN) {
+		if (event.button.button == SDL_BUTTON_LEFT)
+		{
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
 				// This is a quick fix with n-click support :)
 				static double last_time = 0;
 				static int last_x = 0;
@@ -418,9 +433,11 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 			else
 				m_app->GetRoot()->InvokePointerUp(x, y, modifier, ShouldEmulateTouchEvent());
 		}
-		else if (event.button.button == SDL_BUTTON_RIGHT && event.type == SDL_MOUSEBUTTONUP) {
+		else if (event.button.button == SDL_BUTTON_RIGHT && event.type == SDL_MOUSEBUTTONUP)
+		{
 			m_app->GetRoot()->InvokePointerMove(x, y, modifier, ShouldEmulateTouchEvent());
-			if (TBWidget::hovered_widget) {
+			if (TBWidget::hovered_widget)
+			{
 				TBWidget::hovered_widget->ConvertFromRoot(x, y);
 				TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU, x, y, false, modifier);
 				TBWidget::hovered_widget->InvokeEvent(ev);
@@ -536,19 +553,23 @@ bool port_main()
 		return false;
 
 	bool success = app->Init();
-	if (success) {
+	if (success)
+	{
 		// Main loop
 		SDL_Event event;
-		do {
+		do
+		{
 			// draw
-			if (backend->m_has_pending_update) {
+			if (backend->m_has_pending_update)
+			{
 				backend->m_app->Process();
 				backend->m_has_pending_update = false;
 				// Bail out if we get here with invalid dimensions.
 				// This may happen when minimizing windows (GLFW 3.0.4, Windows 8.1).
 				if (backend->GetWidth() == 0 || backend->GetHeight() == 0)
 					; // ignore
-				else {
+				else
+				{
 					backend->m_app->RenderFrame();
 					SDL_GL_SwapWindow(backend->mainWindow);
 				}
