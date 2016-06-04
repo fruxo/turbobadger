@@ -40,7 +40,6 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 	switch (mode)
 	{
 	case MODE_READ:
-          printf("OPENING '%s'\n", filename);
 		f = fopen(filename, "rb");
 		break;
 	default:

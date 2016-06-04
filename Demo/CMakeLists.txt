@@ -74,7 +74,8 @@ if (TB_BUILD_DEMO_SDL2)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
     # default skin resources
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
+    #set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/demo01@Demo/demo01")
     # test files
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser.tb.txt@/")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser_included.tb.txt@/")
@@ -111,7 +112,9 @@ if (TB_BUILD_DEMO_SDL2)
   if (EMSCRIPTEN)
     add_custom_command(TARGET TurboBadgerDemoSDL
       PRE_LINK
-      COMMAND rsync -a ../resources /tmp/resources --exclude '*.psd')
+#      COMMAND rm -r /tmp/resources /tmp/demo01
+      COMMAND rsync -av --exclude='*.psd' ../resources /tmp/resources 
+      COMMAND rsync -av --include='*/' --include='*.txt' --include='*.png' --exclude='*' demo01 /tmp/demo01 )
   endif (EMSCRIPTEN)
 
 endif(TB_BUILD_DEMO_SDL2)
