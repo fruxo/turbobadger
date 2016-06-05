@@ -1,8 +1,8 @@
 project(TurboBadger)
 cmake_minimum_required(VERSION 2.8)
 
-option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." OFF)
-option(TB_BUILD_DEMO_SDL2 "Build the Demo application. Depends on SDL2." ON)
+option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." ON)
+option(TB_BUILD_DEMO_SDL2 "Build the Demo application. Depends on SDL2." OFF)
 option(TB_DEMO_IN_SRC "Build the demo application to the source directory" ON)
 option(TB_DEBUG_POSTFIX "Add _d postfix for debug builds" OFF)
 option(TB_GENERATE_CONFIG "Generate the tb_config.h file from provided parameters in cmake. Default Off" OFF)
