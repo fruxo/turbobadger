@@ -48,23 +48,23 @@ static void Ortho2D(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top)
 static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n, float f)
 {
 	ortho[0] = 2 / (r - l);
-	ortho[4] = 0;
-	ortho[8] = 0;
-	ortho[12] = -(r+l)/(r-l);
-
 	ortho[1] = 0;
-	ortho[5] = 2 / (t - b);
-	ortho[9] = 0;
-	ortho[13] = -(t+b)/(t-b);
-
 	ortho[2]  = 0;
-	ortho[6]  = 0;
-	ortho[10] = -2 / (f - n);
-	ortho[14] = -(f+n)/(f-n);
-
 	ortho[3] = 0;
+
+	ortho[4] = 0;
+	ortho[5] = 2 / (t - b);
+	ortho[6]  = 0;
 	ortho[7] = 0;
+
+	ortho[8] = 0;
+	ortho[9] = 0;
+	ortho[10] = -2 / (f - n);
 	ortho[11] = 0;
+
+	ortho[12] = -(r+l)/(r-l);
+	ortho[13] = -(t+b)/(t-b);
+	ortho[14] = -(f+n)/(f-n);
 	ortho[15] = 1;
 }
 #endif
@@ -150,7 +150,7 @@ TBRendererGL::TBRendererGL()
 		"void main()                             \n"
 		"{                                       \n"
 		"  gl_Position = ortho * vec4(xy,0,1);   \n"
-		"  uvo = min(uv,vec2(1,1));  /* hack around bug somewhere else */     \n"
+		"  uvo = uv;                             \n"
 		"  color = col;                          \n"
 		"}                                       \n";
 	GLchar fragmentShaderString[] =
@@ -167,7 +167,6 @@ TBRendererGL::TBRendererGL()
 		"uniform sampler2D tex;                        \n"
 		"void main()                                   \n"
 		"{                                             \n"
-		"  //gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);  \n"
 		"  gl_FragColor = color * texture2D(tex, uvo); \n"
 		"}                                             \n";
 
