@@ -153,7 +153,7 @@ static Uint32 timer_callback(Uint32 interval, void *param)
 {
 	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
 	double now = tb::TBSystem::GetTimeMS();
-	if (now < next_fire_time)
+	if (next_fire_time != TB_NOT_SOON && now < next_fire_time)
 	{
 		// We timed out *before* we were supposed to (the OS is not playing nice).
 		// Calling ProcessMessages now won't achieve a thing so force a reschedule
@@ -196,7 +196,7 @@ void TBSystem::RescheduleTimer(double fire_time)
 		double delay = fire_time - tb::TBSystem::GetTimeMS();
 		my_timer_id = SDL_AddTimer(std::max((Uint32)delay, (Uint32)1), timer_callback, NULL);
 		if (!my_timer_id)
-			std::cout << "ERROR: RescheduleTimer failed to SDL_AddTimer\n";
+			std::cerr << "ERROR: RescheduleTimer failed to SDL_AddTimer\n";
 	}
 }
 
@@ -330,8 +330,7 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	bool handled = true;
 	switch (event.type) {
 	case SDL_KEYUP:
-	case SDL_KEYDOWN:
-		{
+	case SDL_KEYDOWN: {
 		// SDL_KeyboardEvent
 		// Handle any key presses here.
 		bool down = event.type == SDL_KEYDOWN;
@@ -380,6 +379,16 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 					ev.modifierkeys = modifier;
 					TBWidget::focused_widget->InvokeEvent(ev);
 				}
+				break;
+				/* just ignore lone modifier key presses */
+			case SDLK_LCTRL:
+			case SDLK_RCTRL:
+			case SDLK_LALT:
+			case SDLK_RALT:
+			case SDLK_LSHIFT:
+			case SDLK_RSHIFT:
+			case SDLK_LGUI:
+			case SDLK_RGUI:
 				break;
 			default:
 				handled = false;
@@ -533,6 +542,21 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	}
 	case SDL_USEREVENT:
 		// event.user;
+		// draw event
+		if (m_has_pending_update)
+		{
+			m_app->Process();
+			m_has_pending_update = false;
+			// Bail out if we get here with invalid dimensions.
+			// This may happen when minimizing windows (GLFW 3.0.4, Windows 8.1).
+			if (GetWidth() == 0 || GetHeight() == 0)
+				; // ignore
+			else
+			{
+				m_app->RenderFrame();
+				SDL_GL_SwapWindow(mainWindow);
+			}
+		}
 		break;
 	case SDL_QUIT:
 		m_quit_requested = true;
@@ -559,21 +583,6 @@ bool port_main()
 		SDL_Event event;
 		do
 		{
-			// draw
-			if (backend->m_has_pending_update)
-			{
-				backend->m_app->Process();
-				backend->m_has_pending_update = false;
-				// Bail out if we get here with invalid dimensions.
-				// This may happen when minimizing windows (GLFW 3.0.4, Windows 8.1).
-				if (backend->GetWidth() == 0 || backend->GetHeight() == 0)
-					; // ignore
-				else
-				{
-					backend->m_app->RenderFrame();
-					SDL_GL_SwapWindow(backend->mainWindow);
-				}
-			}
 			// handle events
 			SDL_WaitEvent(&event);
 			if (!backend->HandleSDLEvent(event))
