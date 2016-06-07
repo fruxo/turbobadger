@@ -10,6 +10,14 @@
 
 #if defined(TB_RENDERER_GL)
 
+#if defined(TB_RENDERER_GLES_1) && defined(TB_RENDERER_GLES_2)
+#error "Both GLES_1 and GLES_2 defined"
+#elif defined(TB_RENDERER_GLES_1) && defined(TB_RENDERER_GL3)
+#error "Both GLES_1 and GL3 defined"
+#elif defined(TB_RENDERER_GLES_2) && defined(TB_RENDERER_GL3)
+#error "Both GLES_2 and GL3 defined"
+#endif
+
 #ifdef TB_RENDERER_GLES_1
 #include <EGL/egl.h>
 #include <GLES/gl.h>
