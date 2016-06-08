@@ -582,7 +582,7 @@ bool port_main()
 			if (!backend->HandleSDLEvent(event))
 				std::cout << "unhandled SDL event: 0x" << std::hex << event.type << std::dec << "\n";
 
-		} while (!backend->m_quit_requested /* && !glfwWindowShouldClose(backend->mainWindow) */);
+		} while (!backend->m_quit_requested);
 
 		app->ShutDown();
 	}

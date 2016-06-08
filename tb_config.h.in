@@ -62,6 +62,14 @@ ${TB_RENDERER_GL_CONFIG}
 	It is using GL ES version 1. */
 ${TB_RENDERER_GLES_1_CONFIG}
 
+/** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
+	It is using GL ES version 2. */
+${TB_RENDERER_GLES_2_CONFIG}
+
+/** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
+	It is using GL version 3.2. */
+${TB_RENDERER_GL3_CONFIG}
+
 /** The width of the font glyph cache. Must be a power of two. */
 #define TB_GLYPH_CACHE_WIDTH 512
 

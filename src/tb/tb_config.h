@@ -60,7 +60,7 @@
 
 /** Enable renderer using OpenGL3. This renderer depends on TB_RENDERER_BATCHER.
 	It is using GL version 3.2, */
-#define TB_RENDERER_GL3
+//#define TB_RENDERER_GL3
 
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL ES version 1. */
@@ -68,7 +68,7 @@
 
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL ES version 2. */
-//#define TB_RENDERER_GLES_2
+#define TB_RENDERER_GLES_2
 
 /** The width of the font glyph cache. Must be a power of two. */
 #define TB_GLYPH_CACHE_WIDTH 512
@@ -117,8 +117,9 @@
 #define TB_FILE_POSIX
 #define TB_TARGET_MACOSX
 #define TB_SYSTEM_LINUX
-#define TB_CLIPBOARD_DUMMY
+//#define TB_CLIPBOARD_SDL2
 //#define TB_CLIPBOARD_GLFW
+#define TB_CLIPBOARD_DUMMY
 #elif defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
 #define TB_FILE_POSIX
 #define TB_TARGET_WINDOWS
