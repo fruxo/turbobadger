@@ -36,6 +36,7 @@ bool TBClipboard::GetText(TBStr &text)
 {
 	if (const char *str = SDL_GetClipboardText())
 		return text.Set(str);
+        return false;
 }
 
 } // namespace tb
