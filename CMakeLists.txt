@@ -47,6 +47,7 @@ cmake_dependent_option(TB_CLIPBOARD_SDL2 "Clipboard SDL2" OFF
 # Runtime/subsystem configurations
 if(TB_BUILD_DEMO_GLFW)
   set(TB_CLIPBOARD_GLFW On)
+  set(TB_IMAGE_LOADER_STB On)
 elseif(TB_BUILD_DEMO_SDL2)
   set(TB_CLIPBOARD_SDL2 On)
   set(TB_SYSTEM_SDL On)

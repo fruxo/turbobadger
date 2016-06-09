@@ -340,18 +340,6 @@ void TBRendererGL::RenderBatch(Batch *batch)
 #endif
 	}
 
-#if 0
-	// Check for nonsensical texture coordinates(!)
-	for (int ii = 0; ii < batch->vertex_count; ii++)
-	{
-		if (batch->vertex[ii].u > 1.0 || batch->vertex[ii].v > 1.0)
-			std::cout << "nonsense!   " << ii << ": "
-					  << batch->vertex[ii].x << "," << batch->vertex[ii].y << " ; "
-					  << batch->vertex[ii].u << "," << batch->vertex[ii].v << " -- "
-					  << batch->vertex[ii].u * 512 << "," << batch->vertex[ii].v * 512 << "\n";
-	}
-#endif
-
 	// Flush
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
 	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, batch->vertex_count * sizeof(Vertex), (void *)&batch->vertex[0]));

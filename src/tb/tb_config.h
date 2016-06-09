@@ -68,7 +68,7 @@
 
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL ES version 2. */
-#define TB_RENDERER_GLES_2
+//#define TB_RENDERER_GLES_2
 
 /** The width of the font glyph cache. Must be a power of two. */
 #define TB_GLYPH_CACHE_WIDTH 512
@@ -107,26 +107,21 @@
 #if defined(ANDROID) || defined(__ANDROID__)
 #define TB_SYSTEM_ANDROID
 #define TB_CLIPBOARD_DUMMY
-#elif defined(__linux) || defined(__linux__) || defined(__EMSCRIPTEN__)
+#elif defined(__linux) || defined(__linux__)
 #define TB_FILE_POSIX
 #define TB_TARGET_LINUX
 #define TB_SYSTEM_LINUX
-#define TB_CLIPBOARD_DUMMY
-//#define TB_CLIPBOARD_GLFW
+#define TB_CLIPBOARD_GLFW
 #elif MACOSX
 #define TB_FILE_POSIX
 #define TB_TARGET_MACOSX
 #define TB_SYSTEM_LINUX
-//#define TB_CLIPBOARD_SDL2
-//#define TB_CLIPBOARD_GLFW
-#define TB_CLIPBOARD_DUMMY
+#define TB_CLIPBOARD_GLFW
 #elif defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
 #define TB_FILE_POSIX
 #define TB_TARGET_WINDOWS
 #define TB_CLIPBOARD_WINDOWS
 #define TB_SYSTEM_WINDOWS
-#else
-#warning "no TB system defined"
 #endif
 
 #endif // TB_CONFIG_H
