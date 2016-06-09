@@ -98,6 +98,7 @@ ${TB_SYSTEM_CONFIG}
 //#define TB_SYSTEM_LINUX
 //#define TB_SYSTEM_WINDOWS
 //#define TB_SYSTEM_ANDROID
+//#define TB_SYSTEM_SDL
 
 /** Defines for additional platform specific issues. */
 ${TB_TARGET_CONFIG}
