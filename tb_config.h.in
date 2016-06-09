@@ -84,19 +84,23 @@ ${TB_IMAGE_CONFIG}
 // == Additional configuration of platform implementations ========================
 
 /** Define for posix implementation of TBFile. */
+${TB_FILE_CONFIG}
 //#define TB_FILE_POSIX
 
 /** Defines for implementations of TBClipboard. */
+${TB_CLIPBOARD_CONFIG}
 //#define TB_CLIPBOARD_DUMMY // Cross platform. Not integrating with the OS.
 //#define TB_CLIPBOARD_GLFW // Cross platform using glfw API.
 //#define TB_CLIPBOARD_WINDOWS
 
 /** Defines for implementations of TBSystem. */
+${TB_SYSTEM_CONFIG}
 //#define TB_SYSTEM_LINUX
 //#define TB_SYSTEM_WINDOWS
 //#define TB_SYSTEM_ANDROID
 
 /** Defines for additional platform specific issues. */
+${TB_TARGET_CONFIG}
 //#define TB_TARGET_WINDOWS
 //#define TB_TARGET_MACOSX
 //#define TB_TARGET_LINUX
