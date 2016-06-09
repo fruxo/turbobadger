@@ -8,8 +8,16 @@
 
 #ifdef TB_SYSTEM_SDL
 
+#include "tb_msg.h"
+#include "tb_types.h"
 #include <sys/time.h>
 #include <stdio.h>
+
+#ifdef __EMSCRIPTEN__
+#include "SDL/SDL.h"
+#else
+#include "SDL2/SDL.h"
+#endif
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 
@@ -26,12 +34,19 @@ namespace tb {
 
 double TBSystem::GetTimeMS()
 {
+#if 1
+	Uint64 freq = SDL_GetPerformanceFrequency();
+	Uint64 now = SDL_GetPerformanceCounter();
+	return 1000. * ((double)now / (double)freq);
+#elif 0
+	return SDL_GetTicks();
+#else
 	struct timeval now;
 	gettimeofday( &now, NULL );
 	return now.tv_usec/1000 + now.tv_sec*1000;
+#endif
 }
 
-// Implementation currently done in port_sdl.cpp.
 static SDL_TimerID tb_sdl_timer_id = 0;
 static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
 {
@@ -56,7 +71,7 @@ static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
 		return 0; // never - no longer scheduled
 	}
 	next_fire_time -= tb::TBSystem::GetTimeMS();
-	return std::max((Uint32)next_fire_time, (Uint32)1); // asap
+	return MAX(next_fire_time, 1.); // asap
 }
 
 // This doesn't really belong here (it belongs in tb_system_[linux/windows].cpp.
@@ -78,7 +93,7 @@ void TBSystem::RescheduleTimer(double fire_time)
 	if (fire_time != TB_NOT_SOON)
 	{
 		double delay = fire_time - tb::TBSystem::GetTimeMS();
-		tb_sdl_timer_id = SDL_AddTimer(std::max((Uint32)delay, (Uint32)1), tb_sdl_timer_callback, NULL);
+		tb_sdl_timer_id = SDL_AddTimer((Uint32)MAX(delay, 1.), tb_sdl_timer_callback, NULL);
 		if (!tb_sdl_timer_id)
 			TBDebugOut("ERROR: RescheduleTimer failed to SDL_AddTimer\n");
 	}
@@ -102,7 +117,13 @@ int TBSystem::GetPixelsPerLine()
 int TBSystem::GetDPI()
 {
 	// FIX: Implement!
-	return 96;
+	//int SDL_GetNumVideoDisplays(void);
+	float ddpi;
+	float hdpi;
+	float vdpi;
+	if (SDL_GetDisplayDPI(0, &ddpi, &hdpi, &vdpi))
+		return 96;
+	return ddpi;
 }
 
 } // namespace tb

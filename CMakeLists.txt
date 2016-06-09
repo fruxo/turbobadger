@@ -1,4 +1,4 @@
-project(TurboBadger)
+project(TurboBadger CXX)
 cmake_minimum_required(VERSION 2.8)
 
 option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." ON)
@@ -19,7 +19,6 @@ option(TB_RENDERER_GLES_2 "Enable renderer using OpenGL ES2. This renderer depen
 option(TB_RENDERER_GL3 "Enable renderer using OpenGL 3.2. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_IMAGE "Enable support for TBImage, TBImageManager, TBImageWidget." ON)
 
-# Runtime/subsystem configurations
 # Needs further work
 #option(TB_FILE_POSIX "" ON)
 #option(TB_SYSTEM "" OFF)
@@ -45,6 +44,15 @@ cmake_dependent_option(TB_CLIPBOARD_WINDOWS "Clipboard WINDOWS" OFF
 cmake_dependent_option(TB_CLIPBOARD_SDL2 "Clipboard SDL2" OFF
   "NOT TB_CLIPBOARD_GLFW; NOT TB_CLIPBOARD_WINDOWS; NOT TB_CLIPBOARD_DUMMY" OFF)
 
+# Runtime/subsystem configurations
+if(TB_BUILD_DEMO_GLFW)
+  set(TB_CLIPBOARD_GLFW On)
+elseif(TB_BUILD_DEMO_SDL2)
+  set(TB_CLIPBOARD_SDL2 On)
+  set(TB_SYSTEM_SDL On)
+  set(TB_IMAGE_LOADER_STB On)
+endif(TB_BUILD_DEMO_GLFW)
+
 # System defaults
 if(TB_SYSTEM_ANDROID)
   set(TB_SYSTEM_CONFIG "#define TB_SYSTEM_ANDROID")
@@ -66,6 +74,12 @@ if(TB_SYSTEM_WINDOWS)
     set(TB_FILE_CONFIG "#define TB_FILE_POSIX")
     set(TB_SYSTEM_CONFIG "#define TB_SYSTEM_WINDOWS")
     set(TB_TARGET_CONFIG "#define TB_TARGET_WINDOWS")
+endif()
+if(TB_SYSTEM_SDL)
+    set(TB_FILE_CONFIG "#define TB_FILE_POSIX")
+    set(TB_SYSTEM_CONFIG "#define TB_SYSTEM_SDL")
+    set(TB_TARGET_CONFIG "#define TB_TARGET_CUSTOM")
+    set(TB_CLIPBOARD_CONFIG "#define TB_CLIPBOARD_SDL2")
 endif()
 # Clipboard
 if(TB_CLIPBOARD_DUMMY)
@@ -138,6 +152,11 @@ if(MSVC)
  STRING(REPLACE "/GR" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
 endif(MSVC)
+
+if(TB_SYSTEM_SDL)
+  find_path(SDL2_INCLUDE_DIRS SDL2/SDL.h)
+  include_directories(${SDL2_INCLUDE_DIRS})
+endif(TB_SYSTEM_SDL)
 
 if (EMSCRIPTEN)
  set (CMAKE_EXECUTABLE_SUFFIX ".html")

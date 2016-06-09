@@ -110,6 +110,7 @@ ${TB_TARGET_CONFIG}
 // == Setting some defaults for platform implementations ==========================
 // Updated to only define a platform if a target is defined
 // This allows us to build for different targets than the host compiling OS
+#if 0
 #if !defined(TB_TARGET_WINDOWS) && !defined(TB_TARGET_LINUX) && !defined(TB_TARGET_MACOSX) && !defined(TB_TARGET_CUSTOM)
     #if defined(ANDROID) || defined(__ANDROID__)
     #define TB_SYSTEM_ANDROID
@@ -130,6 +131,7 @@ ${TB_TARGET_CONFIG}
     #define TB_CLIPBOARD_WINDOWS
     #define TB_SYSTEM_WINDOWS
     #endif
+#endif
 #endif
 
 #endif // TB_CONFIG_H

@@ -30,11 +30,11 @@ class AppBackendSDL2 : public AppBackend
 {
 public:
 	bool Init(App *app);
-	AppBackendSDL2()	: m_app(nullptr)
+	AppBackendSDL2()	: m_quit_requested(false)
+						, m_app(nullptr)
 						, m_renderer(nullptr)
 						, mainWindow(0)
-						, m_has_pending_update(false)
-						, m_quit_requested(false) {}
+						, m_has_pending_update(false) {}
 	~AppBackendSDL2();
 
 	virtual void OnAppEvent(const EVENT &ev);
@@ -43,17 +43,17 @@ public:
 	int GetWidth() const { return m_app->GetWidth(); }
 	int GetHeight() const { return m_app->GetHeight(); }
 
-
+	bool HandleSDLEvent(SDL_Event & event);
+	bool m_quit_requested;
+private:
 	bool InvokeKey(unsigned int key, SPECIAL_KEY special_key,
 				   MODIFIER_KEYS modifierkeys, bool down);
-	bool HandleSDLEvent(SDL_Event & event);
 
 	App *m_app;
 	TBRendererGL *m_renderer;
 	SDL_Window *mainWindow;
 	SDL_GLContext glContext;
 	bool m_has_pending_update;
-	bool m_quit_requested;
 };
 
 MODIFIER_KEYS GetModifierKeys()
@@ -146,58 +146,6 @@ AppBackendSDL2::InvokeKey(unsigned int key, SPECIAL_KEY special_key, MODIFIER_KE
 	if (InvokeShortcut(key, special_key, modifierkeys, down))
 		return true;
 	return m_app->GetRoot()->InvokeKey(key, special_key, modifierkeys, down);
-}
-
-static SDL_TimerID my_timer_id = 0;
-static Uint32 timer_callback(Uint32 interval, void *param)
-{
-	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
-	double now = tb::TBSystem::GetTimeMS();
-	if (next_fire_time != TB_NOT_SOON && now < next_fire_time)
-	{
-		// We timed out *before* we were supposed to (the OS is not playing nice).
-		// Calling ProcessMessages now won't achieve a thing so force a reschedule
-		// of the platform timer again with the same time.
-		return next_fire_time - now;
-	}
-
-	TBMessageHandler::ProcessMessages();
-
-	// If we still have things to do (because we didn't process all messages,
-	// or because there are new messages), we need to rescedule, so call RescheduleTimer.
-	next_fire_time = TBMessageHandler::GetNextMessageFireTime();
-	if (next_fire_time == TB_NOT_SOON)
-	{
-		my_timer_id = 0;
-		return 0; // never - no longer scheduled
-	}
-	next_fire_time -= tb::TBSystem::GetTimeMS();
-	return std::max((Uint32)next_fire_time, (Uint32)1); // asap
-}
-
-// This doesn't really belong here (it belongs in tb_system_[linux/windows].cpp.
-// This is here since the proper implementations has not yet been done.
-
-/** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
-	If fire_time is 0, it should be fired ASAP.
-	If force is true, it will ask the platform to schedule it again, even if
-	the fire_time is the same as last time. */
-void TBSystem::RescheduleTimer(double fire_time)
-{
-	// cancel existing timer
-	if (my_timer_id)
-	{
-		SDL_RemoveTimer(my_timer_id);
-		my_timer_id = 0;
-	}
-	// set new timer
-	if (fire_time != TB_NOT_SOON)
-	{
-		double delay = fire_time - tb::TBSystem::GetTimeMS();
-		my_timer_id = SDL_AddTimer(std::max((Uint32)delay, (Uint32)1), timer_callback, NULL);
-		if (!my_timer_id)
-			std::cerr << "ERROR: RescheduleTimer failed to SDL_AddTimer\n";
-	}
 }
 
 bool AppBackendSDL2::Init(App *app)
