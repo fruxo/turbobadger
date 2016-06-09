@@ -34,7 +34,7 @@ bool TBClipboard::SetText(const char *text)
 
 bool TBClipboard::GetText(TBStr &text)
 {
-	if (const char *str = GetClipboardText())
+	if (const char *str = SDL_GetClipboardText())
 		return text.Set(str);
 }
 
