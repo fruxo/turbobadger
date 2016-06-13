@@ -19,9 +19,16 @@
 #endif
 
 #ifdef TB_RENDERER_GLES_1
+
+#if defined(ANDROID) || defined(__ANDROID__)
+#include <GLES/gl.h>
+#else
 #include <EGL/egl.h>
 #include <GLES/gl.h>
+#endif
+
 #elif defined(TB_RENDERER_GLES_2)
+
 #define GL_GLEXT_PROTOTYPES
 #include "SDL/SDL.h"
 #include "SDL/SDL_opengles2.h"
@@ -30,21 +37,28 @@
 #define glDeleteVertexArrays glDeleteVertexArraysOES
 #define glIsVertexArray glIsVertexArrayOES
 #include <GLES/gl.h>
-#elif defined(_WIN32)
+
+#elif defined(TB_RENDERER_GL3)
+
+#if defined(__APPLE__)
+#include <OpenGL/gl3.h>
+#else
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#endif
+
+#else
+
+// Standard GL1.1 Renderer
+#if defined(_WIN32)
 #include <windows.h> // make gl.h compile
 #include <GL/gl.h>
 #elif defined(MACOSX)
-#ifdef __APPLE__
-#if defined(TB_RENDERER_GL3)
-#include <OpenGL/gl3.h>
-#else
 #include <OpenGL/gl.h>
-#endif
-#endif
-#elif defined(ANDROID) || defined(__ANDROID__)
-#include <GLES/gl.h>
 #else
 #include <GL/gl.h>
+#endif
+
 #endif
 
 #include "renderers/tb_renderer_batcher.h"
