@@ -168,7 +168,7 @@ bool AppBackendSDL2::Init(App *app)
 		return 1;
 	}
 
-	//SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 #if defined(TB_RENDERER_GLES_2)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
