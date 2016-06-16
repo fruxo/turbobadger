@@ -73,9 +73,6 @@ static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
 	return MAX(next_fire_time, 1.); // asap
 }
 
-// This doesn't really belong here (it belongs in tb_system_[linux/windows].cpp.
-// This is here since the proper implementations has not yet been done.
-
 /** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
 	If fire_time is 0, it should be fired ASAP.
 	If force is true, it will ask the platform to schedule it again, even if

@@ -35,9 +35,9 @@ uint32 dbg_bitmap_validations = 0;
 static void Ortho2D(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top)
 {
 #ifdef TB_RENDERER_GLES_1
-       glOrthof(left, right, bottom, top, -1.0, 1.0);
+	glOrthof(left, right, bottom, top, -1.0, 1.0);
 #else
-       glOrtho(left, right, bottom, top, -1.0, 1.0);
+	glOrtho(left, right, bottom, top, -1.0, 1.0);
 #endif
 }
 
