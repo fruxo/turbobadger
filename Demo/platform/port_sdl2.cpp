@@ -161,7 +161,7 @@ bool AppBackendSDL2::Init(App *app)
 								  SDL_WINDOWPOS_UNDEFINED,
 								  SDL_WINDOWPOS_UNDEFINED,
 								  width, height,
-								  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+								  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if (!mainWindow)
 	{
 		printf("Unable to create window: %s\n", SDL_GetError());
