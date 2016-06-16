@@ -18,12 +18,13 @@ option(TB_RENDERER_GLES_1 "Enable renderer using OpenGL ES1. This renderer depen
 option(TB_RENDERER_GLES_2 "Enable renderer using OpenGL ES2. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_RENDERER_GL3 "Enable renderer using OpenGL 3.2. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_IMAGE "Enable support for TBImage, TBImageManager, TBImageWidget." ON)
+option(TB_SUPPORT_CONSTEXPR "Enable support for constexpr." OFF)
 
 # Needs further work
 #option(TB_FILE_POSIX "" ON)
 #option(TB_SYSTEM "" OFF)
 #option(TB_TARGET "" OFF)
-include (CMakeDependentOption)
+include(CMakeDependentOption)
 
 # could try to auto-detect these
 cmake_dependent_option(TB_SYSTEM_LINUX   "Set System to Linux" OFF
@@ -46,12 +47,12 @@ cmake_dependent_option(TB_CLIPBOARD_SDL2 "Clipboard SDL2" OFF
 
 # Runtime/subsystem configurations
 if(TB_BUILD_DEMO_GLFW)
-  set(TB_CLIPBOARD_GLFW On)
-  set(TB_IMAGE_LOADER_STB On)
+  set(TB_CLIPBOARD_GLFW ON)
+  set(TB_IMAGE_LOADER_STB ON)
 elseif(TB_BUILD_DEMO_SDL2)
-  set(TB_CLIPBOARD_SDL2 On)
-  set(TB_SYSTEM_SDL On)
-  set(TB_IMAGE_LOADER_STB On)
+  set(TB_CLIPBOARD_SDL2 ON)
+  set(TB_SYSTEM_SDL ON)
+  set(TB_IMAGE_LOADER_STB ON)
 endif(TB_BUILD_DEMO_GLFW)
 
 # System defaults
@@ -82,6 +83,7 @@ if(TB_SYSTEM_SDL)
     set(TB_TARGET_CONFIG "#define TB_TARGET_CUSTOM")
     set(TB_CLIPBOARD_CONFIG "#define TB_CLIPBOARD_SDL2")
 endif()
+
 # Clipboard
 if(TB_CLIPBOARD_DUMMY)
     set(TB_CLIPBOARD_CONFIG "#define TB_CLIPBOARD_DUMMY")
@@ -95,6 +97,7 @@ endif()
 if(TB_CLIPBOARD_SDL2)
     set(TB_CLIPBOARD_CONFIG "#define TB_CLIPBOARD_SDL2")
 endif()
+
 if(TB_FILE_POSIX)
     set(TB_FILE_CONFIG "#define TB_FILE_POSIX")
 endif()
@@ -132,9 +135,12 @@ endif()
 if(TB_IMAGE) 
     set(TB_IMAGE_CONFIG "#define TB_IMAGE")
 endif()
+if(TB_SUPPORT_CONSTEXPR) 
+    set(TB_SUPPORT_CONSTEXPR_CONFIG "#define TB_SUPPORT_CONSTEXPR")
+endif()
 
 configure_file(tb_config.h.in src/tb/config.h)
- 
+
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
 endif()
@@ -155,17 +161,20 @@ if(MSVC)
 endif(MSVC)
 
 if(TB_SYSTEM_SDL)
-  find_path(SDL2_INCLUDE_DIRS SDL2/SDL.h)
+  include(FindPkgConfig)
+  pkg_search_module(SDL2 REQUIRED sdl2)
+  set(SDL2_INCLUDE_DIRS "${SDL2_INCLUDE_DIRS}/..")
   include_directories(${SDL2_INCLUDE_DIRS})
+  link_directories(${SDL2_LIBRARY_DIRS})
 endif(TB_SYSTEM_SDL)
 
-if (EMSCRIPTEN)
- set (CMAKE_EXECUTABLE_SUFFIX ".html")
- #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
- set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 ")
- set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
- set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
-endif (EMSCRIPTEN)
+if(EMSCRIPTEN)
+ set(CMAKE_EXECUTABLE_SUFFIX ".html")
+ #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 ")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
+endif(EMSCRIPTEN)
 
 # Add TurboBadgerLib project
 include_directories("${PROJECT_SOURCE_DIR}/src/tb")
@@ -184,3 +193,4 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/tb
     PATTERN "test files" EXCLUDE
     PATTERN "*.h"
 )
+

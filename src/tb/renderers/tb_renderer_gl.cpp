@@ -1,4 +1,3 @@
-// -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 // ================================================================================
 // ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
@@ -12,7 +11,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
 
 namespace tb {
 
@@ -27,7 +25,7 @@ uint32 dbg_bitmap_validations = 0;
 		xxx;															\
 		GLenum err = GL_NO_ERROR;										\
 		while((err = glGetError()) != GL_NO_ERROR) {					\
-			std::cout << __FILE__ << ":" << __LINE__ << ", GL error 0x" << std::hex << err << std::dec << "\n"; \
+			printf("%s:%d, GL error 0x%x\n", __FILE__, __LINE__, err);	\
 		} } while (0)
 #else
 #define GLCALL(xxx) do {} while (0)
@@ -37,9 +35,9 @@ uint32 dbg_bitmap_validations = 0;
 static void Ortho2D(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top)
 {
 #ifdef TB_RENDERER_GLES_1
-       glOrthof(left, right, bottom, top, -1.0, 1.0);
+	glOrthof(left, right, bottom, top, -1.0, 1.0);
 #else
-       glOrtho(left, right, bottom, top, -1.0, 1.0);
+	glOrtho(left, right, bottom, top, -1.0, 1.0);
 #endif
 }
 

@@ -1,4 +1,3 @@
-// -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 // ================================================================================
 // ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
@@ -23,7 +22,7 @@
 
 void TBDebugOut(const char *str)
 {
-	printf("%s", str);
+	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", str);
 }
 
 #endif // TB_RUNTIME_DEBUG_INFO
@@ -74,9 +73,6 @@ static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
 	return MAX(next_fire_time, 1.); // asap
 }
 
-// This doesn't really belong here (it belongs in tb_system_[linux/windows].cpp.
-// This is here since the proper implementations has not yet been done.
-
 /** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
 	If fire_time is 0, it should be fired ASAP.
 	If force is true, it will ask the platform to schedule it again, even if
@@ -116,14 +112,14 @@ int TBSystem::GetPixelsPerLine()
 
 int TBSystem::GetDPI()
 {
-	// FIX: Implement!
-	//int SDL_GetNumVideoDisplays(void);
+#if SDL_VERSION_ATLEAST(2,0,4)
 	float ddpi;
-	float hdpi;
-	float vdpi;
-	if (SDL_GetDisplayDPI(0, &ddpi, &hdpi, &vdpi))
+	if (SDL_GetDisplayDPI(0, &ddpi, NULL, NULL))
 		return 96;
-	return ddpi;
+	return (int)ddpi;
+#else
+	return 96;
+#endif
 }
 
 } // namespace tb
