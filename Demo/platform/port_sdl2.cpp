@@ -8,8 +8,6 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
-#include <algorithm>
-#include <iostream>
 #include "tb_skin.h"
 #include "tb_system.h"
 #include "tb_msg.h"
@@ -526,7 +524,7 @@ bool port_main()
 			// handle events
 			SDL_WaitEvent(&event);
 			if (!backend->HandleSDLEvent(event))
-				std::cout << "unhandled SDL event: 0x" << std::hex << event.type << std::dec << "\n";
+				SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "unhandled SDL event: 0x%x\n", event.type);
 
 		} while (!backend->m_quit_requested);
 
