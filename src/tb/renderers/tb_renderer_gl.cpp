@@ -69,16 +69,18 @@ static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n
 
 // == Batching ====================================================================================
 
-GLuint g_current_texture = (GLuint)-1;
-TBRendererBatcher::Batch *g_current_batch = 0;
+static TBBitmapGL * g_current_bitmap = nullptr;
+static TBBitmapGL * g_white_bitmap = nullptr;
+static TBRendererBatcher::Batch *g_current_batch = 0;
 
-void BindBitmap(TBBitmap *bitmap)
+static void BindBitmap(TBBitmap *bitmap)
 {
-	GLuint texture = bitmap ? static_cast<TBBitmapGL*>(bitmap)->m_texture : 0;
-	if (texture != g_current_texture)
+	TBBitmapGL * bitmapgl = bitmap ? static_cast<TBBitmapGL*>(bitmap) : g_white_bitmap;
+	if (bitmapgl != g_current_bitmap)
 	{
-		g_current_texture = texture;
-		GLCALL(glBindTexture(GL_TEXTURE_2D, g_current_texture));
+		g_current_bitmap = bitmapgl;
+		if (bitmapgl)
+			GLCALL(glBindTexture(GL_TEXTURE_2D, bitmapgl->m_texture));
 	}
 }
 
@@ -93,7 +95,7 @@ TBBitmapGL::~TBBitmapGL()
 {
 	// Must flush and unbind before we delete the texture
 	m_renderer->FlushBitmap(this);
-	if (m_texture == g_current_texture)
+	if (this == g_current_bitmap)
 		BindBitmap(nullptr);
 
 	GLCALL(glDeleteTextures(1, &m_texture));
@@ -129,9 +131,11 @@ void TBBitmapGL::SetData(uint32 *data)
 // == TBRendererGL ================================================================================
 
 TBRendererGL::TBRendererGL()
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+	: m_white(this)
+#endif
 {
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
-
 	GLchar vertexShaderString[] =  
 #if defined(TB_RENDERER_GL3)
 		"#version 150                    \n"
@@ -196,7 +200,7 @@ TBRendererGL::TBRendererGL()
 		if (infoLen > 1)
 		{
 			char * infoLog = (char *)malloc(sizeof(char) * infoLen);
-			glGetProgramInfoLog(m_program, infoLen, NULL, infoLog);
+			glGetProgramInfoLog(m_program, infoLen, nullptr, infoLog);
 			TBDebugPrint("Error linking program:\n%s\n", infoLog);
 			free(infoLog);
 		}
@@ -215,6 +219,14 @@ TBRendererGL::TBRendererGL()
 	GLCALL(glGenBuffers(1, &m_vbo));
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(batch.vertex), (void *)&batch.vertex[0], GL_DYNAMIC_DRAW));
+
+	// Setup white 1-pixel "texture" as default
+	if (g_white_bitmap == nullptr)
+	{
+		uint32 whitepix = 0xffffffff;
+		m_white.Init(1, 1, &whitepix);
+		g_white_bitmap = &m_white;
+	}
 #endif
 }
 
@@ -228,7 +240,7 @@ GLuint TBRendererGL::LoadShader(GLenum type, const GLchar *shaderSrc)
 	if (shader == 0)
 		return 0;
 
-	glShaderSource(shader, 1, &shaderSrc, NULL);
+	glShaderSource(shader, 1, &shaderSrc, nullptr);
 	glCompileShader(shader);
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 	if (!compiled)
@@ -238,7 +250,7 @@ GLuint TBRendererGL::LoadShader(GLenum type, const GLchar *shaderSrc)
 		if (infoLen > 1)
 		{
 			char * infoLog = (char *)malloc(sizeof(char) * infoLen);
-			glGetShaderInfoLog(shader, infoLen, NULL, infoLog);
+			glGetShaderInfoLog(shader, infoLen, nullptr, infoLog);
 			TBDebugPrint("Error compiling shader:\n%s\n", infoLog);
 			free(infoLog);
 		}
@@ -257,7 +269,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 
 	TBRendererBatcher::BeginPaint(render_target_w, render_target_h);
 
-	g_current_texture = (GLuint)-1;
+	g_current_bitmap = nullptr;
 	g_current_batch = nullptr;
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
@@ -326,9 +338,9 @@ void TBRendererGL::RenderBatch(Batch *batch)
 		GLCALL(glEnableVertexAttribArray(0));
 		GLCALL(glEnableVertexAttribArray(1));
 		GLCALL(glEnableVertexAttribArray(2));
-		GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)NULL)->x));
-		GLCALL(glVertexAttribPointer(1, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)NULL)->u));
-		GLCALL(glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), &((Vertex *)NULL)->col));
+		GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->x));
+		GLCALL(glVertexAttribPointer(1, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->u));
+		GLCALL(glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), &((Vertex *)nullptr)->col));
 		g_current_batch = batch;
 #else
 		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (void *) &batch->vertex[0].r);

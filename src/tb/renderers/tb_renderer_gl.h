@@ -101,12 +101,13 @@ public:
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
 private:
-        GLuint LoadShader(GLenum type, const GLchar * shaderSrc);
-        GLuint m_program;
-        GLuint m_vao;
-        GLuint m_vbo;
-        GLint m_orthoLoc;
-        GLint m_texLoc;
+	GLuint LoadShader(GLenum type, const GLchar * shaderSrc);
+	GLuint m_program;
+	GLuint m_vao;
+	GLuint m_vbo;
+	GLint m_orthoLoc;
+	GLint m_texLoc;
+	TBBitmapGL m_white;
 #endif
 };
 
