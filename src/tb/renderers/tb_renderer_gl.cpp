@@ -78,6 +78,9 @@ void BindBitmap(TBBitmap *bitmap)
 	if (texture != g_current_texture)
 	{
 		g_current_texture = texture;
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+		GLCALL(glActiveTexture(GL_TEXTURE0));
+#endif
 		GLCALL(glBindTexture(GL_TEXTURE_2D, g_current_texture));
 	}
 }
