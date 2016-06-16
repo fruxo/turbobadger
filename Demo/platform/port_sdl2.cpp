@@ -1,5 +1,3 @@
-// -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
-
 #ifdef __EMSCRIPTEN__
 #include "SDL/SDL.h"
 #else

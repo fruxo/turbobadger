@@ -1,4 +1,3 @@
-// -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 // ================================================================================
 // ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
