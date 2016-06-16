@@ -69,18 +69,16 @@ static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n
 
 // == Batching ====================================================================================
 
-static TBBitmapGL * g_current_bitmap = nullptr;
-static TBBitmapGL * g_white_bitmap = nullptr;
-static TBRendererBatcher::Batch *g_current_batch = 0;
+GLuint g_current_texture = (GLuint)-1;
+TBRendererBatcher::Batch *g_current_batch = 0;
 
-static void BindBitmap(TBBitmap *bitmap)
+void BindBitmap(TBBitmap *bitmap)
 {
-	TBBitmapGL * bitmapgl = bitmap ? static_cast<TBBitmapGL*>(bitmap) : g_white_bitmap;
-	if (bitmapgl != g_current_bitmap)
+	GLuint texture = bitmap ? static_cast<TBBitmapGL*>(bitmap)->m_texture : 0;
+	if (texture != g_current_texture)
 	{
-		g_current_bitmap = bitmapgl;
-		if (bitmapgl)
-			GLCALL(glBindTexture(GL_TEXTURE_2D, bitmapgl->m_texture));
+		g_current_texture = texture;
+		GLCALL(glBindTexture(GL_TEXTURE_2D, g_current_texture));
 	}
 }
 
@@ -95,7 +93,7 @@ TBBitmapGL::~TBBitmapGL()
 {
 	// Must flush and unbind before we delete the texture
 	m_renderer->FlushBitmap(this);
-	if (this == g_current_bitmap)
+	if (m_texture == g_current_texture)
 		BindBitmap(nullptr);
 
 	GLCALL(glDeleteTextures(1, &m_texture));
@@ -221,11 +219,9 @@ TBRendererGL::TBRendererGL()
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(batch.vertex), (void *)&batch.vertex[0], GL_DYNAMIC_DRAW));
 
 	// Setup white 1-pixel "texture" as default
-	if (g_white_bitmap == nullptr)
 	{
 		uint32 whitepix = 0xffffffff;
 		m_white.Init(1, 1, &whitepix);
-		g_white_bitmap = &m_white;
 	}
 #endif
 }
@@ -269,7 +265,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 
 	TBRendererBatcher::BeginPaint(render_target_w, render_target_h);
 
-	g_current_bitmap = nullptr;
+	g_current_texture = (GLuint)-1;
 	g_current_batch = nullptr;
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
@@ -329,7 +325,11 @@ TBBitmap *TBRendererGL::CreateBitmap(int width, int height, uint32 *data)
 void TBRendererGL::RenderBatch(Batch *batch)
 {
 	// Bind texture and array pointers
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+	BindBitmap(batch->bitmap ? batch->bitmap : &m_white);
+#else
 	BindBitmap(batch->bitmap);
+#endif
 
 	if (g_current_batch != batch)
 	{
