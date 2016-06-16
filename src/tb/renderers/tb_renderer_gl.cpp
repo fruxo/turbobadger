@@ -178,7 +178,7 @@ TBRendererGL::TBRendererGL()
 	m_program = glCreateProgram();
 	if (m_program == 0)
 	{
-		TBDebugPrint("glCreateProgram failed.\n");
+		TBDebugPrint("glCreateProgram failed.\n", 0);
 		return;
 	}
 
@@ -201,7 +201,7 @@ TBRendererGL::TBRendererGL()
 			free(infoLog);
 		}
 		glDeleteProgram(m_program);
-		TBDebugPrint("glLinkProgram failed.\n");
+		TBDebugPrint("glLinkProgram failed.\n", 0);
 		return;
 	}
 
