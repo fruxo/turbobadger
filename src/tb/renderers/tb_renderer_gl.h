@@ -30,13 +30,16 @@
 #elif defined(TB_RENDERER_GLES_2)
 
 #define GL_GLEXT_PROTOTYPES
-#include "SDL/SDL.h"
-#include "SDL/SDL_opengles2.h"
+#if defined(__APPLE__)
+#include <OpenGLES/ES2/gl.h>
+#include <OpenGLES/ES2/glext.h>
+#else
+#include <GLES/gl.h>
+#endif
 #define glGenVertexArrays glGenVertexArraysOES
 #define glBindVertexArray glBindVertexArrayOES
 #define glDeleteVertexArrays glDeleteVertexArraysOES
 #define glIsVertexArray glIsVertexArrayOES
-#include <GLES/gl.h>
 
 #elif defined(TB_RENDERER_GL3)
 
