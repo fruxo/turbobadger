@@ -21,11 +21,11 @@ uint32 dbg_bitmap_validations = 0;
 // == Utilities ===================================================================================
 
 #ifdef TB_RUNTIME_DEBUG_INFO
-#define GLCALL(xxx) do {												\
-		xxx;															\
-		GLenum err = GL_NO_ERROR;										\
-		while((err = glGetError()) != GL_NO_ERROR) {					\
-			printf("%s:%d, GL error 0x%x\n", __FILE__, __LINE__, err);	\
+#define GLCALL(CALL) do {												\
+		CALL;															\
+		GLenum err;														\
+		while ((err = glGetError()) != GL_NO_ERROR) {					\
+			TBDebugPrint("%s:%d, GL error 0x%x\n", __FILE__, __LINE__, err); \
 		} } while (0)
 #else
 #define GLCALL(xxx) do {} while (0)
@@ -178,7 +178,7 @@ TBRendererGL::TBRendererGL()
 	m_program = glCreateProgram();
 	if (m_program == 0)
 	{
-		TBDebugPrint("glCreateProgram failed.\n", 0);
+		TBDebugPrint("glCreateProgram failed.\n");
 		return;
 	}
 
@@ -201,7 +201,7 @@ TBRendererGL::TBRendererGL()
 			free(infoLog);
 		}
 		glDeleteProgram(m_program);
-		TBDebugPrint("glLinkProgram failed.\n", 0);
+		TBDebugPrint("glLinkProgram failed.\n");
 		return;
 	}
 
