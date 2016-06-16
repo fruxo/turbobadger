@@ -1,3 +1,5 @@
+// -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
+
 #ifdef __EMSCRIPTEN__
 #include "SDL/SDL.h"
 #else
@@ -151,31 +153,13 @@ bool AppBackendSDL2::Init(App *app)
 		printf("Unable to initialize SDL: %s\n", SDL_GetError());
 		return 1;
 	}
-	const int width = app->GetWidth() > 0 ? app->GetWidth() : 1920;
-	const int height = app->GetHeight() > 0 ? app->GetHeight() : 1080;
-	mainWindow = SDL_CreateWindow(app->GetTitle(),
-								  SDL_WINDOWPOS_UNDEFINED,
-								  SDL_WINDOWPOS_UNDEFINED,
-								  width, height,
-								  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-	if (!mainWindow)
-	{
-		printf("Unable to create window: %s\n", SDL_GetError());
-		return 1;
-	}
 
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 #if defined(TB_RENDERER_GLES_2)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
 #elif defined(TB_RENDERER_GL3)
-#if 0
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-#endif
-
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -186,6 +170,19 @@ bool AppBackendSDL2::Init(App *app)
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
+	//SDL_SetHint("SDL_HINT_ORIENTATIONS", "Portrait LandscapeLeft LandscapeRight");
+	int width = app->GetWidth() > 0 ? app->GetWidth() : 1920;
+	int height = app->GetHeight() > 0 ? app->GetHeight() : 1080;
+	mainWindow = SDL_CreateWindow(app->GetTitle(),
+								  SDL_WINDOWPOS_UNDEFINED,
+								  SDL_WINDOWPOS_UNDEFINED,
+								  width, height,
+								  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	if (!mainWindow)
+	{
+		printf("Unable to create window: %s\n", SDL_GetError());
+		return 1;
+	}
 	glContext = SDL_GL_CreateContext(mainWindow);
 	SDL_GL_MakeCurrent(mainWindow, glContext);
 
@@ -209,6 +206,7 @@ bool AppBackendSDL2::Init(App *app)
 
 	// Create the App object for our demo
 	m_app = app;
+	SDL_GetWindowSize(mainWindow, &width, &height);
 	m_app->OnBackendAttached(this, width, height);
 
 	return true;
@@ -420,61 +418,61 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 		//event.text;
 		break;
 	case SDL_WINDOWEVENT: {
-        switch (event.window.event) {
-        case SDL_WINDOWEVENT_SHOWN:
-            //SDL_Log("Window %d shown", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_HIDDEN:
-            //SDL_Log("Window %d hidden", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_EXPOSED:
-            //SDL_Log("Window %d exposed", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_MOVED:
-            //SDL_Log("Window %d moved to %d,%d",
-            //        event.window.windowID, event.window.data1,
-            //        event.window.data2);
-            break;
-        case SDL_WINDOWEVENT_RESIZED:
+		switch (event.window.event) {
+		case SDL_WINDOWEVENT_SHOWN:
+			//SDL_Log("Window %d shown", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_HIDDEN:
+			//SDL_Log("Window %d hidden", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_EXPOSED:
+			//SDL_Log("Window %d exposed", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_MOVED:
+			//SDL_Log("Window %d moved to %d,%d",
+			//		event.window.windowID, event.window.data1,
+			//		event.window.data2);
+			break;
+		case SDL_WINDOWEVENT_RESIZED:
 			if (m_app)
 				m_app->OnResized(event.window.data1, event.window.data2);
-            //SDL_Log("Window %d resized to %dx%d",
-            //        event.window.windowID, event.window.data1,
-            //        event.window.data2);
-            break;
-        case SDL_WINDOWEVENT_SIZE_CHANGED:
-            //SDL_Log("Window %d size changed to %dx%d",
-            //        event.window.windowID, event.window.data1,
-            //        event.window.data2);
-            break;
-        case SDL_WINDOWEVENT_MINIMIZED:
-            //SDL_Log("Window %d minimized", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_MAXIMIZED:
-            //SDL_Log("Window %d maximized", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_RESTORED:
-            //SDL_Log("Window %d restored", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_ENTER:
-            //SDL_Log("Mouse entered window %d", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_LEAVE:
-            //SDL_Log("Mouse left window %d", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_FOCUS_GAINED:
-            //SDL_Log("Window %d gained keyboard focus", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_FOCUS_LOST:
-            //SDL_Log("Window %d lost keyboard focus", event.window.windowID);
-            break;
-        case SDL_WINDOWEVENT_CLOSE:
-            //SDL_Log("Window %d closed", event.window.windowID);
-            break;
-        default:
+			//SDL_Log("Window %d resized to %dx%d",
+			//		event.window.windowID, event.window.data1,
+			//		event.window.data2);
+			break;
+		case SDL_WINDOWEVENT_SIZE_CHANGED:
+			//SDL_Log("Window %d size changed to %dx%d",
+			//		event.window.windowID, event.window.data1,
+			//		event.window.data2);
+			break;
+		case SDL_WINDOWEVENT_MINIMIZED:
+			//SDL_Log("Window %d minimized", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_MAXIMIZED:
+			//SDL_Log("Window %d maximized", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_RESTORED:
+			//SDL_Log("Window %d restored", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_ENTER:
+			//SDL_Log("Mouse entered window %d", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_LEAVE:
+			//SDL_Log("Mouse left window %d", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_FOCUS_GAINED:
+			//SDL_Log("Window %d gained keyboard focus", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_FOCUS_LOST:
+			//SDL_Log("Window %d lost keyboard focus", event.window.windowID);
+			break;
+		case SDL_WINDOWEVENT_CLOSE:
+			//SDL_Log("Window %d closed", event.window.windowID);
+			break;
+		default:
 			handled = false;
-            //SDL_Log("Window %d got unknown event %d", event.window.windowID, event.window.event);
-            break;
+			SDL_Log("Window %d got unknown event %d", event.window.windowID, event.window.event);
+			break;
 		}
 		break;
 	}
@@ -504,7 +502,6 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	}
 	return handled;
 }
-
 
 bool port_main()
 {

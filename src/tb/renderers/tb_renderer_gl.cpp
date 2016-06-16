@@ -213,7 +213,7 @@ TBRendererGL::TBRendererGL()
 	GLCALL(glGenVertexArrays(1, &m_vao));
 	GLCALL(glBindVertexArray(m_vao));
 
-	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	// Generate 1 buffer
 	GLCALL(glGenBuffers(1, &m_vbo));
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(batch.vertex), (void *)&batch.vertex[0], GL_DYNAMIC_DRAW));
