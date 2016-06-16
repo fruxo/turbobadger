@@ -11,7 +11,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
 
 namespace tb {
 
@@ -26,7 +25,7 @@ uint32 dbg_bitmap_validations = 0;
 		xxx;															\
 		GLenum err = GL_NO_ERROR;										\
 		while((err = glGetError()) != GL_NO_ERROR) {					\
-			std::cout << __FILE__ << ":" << __LINE__ << ", GL error 0x" << std::hex << err << std::dec << "\n"; \
+			printf("%s:%d, GL error 0x%x\n", __FILE__, __LINE__, err);	\
 		} } while (0)
 #else
 #define GLCALL(xxx) do {} while (0)

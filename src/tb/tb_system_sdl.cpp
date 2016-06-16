@@ -22,7 +22,7 @@
 
 void TBDebugOut(const char *str)
 {
-	printf("%s", str);
+	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", str);
 }
 
 #endif // TB_RUNTIME_DEBUG_INFO
@@ -115,14 +115,14 @@ int TBSystem::GetPixelsPerLine()
 
 int TBSystem::GetDPI()
 {
-	// FIX: Implement!
-	//int SDL_GetNumVideoDisplays(void);
+#if SDL_VERSION_ATLEAST(2,0,4)
 	float ddpi;
-	float hdpi;
-	float vdpi;
-	if (SDL_GetDisplayDPI(0, &ddpi, &hdpi, &vdpi))
+	if (SDL_GetDisplayDPI(0, &ddpi, NULL, NULL))
 		return 96;
-	return ddpi;
+	return (int)ddpi;
+#else
+	return 96;
+#endif
 }
 
 } // namespace tb
