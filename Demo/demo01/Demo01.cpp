@@ -60,7 +60,6 @@ bool DemoWindow::LoadResourceFile(const char *filename)
 	if (!node.ReadFile(filename))
 		return false;
 	LoadResource(node);
-	node.WriteFile("XXXX");
 	return true;
 }
 
