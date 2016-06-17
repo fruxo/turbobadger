@@ -29,6 +29,12 @@ public:
 	{
 		return fread(buf, elemSize, count, file);
 	}
+#ifdef TB_RUNTIME_DEBUG_INFO
+	virtual size_t Write(void *buf, size_t elemSize, size_t count)
+	{
+		return fwrite(buf, elemSize, count, file);
+	}
+#endif
 private:
 	FILE *file;
 };
@@ -41,14 +47,19 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 	{
 	case MODE_READ:
 		f = fopen(filename, "rb");
-#ifdef TB_RUNTIME_DEBUG_INFO
-		if (!f)
-			TBDebugPrint("TBFile::Open, unable to open file '%s'\n", filename);
-#endif
 		break;
+#ifdef TB_RUNTIME_DEBUG_INFO
+	case MODE_WRITETRUNC:
+		f = fopen(filename, "w");
+		break;
+#endif
 	default:
 		break;
 	}
+#ifdef TB_RUNTIME_DEBUG_INFO
+	if (!f)
+		TBDebugPrint("TBFile::Open, unable to open file '%s'\n", filename);
+#endif
 	if (!f)
 		return nullptr;
 	TBPosixFile *tbf = new TBPosixFile(f);

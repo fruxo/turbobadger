@@ -340,4 +340,62 @@ void TBNode::Clear()
 	m_children.DeleteAll();
 }
 
+#ifdef TB_RUNTIME_DEBUG_INFO
+
+bool TBNode::WriteFile(const char *filename)
+{
+	TBStr selfstr;
+	TBFile * f = TBFile::Open(filename, TBFile::MODE_WRITETRUNC);
+	if (!f)
+		return false;
+	WriteNode(selfstr);
+	bool success = selfstr.Length() == (int)f->Write(selfstr.CStr(), sizeof(char), selfstr.Length());
+	delete f;
+	return success;
+}
+
+void TBNode::WriteNode(TBStr & str, int depth)
+{
+	TBStr selfstr;
+	for (int i = 0; i < depth; ++i)
+		str.Append("\t");
+	if (m_name)
+		str.Append(m_name);
+	else if (depth == 0 && m_value.GetType() == TBValue::TYPE_NULL) // happens at root nodes
+		depth--;
+	else
+		selfstr.Append("(noname)");
+	switch (m_value.GetType())
+	{
+	case TBValue::TYPE_NULL:
+		break;
+	case TBValue::TYPE_STRING:
+		selfstr.SetFormatted(" \"%s\"", m_value.GetString());
+		break;
+	case TBValue::TYPE_FLOAT:
+	case TBValue::TYPE_INT:
+		selfstr.SetFormatted(" %s", m_value.GetString());
+		break;
+	case TBValue::TYPE_OBJECT:
+		// FIXME
+		selfstr.Append(" (object)");
+		break;
+	case TBValue::TYPE_ARRAY:
+		for (int i = 0; i < m_value.GetArrayLength(); ++i)
+		{
+			selfstr.Append(" ");
+			selfstr.Append(m_value.GetArray()->GetValue(i)->GetString());
+		}
+		break;
+	}
+	str.Append(selfstr);
+	str.Append("\n");
+	for (TBNode *n = GetFirstChild(); n; n = n->GetNext())
+	{
+		n->WriteNode(str, depth + 1);
+	}
+}
+
+#endif // TB_RUNTIME_DEBUG_INFO
+
 } // namespace tb
