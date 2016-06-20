@@ -44,7 +44,7 @@ void TBID::Set(const TBID &newid)
 			// If this happens, 2 different strings result in the same hash.
 			// It might be a good idea to change one of them, but it might not matter.
 			//assert(other_id->debug_string.Equals(debug_string));
-			TBDebugPrint("TBID::Set detected hash collision '%s':%d / '%s':%d",
+			TBDebugPrint("TBID::Set detected hash collision '%s':%x / '%s':%x",
 						 debug_string.CStr(), (int)newid,
 						 other_id->debug_string.CStr(), (int)*other_id);
 		}
@@ -65,7 +65,10 @@ void TBID::Set(const char *string)
 	{
 		if (TBID *other_id = all_id_hash.Get(id))
 		{
-			assert(other_id->debug_string.Equals(debug_string));
+			//assert(other_id->debug_string.Equals(debug_string));
+			TBDebugPrint("TBID::Set* detected hash collision '%s':%x / '%s':%x",
+						 debug_string.CStr(), (int)id,
+						 other_id->debug_string.CStr(), (int)*other_id);
 		}
 		else
 		{
