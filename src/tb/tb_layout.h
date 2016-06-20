@@ -46,9 +46,9 @@ enum LAYOUT_DISTRIBUTION {
 	layout (or vertically in a AXIS_Y layout) if there is extra space
 	available. */
 enum LAYOUT_DISTRIBUTION_POSITION {
-	LAYOUT_DISTRIBUTION_POSITION_CENTER,
-	LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP,
-	LAYOUT_DISTRIBUTION_POSITION_RIGHT_BOTTOM
+	LAYOUT_DISTRIBUTION_POSITION_CENTER,		///< Position centered
+	LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP,		///< Position to the upper left
+	LAYOUT_DISTRIBUTION_POSITION_RIGHT_BOTTOM	///< Position to the lower right
 };
 
 /** Layout order parameter for TBLayout::SetLayoutOrder. */
