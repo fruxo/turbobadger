@@ -95,5 +95,5 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/tb
 # Generate Doxygen documentation
 add_custom_target (doc 
   COMMAND doxygen doc/Doxyfile
-  COMMAND open doc/html/index.html
+#  COMMAND open doc/html/index.html
 )
