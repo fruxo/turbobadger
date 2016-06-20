@@ -18,7 +18,6 @@ option(TB_RENDERER_GLES_1 "Enable renderer using OpenGL ES1. This renderer depen
 option(TB_RENDERER_GLES_2 "Enable renderer using OpenGL ES2. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_RENDERER_GL3 "Enable renderer using OpenGL 3.2. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_IMAGE "Enable support for TBImage, TBImageManager, TBImageWidget." ON)
-option(TB_SUPPORT_CONSTEXPR "Enable support for constexpr." OFF)
 
 # Needs further work
 #option(TB_FILE_POSIX "" ON)
@@ -134,9 +133,6 @@ if(TB_RENDERER_GL3)
 endif()
 if(TB_IMAGE) 
     set(TB_IMAGE_CONFIG "#define TB_IMAGE")
-endif()
-if(TB_SUPPORT_CONSTEXPR) 
-    set(TB_SUPPORT_CONSTEXPR_CONFIG "#define TB_SUPPORT_CONSTEXPR")
 endif()
 
 configure_file(tb_config.h.in src/tb/config.h)

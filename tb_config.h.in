@@ -31,9 +31,6 @@
 	the default backends, so consider it an experimental and unfinished feature! */
 //#define TB_PREMULTIPLIED_ALPHA
 
-/** Enable for support of constexpr */
-${TB_SUPPORT_CONSTEXPR_CONFIG}
-
 /** Enable to support TBBF fonts (Turbo Badger Bitmap Fonts) */
 ${TB_FONT_RENDERER_TBBF_CONFIG}
 
