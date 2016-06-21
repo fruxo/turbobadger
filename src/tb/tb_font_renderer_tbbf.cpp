@@ -195,7 +195,7 @@ bool TBBFRenderer::FindGlyphs()
 	if (!glyph_str)
 		return false;
 
-	int glyph_str_len = strlen(glyph_str);
+	int glyph_str_len = (int)strlen(glyph_str);
 	int i = 0;
 	int x = 0;
 	while (UCS4 uc = utf8::decode_next(glyph_str, &i, glyph_str_len))
