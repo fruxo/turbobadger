@@ -46,6 +46,7 @@ public:
 private:
 	bool InvokeKey(unsigned int key, SPECIAL_KEY special_key,
 				   MODIFIER_KEYS modifierkeys, bool down);
+	void QueueUserEvent(Sint32 code, void * data1 = NULL, void * data2 = NULL);
 
 	App *m_app;
 	TBRendererGL *m_renderer;
@@ -146,11 +147,26 @@ AppBackendSDL2::InvokeKey(unsigned int key, SPECIAL_KEY special_key, MODIFIER_KE
 	return m_app->GetRoot()->InvokeKey(key, special_key, modifierkeys, down);
 }
 
+void
+AppBackendSDL2::QueueUserEvent(Sint32 code, void * data1, void * data2)
+{
+	// queue a user event to cause the SDL event loop to run
+	SDL_Event event;
+	SDL_UserEvent userevent;
+	userevent.type = SDL_USEREVENT;
+	userevent.code = code;
+	userevent.data1 = data1;
+	userevent.data2 = data2;
+	event.type = SDL_USEREVENT;
+	event.user = userevent;
+	SDL_PushEvent(&event);
+}
+
 bool AppBackendSDL2::Init(App *app)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
 	{
-		printf("Unable to initialize SDL: %s\n", SDL_GetError());
+		SDL_Log("Unable to initialize SDL: %s\n", SDL_GetError());
 		return 1;
 	}
 
@@ -180,7 +196,7 @@ bool AppBackendSDL2::Init(App *app)
 								  SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if (!mainWindow)
 	{
-		printf("Unable to create window: %s\n", SDL_GetError());
+		SDL_Log("Unable to create window: %s\n", SDL_GetError());
 		return 1;
 	}
 	glContext = SDL_GL_CreateContext(mainWindow);
@@ -233,29 +249,13 @@ void AppBackendSDL2::OnAppEvent(const EVENT &ev)
 		{
 			m_has_pending_update = true;
 			// queue a user event to cause the event loop to run
-			SDL_Event event;
-			SDL_UserEvent userevent;
-			userevent.type = SDL_USEREVENT;
-			userevent.code = 0;
-			userevent.data1 = NULL;
-			userevent.data2 = NULL;
-			event.type = SDL_USEREVENT;
-			event.user = userevent;
-			SDL_PushEvent(&event);
+			QueueUserEvent(0);
 		}
 		break;
 	case EVENT_QUIT_REQUEST:
 		m_quit_requested = true;
 		// queue a user event to cause the event loop to run
-		SDL_Event event;
-		SDL_UserEvent userevent;
-		userevent.type = SDL_USEREVENT;
-		userevent.code = 0;
-		userevent.data1 = NULL;
-		userevent.data2 = NULL;
-		event.type = SDL_USEREVENT;
-		event.user = userevent;
-		SDL_PushEvent(&event);
+		QueueUserEvent(1);
 		break;
 	case EVENT_TITLE_CHANGED:
 		SDL_SetWindowTitle(mainWindow, m_app->GetTitle());
@@ -427,6 +427,7 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 			break;
 		case SDL_WINDOWEVENT_EXPOSED:
 			//SDL_Log("Window %d exposed", event.window.windowID);
+			OnAppEvent(EVENT_PAINT_REQUEST);
 			break;
 		case SDL_WINDOWEVENT_MOVED:
 			//SDL_Log("Window %d moved to %d,%d",
