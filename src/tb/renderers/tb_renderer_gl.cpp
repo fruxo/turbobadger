@@ -307,6 +307,8 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 void TBRendererGL::EndPaint()
 {
 	TBRendererBatcher::EndPaint();
+	GLCALL(glDisable(GL_BLEND));
+	GLCALL(glDisable(GL_SCISSOR_TEST));
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 	if (TB_DEBUG_SETTING(RENDER_BATCHES))
