@@ -31,21 +31,18 @@
 	the default backends, so consider it an experimental and unfinished feature! */
 //#define TB_PREMULTIPLIED_ALPHA
 
-/** Enable for support of constexpr */
-
-
 /** Enable to support TBBF fonts (Turbo Badger Bitmap Fonts) */
 #define TB_FONT_RENDERER_TBBF
 
 /** Enable to support truetype fonts using freetype. */
-
+//#define TB_FONT_RENDERER_FREETYPE
 
 /** Enable to support truetype fonts using stb_truetype.h (http://nothings.org/).
 	It's a *very unsafe* font library. Use only with fonts distributed with your
 	app, that you know work! Freetype generates much prettier glyphs (using
 	hinting) but is a lot larger. This implementation is kept here as alternative
 	as long as it compiles. */
-
+//#define TB_FONT_RENDERER_STB
 
 /** Enable to support image loading using stb_image.c (http://nothings.org/).
 	It's a *very unsafe* image library. Use only with images distributed with
@@ -63,15 +60,7 @@
 
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL ES version 1. */
-
-
-/** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
-	It is using GL ES version 2. */
-
-
-/** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
-	It is using GL version 3.2. */
-#define TB_RENDERER_GL3
+//#define TB_RENDERER_GLES_1
 
 /** The width of the font glyph cache. Must be a power of two. */
 #define TB_GLYPH_CACHE_WIDTH 512
@@ -87,54 +76,43 @@
 // == Additional configuration of platform implementations ========================
 
 /** Define for posix implementation of TBFile. */
-#define TB_FILE_POSIX
 //#define TB_FILE_POSIX
 
 /** Defines for implementations of TBClipboard. */
-#define TB_CLIPBOARD_SDL2
 //#define TB_CLIPBOARD_DUMMY // Cross platform. Not integrating with the OS.
 //#define TB_CLIPBOARD_GLFW // Cross platform using glfw API.
 //#define TB_CLIPBOARD_WINDOWS
 
 /** Defines for implementations of TBSystem. */
-#define TB_SYSTEM_SDL
 //#define TB_SYSTEM_LINUX
 //#define TB_SYSTEM_WINDOWS
 //#define TB_SYSTEM_ANDROID
-//#define TB_SYSTEM_SDL
 
 /** Defines for additional platform specific issues. */
-#define TB_TARGET_CUSTOM
 //#define TB_TARGET_WINDOWS
 //#define TB_TARGET_MACOSX
 //#define TB_TARGET_LINUX
-//#define TB_TARGET_CUSTOM
 
 // == Setting some defaults for platform implementations ==========================
-// Updated to only define a platform if a target is defined
-// This allows us to build for different targets than the host compiling OS
-#if 0
-#if !defined(TB_TARGET_WINDOWS) && !defined(TB_TARGET_LINUX) && !defined(TB_TARGET_MACOSX) && !defined(TB_TARGET_CUSTOM)
-    #if defined(ANDROID) || defined(__ANDROID__)
-    #define TB_SYSTEM_ANDROID
-    #define TB_CLIPBOARD_DUMMY
-    #elif defined(__linux) || defined(__linux__)
-    #define TB_FILE_POSIX
-    #define TB_TARGET_LINUX
-    #define TB_SYSTEM_LINUX
-    #define TB_CLIPBOARD_GLFW
-    #elif MACOSX
-    #define TB_FILE_POSIX
-    #define TB_TARGET_MACOSX
-    #define TB_SYSTEM_LINUX
-    #define TB_CLIPBOARD_GLFW
-    #elif defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
-    #define TB_FILE_POSIX
-    #define TB_TARGET_WINDOWS
-    #define TB_CLIPBOARD_WINDOWS
-    #define TB_SYSTEM_WINDOWS
-    #endif
-#endif
+
+#if defined(ANDROID) || defined(__ANDROID__)
+#define TB_SYSTEM_ANDROID
+#define TB_CLIPBOARD_DUMMY
+#elif defined(__linux) || defined(__linux__)
+#define TB_FILE_POSIX
+#define TB_TARGET_LINUX
+#define TB_SYSTEM_LINUX
+#define TB_CLIPBOARD_GLFW
+#elif MACOSX
+#define TB_FILE_POSIX
+#define TB_TARGET_MACOSX
+#define TB_SYSTEM_LINUX
+#define TB_CLIPBOARD_GLFW
+#elif defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
+#define TB_FILE_POSIX
+#define TB_TARGET_WINDOWS
+#define TB_CLIPBOARD_WINDOWS
+#define TB_SYSTEM_WINDOWS
 #endif
 
 #endif // TB_CONFIG_H

@@ -5,7 +5,6 @@
 
 #include "tb_id.h"
 #include "tb_hashtable.h"
-#include "tb_system.h"
 
 namespace tb {
 

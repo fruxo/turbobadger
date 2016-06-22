@@ -139,29 +139,29 @@ TBRendererGL::TBRendererGL()
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
 	GLchar vertexShaderString[] =  
 #if defined(TB_RENDERER_GL3)
-		"#version 150                    \n"
-		"#define attribute in            \n"
-		"#define varying out             \n"
+		"#version 150                          \n"
+		"#define attribute in                  \n"
+		"#define varying out                   \n"
 #endif
-		"attribute vec2 xy;              \n"
-		"attribute vec2 uv;              \n"
-		"attribute vec4 col;             \n"
-		"uniform mat4 ortho;             \n"
-		"uniform sampler2D tex;          \n"
-		"varying vec2 uvo;               \n"
-		"varying lowp vec4 color;        \n"
-		"void main()                             \n"
-		"{                                       \n"
-		"  gl_Position = ortho * vec4(xy,0,1);   \n"
-		"  uvo = uv;                             \n"
-		"  color = col;                          \n"
-		"}                                       \n";
+		"attribute vec2 xy;                    \n"
+		"attribute vec2 uv;                    \n"
+		"attribute vec4 col;                   \n"
+		"uniform mat4 ortho;                   \n"
+		"uniform sampler2D tex;                \n"
+		"varying vec2 uvo;                     \n"
+		"varying lowp vec4 color;              \n"
+		"void main()                           \n"
+		"{                                     \n"
+		"  gl_Position = ortho * vec4(xy,0,1); \n"
+		"  uvo = uv;                           \n"
+		"  color = col;                        \n"
+		"}                                     \n";
 	GLchar fragmentShaderString[] =
 #if defined(TB_RENDERER_GL3)
-		"#version 150                        \n"
-		"#define varying in                  \n"
-		"out vec4 fragData[1];               \n"
-		"#define gl_FragColor fragData[0]    \n"
+		"#version 150                                  \n"
+		"#define varying in                            \n"
+		"out vec4 fragData[1];                         \n"
+		"#define gl_FragColor fragData[0]              \n"
 		"#define texture2D texture                     \n"
 #endif
 		"precision mediump float;                      \n"
@@ -277,8 +277,6 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	static float ortho[16];
 	MakeOrtho(ortho, 0, (GLfloat)render_target_w, (GLfloat)render_target_h, 0, -1.0, 1.0);
 	GLCALL(glUniformMatrix4fv(m_orthoLoc, 1, GL_FALSE, ortho));
-	//GLCALL(glUniform1i(m_texLoc, GL_TEXTURE0));
-	//GLCALL(glActiveTexture(GL_TEXTURE0));
 #else
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
