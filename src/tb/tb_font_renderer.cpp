@@ -60,12 +60,12 @@ void TBFontEffect::SetBlurRadius(int blur_radius)
 		float *kernel = (float *) m_kernel.GetData();
 		float stdDevSq2 = (float) m_blur_radius / 2.f;
 		stdDevSq2 = 2.f * stdDevSq2 * stdDevSq2;
-		float scale = 1.f / sqrt(3.1415f * stdDevSq2);
+		float scale = 1.f / sqrtf(3.1415f * stdDevSq2);
 		float sum = 0;
 		for (int k = 0; k < 2 * m_blur_radius + 1; k++)
 		{
 			float x = (float) (k - m_blur_radius);
-			float kval = scale * exp(-(x * x / stdDevSq2));
+			float kval = scale * expf(-(x * x / stdDevSq2));
 			kernel[k] = kval;
 			sum += kval;
 		}
