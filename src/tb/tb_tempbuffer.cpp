@@ -98,8 +98,8 @@ bool TBTempBuffer::AppendPath(const char *full_path_and_filename)
 		full_path_and_filename = str_start + 2;
 	}
 
-	int len = full_path_and_filename - str_start;
-	if (Reserve(len + 1))
+	const int len = full_path_and_filename - str_start;
+	if (Reserve(m_append_pos + len + 1))
 	{
 		// Add the string, and nulltermination.
 		Append(str_start, len);
