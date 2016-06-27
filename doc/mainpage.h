@@ -4,6 +4,8 @@ Turbo Badger is a small GUI library that provides a large number of skinnable wi
 a flexible event system, and well-abstracted rendering, all in a very nicely designed and 
 packaged programming interface.
 
+<a href="https://github.com/fruxo/turbobadger">The main GitHub repository is here.</a>
+
 The default skin looks like this:
 \image html Demo/screenshot/screenshot_01.png
 
@@ -124,7 +126,7 @@ Needs to be implemented for file loading.
 
 */
 
-/** @page Widgets
+/** @page page_widgets Widgets
 
 \section sec_commonwidg List of common widgets
 
@@ -147,7 +149,7 @@ this.
 
 */
 
-/** @page Layout
+/** @page page_layout Layout
 
  */
 
