@@ -1936,31 +1936,6 @@ bool TBStyleEdit::SetText(const char *text, int text_len, TB_CARET_POS pos)
 	return true;
 }
 
-bool TBStyleEdit::Load(const char *filename)
-{
-	TBFile* f = TBFile::Open(filename, TBFile::MODE_READ);
-	if (!f)
-		return false;
-	uint32 num_bytes = f->Size();
-
-	char *str = new char[num_bytes + 1];
-	if (!str)
-	{
-		delete f;
-		return false;
-	}
-
-	num_bytes = f->Read(str, 1, num_bytes);
-	str[num_bytes] = 0;
-
-	delete f;
-
-	SetText(str);
-
-	delete [] str;
-	return true;
-}
-
 bool TBStyleEdit::GetText(TBStr &text)
 {
 	TBSelection tmp_selection(this);

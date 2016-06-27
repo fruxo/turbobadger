@@ -52,21 +52,12 @@ void ResourceEditWindow::Load(const char *resource_file)
 	m_resource_filename.Set(resource_file);
 	SetText(resource_file);
 
-	// Set the text of the source view
-	m_source_edit->SetText("");
-
-	if (TBFile *file = TBFile::Open(m_resource_filename, TBFile::MODE_READ))
+	TBTempBuffer buffer;
+	if (buffer.AppendFile(m_resource_filename))
+		m_source_edit->SetText(buffer.GetData(), buffer.GetAppendPos());
+	else // Error, clear and show message
 	{
-		TBTempBuffer buffer;
-		if (buffer.Reserve(file->Size()))
-		{
-			uint32 size_read = file->Read(buffer.GetData(), 1, buffer.GetCapacity());
-			m_source_edit->SetText(buffer.GetData(), size_read);
-		}
-		delete file;
-	}
-	else // Error, show message
-	{
+		m_source_edit->SetText("");
 		TBStr text;
 		text.SetFormatted("Could not load file %s", resource_file);
 		if (TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBIDC("")))
