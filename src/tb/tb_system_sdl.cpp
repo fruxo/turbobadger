@@ -12,11 +12,7 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-#ifdef __EMSCRIPTEN__
-#include "SDL/SDL.h"
-#else
-#include "SDL2/SDL.h"
-#endif
+#include "SDL.h"
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 
