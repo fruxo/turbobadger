@@ -28,10 +28,10 @@ TBWindow::TBWindow()
 
 TBWindow::~TBWindow()
 {
-	if (m_resizer.GetParent())		RemoveChild(&m_resizer);
-	if (m_mover.GetParent())		RemoveChild(&m_mover);
-	if (m_close_button.GetParent())	m_mover.RemoveChild(&m_close_button);
-	m_mover.RemoveChild(&m_textfield);
+	m_resizer.RemoveFromParent();
+	m_mover.RemoveFromParent();
+	m_close_button.RemoveFromParent();
+	m_textfield.RemoveFromParent();
 }
 
 TBRect TBWindow::GetResizeToFitContentRect(RESIZE_FIT fit)
@@ -155,8 +155,7 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 	}
 	else if (!(settings & WINDOW_SETTINGS_TITLEBAR))
 	{
-		if (m_mover.GetParent())
-			RemoveChild(&m_mover);
+		m_mover.RemoveFromParent();
 	}
 	if (settings & WINDOW_SETTINGS_RESIZABLE)
 	{
@@ -165,8 +164,7 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 	}
 	else if (!(settings & WINDOW_SETTINGS_RESIZABLE))
 	{
-		if (m_resizer.GetParent())
-			RemoveChild(&m_resizer);
+		m_resizer.RemoveFromParent();
 	}
 	if (settings & WINDOW_SETTINGS_CLOSE_BUTTON)
 	{
@@ -175,8 +173,7 @@ void TBWindow::SetSettings(WINDOW_SETTINGS settings)
 	}
 	else if (!(settings & WINDOW_SETTINGS_CLOSE_BUTTON))
 	{
-		if (m_close_button.GetParent())
-			m_mover.RemoveChild(&m_close_button);
+		m_close_button.RemoveFromParent();
 	}
 
 	// FIX: invalidate layout / resize window!

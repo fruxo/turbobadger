@@ -470,6 +470,9 @@ public:
 	/** Remove child from this widget without deleting it. */
 	void RemoveChild(TBWidget *child, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
 
+	/** Remove this widget from parent if it has one. */
+	void RemoveFromParent() { if (m_parent) m_parent->RemoveChild(this); }
+
 	/** Remove and delete all children in this widget.
 		Note: This won't invoke Die so there's no chance for widgets to survive or
 		animate. They will be instantly removed and deleted. */

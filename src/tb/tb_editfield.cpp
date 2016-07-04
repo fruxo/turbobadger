@@ -578,7 +578,7 @@ TBTextFragmentContentWidget::TBTextFragmentContentWidget(TBWidget *parent, TBWid
 
 TBTextFragmentContentWidget::~TBTextFragmentContentWidget()
 {
-	m_widget->GetParent()->RemoveChild(m_widget);
+	m_widget->RemoveFromParent();
 	delete m_widget;
 }
 

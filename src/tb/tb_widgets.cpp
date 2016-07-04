@@ -148,8 +148,7 @@ void TBWidget::Die()
 	if (!TBWidgetListener::InvokeWidgetDying(this))
 	{
 		// No one was interested, so die immediately.
-		if (m_parent)
-			m_parent->RemoveChild(this);
+		RemoveFromParent();
 		delete this;
 	}
 }
@@ -1327,7 +1326,6 @@ bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 		// hit is more interesting for callers than if the event was handled or not.
 		return true;
 	}
-
 	return false;
 }
 
@@ -1348,7 +1346,6 @@ bool TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool to
 		// hit is more interesting for callers than if the event was handled or not.
 		return true;
 	}
-
 	return false;
 }
 
