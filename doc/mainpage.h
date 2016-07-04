@@ -22,7 +22,7 @@ providing resources to TB, and finally drawing the GUI.
 TB's configuration is taken from the file src/tb/tb_config.h, there is a template config file
 with a full list of available configuration options in tb_config.h.in .  CMake can be
 used to configure the template tb_config.h.in into a correct src/tb/tb_config.h for your
-setup.
+environment.
 
 \section sec_events Events
 
