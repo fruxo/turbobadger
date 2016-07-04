@@ -47,8 +47,8 @@ static SDL_TimerID tb_sdl_timer_id = 0;
 static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
 {
 	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
-	double now = tb::TBSystem::GetTimeMS();
-	if (next_fire_time != TB_NOT_SOON && now < next_fire_time)
+	double now = TBSystem::GetTimeMS();
+	if (next_fire_time != TB_NOT_SOON && (next_fire_time - now) > 1.0)
 	{
 		// We timed out *before* we were supposed to (the OS is not playing nice).
 		// Calling ProcessMessages now won't achieve a thing so force a reschedule
@@ -66,7 +66,7 @@ static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
 		tb_sdl_timer_id = 0;
 		return 0; // never - no longer scheduled
 	}
-	next_fire_time -= tb::TBSystem::GetTimeMS();
+	next_fire_time -= TBSystem::GetTimeMS();
 	return MAX(next_fire_time, 1.); // asap
 }
 
@@ -85,7 +85,8 @@ void TBSystem::RescheduleTimer(double fire_time)
 	// set new timer
 	if (fire_time != TB_NOT_SOON)
 	{
-		double delay = fire_time - tb::TBSystem::GetTimeMS();
+		double now = TBSystem::GetTimeMS();
+		double delay = fire_time - now;
 		tb_sdl_timer_id = SDL_AddTimer((Uint32)MAX(delay, 1.), tb_sdl_timer_callback, NULL);
 		if (!tb_sdl_timer_id)
 			TBDebugOut("ERROR: RescheduleTimer failed to SDL_AddTimer\n");
