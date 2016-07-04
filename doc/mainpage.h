@@ -1,3 +1,4 @@
+namespace tb {
 /** @mainpage Introduction
 
 Turbo Badger is a small GUI library that provides a large number of skinnable widgets,
@@ -157,3 +158,4 @@ this.
 
 
  */
+}
