@@ -6,6 +6,7 @@
 #include "tb_font_renderer.h"
 #include "tb_renderer.h"
 #include "tb_system.h"
+#include "tb_skin.h"
 #include <math.h>
 
 namespace tb {
@@ -391,7 +392,7 @@ void TBFontFace::DrawString(int x, int y, const TBColor &color, const char *str,
 		}
 		else if (!m_font_renderer) // This is the test font. Use same glyph width as height and draw square.
 		{
-			g_renderer->DrawRect(TBRect(x, y, m_metrics.height / 3, m_metrics.height), color);
+			g_tb_skin->PaintRect(TBRect(x, y, m_metrics.height / 3, m_metrics.height), color, 1);
 			x += m_metrics.height / 3 + 1;
 		}
 	}

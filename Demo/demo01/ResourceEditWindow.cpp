@@ -194,7 +194,7 @@ void ResourceEditWindow::OnPaintChildren(const PaintProps &paint_props)
 		TBRect widget_rect(0, 0, selected_widget->GetRect().w, selected_widget->GetRect().h);
 		selected_widget->ConvertToRoot(widget_rect.x, widget_rect.y);
 		ConvertFromRoot(widget_rect.x, widget_rect.y);
-		g_renderer->DrawRect(widget_rect, TBColor(255, 205, 0));
+		g_tb_skin->PaintRect(widget_rect, TBColor(255, 205, 0), 1);
 	}
 }
 
