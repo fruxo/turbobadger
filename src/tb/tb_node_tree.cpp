@@ -60,7 +60,7 @@ TBNode *TBNode::GetNode(const char *request, GET_MISS_POLICY mp)
 	while (*request && n)
 	{
 		const char *nextend = GetNextNodeSeparator(request);
-		int name_len = nextend - request;
+		int name_len = int(nextend - request);
 		TBNode *n_child = n->GetNodeInternal(request, name_len);
 		if (!n_child && mp == GET_MISS_POLICY_CREATE)
 		{

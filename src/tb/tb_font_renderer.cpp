@@ -272,7 +272,7 @@ bool TBFontFace::RenderGlyphs(const char *glyph_str, int glyph_str_len)
 		return true; // This is the test font
 
 	if (glyph_str_len == TB_ALL_TO_TERMINATION)
-		glyph_str_len = strlen(glyph_str);
+		glyph_str_len = (int)strlen(glyph_str);
 
 	bool has_all_glyphs = true;
 	int i = 0;

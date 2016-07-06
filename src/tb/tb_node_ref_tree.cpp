@@ -109,7 +109,7 @@ TBNode *TBNodeRefTree::FollowNodeRef(TBNode *node)
 			next_node  = local_root->GetNode(name_start + 1, TBNode::GET_MISS_POLICY_NULL);
 		}
 		// We have a "@treename>noderequest" string. Go ahead and look it up from the right node tree.
-		else if (TBNodeRefTree *rt = TBNodeRefTree::GetRefTree(name_start, name_end - name_start))
+		else if (TBNodeRefTree *rt = TBNodeRefTree::GetRefTree(name_start, int(name_end - name_start)))
 		{
 			next_node = rt->m_node.GetNode(name_end + 1, TBNode::GET_MISS_POLICY_NULL);
 		}

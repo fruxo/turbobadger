@@ -27,7 +27,7 @@ void TBDimensionConverter::SetDPI(int src_dpi, int dst_dpi)
 void TBDimensionConverter::GetDstDPIFilename(const char *filename, TBTempBuffer *tempbuf) const
 {
 	int dot_pos = 0;
-	for (dot_pos = strlen(filename) - 1; dot_pos > 0; dot_pos--)
+	for (dot_pos = (int)strlen(filename) - 1; dot_pos > 0; dot_pos--)
 		if (filename[dot_pos] == '.')
 			break;
 	tempbuf->ResetAppendPos();
@@ -64,7 +64,7 @@ int TBDimensionConverter::GetPxFromString(const char *str, int def_value) const
 {
 	if (!str || !is_start_of_number(str))
 		return def_value;
-	int len = strlen(str);
+	int len = (int)strlen(str);
 	int val = atoi(str);
 	// "dp" and unspecified unit is dp.
 	if ((len > 0 && isdigit(str[len - 1])) ||
