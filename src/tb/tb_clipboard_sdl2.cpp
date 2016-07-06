@@ -7,7 +7,11 @@
 
 #ifdef TB_CLIPBOARD_SDL2
 
+#ifdef __APPLE__
+#include "SDL2/SDL.h"
+#else
 #include "SDL.h"
+#endif
 
 namespace tb {
 
@@ -32,7 +36,7 @@ bool TBClipboard::GetText(TBStr &text)
 {
 	if (const char *str = SDL_GetClipboardText())
 		return text.Set(str);
-        return false;
+	return false;
 }
 
 } // namespace tb

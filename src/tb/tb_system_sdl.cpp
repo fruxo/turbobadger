@@ -12,7 +12,11 @@
 #include <sys/time.h>
 #include <stdio.h>
 
+#ifdef __APPLE__
+#include "SDL2/SDL.h"
+#else
 #include "SDL.h"
+#endif
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 

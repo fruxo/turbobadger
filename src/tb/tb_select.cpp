@@ -358,7 +358,7 @@ bool TBSelectList::ChangeValue(SPECIAL_KEY key)
 // == TBSelectDropdown ==========================================
 
 TBSelectDropdown::TBSelectDropdown()
-	: m_value(-1)
+	: m_value(-1), m_dispvalue(false)
 {
 	SetSource(&m_default_source);
 	SetSkinBg(TBIDC("TBSelectDropdown"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
@@ -390,10 +390,13 @@ void TBSelectDropdown::SetValue(int value)
 		return;
 	m_value = value;
 
-	if (m_value < 0)
-		SetText("");
-	else if (m_value < m_source->GetNumItems())
-		SetText(m_source->GetItemString(m_value));
+	if (m_dispvalue)
+	{
+		if (m_value < 0)
+			SetText("");
+		else if (m_value < m_source->GetNumItems())
+			SetText(m_source->GetItemString(m_value));
+	}
 
 	TBWidgetEvent ev(EVENT_TYPE_CHANGED);
 	InvokeEvent(ev);

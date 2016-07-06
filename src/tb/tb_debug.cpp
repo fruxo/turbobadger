@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "tb_core.h"
+#include "tb_system.h"
 #include "tb_widgets_reader.h"
 #include "tb_window.h"
 #include "tb_editfield.h"
@@ -82,6 +83,7 @@ public:
 		{
 			// Update setting and invalidate
 			g_tb_debug.settings[ev.target->data.GetInt()] = ev.target->GetValue();
+			TB_IF_DEBUG_SETTING(LAYOUT_PS_DEBUGGING, last_measure_time = TBSystem::GetTimeMS());
 			GetParentRoot()->Invalidate();
 			return true;
 		}
