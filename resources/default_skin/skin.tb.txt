@@ -376,21 +376,21 @@ elements
 		padding 2
 	TBMenuWindow
 		clone TBPopupWindow
-	TBSelectItem
-		padding 4 10
-		children
-			element TBSelectItem.hovered
-				state hovered
-			element TBSelectItem.selected
-				state selected
-	TBSelectItem.selected
-		cut 7
-		bitmap item_selected.png
-	TBSelectItem.hovered
-		cut 7
-		bitmap item_hover.png
-	TBSelectItem.separator
-		clone TBSeparator
+#	TBSelectItem
+#		padding 4 10
+#		children
+#			element TBSelectItem.hovered
+#				state hovered
+#			element TBSelectItem.selected
+#				state selected
+#	TBSelectItem.selected
+#		cut 7
+#		bitmap item_selected.png
+#	TBSelectItem.hovered
+#		cut 7
+#		bitmap item_hover.png
+#	TBSelectItem.separator
+#		clone TBSeparator
 
 	TBSeparator
 		bitmap item_separator_x.png
