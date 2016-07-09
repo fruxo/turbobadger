@@ -124,6 +124,14 @@ int TBSystem::GetDPI()
 #endif
 }
 
+char * TBSystem::GetRoot()
+{
+    static char *basepath = NULL;
+	if (!basepath)
+		basepath = SDL_GetBasePath();
+	return basepath;
+}
+
 } // namespace tb
 
 #endif // TB_SYSTEM_LINUX

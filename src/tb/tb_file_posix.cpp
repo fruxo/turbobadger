@@ -43,14 +43,16 @@ private:
 TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 {
 	FILE *f = nullptr;
+	TBStr pathfile(TBSystem::GetRoot());
+	pathfile.Append(filename);
 	switch (mode)
 	{
 	case MODE_READ:
-		f = fopen(filename, "rb");
+		f = fopen(pathfile.CStr(), "rb");
 		break;
 #ifdef TB_RUNTIME_DEBUG_INFO
 	case MODE_WRITETRUNC:
-		f = fopen(filename, "w");
+		f = fopen(pathfile.CStr(), "w");
 		break;
 #endif
 	default:
@@ -58,7 +60,7 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 	}
 #ifdef TB_RUNTIME_DEBUG_INFO
 	if (!f)
-		TBDebugPrint("TBFile::Open, unable to open file '%s'\n", filename);
+		TBDebugPrint("TBFile::Open, unable to open file '%s'\n", pathfile.CStr());
 #endif
 	if (!f)
 		return nullptr;
