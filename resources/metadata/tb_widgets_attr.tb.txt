@@ -80,6 +80,8 @@ TBTabContainer
 	root
 		<sub...>
 TBButton
+	squeezable <bool>
+	auto-repeat <bool>
 	toggle-mode <bool>
 TBScrollBar
 TBSlider
