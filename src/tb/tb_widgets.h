@@ -242,6 +242,9 @@ public:
 	LayoutParams() : min_w(UNSPECIFIED), min_h(UNSPECIFIED)
 					, max_w(UNSPECIFIED), max_h(UNSPECIFIED)
 					, pref_w(UNSPECIFIED), pref_h(UNSPECIFIED) {}
+	LayoutParams(int w, int h) : min_w(w), min_h(h)
+								, max_w(w), max_h(h)
+								, pref_w(w), pref_h(h) {}
 
 	/** Set both min max and preferred width to the given width. */
 	void SetWidth(int width) { min_w = max_w = pref_w = width; }
