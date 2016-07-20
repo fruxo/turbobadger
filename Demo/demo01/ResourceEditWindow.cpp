@@ -52,21 +52,12 @@ void ResourceEditWindow::Load(const char *resource_file)
 	m_resource_filename.Set(resource_file);
 	SetText(resource_file);
 
-	// Set the text of the source view
-	m_source_edit->SetText("");
-
-	if (TBFile *file = TBFile::Open(m_resource_filename, TBFile::MODE_READ))
+	TBTempBuffer buffer;
+	if (buffer.AppendFile(m_resource_filename))
+		m_source_edit->SetText(buffer.GetData(), buffer.GetAppendPos());
+	else // Error, clear and show message
 	{
-		TBTempBuffer buffer;
-		if (buffer.Reserve(file->Size()))
-		{
-			uint32 size_read = file->Read(buffer.GetData(), 1, buffer.GetCapacity());
-			m_source_edit->SetText(buffer.GetData(), size_read);
-		}
-		delete file;
-	}
-	else // Error, show message
-	{
+		m_source_edit->SetText("");
 		TBStr text;
 		text.SetFormatted("Could not load file %s", resource_file);
 		if (TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBIDC("")))
@@ -203,7 +194,7 @@ void ResourceEditWindow::OnPaintChildren(const PaintProps &paint_props)
 		TBRect widget_rect(0, 0, selected_widget->GetRect().w, selected_widget->GetRect().h);
 		selected_widget->ConvertToRoot(widget_rect.x, widget_rect.y);
 		ConvertFromRoot(widget_rect.x, widget_rect.y);
-		g_renderer->DrawRect(widget_rect, TBColor(255, 205, 0));
+		g_tb_skin->PaintRect(widget_rect, TBColor(255, 205, 0), 1);
 	}
 }
 

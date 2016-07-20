@@ -6,7 +6,6 @@ PROJECT_ROOT := ../../
 
 LOCAL_SRC_FILES := jni_glue.cpp \
                    App.cpp       \
-                   ../../src/tb/tb_addon.cpp \
                    ../../src/tb/tb_bitmap_fragment.cpp \
                    ../../src/tb/tb_clipboard_dummy.cpp \
                    ../../src/tb/tb_color.cpp \
