@@ -62,8 +62,9 @@ static void makeTimer(timer_t *timerID)
 
 static void startTimer(unsigned int ms)
 {
+	long nsec = (ms % 1000) * 1000000;
 	its.it_value.tv_sec = ms / 1000;
-	its.it_value.tv_nsec = (ms % 1000) * 1000000;
+	its.it_value.tv_nsec = (nsec == 0) ? 1 : nsec;
 	its.it_interval.tv_sec = its.it_value.tv_sec;
 	its.it_interval.tv_nsec = its.it_value.tv_nsec;
 
@@ -79,9 +80,9 @@ static void stopTimer()
 		errExit("Can't stop timer");
 }
 
-
 void glfwWakeUpMsgLoop(GLFWwindow *window)
 {
+	glfwPostEmptyEvent();
 }
 
 void glfwWaitMsgLoop(GLFWwindow *window)
