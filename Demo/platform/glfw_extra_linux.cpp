@@ -86,7 +86,7 @@ void glfwWakeUpMsgLoop(GLFWwindow *window)
 
 void glfwWaitMsgLoop(GLFWwindow *window)
 {
-	glfwPollEvents();
+	glfwWaitEvents();
 }
 
 void glfwPollMsgLoop(GLFWwindow *window)
