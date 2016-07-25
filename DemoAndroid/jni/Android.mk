@@ -7,6 +7,7 @@ PROJECT_ROOT := ../../
 LOCAL_SRC_FILES := jni_glue.cpp \
                    App.cpp       \
                    ../../src/tb/tb_bitmap_fragment.cpp \
+                   ../../src/tb/tb_blur.cpp \
                    ../../src/tb/tb_clipboard_dummy.cpp \
                    ../../src/tb/tb_color.cpp \
                    ../../src/tb/tb_dimension.cpp \
@@ -33,6 +34,7 @@ LOCAL_SRC_FILES := jni_glue.cpp \
                    ../../src/tb/tb_scroll_container.cpp \
                    ../../src/tb/tb_select.cpp \
                    ../../src/tb/tb_select_item.cpp \
+                   ../../src/tb/tb_shape_rasterizer.cpp \
                    ../../src/tb/tb_skin.cpp \
                    ../../src/tb/tb_skin_util.cpp \
                    ../../src/tb/tb_style_edit.cpp \

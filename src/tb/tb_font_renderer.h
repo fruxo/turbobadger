@@ -181,6 +181,9 @@ public:
 	/** Set a background font which will always be rendered behind this one
 	    when calling DrawString. Very usefull to add a shadow effect to a font. */
 	void SetBackgroundFont(TBFontFace *font, const TBColor &col, int xofs, int yofs);
+
+	/** Get the font renderer, or nullptr for test dummy font. */
+	TBFontRenderer *GetFontRenderer() const { return m_font_renderer; }
 private:
 	TBID GetHashId(UCS4 cp) const;
 	TBFontGlyph *GetGlyph(UCS4 cp, bool render_if_needed);

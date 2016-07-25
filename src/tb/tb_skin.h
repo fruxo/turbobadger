@@ -1,5 +1,5 @@
 // ================================================================================
-// ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
+// ==      This file is a part of Turbo Badger. (C) 2011-2016, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
@@ -13,10 +13,11 @@
 #include "tb_linklist.h"
 #include "tb_dimension.h"
 #include "tb_value.h"
+#include "tb_node_tree.h"
+#include "tb_font_desc.h"
 
 namespace tb {
 
-class TBNode;
 class TBSkinConditionContext;
 
 /** Used for some values in TBSkinElement if they has not been specified in the skin. */
@@ -172,7 +173,8 @@ public:
 	// Skin properties
 	TBID id;			///< ID of the skin element
 	TBStr name;			///< Name of the skin element, f.ex "TBSelectDropdown.arrow"
-	TBStr bitmap_file;	///< File name of the bitmap (might be empty)
+	TBStr path;			///< Path for bitmap file
+	TBStr bitmap_name;	///< Name of the bitmap (name of file or generated bitmap, or empty)
 	TBBitmapFragment *bitmap;///< Bitmap fragment containing the graphics, or nullptr.
 	uint8 cut;			///< How the bitmap should be sliced using StretchBox.
 	int16 expand;		///< How much the skin should expand outside the widgets rect.
@@ -205,6 +207,7 @@ public:
 	float opacity;			///< Opacity that should be used for the whole widget (0.f - 1.f).
 	TBColor text_color;		///< Color of the text in the widget.
 	TBColor bg_color;		///< Color of the background in the widget.
+	TBColor img_color;		///< Color to be applied when rendering bitmap.
 	int16 bitmap_dpi;		///< The DPI of the bitmap that was loaded.
 	TBValue tag;			///< This value is free to use for anything. It's not used internally.
 
@@ -296,6 +299,9 @@ public:
 		loading skin_file. Elements using the same name will override any previosly
 		read data for the same element. Known limitation: Clone can currently only
 		clone elements in the same file!
+
+		If the skin use font glyphs, the font engine and used font has to be initialized
+		already. Otherwise the correct font won't be used.
 
 		Returns true on success, and all bitmaps referred to also loaded successfully. */
 	bool Load(const char *skin_file, const char *override_skin_file = nullptr);
@@ -397,7 +403,10 @@ private:
 	float m_default_disabled_opacity;					///< Disabled opacity
 	float m_default_placeholder_opacity;				///< Placeholder opacity
 	int16 m_default_spacing;							///< Default layout spacing
+	TBFontDescription m_glyph_font_desc;
+	TBNode m_shape_nodes;								///< The "shapes" branch of nodes read from skin.
 	bool LoadInternal(const char *skin_file);
+	void RasterizeShape(TBNode *node);
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementBGColor(const TBRect &dst_rect, TBSkinElement *element);
@@ -405,8 +414,11 @@ private:
 	void PaintElementTile(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element);
 	void PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center);
+	void PaintElementBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBSkinElement *element);
 	TBRect GetFlippedRect(const TBRect &src_rect, TBSkinElement *element) const;
 	int GetPxFromNode(TBNode *node, int def_value) const;
+	float GetPxFromNodeF(TBNode *node, float def_value) const;
+	void GetPxFromNode4(TBNode *node, int *a, int *b, int *c, int *d) const;
 };
 
 } // namespace tb

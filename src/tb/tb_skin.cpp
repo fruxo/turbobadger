@@ -1,12 +1,13 @@
 // ================================================================================
-// ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
+// ==      This file is a part of Turbo Badger. (C) 2011-2016, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
 
 #include "tb_skin.h"
+#include "tb_shape_rasterizer.h"
 #include "tb_system.h"
 #include "tb_tempbuffer.h"
-#include "tb_node_tree.h"
+#include "tb_font_renderer.h"
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
@@ -169,6 +170,13 @@ bool TBSkin::LoadInternal(const char *skin_file)
 			}
 		}
 		m_dim_conv.SetDPI(base_dpi, supported_dpi);
+
+		// Read glyph font description
+		if (const char *font = node.GetValueString("description>glyph-font", nullptr))
+		{
+			m_glyph_font_desc.SetID(font);
+			m_glyph_font_desc.SetSize(GetPxFromNode(node.GetNode("description>glyph-font-base-size"), 14));
+		}
 	}
 
 	// Read skin constants
@@ -179,6 +187,10 @@ bool TBSkin::LoadInternal(const char *skin_file)
 	m_default_placeholder_opacity = node.GetValueFloat("defaults>placeholder>opacity",
 		m_default_placeholder_opacity);
 	m_default_spacing = GetPxFromNode(node.GetNode("defaults>spacing"), m_default_spacing);
+
+	// Clone nodes for generated bitmaps since we need to generate (or regenerate) graphics later.
+	if (TBNode *shape_nodes = node.GetNode("shapes"))
+		m_shape_nodes.CloneChildren(shape_nodes, true);
 
 	// Iterate through all elements nodes and add skin elements or patch already
 	// existing elements.
@@ -253,37 +265,54 @@ bool TBSkin::ReloadBitmaps()
 
 bool TBSkin::ReloadBitmapsInternal()
 {
-	// Load all bitmap files into new bitmap fragments.
+	// Generate new bitmap fragments from shape descriptions
+	TBNode *node = m_shape_nodes.GetFirstChild();
+	while (node) {
+		RasterizeShape(node);
+		node = node->GetNext();
+	}
+
+	// Assign bitmaps to elements, loading from file or fetching generated bitmaps.
 	TBTempBuffer filename_dst_DPI;
 	bool success = true;
 	TBHashTableIteratorOf<TBSkinElement> it(&m_elements);
 	while (TBSkinElement *element = it.GetNextContent())
 	{
-		if (!element->bitmap_file.IsEmpty())
+		if (element->bitmap_name.IsEmpty())
+			continue;
+		assert(!element->bitmap);
+
+		element->bitmap = m_frag_manager.GetFragment(TBID(element->bitmap_name));
+		if (element->bitmap)
 		{
-			assert(!element->bitmap);
-
-			// FIX: dedicated_map is not needed for all backends (only deprecated fixed function GL)
-			bool dedicated_map = element->type == SKIN_ELEMENT_TYPE_TILE;
-
-			// Try to load bitmap fragment in the destination DPI (F.ex "foo.png" becomes "foo@192.png")
-			int bitmap_dpi = m_dim_conv.GetSrcDPI();
-			if (m_dim_conv.NeedConversion())
-			{
-				m_dim_conv.GetDstDPIFilename(element->bitmap_file, &filename_dst_DPI);
-				element->bitmap = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(), dedicated_map);
-				if (element->bitmap)
-					bitmap_dpi = m_dim_conv.GetDstDPI();
-			}
-			element->SetBitmapDPI(m_dim_conv, bitmap_dpi);
-
-			// If we still have no bitmap fragment, load from default file.
-			if (!element->bitmap)
-				element->bitmap = m_frag_manager.GetFragmentFromFile(element->bitmap_file, dedicated_map);
-
-			if (!element->bitmap)
-				success = false;
+			element->SetBitmapDPI(m_dim_conv, m_dim_conv.GetDstDPI());
+			continue;
 		}
+
+		// FIX: dedicated_map is not needed for all backends (only deprecated fixed function GL)
+		bool dedicated_map = element->type == SKIN_ELEMENT_TYPE_TILE;
+
+		TBStr file_with_path;
+		file_with_path.Append(element->path);
+		file_with_path.Append(element->bitmap_name);
+
+		// Try to load bitmap fragment in the destination DPI (F.ex "foo.png" becomes "foo@192.png")
+		int bitmap_dpi = m_dim_conv.GetSrcDPI();
+		if (m_dim_conv.NeedConversion())
+		{
+			m_dim_conv.GetDstDPIFilename(file_with_path, &filename_dst_DPI);
+			element->bitmap = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(), dedicated_map);
+			if (element->bitmap)
+				bitmap_dpi = m_dim_conv.GetDstDPI();
+		}
+		element->SetBitmapDPI(m_dim_conv, bitmap_dpi);
+
+		// If we still have no bitmap fragment, load from default file.
+		if (!element->bitmap)
+			element->bitmap = m_frag_manager.GetFragmentFromFile(file_with_path, dedicated_map);
+
+		if (!element->bitmap)
+			success = false;
 	}
 	// Create fragment used for color fills. Use 2x2px and inset source rect to center 0x0
 	// to avoid filtering artifacts.
@@ -291,6 +320,72 @@ bool TBSkin::ReloadBitmapsInternal()
 	m_color_frag = m_frag_manager.CreateNewFragment(TBID((uint32)0), false, 2, 2, 2, data);
 	m_color_frag->m_rect = m_color_frag->m_rect.Shrink(1, 1);
 	return success;
+}
+
+void TBSkin::RasterizeShape(TBNode *node)
+{
+	const TBID id(node->GetName());
+	if (m_frag_manager.GetFragment(id))
+		return;
+	TBShapeRasterizer shape;
+
+	if (TBNode *size_node = node->GetNode("size")) {
+		int size[4] = { 0, 0, 0, 0 };
+		GetPxFromNode4(size_node, &size[0], &size[1], &size[2], &size[3]);
+		if (!shape.Initialize(size[0], size[1]))
+			return;
+	}
+
+	TBNode *action_node = node->GetFirstChild();
+	while (action_node) {
+		if (strcmp(action_node->GetName(), "srect") == 0) {
+			TBRect dst_rect(0, 0, shape.GetWidth(), shape.GetHeight());
+			GetPxFromNode4(action_node, &dst_rect.x, &dst_rect.y, &dst_rect.w, &dst_rect.h);
+
+			int radius[4] = { 0, 0, 0, 0 };
+			if (TBNode *radius_node = action_node->GetNode("radius")) {
+				GetPxFromNode4(radius_node, &radius[0], &radius[1], &radius[2], &radius[3]);
+			}
+			const float mul = action_node->GetValueFloat("mul", 1.f);
+			shape.StencilRectRadius(dst_rect, radius[0], radius[1], radius[2], radius[3], mul);
+
+			const int border = GetPxFromNode(action_node->GetNode("border"), 0);
+			if (border > 0) {
+				shape.StencilRectRadius(dst_rect.Shrink(border, border),
+					radius[0] - border, radius[1] - border,
+					radius[2] - border, radius[3] - border, -1.f);
+			}
+		} else if (strcmp(action_node->GetName(), "sglyph") == 0) {
+			TBFontDescription fd(m_glyph_font_desc);
+			fd.SetSize(GetPxFromNode(action_node->GetNode("size"), (int) fd.GetSize()));
+			const float mul = action_node->GetValueFloat("mul", 1.f);
+			shape.StencilGlyph(fd, action_node->GetValue().GetString(), mul);
+		} else if (strcmp(action_node->GetName(), "sclear") == 0) {
+			shape.StencilClear();
+		} else if (strcmp(action_node->GetName(), "sinvert") == 0) {
+			shape.StencilInvert();
+		} else if (strcmp(action_node->GetName(), "sblur") == 0) {
+			shape.StencilBlur(GetPxFromNodeF(action_node, 0));
+		} else if (strcmp(action_node->GetName(), "color") == 0) {
+			TBRect dst_rect(0, 0, shape.GetWidth(), shape.GetHeight());
+			GetPxFromNode4(action_node, &dst_rect.x, &dst_rect.y, &dst_rect.w, &dst_rect.h);
+
+			TBColor color;
+			const char *col_str = action_node->GetValue().GetString();
+			color.SetFromString(col_str, strlen(col_str));
+
+			shape.ColorRect(dst_rect, color);
+		}
+
+		action_node = action_node->GetNext();
+	}
+
+	if (!shape.GetPixels())
+		return;
+#ifndef TB_PREMULTIPLIED_ALPHA
+	shape.ColorUnpremultiply();
+#endif
+	m_frag_manager.CreateNewFragment(id, false, shape.GetWidth(), shape.GetHeight(), shape.GetWidth(), shape.GetPixels());
 }
 
 TBSkin::~TBSkin()
@@ -479,7 +574,7 @@ void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
 	rect.Set(rect.x + element->img_ofs_x + (rect.w - src_rect.w) * element->img_position_x / 100,
 			rect.y + element->img_ofs_y + (rect.h - src_rect.h) * element->img_position_y / 100,
 			src_rect.w, src_rect.h);
-	g_renderer->DrawBitmap(rect, GetFlippedRect(src_rect, element), element->bitmap);
+	PaintElementBitmap(rect, GetFlippedRect(src_rect, element), element);
 }
 
 void TBSkin::PaintElementTile(const TBRect &dst_rect, TBSkinElement *element)
@@ -494,7 +589,7 @@ void TBSkin::PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *ele
 		return;
 	TBRect rect = dst_rect.Expand(element->expand, element->expand);
 	TBRect src_rect = GetFlippedRect(TBRect(0, 0, element->bitmap->Width(), element->bitmap->Height()), element);
-	g_renderer->DrawBitmap(rect, src_rect, element->bitmap);
+	PaintElementBitmap(rect, src_rect, element);
 }
 
 void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center)
@@ -522,28 +617,36 @@ void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *eleme
 		dst_cut_h = -dst_cut_h;
 
 	// Corners
-	g_renderer->DrawBitmap(TBRect(rect.x, rect.y, dst_cut_w, dst_cut_h), TBRect(0, 0, cut, cut), element->bitmap);
-	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y, dst_cut_w, dst_cut_h), TBRect(bw - cut, 0, cut, cut), element->bitmap);
-	g_renderer->DrawBitmap(TBRect(rect.x, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(0, bh - cut, cut, cut), element->bitmap);
-	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(bw - cut, bh - cut, cut, cut), element->bitmap);
+	PaintElementBitmap(TBRect(rect.x, rect.y, dst_cut_w, dst_cut_h), TBRect(0, 0, cut, cut), element);
+	PaintElementBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y, dst_cut_w, dst_cut_h), TBRect(bw - cut, 0, cut, cut), element);
+	PaintElementBitmap(TBRect(rect.x, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(0, bh - cut, cut, cut), element);
+	PaintElementBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(bw - cut, bh - cut, cut, cut), element);
 
 	// Left & right edge
 	if (has_left_right_edges)
 	{
-		g_renderer->DrawBitmap(TBRect(rect.x, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(0, cut, cut, bh - cut * 2), element->bitmap);
-		g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(bw - cut, cut, cut, bh - cut * 2), element->bitmap);
+		PaintElementBitmap(TBRect(rect.x, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(0, cut, cut, bh - cut * 2), element);
+		PaintElementBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(bw - cut, cut, cut, bh - cut * 2), element);
 	}
 
 	// Top & bottom edge
 	if (has_top_bottom_edges)
 	{
-		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, 0, bw - cut * 2, cut), element->bitmap);
-		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + rect.h - dst_cut_h, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, bh - cut, bw - cut * 2, cut), element->bitmap);
+		PaintElementBitmap(TBRect(rect.x + dst_cut_w, rect.y, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, 0, bw - cut * 2, cut), element);
+		PaintElementBitmap(TBRect(rect.x + dst_cut_w, rect.y + rect.h - dst_cut_h, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, bh - cut, bw - cut * 2, cut), element);
 	}
 
 	// Center
 	if (fill_center && has_top_bottom_edges && has_left_right_edges)
-		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h, rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2), TBRect(cut, cut, bw - cut * 2, bh - cut * 2), element->bitmap);
+		PaintElementBitmap(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h, rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2), TBRect(cut, cut, bw - cut * 2, bh - cut * 2), element);
+}
+
+void TBSkin::PaintElementBitmap(const TBRect &dst_rect, const TBRect &src_rect, TBSkinElement *element)
+{
+	if (element->img_color != 0)
+		g_renderer->DrawBitmapColored(dst_rect, src_rect, element->img_color, element->bitmap);
+	else
+		g_renderer->DrawBitmap(dst_rect, src_rect, element->bitmap);
 }
 
 #ifdef TB_RUNTIME_DEBUG_INFO
@@ -573,6 +676,37 @@ int TBSkin::GetPxFromNode(TBNode *node, int def_value) const
 	return node ? m_dim_conv.GetPxFromValue(&node->GetValue(), def_value) : def_value;
 }
 
+float TBSkin::GetPxFromNodeF(TBNode *node, float def_value) const
+{
+	return node ? m_dim_conv.GetPxFromValueF(&node->GetValue(), def_value) : def_value;
+}
+
+void TBSkin::GetPxFromNode4(TBNode *node, int *a, int *b, int *c, int *d) const
+{
+	TBValue &val = node->GetValue();
+	if (val.GetArrayLength() == 4)
+	{
+		*a = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(0), *a);
+		*b = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(1), *b);
+		*c = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(2), *c);
+		*d = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(3), *d);
+	}
+	else if (val.GetArrayLength() == 2)
+	{
+		*a = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(0), *a);
+		*b = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(1), *b);
+		*c = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(0), *c);
+		*d = m_dim_conv.GetPxFromValue(val.GetArray()->GetValue(1), *d);
+	}
+	else
+	{
+		*a = m_dim_conv.GetPxFromValue(&val, *a);
+		*b = m_dim_conv.GetPxFromValue(&val, *b);
+		*c = m_dim_conv.GetPxFromValue(&val, *c);
+		*d = m_dim_conv.GetPxFromValue(&val, *d);
+	}
+}
+
 // == TBSkinElement =========================================================
 
 TBSkinElement::TBSkinElement()
@@ -590,6 +724,7 @@ TBSkinElement::TBSkinElement()
 	, flip_x(0), flip_y(0), opacity(1.f)
 	, text_color(0, 0, 0, 0)
 	, bg_color(0, 0, 0, 0)
+	, img_color(0, 0, 0, 0)
 	, bitmap_dpi(0)
 {
 }
@@ -676,11 +811,7 @@ bool TBSkinElement::HasState(SKIN_STATE state, TBSkinConditionContext &context)
 void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 {
 	if (const char *bitmap = n->GetValueString("bitmap", nullptr))
-	{
-		bitmap_file.Clear();
-		bitmap_file.Append(skin_path);
-		bitmap_file.Append(bitmap);
-	}
+		bitmap_name.Set(bitmap);
 
 	// Note: Always read cut and expand as pixels. These values might later be
 	//       recalculated depending on the DPI the bitmaps are available in.
@@ -688,6 +819,7 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 	expand = n->GetValueInt("expand", expand);
 
 	name.Set(n->GetName());
+	path.Set(skin_path);
 	id.Set(n->GetName());
 
 	const TBDimensionConverter *dim_conv = skin->GetDimensionConverter();
@@ -736,6 +868,9 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 
 	if (const char *color = n->GetValueString("background-color", nullptr))
 		bg_color.SetFromString(color, strlen(color));
+
+	if (const char *color = n->GetValueString("img-color", nullptr))
+		img_color.SetFromString(color, strlen(color));
 
 	if (const char *type_str = n->GetValueString("type", nullptr))
 		type = StringToType(type_str);

@@ -19,6 +19,7 @@
     <ClCompile Include="..\..\src\tb\renderers\tb_renderer_batcher.cpp" />
     <ClCompile Include="..\..\src\tb\renderers\tb_renderer_gl.cpp" />
     <ClCompile Include="..\..\src\tb\tb_bitmap_fragment.cpp" />
+    <ClCompile Include="..\..\src\tb\tb_blur.cpp" />
     <ClCompile Include="..\..\src\tb\tb_clipboard_win.cpp" />
     <ClCompile Include="..\..\src\tb\tb_color.cpp" />
     <ClCompile Include="..\..\src\tb\tb_core.cpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="..\..\src\tb\tb_scroll_container.cpp" />
     <ClCompile Include="..\..\src\tb\tb_select.cpp" />
     <ClCompile Include="..\..\src\tb\tb_select_item.cpp" />
+    <ClCompile Include="..\..\src\tb\tb_shape_rasterizer.cpp" />
     <ClCompile Include="..\..\src\tb\tb_skin.cpp" />
     <ClCompile Include="..\..\src\tb\tb_skin_util.cpp" />
     <ClCompile Include="..\..\src\tb\tb_str.cpp" />
@@ -89,6 +91,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\tb\image\tb_image_manager.h" />
     <ClInclude Include="..\..\src\tb\image\tb_image_widget.h" />
+    <ClInclude Include="..\..\src\tb\tb_blur.h" />
+    <ClInclude Include="..\..\src\tb\tb_shape_rasterizer.h" />
     <ClInclude Include="..\..\tbanimation\tb_animation_utils.h" />
     <ClInclude Include="..\..\src\tb\animation\tb_animation.h" />
     <ClInclude Include="..\..\src\tb\animation\tb_animation_utils.h" />

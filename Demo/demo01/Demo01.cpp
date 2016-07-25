@@ -842,9 +842,6 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 	// Load language file
 	g_tb_lng->Load("resources/language/lng_en.tb.txt");
 
-	// Load the default skin, and override skin that contains the graphics specific to the demo.
-	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
-
 	// Register font renderers.
 #ifdef TB_FONT_RENDERER_TBBF
 	void register_tbbf_font_renderer();
@@ -862,6 +859,7 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 	// Add fonts we can use to the font manager.
 #if defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
 	g_font_manager->AddFontInfo("resources/vera.ttf", "Vera");
+	g_font_manager->AddFontInfo("resources/fonty_skin/fontawesome.ttf", "FontAwesome");
 #endif
 #ifdef TB_FONT_RENDERER_TBBF
 	g_font_manager->AddFontInfo("resources/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
@@ -887,6 +885,14 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 	// without this since glyphs are rendered when needed, but with some extra updating of the glyph bitmap.
 	if (font)
 		font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
+
+	// Load the default skin, and override skin that contains the graphics specific to the demo.
+#if 0 // defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
+	// New experimental skin using shapes & icon font, to scale perfectly for any DPI
+	g_tb_skin->Load("resources/fonty_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
+#else
+	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
+#endif
 
 	// Give the root widget a background skin
 	m_root.SetSkinBg(TBIDC("background"));
