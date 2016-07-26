@@ -30,7 +30,7 @@ public:
 	bool Initialize(int suggested_w, int suggested_h);
 
 	void StencilClear();
-	void StencilCircle(const TBRect &clip_rect, float cx, float cy, float r, float mul);
+	void StencilCircle(const TBRect &clip_rect, float cx, float cy, float radius, float mul);
 	void StencilRect(const TBRect &rect, float mul);
 	void StencilRectRadius(const TBRect &rect, int r1, int r2, int r3, int r4, float mul);
 	void StencilInvert();

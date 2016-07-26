@@ -61,15 +61,16 @@ void TBShapeRasterizer::ColorClear() {
 	memset(m_pixels, 0, m_w * m_h * sizeof(uint32));
 }
 
-void TBShapeRasterizer::StencilCircle(const TBRect &clip_rect, float cx, float cy, float r, float mul) {
+void TBShapeRasterizer::StencilCircle(const TBRect &clip_rect, float cx, float cy, float radius, float mul) {
 	if (!m_stencil) return;
+	const TBRect r = clip_rect.Clip(TBRect(0, 0, m_w, m_h));
 	cx -= 0.5f;
 	cy -= 0.5f;
-	for (int y = clip_rect.y; y < clip_rect.y + clip_rect.h; y++) {
+	for (int y = r.y; y < r.y + r.h; y++) {
 		uint8 *dst_row = m_stencil + y * m_w;
-		for (int x = clip_rect.x; x < clip_rect.x + clip_rect.w; x++) {
-			float a = sqrtf((x - cx) * (x - cx) + (y - cy) * (y - cy)) / (r + 0.5f);
-			a = Clamp(1 - (a - (1 - 1 / r)) * r, 0.f, 1.f);
+		for (int x = r.x; x < r.x + r.w; x++) {
+			float a = sqrtf((x - cx) * (x - cx) + (y - cy) * (y - cy)) / (radius + 0.5f);
+			a = Clamp(1 - (a - (1 - 1 / radius)) * radius, 0.f, 1.f);
 			blend_stencil(&dst_row[x], a, mul);
 		}
 	}
@@ -77,9 +78,10 @@ void TBShapeRasterizer::StencilCircle(const TBRect &clip_rect, float cx, float c
 
 void TBShapeRasterizer::StencilRect(const TBRect &rect, float mul) {
 	if (!m_stencil) return;
-	for (int y = rect.y; y < rect.y + rect.h; y++) {
+	const TBRect r = rect.Clip(TBRect(0, 0, m_w, m_h));
+	for (int y = r.y; y < r.y + r.h; y++) {
 		uint8 *dst_row = m_stencil + y * m_w;
-		for (int x = rect.x; x < rect.x + rect.w; x++)
+		for (int x = r.x; x < r.x + r.w; x++)
 			blend_stencil(&dst_row[x], 1.f, mul);
 	}
 }
@@ -125,14 +127,13 @@ void TBShapeRasterizer::StencilRectRadius(const TBRect &rect, int r1, int r2, in
 	r3 = Clamp(r3, 0, max_cut);
 	r4 = Clamp(r4, 0, max_cut);
 
-	const TBRect bounds(0, 0, m_w, m_h);
-	const TBRect rect_ul = TBRect(rect.x, rect.y, r1, r1).Clip(bounds);
-	const TBRect rect_ur = TBRect(rect.x + rect.w - r2, rect.y, r2, r2).Clip(bounds);
-	const TBRect rect_ll = TBRect(rect.x, rect.y + rect.h - r3, r3, r3).Clip(bounds);
-	const TBRect rect_lr = TBRect(rect.x + rect.w - r4, rect.y + rect.h - r4, r4, r4).Clip(bounds);
+	const TBRect rect_ul = TBRect(rect.x, rect.y, r1, r1);
+	const TBRect rect_ur = TBRect(rect.x + rect.w - r2, rect.y, r2, r2);
+	const TBRect rect_ll = TBRect(rect.x, rect.y + rect.h - r3, r3, r3);
+	const TBRect rect_lr = TBRect(rect.x + rect.w - r4, rect.y + rect.h - r4, r4, r4);
 
 	TBRegion rgn;
-	rgn.Set(rect.Clip(bounds));
+	rgn.Set(rect);
 	rgn.ExcludeRect(rect_ul);
 	rgn.ExcludeRect(rect_ur);
 	rgn.ExcludeRect(rect_ll);
