@@ -306,7 +306,7 @@ AppBackendSDL::HandleSDLEvent(SDL_Event & event)
 			case SDLK_TAB:			InvokeKey(0, TB_KEY_TAB, modifier, down); break;
 			case SDLK_DELETE:		InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
 			case SDLK_BACKSPACE:	InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
-			case SDLK_RETURN:		
+			case SDLK_RETURN:
 			case SDLK_KP_ENTER:		InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
 			case SDLK_ESCAPE:		InvokeKey(0, TB_KEY_ESC, modifier, down); break;
 			case SDLK_MENU:
