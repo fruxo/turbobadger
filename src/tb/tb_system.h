@@ -9,6 +9,12 @@
 #include "tb_core.h"
 #include "tb_str.h"
 
+#ifdef __APPLE__
+#include "SDL2/SDL.h"
+#else
+#include "SDL.h"
+#endif
+
 #ifdef TB_RUNTIME_DEBUG_INFO
 void TBDebugOut(const char *str);
 #define TBDebugPrint(str, ...) { tb::TBStr tmp; tmp.SetFormatted(str, __VA_ARGS__); TBDebugOut(tmp); }
@@ -50,8 +56,16 @@ public:
 
 	/** Get Path to root of all app files. Must end with path separator. */
 	static char * GetRoot();
-};
 
+  /** Get SDL_DisplayMode  for the main screen. */
+	static SDL_DisplayMode getDisplayMode();
+
+  /** Get the width for the main screen. */
+	static int getScreenWidth ();
+
+/** Get the heightfor the main screen. */
+	static int getScreenHeight ();
+};
 /** TBClipboard is a porting interface for the clipboard. */
 class TBClipboard
 {

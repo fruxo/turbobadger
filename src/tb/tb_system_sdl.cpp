@@ -12,11 +12,11 @@
 #include <sys/time.h>
 #include <stdio.h>
 
-#ifdef __APPLE__
-#include "SDL2/SDL.h"
-#else
-#include "SDL.h"
-#endif
+// #ifdef __APPLE__
+// #include "SDL2/SDL.h"
+// #else
+// #include "SDL.h"
+// #endif
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 
@@ -123,6 +123,46 @@ int TBSystem::GetDPI()
 	return 96;
 #endif
 }
+
+SDL_DisplayMode TBSystem::getDisplayMode()
+{
+  int i;
+
+  // Declare display mode structure to be filled in.
+  SDL_DisplayMode current;
+
+  // Get current display mode of all displays.
+
+    int should_be_zero = SDL_GetCurrentDisplayMode(0, &current);
+
+    if(should_be_zero != 0)
+      // In case of error...
+      SDL_Log("Could not get display mode for video display #%d: %s", i, SDL_GetError());
+
+    else
+      // On success, print the current display mode.
+      return current;
+
+}
+
+int TBSystem::getScreenWidth (){
+	SDL_DisplayMode current = getDisplayMode();
+	 if(current.w)
+	 		return current.w;
+	 else
+	 	return 600;
+
+}
+
+int TBSystem::getScreenHeight (){
+	SDL_DisplayMode current = getDisplayMode();
+	 if(current.h)
+	 		return current.h;
+	 else
+	 	return 400;
+
+}
+
 
 char * TBSystem::GetRoot()
 {
