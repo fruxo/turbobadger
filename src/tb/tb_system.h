@@ -63,8 +63,16 @@ public:
   /** Get the width for the main screen. */
 	static int getScreenWidth ();
 
-/** Get the heightfor the main screen. */
+	/** Get the height for the main screen. */
 	static int getScreenHeight ();
+
+	/** Get the width for the main window. */
+	static int getWidth();
+
+	/** Get the height for the main window. */
+	static int getHeight();
+
+	static SDL_Window * _mainWindow;
 };
 /** TBClipboard is a porting interface for the clipboard. */
 class TBClipboard

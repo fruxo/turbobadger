@@ -13,6 +13,7 @@
 #include "tb_scroller.h"
 #include "tb_font_renderer.h"
 #include <assert.h>
+#include "iostream"
 #ifdef TB_ALWAYS_SHOW_EDIT_FOCUS
 #include "tb_editfield.h"
 #endif // TB_ALWAYS_SHOW_EDIT_FOCUS
@@ -1477,6 +1478,7 @@ bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifie
 	bool handled = false;
 	if (focused_widget)
 	{
+
 		// Emulate a click on the focused widget when pressing space or enter
 		if (!modifierkeys && focused_widget->GetClickByKey() &&
 			!focused_widget->GetDisabled() &&
@@ -1511,7 +1513,8 @@ bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifie
 		}
 		else
 		{
-			// Invoke the key event on the focused widget
+
+
 			TBWidgetEvent ev(down ? EVENT_TYPE_KEY_DOWN : EVENT_TYPE_KEY_UP);
 			ev.key = key;
 			ev.special_key = special_key;
@@ -1528,6 +1531,15 @@ bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifie
 		// Show the focus when we move it by keyboard
 		if (handled)
 			SetAutoFocusState(true);
+	}
+
+  if (!focused_widget) {
+		TBWidgetEvent ev(down ? EVENT_TYPE_KEY_DOWN : EVENT_TYPE_KEY_UP);
+		ev.key = key;
+		ev.special_key = special_key;
+		ev.modifierkeys = modifierkeys;
+		handled = GetFirstChild()->InvokeEvent(ev);
+
 	}
 	return handled;
 }

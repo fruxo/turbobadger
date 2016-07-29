@@ -11,6 +11,7 @@
 #include "tb_types.h"
 #include <sys/time.h>
 #include <stdio.h>
+#include <iostream>
 
 // #ifdef __APPLE__
 // #include "SDL2/SDL.h"
@@ -32,6 +33,7 @@ namespace tb {
 
 // == TBSystem ========================================
 
+SDL_Window * TBSystem::_mainWindow;
 double TBSystem::GetTimeMS()
 {
 #if 1
@@ -161,6 +163,30 @@ int TBSystem::getScreenHeight (){
 	 else
 	 	return 400;
 
+}
+
+int TBSystem::getHeight(){
+	int height=0;
+	int width=0;
+	if (TBSystem::_mainWindow)
+  	SDL_GetWindowSize(TBSystem::_mainWindow,&width,&height);
+
+	if (!height)
+			return 400;
+	else
+			return height;
+
+}
+int TBSystem::getWidth(){
+	int width=0;
+	int height=0;
+	if (TBSystem::_mainWindow)
+  	SDL_GetWindowSize(TBSystem::_mainWindow,&width,&height);
+
+	if (!width)
+		return 600;
+	else
+		return width;
 }
 
 
