@@ -856,10 +856,19 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 	register_freetype_font_renderer();
 #endif
 
+	// Load the default skin, and override skin that contains the graphics specific to the demo.
+#if 0 // defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
+	// New experimental skin using shapes & icon font, to scale perfectly for any DPI
+	// Requires FontAwesome to be added before loading skin.
+	g_font_manager->AddFontInfo("resources/fonty_skin/fontawesome.ttf", "FontAwesome");
+	g_tb_skin->Load("resources/fonty_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
+#else
+	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
+#endif
+
 	// Add fonts we can use to the font manager.
 #if defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
 	g_font_manager->AddFontInfo("resources/vera.ttf", "Vera");
-	g_font_manager->AddFontInfo("resources/fonty_skin/fontawesome.ttf", "FontAwesome");
 #endif
 #ifdef TB_FONT_RENDERER_TBBF
 	g_font_manager->AddFontInfo("resources/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
@@ -870,10 +879,10 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 
 	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;
-#ifdef TB_FONT_RENDERER_TBBF
-	fd.SetID(TBIDC("Segoe"));
-#else
+#if defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
 	fd.SetID(TBIDC("Vera"));
+#else
+	fd.SetID(TBIDC("Segoe"));
 #endif
 	fd.SetSize(g_tb_skin->GetDimensionConverter()->DpToPx(14));
 	g_font_manager->SetDefaultFontDescription(fd);
@@ -885,14 +894,6 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 	// without this since glyphs are rendered when needed, but with some extra updating of the glyph bitmap.
 	if (font)
 		font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
-
-	// Load the default skin, and override skin that contains the graphics specific to the demo.
-#if 0 // defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
-	// New experimental skin using shapes & icon font, to scale perfectly for any DPI
-	g_tb_skin->Load("resources/fonty_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
-#else
-	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
-#endif
 
 	// Give the root widget a background skin
 	m_root.SetSkinBg(TBIDC("background"));
