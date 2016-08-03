@@ -1473,6 +1473,28 @@ bool TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS
 	return false;
 }
 
+bool TBWidget::InvokeMultiGesture (float dTheta, float dDist, int x, int y, uint16 numFingers)
+{
+	SetHoveredWidget(GetWidgetAt(x,y,true), true);
+
+	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
+	if (target)
+	{
+		target->ConvertFromRoot(x,y);
+		TBWidgetEvent ev (EVENT_TYPE_MULTI_GESTURE, x, y, true);
+		ev.dTheta = dTheta;
+		ev.dDist = dDist;
+		ev.numFingers = numFingers;
+		target->InvokeEvent(ev);
+
+		// Return true when we have a target instead of InvokeEvent result. If a widget is
+		// hit is more interesting for callers than if the event was handled or not.
+		return true;
+	}
+
+		return false;
+}
+
 bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
 {
 	bool handled = false;

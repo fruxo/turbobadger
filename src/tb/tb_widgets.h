@@ -57,6 +57,8 @@ enum EVENT_TYPE {
 	EVENT_TYPE_POINTER_MOVE,
 	EVENT_TYPE_WHEEL,
 
+	EVENT_TYPE_MULTI_GESTURE,
+
 	/** Invoked after changing text in a TBTextField, changing selected item
 		in a TBSelectList etc. Invoking this event trigs synchronization with
 		connected TBWidgetValue and other widgets connected to it. */
@@ -120,6 +122,9 @@ public:
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 	bool touch;			///< Set for pointer events. True if the event is a touch event (finger or pen on screen)
 						///< False if mouse or other cursor input.
+	float dTheta; ///< Set for multigesture events. the amount that the fingers rotated during this motion
+	float dDist;	///< Set for multigesture events. the amount that the fingers pinched during this motion
+	uint16 numFingers;  ///< Set for multigesture events. the number of fingers used in the gesture
 
 	TBOBJECT_SUBCLASS(TBWidgetEvent, TBTypedObject);
 
@@ -924,6 +929,8 @@ public:
 	bool InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
 	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
 	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
+
+	bool InvokeMultiGesture (float dTheta, float dDist, int x, int y, uint16 numFingers);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */
