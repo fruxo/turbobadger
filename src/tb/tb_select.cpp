@@ -435,8 +435,9 @@ TBMenuWindow *TBSelectDropdown::GetMenuIfOpen() const
 
 bool TBSelectDropdown::OnEvent(const TBWidgetEvent &ev)
 {
-	//if (ev.target == this && ev.type == EVENT_TYPE_CLICK)
-	if (ev.target == this && ev.type == EVENT_TYPE_POINTER_DOWN)
+	if (ev.target == this && ev.type == EVENT_TYPE_CLICK)
+	//if (ev.target == this && (ev.type == EVENT_TYPE_CLICK ||
+	//						  ev.type == EVENT_TYPE_POINTER_DOWN))
 	{
 		// Open the menu, or set the value and close it if already open (this will
 		// happen when clicking by keyboard since that will call click on this button)

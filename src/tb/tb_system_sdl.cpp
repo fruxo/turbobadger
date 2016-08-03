@@ -11,7 +11,7 @@
 #include "tb_types.h"
 #include <sys/time.h>
 #include <stdio.h>
-#include <iostream>
+#include <strings.h>
 
 // #ifdef __APPLE__
 // #include "SDL2/SDL.h"
@@ -128,67 +128,40 @@ int TBSystem::GetDPI()
 
 SDL_DisplayMode TBSystem::getDisplayMode()
 {
-  int i;
+	int ii = 0;
 
-  // Declare display mode structure to be filled in.
-  SDL_DisplayMode current;
+	// Declare display mode structure to be filled in.
+	SDL_DisplayMode current;
+	memset(&current, 0, sizeof(current));
 
-  // Get current display mode of all displays.
+	// Get current display mode of all displays.
+    int should_be_zero = SDL_GetCurrentDisplayMode(ii, &current);
 
-    int should_be_zero = SDL_GetCurrentDisplayMode(0, &current);
+    if (should_be_zero != 0)
+		// In case of error...
+		SDL_Log("Could not get display mode for video display #%d: %s", ii, SDL_GetError());
 
-    if(should_be_zero != 0)
-      // In case of error...
-      SDL_Log("Could not get display mode for video display #%d: %s", i, SDL_GetError());
-
-    else
-      // On success, print the current display mode.
-      return current;
-
+	// On success, print the current display mode.
+	return current;
 }
 
-int TBSystem::getScreenWidth (){
+int TBSystem::getScreenWidth()
+{
 	SDL_DisplayMode current = getDisplayMode();
-	 if(current.w)
-	 		return current.w;
-	 else
+	if (current.w)
+		return current.w;
+	else
 	 	return 600;
-
 }
 
-int TBSystem::getScreenHeight (){
+int TBSystem::getScreenHeight()
+{
 	SDL_DisplayMode current = getDisplayMode();
-	 if(current.h)
-	 		return current.h;
-	 else
-	 	return 400;
-
-}
-
-int TBSystem::getHeight(){
-	int height=0;
-	int width=0;
-	if (TBSystem::_mainWindow)
-  	SDL_GetWindowSize(TBSystem::_mainWindow,&width,&height);
-
-	if (!height)
-			return 400;
+	if (current.h)
+		return current.h;
 	else
-			return height;
-
+		return 400;
 }
-int TBSystem::getWidth(){
-	int width=0;
-	int height=0;
-	if (TBSystem::_mainWindow)
-  	SDL_GetWindowSize(TBSystem::_mainWindow,&width,&height);
-
-	if (!width)
-		return 600;
-	else
-		return width;
-}
-
 
 char * TBSystem::GetRoot()
 {
