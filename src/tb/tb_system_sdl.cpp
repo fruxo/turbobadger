@@ -163,6 +163,13 @@ int TBSystem::getScreenHeight()
 		return 400;
 }
 
+int TBSystem::getNumTouches()
+{
+	int ii = 0;
+
+	return SDL_GetNumTouchFingers(SDL_GetTouchDevice(ii));
+}
+
 char * TBSystem::GetRoot()
 {
     static char *basepath = NULL;

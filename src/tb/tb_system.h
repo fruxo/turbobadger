@@ -72,6 +72,8 @@ public:
 	/** Get the height for the main window. */
 	static int getHeight();
 
+	static int getNumTouches();
+
 	static SDL_Window * _mainWindow;
 };
 /** TBClipboard is a porting interface for the clipboard. */
