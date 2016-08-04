@@ -9,6 +9,9 @@
 #include "tb_skin.h"
 #include <math.h>
 
+// TODO: Move test font impl to a new TBFontRenderer instead. No special cases for
+// square rendering in here.
+
 namespace tb {
 
 // ================================================================================================
@@ -367,17 +370,29 @@ TBFontGlyph *TBFontFace::GetGlyph(UCS4 cp, bool render_if_needed)
 void TBFontFace::DrawString(int x, int y, const TBColor &color, const char *str, int len)
 {
 	if (m_bgFont)
-		m_bgFont->DrawString(x+m_bgX, y+m_bgY, m_bgColor, str, len);
+		m_bgFont->DrawString(x + m_bgX, y + m_bgY, m_bgColor, str, len);
 
-	if (m_font_renderer)
-		g_renderer->BeginBatchHint(TBRenderer::BATCH_HINT_DRAW_BITMAP_FRAGMENT);
+	g_renderer->BeginBatchHint(TBRenderer::BATCH_HINT_DRAW_BITMAP_FRAGMENT);
 
 	int i = 0;
+	UCS4 prev_cp = 0xFFFF;
 	while (str[i] && i < len)
 	{
-		UCS4 cp = utf8::decode_next(str, &i, len);
+		const UCS4 cp = utf8::decode_next(str, &i, len);
 		if (cp == 0xFFFF)
+		{
+			prev_cp = cp;
 			continue;
+		}
+		// Advance x
+		if (prev_cp != 0xFFFF)
+		{
+			if (!m_font_renderer) // This is the test font. Use same glyph width as height and draw square.
+				x += m_metrics.height / 3 + 1;
+			else
+				x += m_font_renderer->GetAdvance(prev_cp, cp);
+		}
+		// Render glyph
 		if (TBFontGlyph *glyph = GetGlyph(cp, true))
 		{
 			if (glyph->frag)
@@ -389,32 +404,38 @@ void TBFontFace::DrawString(int x, int y, const TBColor &color, const char *str,
 				else
 					g_renderer->DrawBitmapColored(dst_rect, src_rect, color, glyph->frag);
 			}
-			x += glyph->metrics.advance;
 		}
 		else if (!m_font_renderer) // This is the test font. Use same glyph width as height and draw square.
-		{
 			g_tb_skin->PaintRect(TBRect(x, y, m_metrics.height / 3, m_metrics.height), color, 1);
-			x += m_metrics.height / 3 + 1;
-		}
+		prev_cp = cp;
 	}
 
-	if (m_font_renderer)
-		g_renderer->EndBatchHint();
+	g_renderer->EndBatchHint();
 }
 
 int TBFontFace::GetStringWidth(const char *str, int len)
 {
 	int width = 0;
 	int i = 0;
+	UCS4 prev_cp = 0xFFFF;
 	while (str[i] && i < len)
 	{
-		UCS4 cp = utf8::decode_next(str, &i, len);
-		if (cp == 0xFFFF)
-			continue;
+		const UCS4 cp = utf8::decode_next(str, &i, len);
+		if (cp != 0xFFFF && prev_cp != 0xFFFF)
+		{
+			if (!m_font_renderer) // This is the test font. Use same glyph width as height.
+				width += m_metrics.height / 3 + 1;
+			else
+				width += m_font_renderer->GetAdvance(prev_cp, cp);
+		}
+		prev_cp = cp;
+	}
+	if (prev_cp != 0xFFFF)
+	{
 		if (!m_font_renderer) // This is the test font. Use same glyph width as height.
 			width += m_metrics.height / 3 + 1;
-		else if (TBFontGlyph *glyph = GetGlyph(cp, false))
-			width += glyph->metrics.advance;
+		else
+			width += m_font_renderer->GetAdvance(prev_cp, 0xFFFF);
 	}
 	return width;
 }

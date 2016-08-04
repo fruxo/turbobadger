@@ -74,6 +74,7 @@ public:
 	virtual TBFontMetrics GetMetrics();
 	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp);
+	virtual int GetAdvance(UCS4 cp1, UCS4 cp2);
 private:
 	TBNode m_node;
 	TBFontMetrics m_metrics;
@@ -128,12 +129,18 @@ void TBBFRenderer::GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp)
 {
 	metrics->x = m_x_ofs;
 	metrics->y = -m_metrics.ascent;
-	if (cp == ' ')
-		metrics->advance = m_space_advance;
-	else if (GLYPH *glyph = m_glyph_table.Get(cp))
-		metrics->advance = glyph->w + m_advance_delta;
+	metrics->advance = GetAdvance(cp, 0);
+}
+
+int TBBFRenderer::GetAdvance(UCS4 cp1, UCS4 cp2)
+{
+	if (cp1 == ' ')
+		return m_space_advance;
+	else if (GLYPH *glyph = m_glyph_table.Get(cp1))
+		return glyph->w + m_advance_delta;
 	else if (GLYPH *glyph = m_glyph_table.Get('?'))
-		metrics->advance = glyph->w + m_advance_delta;
+		return glyph->w + m_advance_delta;
+	return 0;
 }
 
 bool TBBFRenderer::Load(const char *filename, int size)

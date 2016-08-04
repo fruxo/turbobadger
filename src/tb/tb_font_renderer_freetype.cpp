@@ -61,6 +61,7 @@ public:
 	virtual TBFontMetrics GetMetrics();
 	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp);
+	virtual int GetAdvance(UCS4 cp1, UCS4 cp2);
 private:
 	bool Load(FreetypeFace *face, int size);
 	bool Load(const char *filename, int size);
@@ -122,6 +123,23 @@ void FreetypeFontRenderer::GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp)
 	metrics->advance = (int16) (slot->advance.x >> 6);
 	metrics->x = slot->bitmap_left;
 	metrics->y = - slot->bitmap_top;
+}
+
+int FreetypeFontRenderer::GetAdvance(UCS4 cp1, UCS4 cp2)
+{
+	FT_Activate_Size(m_size);
+	FT_GlyphSlot slot = m_face->m_face->glyph;
+	FT_UInt gi1 = FT_Get_Char_Index(m_face->m_face, cp1);
+	if (FT_Load_Glyph(m_face->m_face, gi1, FT_LOAD_RENDER))
+		return 0;
+	int advance = slot->advance.x >> 6;
+	if (FT_HAS_KERNING(m_face->m_face)) {
+		FT_Vector delta;
+		FT_UInt gi2 = FT_Get_Char_Index(m_face->m_face, cp2);
+		FT_Get_Kerning(m_face->m_face, gi1, gi2, FT_KERNING_DEFAULT, &delta);
+		advance += delta.x >> 6;
+	}
+	return advance;
 }
 
 bool FreetypeFontRenderer::Load(FreetypeFace *face, int size)

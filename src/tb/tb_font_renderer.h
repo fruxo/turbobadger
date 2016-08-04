@@ -65,7 +65,7 @@ public:
 	virtual bool RenderGlyph(TBFontGlyphData *data, UCS4 cp) = 0;
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp) = 0;
 	virtual TBFontMetrics GetMetrics() = 0;
-	//virtual int GetKernAdvance(UCS4 cp1, UCS4 cp2) = 0;
+	virtual int GetAdvance(UCS4 cp1, UCS4 cp2) = 0;
 };
 
 /** TBFontGlyph holds glyph metrics and bitmap fragment.

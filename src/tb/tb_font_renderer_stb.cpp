@@ -31,6 +31,7 @@ public:
 	virtual TBFontMetrics GetMetrics();
 	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp);
+	virtual int GetAdvance(UCS4 cp1, UCS4 cp2);
 private:
 	stbtt_fontinfo font;
 	TBTempBuffer ttf_buffer;
@@ -72,13 +73,23 @@ bool STBFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp)
 
 void STBFontRenderer::GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp)
 {
-	int advanceWidth, leftSideBearing;
-	stbtt_GetCodepointHMetrics(&font, cp, &advanceWidth, &leftSideBearing);
-	metrics->advance = (int) (advanceWidth * scale + 0.5f);
+	int advance, leftSideBearing;
+	stbtt_GetCodepointHMetrics(&font, cp, &advance, &leftSideBearing);
+	metrics->advance = (int) roundf(advance * scale);
 	int ix0, iy0, ix1, iy1;
 	stbtt_GetCodepointBitmapBox(&font, cp, 0, scale, &ix0, &iy0, &ix1, &iy1);
 	metrics->x = ix0;
 	metrics->y = iy0;
+}
+
+int STBFontRenderer::GetAdvance(UCS4 cp1, UCS4 cp2)
+{
+	int advance, leftSideBearing;
+	const int gi1 = stbtt_FindGlyphIndex(&font, cp1);
+	stbtt_GetGlyphHMetrics(&font, gi1, &advance, &leftSideBearing);
+	if (font.kern)
+		advance += stbtt_GetGlyphKernAdvance(&font, gi1, stbtt_FindGlyphIndex(&font, cp2));
+	return (int) roundf(advance * scale);
 }
 
 bool STBFontRenderer::Load(const char *filename, int size)
