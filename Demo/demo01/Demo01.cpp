@@ -868,7 +868,7 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 
 	// Add fonts we can use to the font manager.
 #if defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
-	g_font_manager->AddFontInfo("resources/vera.ttf", "Vera");
+	g_font_manager->AddFontInfo("Demo/fonts_ttf/Lato-Regular.ttf", "Lato");
 #endif
 #ifdef TB_FONT_RENDERER_TBBF
 	g_font_manager->AddFontInfo("resources/default_font/segoe_white_with_shadow.tb.txt", "Segoe");
@@ -880,7 +880,7 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 	// Set the default font description for widgets to one of the fonts we just added
 	TBFontDescription fd;
 #if defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
-	fd.SetID(TBIDC("Vera"));
+	fd.SetID(TBIDC("Lato"));
 #else
 	fd.SetID(TBIDC("Segoe"));
 #endif
