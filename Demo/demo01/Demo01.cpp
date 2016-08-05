@@ -878,13 +878,20 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 #endif
 
 	// Set the default font description for widgets to one of the fonts we just added
+	// STB renders Lato smaller than FreeType since it ignores the size table in fonts.
+	// To make demo look similar with all font engines, we use slightly different sizes.
+	// This should match when running in 96dp, but will likely diverge for other DPIs (and fonts).
 	TBFontDescription fd;
-#if defined(TB_FONT_RENDERER_STB) || defined(TB_FONT_RENDERER_FREETYPE)
+#if defined(TB_FONT_RENDERER_FREETYPE)
 	fd.SetID(TBIDC("Lato"));
+	fd.SetSize(g_tb_skin->GetDimensionConverter()->DpToPx(15));
+#elif defined(TB_FONT_RENDERER_STB)
+	fd.SetID(TBIDC("Lato"));
+	fd.SetSize(g_tb_skin->GetDimensionConverter()->DpToPx(18));
 #else
 	fd.SetID(TBIDC("Segoe"));
-#endif
 	fd.SetSize(g_tb_skin->GetDimensionConverter()->DpToPx(14));
+#endif
 	g_font_manager->SetDefaultFontDescription(fd);
 
 	// Create the font now.
