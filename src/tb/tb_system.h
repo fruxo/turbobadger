@@ -57,23 +57,13 @@ public:
 	/** Get Path to root of all app files. Must end with path separator. */
 	static char * GetRoot();
 
-  /** Get SDL_DisplayMode  for the main screen. */
-	static SDL_DisplayMode getDisplayMode();
-
-  /** Get the width for the main screen. */
+	/** Get the width for the main screen. */
 	static int getScreenWidth ();
 
 	/** Get the height for the main screen. */
 	static int getScreenHeight ();
-
-	/** Get the width for the main window. */
-	static int getWidth();
-
-	/** Get the height for the main window. */
-	static int getHeight();
-
-	static SDL_Window * _mainWindow;
 };
+
 /** TBClipboard is a porting interface for the clipboard. */
 class TBClipboard
 {

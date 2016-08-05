@@ -33,7 +33,6 @@ namespace tb {
 
 // == TBSystem ========================================
 
-SDL_Window * TBSystem::_mainWindow;
 double TBSystem::GetTimeMS()
 {
 #if 1
@@ -126,7 +125,7 @@ int TBSystem::GetDPI()
 #endif
 }
 
-SDL_DisplayMode TBSystem::getDisplayMode()
+static SDL_DisplayMode getDisplayMode()
 {
 	int ii = 0;
 
