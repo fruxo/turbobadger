@@ -1473,18 +1473,15 @@ bool TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS
 	return false;
 }
 
-bool TBWidget::InvokeMultiGesture (float dTheta, float dDist, int x, int y, uint16 numFingers)
+bool TBWidget::InvokeMultiGesture (float dTheta, float dDist, int target_x, int target_y, float x, float y, uint16 numFingers, bool isTouchScreen)
 {
-	SetHoveredWidget(GetWidgetAt(x,y,true), true);
+	SetHoveredWidget(GetWidgetAt(target_x,target_y,true), true);
 
 	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
 	if (target)
 	{
-		target->ConvertFromRoot(x,y);
-		TBWidgetEvent ev (EVENT_TYPE_MULTI_GESTURE, x, y, true);
-		ev.dTheta = dTheta;
-		ev.dDist = dDist;
-		ev.numFingers = numFingers;
+		target->ConvertFromRoot(target_x,target_y);
+		TBWidgetEventMultiGesture ev (target_x, target_y, x, y, dTheta, dDist, numFingers, isTouchScreen);
 		target->InvokeEvent(ev);
 
 		// Return true when we have a target instead of InvokeEvent result. If a widget is
@@ -1492,7 +1489,61 @@ bool TBWidget::InvokeMultiGesture (float dTheta, float dDist, int x, int y, uint
 		return true;
 	}
 
-		return false;
+	return false;
+}
+
+bool TBWidget::InvokeFingerMotion (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen)
+{
+	SetHoveredWidget(GetWidgetAt(target_x,target_y,true), true);
+
+	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
+	if (target)
+	{
+		target->ConvertFromRoot(target_x,target_y);
+		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_MOVE, target_x, target_y, x, y, dx, dy, isTouchScreen);
+		target->InvokeEvent(ev);
+
+		// Return true when we have a target instead of InvokeEvent result. If a widget is
+		// hit is more interesting for callers than if the event was handled or not.
+		return true;
+	}
+	return false;
+}
+
+bool TBWidget::InvokeFingerDown (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen)
+{
+	SetHoveredWidget(GetWidgetAt(target_x,target_y,true), true);
+
+	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
+	if (target)
+	{
+		target->ConvertFromRoot(target_x,target_y);
+		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_DOWN, target_x, target_y, x, y, dx, dy, isTouchScreen);
+		target->InvokeEvent(ev);
+
+		// Return true when we have a target instead of InvokeEvent result. If a widget is
+		// hit is more interesting for callers than if the event was handled or not.
+		return true;
+	}
+	return false;
+}
+
+bool TBWidget::InvokeFingerUp (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen)
+{
+	SetHoveredWidget(GetWidgetAt(target_x,target_y,true), true);
+
+	TBWidget *target = captured_widget ? captured_widget : hovered_widget;
+	if (target)
+	{
+		target->ConvertFromRoot(target_x,target_y);
+		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_UP, target_x, target_y, x, y, dx, dy, isTouchScreen);
+		target->InvokeEvent(ev);
+
+		// Return true when we have a target instead of InvokeEvent result. If a widget is
+		// hit is more interesting for callers than if the event was handled or not.
+		return true;
+	}
+	return false;
 }
 
 bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down)
