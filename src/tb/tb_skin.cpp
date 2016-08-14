@@ -128,6 +128,12 @@ TBSkin::TBSkin()
 
 bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 {
+	// Clear and previously loaded data.
+	UnloadBitmaps();
+	m_elements.DeleteAll();
+	m_shape_nodes.Clear();
+
+	// Load
 	if (!LoadInternal(skin_file))
 		return false;
 	if (override_skin_file && !LoadInternal(override_skin_file))

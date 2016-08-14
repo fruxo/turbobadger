@@ -303,6 +303,8 @@ public:
 		If the skin use font glyphs, the font engine and used font has to be initialized
 		already. Otherwise the correct font won't be used.
 
+		May be called multiple times to reload skin.
+
 		Returns true on success, and all bitmaps referred to also loaded successfully. */
 	bool Load(const char *skin_file, const char *override_skin_file = nullptr);
 
