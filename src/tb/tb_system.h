@@ -58,10 +58,10 @@ public:
 	static char * GetRoot();
 
 	/** Get the width for the main screen. */
-	static int getScreenWidth ();
+	static int getScreenWidth();
 
 	/** Get the height for the main screen. */
-	static int getScreenHeight ();
+	static int getScreenHeight();
 };
 
 /** TBClipboard is a porting interface for the clipboard. */
