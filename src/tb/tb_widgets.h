@@ -59,7 +59,7 @@ enum EVENT_TYPE {
 
 	EVENT_TYPE_MULTI_GESTURE,
 
-  EVENT_TYPE_FINGER_DOWN,
+	EVENT_TYPE_FINGER_DOWN,
 	EVENT_TYPE_FINGER_UP,
 	EVENT_TYPE_FINGER_MOVE,
 	/** Invoked after changing text in a TBTextField, changing selected item
@@ -150,27 +150,28 @@ public:
 };
 
 /** TBWidgetEventMultiGesture is a event of type EVENT_TYPE_MULTI_GESTURE
-   It contains the corresponding values for MultiGesture events*/
+	It contains the corresponding values for MultiGesture events */
 class TBWidgetEventMultiGesture : public TBWidgetEvent
 {
 public:
 	float center_x;	    ///< the normalized center of gesture
-	float center_y;  		///< the normalized center of gesture
-  float dTheta;       ///< the amount that the fingers rotated during this motion
-  float dDist;	      ///< the amount that the fingers pinched during this motion
-  uint16 numFingers;  ///< the number of fingers used in the gesture
+	float center_y;	    ///< the normalized center of gesture
+	float dTheta;       ///< the amount that the fingers rotated during this motion
+	float dDist;	    ///< the amount that the fingers pinched during this motion
+	uint16 numFingers;  ///< the number of fingers used in the gesture
 	bool isTouchScreen; ///< true if the MultiGesture event was initiated on touchscreen; false f. ex. if triggered by touchpad
 
 	TBOBJECT_SUBCLASS(TBWidgetEventMultiGesture, TBWidgetEvent);
 
 	TBWidgetEventMultiGesture(int tx, int ty, float cx, float cy, float dTheta, float dDist, uint16 numFingers, bool isTouchScreen) :
-															TBWidgetEvent (EVENT_TYPE_MULTI_GESTURE, tx, ty, 1),
-															center_x(cx), center_y(cy), dTheta(dTheta), dDist(dDist), numFingers(numFingers),
-															isTouchScreen(isTouchScreen){}
+		TBWidgetEvent (EVENT_TYPE_MULTI_GESTURE, tx, ty, 1),
+		center_x(cx), center_y(cy), dTheta(dTheta), dDist(dDist), numFingers(numFingers),
+		isTouchScreen(isTouchScreen){}
 };
 
 /** TBWidgetEventFinger is a subclass of TBWidgetEvent
- 	*  It is triggered by finger event such as up down or move.*/
+ *  It is triggered by finger event such as up down or move.
+ */
 class TBWidgetEventFinger : public TBWidgetEvent
 {
 public:
@@ -178,13 +179,14 @@ public:
 	float y;  ///< the y-axis location of the touch event, normalized (0...1)
 	float dx; ///< the distance moved in the x-axis, normalized (-1...1)
 	float dy; ///< the distance moved in the y-axis, normalized (-1...1)
-  bool isTouchScreen; ///< true if the MultiGesture event was initiated on touchscreen; false f. ex. if triggered by touchpad
+	bool isTouchScreen; ///< true if the MultiGesture event was initiated on touchscreen; false f. ex. if triggered by touchpad
 
 	TBOBJECT_SUBCLASS(TBWidgetEventFinger, TBWidgetEvent);
 
 	TBWidgetEventFinger(EVENT_TYPE type, int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen) :
-														TBWidgetEvent(type, target_x, target_y, 1), x(x), y(y), dx(dx), dy(dy) {}
+		TBWidgetEvent(type, target_x, target_y, 1), x(x), y(y), dx(dx), dy(dy) {}
 };
+
 /** TBWidgetEventFileDrop is a event of type EVENT_TYPE_FILE_DROP.
 	It contains a list of filenames of the files that was dropped. */
 class TBWidgetEventFileDrop : public TBWidgetEvent

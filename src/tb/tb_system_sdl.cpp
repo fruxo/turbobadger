@@ -125,50 +125,6 @@ int TBSystem::GetDPI()
 #endif
 }
 
-static SDL_DisplayMode getDisplayMode()
-{
-	int ii = 0;
-
-	// Declare display mode structure to be filled in.
-	SDL_DisplayMode current;
-	memset(&current, 0, sizeof(current));
-
-	// Get current display mode of all displays.
-    int should_be_zero = SDL_GetCurrentDisplayMode(ii, &current);
-
-    if (should_be_zero != 0)
-		// In case of error...
-		SDL_Log("Could not get display mode for video display #%d: %s", ii, SDL_GetError());
-
-	// On success, print the current display mode.
-	return current;
-}
-
-int TBSystem::getScreenWidth()
-{
-	SDL_DisplayMode current = getDisplayMode();
-	if (current.w)
-		return current.w;
-	else
-	 	return 600;
-}
-
-int TBSystem::getScreenHeight()
-{
-	SDL_DisplayMode current = getDisplayMode();
-	if (current.h)
-		return current.h;
-	else
-		return 400;
-}
-
-int TBSystem::getNumTouches()
-{
-	int ii = 0;
-
-	return SDL_GetNumTouchFingers(SDL_GetTouchDevice(ii));
-}
-
 char * TBSystem::GetRoot()
 {
     static char *basepath = NULL;

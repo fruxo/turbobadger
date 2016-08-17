@@ -56,12 +56,6 @@ public:
 
 	/** Get Path to root of all app files. Must end with path separator. */
 	static char * GetRoot();
-
-	/** Get the width for the main screen. */
-	static int getScreenWidth();
-
-	/** Get the height for the main screen. */
-	static int getScreenHeight();
 };
 
 /** TBClipboard is a porting interface for the clipboard. */
