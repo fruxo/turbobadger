@@ -386,7 +386,7 @@ void TBSelectDropdown::OnItemChanged(int index)
 
 void TBSelectDropdown::SetValue(int value)
 {
-	if (value == m_value || !m_source || m_be_menu)
+	if (value == m_value || !m_source/* || m_be_menu*/)
 		return;
 	m_value = value;
 
