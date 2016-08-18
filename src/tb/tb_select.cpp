@@ -2,7 +2,7 @@
 // ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
-
+#include <iostream>
 #include "tb_select.h"
 #include "tb_menu_window.h"
 #include "tb_widgets_listener.h"
@@ -358,7 +358,7 @@ bool TBSelectList::ChangeValue(SPECIAL_KEY key)
 // == TBSelectDropdown ==========================================
 
 TBSelectDropdown::TBSelectDropdown()
-	: m_value(-1), m_dispvalue(false)
+	: m_value(-1), m_be_menu(true)
 {
 	SetSource(&m_default_source);
 	SetSkinBg(TBIDC("TBSelectDropdown"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
@@ -386,11 +386,11 @@ void TBSelectDropdown::OnItemChanged(int index)
 
 void TBSelectDropdown::SetValue(int value)
 {
-	if (value == m_value || !m_source)
+	if (value == m_value || !m_source || m_be_menu)
 		return;
 	m_value = value;
 
-	if (m_dispvalue)
+	if (!m_be_menu)
 	{
 		if (m_value < 0)
 			SetText("");
