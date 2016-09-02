@@ -149,8 +149,7 @@ void TBWidget::Die()
 	if (!TBWidgetListener::InvokeWidgetDying(this))
 	{
 		// No one was interested, so die immediately.
-		if (m_parent)
-			m_parent->RemoveChild(this);
+		RemoveFromParent();
 		delete this;
 	}
 }
@@ -1165,7 +1164,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, static_cast<SKIN_STATE>(state), context);
 	assert(!!used_element == !!skin_element);
 
-	TB_IF_DEBUG_SETTING(LAYOUT_BOUNDS, g_renderer->DrawRect(local_rect, TBColor(255, 255, 255, 50)));
+	TB_IF_DEBUG_SETTING(LAYOUT_BOUNDS, g_tb_skin->PaintRect(local_rect, TBColor(255, 255, 255, 50), 1));
 
 	// Inherit properties from parent if not specified in the used skin for this widget.
 	PaintProps paint_props = parent_paint_props;
@@ -1191,12 +1190,12 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 		const double now = TBSystem::GetTimeMS();
 		if (now < last_layout_time + debug_time)
 		{
-			g_renderer->DrawRect(local_rect, TBColor(255, 30, 30, 200));
+			g_tb_skin->PaintRect(local_rect, TBColor(255, 30, 30, 200), 1);
 			Invalidate();
 		}
 		if (now < last_measure_time + debug_time)
 		{
-			g_renderer->DrawRect(local_rect.Shrink(1, 1), TBColor(255, 255, 30, 200));
+			g_tb_skin->PaintRect(local_rect.Shrink(1, 1), TBColor(255, 255, 30, 200), 1);
 			Invalidate();
 		}
 	}
@@ -1328,7 +1327,6 @@ bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 		// hit is more interesting for callers than if the event was handled or not.
 		return true;
 	}
-
 	return false;
 }
 
@@ -1349,7 +1347,6 @@ bool TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool to
 		// hit is more interesting for callers than if the event was handled or not.
 		return true;
 	}
-
 	return false;
 }
 

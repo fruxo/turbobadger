@@ -18,7 +18,6 @@
     <ClCompile Include="..\..\src\tb\parser\tb_parser.cpp" />
     <ClCompile Include="..\..\src\tb\renderers\tb_renderer_batcher.cpp" />
     <ClCompile Include="..\..\src\tb\renderers\tb_renderer_gl.cpp" />
-    <ClCompile Include="..\..\src\tb\tb_addon.cpp" />
     <ClCompile Include="..\..\src\tb\tb_bitmap_fragment.cpp" />
     <ClCompile Include="..\..\src\tb\tb_clipboard_win.cpp" />
     <ClCompile Include="..\..\src\tb\tb_color.cpp" />
@@ -96,7 +95,6 @@
     <ClInclude Include="..\..\src\tb\parser\tb_parser.h" />
     <ClInclude Include="..\..\src\tb\renderers\tb_renderer_batcher.h" />
     <ClInclude Include="..\..\src\tb\renderers\tb_renderer_gl.h" />
-    <ClInclude Include="..\..\src\tb\tb_addon.h" />
     <ClInclude Include="..\..\src\tb\tb_bitmap_fragment.h" />
     <ClInclude Include="..\..\src\tb\tb_color.h" />
     <ClInclude Include="..\..\src\tb\tb_config.h" />

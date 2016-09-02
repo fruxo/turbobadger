@@ -8,6 +8,7 @@
 #include "tb_widgets.h"
 #include "tb_select.h"
 #include "tb_font_renderer.h"
+#include "tb_language.h"
 
 #include "tb_widgets_reader.h"
 #include "tb_window.h"
@@ -122,12 +123,15 @@ EditListener edit_listener;
 void Init(unsigned int width, unsigned int height)
 {
 	renderer = new TBRendererGL();
-	tb_core_init(renderer, "language/lng_en.tb.txt");
+	tb_core_init(renderer);
 	root = new AppRoot();
 	Resize(width, height);
 
 	// Start listening to keyboard focus
 	TBWidgetListener::AddGlobalListener(&edit_listener);
+
+	// Load language file
+	g_tb_lng->Load("language/lng_en.tb.txt");
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
 	g_tb_skin->Load("skin/skin.tb.txt", "demo_skin/skin.tb.txt");

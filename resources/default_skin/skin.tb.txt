@@ -289,12 +289,16 @@ elements
 	TBWindow.close
 		bitmap window_close.png
 		type Image
+		min-width 20
+		min-height 20
 		children
 			element TBWindow.close.pressed
 				state pressed
 	TBWindow.close.pressed
 		bitmap window_close_pressed.png
 		type Image
+		min-width 20
+		min-height 20
 	TBWindow.mover
 		text-color #b8b8b8
 		bitmap window_mover_bg_tile.png
