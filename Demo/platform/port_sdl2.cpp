@@ -274,70 +274,71 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	case SDL_KEYUP:
 	case SDL_KEYDOWN: {
 		// SDL_KeyboardEvent
-		// Handle any key presses here.
+		// Handle any key presses that wont also be SDL_TEXTINPUT here.
 		bool down = event.type == SDL_KEYDOWN;
 		MODIFIER_KEYS modifier = GetModifierKeys((SDL_Keymod)event.key.keysym.mod);
-		if (event.key.keysym.sym >= SDLK_SPACE && event.key.keysym.sym <= SDLK_z)
+		// handle keys
+		switch (event.key.keysym.sym)
 		{
-			unsigned int character = event.key.keysym.sym;
-			InvokeKey(character, TB_KEY_UNDEFINED, modifier, down);
-		}
-		else
-		{
-			// handle special keys
-			switch (event.key.keysym.sym)
+		case SDLK_F1:			InvokeKey(0, TB_KEY_F1, modifier, down); break;
+		case SDLK_F2:			InvokeKey(0, TB_KEY_F2, modifier, down); break;
+		case SDLK_F3:			InvokeKey(0, TB_KEY_F3, modifier, down); break;
+		case SDLK_F4:			InvokeKey(0, TB_KEY_F4, modifier, down); break;
+		case SDLK_F5:			InvokeKey(0, TB_KEY_F5, modifier, down); break;
+		case SDLK_F6:			InvokeKey(0, TB_KEY_F6, modifier, down); break;
+		case SDLK_F7:			InvokeKey(0, TB_KEY_F7, modifier, down); break;
+		case SDLK_F8:			InvokeKey(0, TB_KEY_F8, modifier, down); break;
+		case SDLK_F9:			InvokeKey(0, TB_KEY_F9, modifier, down); break;
+		case SDLK_F10:			InvokeKey(0, TB_KEY_F10, modifier, down); break;
+		case SDLK_F11:			InvokeKey(0, TB_KEY_F11, modifier, down); break;
+		case SDLK_F12:			InvokeKey(0, TB_KEY_F12, modifier, down); break;
+		case SDLK_LEFT:			InvokeKey(0, TB_KEY_LEFT, modifier, down); break;
+		case SDLK_UP:			InvokeKey(0, TB_KEY_UP, modifier, down); break;
+		case SDLK_RIGHT:		InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
+		case SDLK_DOWN:			InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
+		case SDLK_PAGEUP:		InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
+		case SDLK_PAGEDOWN:		InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
+		case SDLK_HOME:			InvokeKey(0, TB_KEY_HOME, modifier, down); break;
+		case SDLK_END:			InvokeKey(0, TB_KEY_END, modifier, down); break;
+		case SDLK_INSERT:		InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
+		case SDLK_TAB:			InvokeKey(0, TB_KEY_TAB, modifier, down); break;
+		case SDLK_DELETE:		InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
+		case SDLK_BACKSPACE:	InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
+		case SDLK_RETURN:
+		case SDLK_KP_ENTER:		InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
+		case SDLK_ESCAPE:		InvokeKey(0, TB_KEY_ESC, modifier, down); break;
+		case SDLK_MENU:
+			if (TBWidget::focused_widget && !down)
 			{
-			case SDLK_F1:			InvokeKey(0, TB_KEY_F1, modifier, down); break;
-			case SDLK_F2:			InvokeKey(0, TB_KEY_F2, modifier, down); break;
-			case SDLK_F3:			InvokeKey(0, TB_KEY_F3, modifier, down); break;
-			case SDLK_F4:			InvokeKey(0, TB_KEY_F4, modifier, down); break;
-			case SDLK_F5:			InvokeKey(0, TB_KEY_F5, modifier, down); break;
-			case SDLK_F6:			InvokeKey(0, TB_KEY_F6, modifier, down); break;
-			case SDLK_F7:			InvokeKey(0, TB_KEY_F7, modifier, down); break;
-			case SDLK_F8:			InvokeKey(0, TB_KEY_F8, modifier, down); break;
-			case SDLK_F9:			InvokeKey(0, TB_KEY_F9, modifier, down); break;
-			case SDLK_F10:			InvokeKey(0, TB_KEY_F10, modifier, down); break;
-			case SDLK_F11:			InvokeKey(0, TB_KEY_F11, modifier, down); break;
-			case SDLK_F12:			InvokeKey(0, TB_KEY_F12, modifier, down); break;
-			case SDLK_LEFT:			InvokeKey(0, TB_KEY_LEFT, modifier, down); break;
-			case SDLK_UP:			InvokeKey(0, TB_KEY_UP, modifier, down); break;
-			case SDLK_RIGHT:		InvokeKey(0, TB_KEY_RIGHT, modifier, down); break;
-			case SDLK_DOWN:			InvokeKey(0, TB_KEY_DOWN, modifier, down); break;
-			case SDLK_PAGEUP:		InvokeKey(0, TB_KEY_PAGE_UP, modifier, down); break;
-			case SDLK_PAGEDOWN:		InvokeKey(0, TB_KEY_PAGE_DOWN, modifier, down); break;
-			case SDLK_HOME:			InvokeKey(0, TB_KEY_HOME, modifier, down); break;
-			case SDLK_END:			InvokeKey(0, TB_KEY_END, modifier, down); break;
-			case SDLK_INSERT:		InvokeKey(0, TB_KEY_INSERT, modifier, down); break;
-			case SDLK_TAB:			InvokeKey(0, TB_KEY_TAB, modifier, down); break;
-			case SDLK_DELETE:		InvokeKey(0, TB_KEY_DELETE, modifier, down); break;
-			case SDLK_BACKSPACE:	InvokeKey(0, TB_KEY_BACKSPACE, modifier, down); break;
-			case SDLK_RETURN:		
-			case SDLK_KP_ENTER:		InvokeKey(0, TB_KEY_ENTER, modifier, down); break;
-			case SDLK_ESCAPE:		InvokeKey(0, TB_KEY_ESC, modifier, down); break;
-			case SDLK_MENU:
-				if (TBWidget::focused_widget && !down)
-				{
-					TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU);
-					ev.modifierkeys = modifier;
-					TBWidget::focused_widget->InvokeEvent(ev);
-				}
-				break;
-				/* just ignore lone modifier key presses */
-			case SDLK_LCTRL:
-			case SDLK_RCTRL:
-			case SDLK_LALT:
-			case SDLK_RALT:
-			case SDLK_LSHIFT:
-			case SDLK_RSHIFT:
-			case SDLK_LGUI:
-			case SDLK_RGUI:
-				break;
-			default:
-				handled = false;
-				break;
+				TBWidgetEvent ev(EVENT_TYPE_CONTEXT_MENU);
+				ev.modifierkeys = modifier;
+				TBWidget::focused_widget->InvokeEvent(ev);
 			}
+			break;
+			/* just ignore lone modifier key presses */
+		case SDLK_LCTRL:
+		case SDLK_RCTRL:
+		case SDLK_LALT:
+		case SDLK_RALT:
+		case SDLK_LSHIFT:
+		case SDLK_RSHIFT:
+		case SDLK_LGUI:
+		case SDLK_RGUI:
+			break;
+			/* also ignore everything else, since it should show up in SDL_TEXTINPUT */
+		case SDLK_PLUS:
+		case SDLK_MINUS:
+		default:
+			// skip key events that will appear as SDL_TEXTINPUT
+			if (modifier & (TB_ALT | TB_CTRL)) {
+				unsigned int character = event.key.keysym.sym;
+				if (character >= 'a' && character <= 'z' && (modifier & TB_SHIFT))
+					character += ('A' - 'a');
+				InvokeKey(character, TB_KEY_UNDEFINED, modifier, down);
+			}
+			handled = true;
+			break;
 		}
-
 		break;
 	}
 	case SDL_FINGERMOTION:
@@ -414,9 +415,15 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	case SDL_TEXTEDITING:
 		//event.edit;
 		break;
-	case SDL_TEXTINPUT:
-		//event.text;
+	case SDL_TEXTINPUT: {
+		MODIFIER_KEYS modifier = GetModifierKeys();
+		for (int ii = 0; event.text.text[ii]; ii++) {
+			unsigned int character = event.text.text[ii];
+			InvokeKey(character, TB_KEY_UNDEFINED, modifier, true);
+			InvokeKey(character, TB_KEY_UNDEFINED, modifier, false);
+		}
 		break;
+	}
 	case SDL_WINDOWEVENT: {
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_SHOWN:
