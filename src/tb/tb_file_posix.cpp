@@ -44,7 +44,10 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 {
 	FILE *f = nullptr;
 	TBStr pathfile(TBSystem::GetRoot());
-	pathfile.Append(filename);
+	if (filename[0] != '/')
+		pathfile.Append(filename);
+	else
+		pathfile.Set(filename);
 	switch (mode)
 	{
 	case MODE_READ:

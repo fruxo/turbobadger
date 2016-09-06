@@ -783,7 +783,7 @@ bool DemoApplication::Init()
 	if (num_failed_tests)
 	{
 		TBStr text;
-		text.SetFormatted("There is %d failed tests!\nCheck the output for details.", num_failed_tests);
+		text.SetFormatted("There are %d failed tests!\nCheck the output for details.", num_failed_tests);
 		TBMessageWindow *msg_win = new TBMessageWindow(GetRoot(), TBIDC(""));
 		msg_win->Show("Testing results", text);
 	}
