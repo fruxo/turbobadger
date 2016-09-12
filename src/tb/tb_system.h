@@ -9,12 +9,6 @@
 #include "tb_core.h"
 #include "tb_str.h"
 
-#ifdef __APPLE__
-#include "SDL2/SDL.h"
-#else
-#include "SDL.h"
-#endif
-
 #ifdef TB_RUNTIME_DEBUG_INFO
 void TBDebugOut(const char *str);
 #define TBDebugPrint(str, ...) { tb::TBStr tmp; tmp.SetFormatted(str, __VA_ARGS__); TBDebugOut(tmp); }
