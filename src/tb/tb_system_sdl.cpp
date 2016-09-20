@@ -13,6 +13,10 @@
 #include <stdio.h>
 #include <strings.h>
 
+#if __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #ifdef __APPLE__
 #include "SDL2/SDL.h"
 #else
@@ -33,6 +37,7 @@ namespace tb {
 
 // == TBSystem ========================================
 
+#ifndef __EMSCRIPTEN__
 double TBSystem::GetTimeMS()
 {
 #if 1
@@ -97,6 +102,66 @@ void TBSystem::RescheduleTimer(double fire_time)
 			TBDebugOut("ERROR: RescheduleTimer failed to SDL_AddTimer\n");
 	}
 }
+
+#else // __EMSCRIPTEN__
+
+double TBSystem::GetTimeMS()
+{
+	return emscripten_get_now();
+}
+
+static SDL_TimerID tb_sdl_timer_id = 0;
+static void tb_sdl_timer_callback(void *param)
+{
+
+	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
+	double now = TBSystem::GetTimeMS();
+	if (next_fire_time != TB_NOT_SOON && (next_fire_time - now) > 1.0)
+	{
+		// We timed out *before* we were supposed to (the OS is not playing nice).
+		// Calling ProcessMessages now won't achieve a thing so force a reschedule
+		// of the platform timer again with the same time.
+		emscripten_async_call(tb_sdl_timer_callback, param, int(next_fire_time - now));
+		return;
+	}
+
+	TBMessageHandler::ProcessMessages();
+
+	// If we still have things to do (because we didn't process all messages,
+	// or because there are new messages), we need to rescedule, so call RescheduleTimer.
+	next_fire_time = TBMessageHandler::GetNextMessageFireTime();
+	if (next_fire_time == TB_NOT_SOON)
+	{
+		tb_sdl_timer_id = 0;
+		return;
+	}
+	next_fire_time -= TBSystem::GetTimeMS();
+	emscripten_async_call(tb_sdl_timer_callback, param, next_fire_time - now);
+	return;
+}
+
+/** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
+	If fire_time is 0, it should be fired ASAP.
+	If force is true, it will ask the platform to schedule it again, even if
+	the fire_time is the same as last time. */
+void TBSystem::RescheduleTimer(double fire_time)
+{
+	// cancel existing timer
+	if (tb_sdl_timer_id)
+	{
+		return;
+	}
+	// set new timer
+	if (fire_time != TB_NOT_SOON && !tb_sdl_timer_id)
+	{
+		double now = TBSystem::GetTimeMS();
+		double delay = fire_time - now;
+		tb_sdl_timer_id = 1;
+		emscripten_async_call(tb_sdl_timer_callback, NULL, (int)delay);
+	}
+}
+
+#endif
 
 int TBSystem::GetLongClickDelayMS()
 {
