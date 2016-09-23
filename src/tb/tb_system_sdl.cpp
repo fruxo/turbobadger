@@ -11,7 +11,9 @@
 #include "tb_types.h"
 //#include <sys/time.h>
 #include <stdio.h>
+#ifndef _WIN32
 #include <strings.h>
+#endif
 
 #if __EMSCRIPTEN__
 #include <emscripten.h>
