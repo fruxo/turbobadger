@@ -330,7 +330,7 @@ void ReadItems(TBNode *node, TBGenericStringItemSource *target_source)
 	{
 		for (TBNode *n = items->GetFirstChild(); n; n = n->GetNext())
 		{
-			if (strcmp(n->GetName(), "item") != 0)
+			if (strcmp(n->GetName(), "item") != 0 && strcmp(n->GetName(), "menu") != 0)
 				continue;
 			const char *item_str = n->GetValueString("text", "");
 			TBID item_id;
@@ -344,6 +344,11 @@ void ReadItems(TBNode *node, TBGenericStringItemSource *target_source)
 				delete item;
 				break;
 			}
+            if (strcmp(n->GetName(), "menu") == 0) {
+                TBGenericStringItemSource * msource = new TBGenericStringItemSource();
+                ReadItems(n, msource);
+                item->sub_source = msource;
+            }
 		}
 	}
 }
