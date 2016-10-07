@@ -155,7 +155,6 @@ protected:
 	TBGenericStringItemSource m_default_source;
 	TBSkinImage m_arrow;
 	int m_value;
-	bool m_be_menu;
 	TBWidgetSafePointer m_window_pointer; ///< Points to the dropdown window if opened
 };
 
