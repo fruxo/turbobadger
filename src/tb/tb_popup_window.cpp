@@ -5,7 +5,7 @@
 
 #include "tb_widgets_listener.h"
 #include "tb_popup_window.h"
-
+#include <iostream>
 namespace tb {
 
 // == TBPopupAlignment ======================================================================================
@@ -56,7 +56,9 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 	if (align == TB_ALIGN_BOTTOM)
 		y = y + avoid_h + h > root->GetRect().h ? y - h : y + avoid_h;
 	else if (align == TB_ALIGN_TOP)
+	{
 		y = y - h < 0 ? y + avoid_h : y - h;
+	}
 	else if (align == TB_ALIGN_RIGHT)
 	{
 		x = x + avoid_w + w > root->GetRect().w ? x - w : x + avoid_w;
@@ -64,8 +66,13 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 	}
 	else // if (align == TB_ALIGN_LEFT)
 	{
-		x = x - w < 0 ? x + avoid_w : x - w;
+		x = (x - w < 0) ? (x + avoid_w) : (x - w);
 		y = MIN(y, root->GetRect().h - h);
+	}
+	// just dont accept any nonsense
+	if (x < -5) {
+		//std::cout << "TBRect:" << x << "," << y << "," << w << "," << h << "| " << align << "\n";
+		x = -5;
 	}
 	return TBRect(x, y, w, h);
 }
