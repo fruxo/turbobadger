@@ -103,18 +103,21 @@ static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
 		return next_fire_time - now;
 	}
 
-	TBMessageHandler::ProcessMessages();
-
-	// If we still have things to do (because we didn't process all messages,
-	// or because there are new messages), we need to rescedule, so call RescheduleTimer.
-	next_fire_time = TBMessageHandler::GetNextMessageFireTime();
-	if (next_fire_time == TB_NOT_SOON)
 	{
-		tb_sdl_timer_id = 0;
-		return 0; // never - no longer scheduled
+		// queue a user event to cause the event loop to run
+		SDL_Event event;
+		SDL_UserEvent userevent;
+		userevent.type = SDL_USEREVENT;
+		userevent.code = 3;
+		userevent.data1 = NULL;
+		userevent.data2 = NULL;
+		event.type = SDL_USEREVENT;
+		event.user = userevent;
+		SDL_PushEvent(&event);
 	}
-	next_fire_time -= TBSystem::GetTimeMS();
-	return MAX(next_fire_time, 1.); // asap
+
+	// next event will be scheduled from the event loop
+	return 0;
 }
 
 /** Reschedule the platform timer, or cancel it if fire_time is TB_NOT_SOON.
