@@ -90,8 +90,8 @@ public:
 	void SelectNothing();
 	void CorrectOrder();
 	void CopyToClipboard();
-	bool IsBlockSelected(TBBlock *block) const;
-	bool IsFragmentSelected(TBTextFragment *elm) const;
+	bool IsBlockSelected(const TBBlock *block) const;
+	bool IsFragmentSelected(const TBBlock *block, TBTextFragment *elm) const;
 	bool IsSelected() const;
 	void RemoveContent();
 	bool GetText(TBStr &text) const;
@@ -270,45 +270,52 @@ public:
 				, len(0)
 				, line_ypos(0)
 				, line_height(0)
-				, block(nullptr)
+				, m_packed_init(0)
 				, content(content) {}
 	~TBTextFragment();
 
-	void Init(TBBlock *block, uint16 ofs, uint16 len);
+	void Init(const TBBlock *block, uint16 ofs, uint16 len);
 
-	void UpdateContentPos();
+	void UpdateContentPos(const TBBlock *block);
 
-	void BuildSelectionRegion(int32 translate_x, int32 translate_y, TBTextProps *props,
+	void BuildSelectionRegion(const TBBlock *block, int32 translate_x, int32 translate_y, TBTextProps *props,
 		TBRegion &bg_region, TBRegion &fg_region);
-	void Paint(int32 translate_x, int32 translate_y, TBTextProps *props);
-	void Click(int button, uint32 modifierkeys);
+	void Paint(const TBBlock *block, int32 translate_x, int32 translate_y, TBTextProps *props);
+	void Click(const TBBlock *block, int button, uint32 modifierkeys);
 
 	bool IsText() const					{ return !IsEmbedded(); }
 	bool IsEmbedded() const				{ return content ? true : false; }
-	bool IsBreak() const;
-	bool IsSpace() const;
-	bool IsTab() const;
+	bool IsBreak() const				{ return m_packed.is_break ? true : false; }
+	bool IsSpace() const				{ return m_packed.is_space ? true : false; }
+	bool IsTab() const					{ return m_packed.is_tab ? true : false; }
 
-	int32 GetCharX(TBFontFace *font, int32 ofs);
-	int32 GetCharOfs(TBFontFace *font, int32 x);
+	int32 GetCharX(const TBBlock *block, TBFontFace *font, int32 ofs);
+	int32 GetCharOfs(const TBBlock *block, TBFontFace *font, int32 x);
 
 	/** Get the stringwidth. Handles passwordmode, tab, linebreaks etc automatically. */
-	int32 GetStringWidth(TBFontFace *font, const char *str, int len);
+	int32 GetStringWidth(const TBBlock *block, TBFontFace *font, const char *str, int len);
 
-	bool GetAllowBreakBefore() const;
-	bool GetAllowBreakAfter() const;
+	bool GetAllowBreakBefore(const TBBlock *block) const;
+	bool GetAllowBreakAfter(const TBBlock *block) const;
 
-	const char *Str() const			{ return block->str.CStr() + ofs; }
+	const char *Str(const TBBlock *block) const { return block->str.CStr() + ofs; }
 
-	int32 GetWidth(TBFontFace *font);
-	int32 GetHeight(TBFontFace *font);
-	int32 GetBaseline(TBFontFace *font);
+	int32 GetWidth(const TBBlock *block, TBFontFace *font);
+	int32 GetHeight(const TBBlock *block, TBFontFace *font);
+	int32 GetBaseline(const TBBlock *block, TBFontFace *font);
 public:
 	int16 xpos, ypos;
 	uint16 ofs, len;
 	uint16 line_ypos;
 	uint16 line_height;
-	TBBlock *block;
+	union {
+		struct {
+			uint32 is_break			: 1;
+			uint32 is_space			: 1;
+			uint32 is_tab			: 1;
+		} m_packed;
+		uint32 m_packed_init;
+	};
 	TBTextFragmentContent *content;
 };
 
