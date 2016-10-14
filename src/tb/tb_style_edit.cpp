@@ -654,37 +654,40 @@ void TBCaret::SetGlobalOfs(int32 gofs, bool allow_snap, bool snap_forward)
 
 // == TBTextProps =======================================================================
 
-TBTextProps::TBTextProps(const TBFontDescription &font_desc, const TBColor &text_color)
+void TBTextProps::Reset(const TBFontDescription &font_desc, const TBColor &text_color)
 {
-	base_data.font_desc = font_desc;
-	base_data.text_color = text_color;
-	base_data.underline = false;
-	data = &base_data;
+	next_index = 0;
+	base.font_desc = font_desc;
+	base.text_color = text_color;
+	base.underline = false;
+	data = &base;
 }
 
 TBTextProps::Data *TBTextProps::Push()
 {
-	if (Data *new_data = new Data)
+	if (next_index >= list.GetNumItems())
 	{
-		data_list.AddLast(new_data);
-		new_data->font_desc = data->font_desc;
-		new_data->text_color = data->text_color;
-		new_data->underline = data->underline;
-		data = new_data;
-		return data;
+		Data *data = new Data;
+		if (!data || !list.Add(data))
+			return nullptr;
 	}
-	return nullptr;
+	Data *next = list.Get(next_index++);
+	next->font_desc = data->font_desc;
+	next->text_color = data->text_color;
+	next->underline = data->underline;
+	data = next;
+	return data;
 }
 
 void TBTextProps::Pop()
 {
-	if (!data_list.GetLast())
+	if (!next_index)
 		return; // Unballanced or we previosly got OOM.
-	data_list.Delete(data_list.GetLast());
-	data = data_list.GetLast() ? data_list.GetLast() : &base_data;
+	next_index--;
+	data = next_index > 0 ? list.Get(next_index - 1) : &base;
 }
 
-TBFontFace *TBTextProps::GetFont()
+TBFontFace *TBTextProps::GetFont() const
 {
 	return g_font_manager->GetFontFace(data->font_desc);
 }
@@ -1556,7 +1559,7 @@ int32 TBStyleEdit::GetContentHeight() const
 
 void TBStyleEdit::Paint(const TBRect &rect, const TBFontDescription &font_desc, const TBColor &text_color)
 {
-	TBTextProps props(font_desc, text_color);
+	text_props.Reset(font_desc, text_color);
 
 	// Find the first visible block
 	TBBlock *first_visible_block = blocks.GetFirst();
@@ -1576,7 +1579,7 @@ void TBStyleEdit::Paint(const TBRect &rect, const TBFontDescription &font_desc, 
 		{
 			if (block->ypos - scroll_y > rect.y + rect.h)
 				break;
-			block->BuildSelectionRegion(-scroll_x, -scroll_y, &props, bg_region, fg_region);
+			block->BuildSelectionRegion(-scroll_x, -scroll_y, &text_props, bg_region, fg_region);
 			block = block->GetNext();
 		}
 
@@ -1591,7 +1594,7 @@ void TBStyleEdit::Paint(const TBRect &rect, const TBFontDescription &font_desc, 
 	{
 		if (block->ypos - scroll_y > rect.y + rect.h)
 			break;
-		block->Paint(-scroll_x, -scroll_y, &props);
+		block->Paint(-scroll_x, -scroll_y, &text_props);
 		block = block->GetNext();
 	}
 

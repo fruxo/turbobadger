@@ -144,23 +144,25 @@ public:
 class TBTextProps
 {
 public:
-	class Data : public TBLinkOf<Data>
+	class Data
 	{
 	public:
 		TBFontDescription font_desc;
 		TBColor text_color;
 		bool underline;
 	};
-	TBTextProps(const TBFontDescription &font_desc, const TBColor &text_color);
+	TBTextProps() {}
 
+	void Reset(const TBFontDescription &font_desc, const TBColor &text_color);
 	Data *Push();
 	void Pop();
 
 	/** Get the font face from the current font description. */
-	TBFontFace *GetFont();
+	TBFontFace *GetFont() const;
 public:
-	TBLinkListOf<Data> data_list;
-	Data base_data;
+	int next_index;
+	TBListOf<Data> list;
+	Data base;
 	Data *data;
 };
 
@@ -403,6 +405,7 @@ public:
 	TBCaret caret;
 	TBSelection selection;
 	TBUndoRedoStack undoredo;
+	TBTextProps text_props;
 
 	int32 scroll_x;
 	int32 scroll_y;
