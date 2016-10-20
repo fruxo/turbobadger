@@ -56,32 +56,15 @@ static bool is_wordbreak(int8 c)
 	switch(c)
 	{
 		case 0:
-		case '\n':
-		case '\r':
-		case '-':
-		case '\t':
-		case '\"':
-		case '(':
-		case ')':
-		case '/':
-		case '\\':
-		case '*':
-		case '+':
-		case ',':
-		case '.':
-		case ';':
-		case ':':
-		case '>':
-		case '<':
-		case '&':
-		case '#':
-		case '!':
-		case '=':
-		case '[':
-		case ']':
-		case '{':
-		case '}':
-		case '^':
+		case '\n': case '\r': case '\t':
+		case '\"': case '\'': case '/': case '\\':
+		case '[': case ']': case '{': case '}':
+		case '(': case ')': case '>': case '<':
+		case '-': case '+': case '*':
+		case ',': case '.': case ';': case ':':
+		case '&': case '|': case '#': case '!':
+		case '=': case '^': case '~': case '?':
+		case '@': case '$':
 			return true;
 	}
 	return is_space(c);
@@ -128,6 +111,8 @@ static bool is_never_break_after(const char *str, int ofs)
 	case '[':
 	case '{':
 	case '<':
+	case '@':
+	case '$':
 		return true;
 	case '\'':
 	case '"':
