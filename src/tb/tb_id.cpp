@@ -42,7 +42,8 @@ void TBID::Set(const TBID &newid)
 		{
 			// If this happens, 2 different strings result in the same hash.
 			// It might be a good idea to change one of them, but it might not matter.
-			assert(other_id->debug_string.Equals(debug_string));
+			if (!debug_string.IsEmpty() && !other_id->debug_string.IsEmpty())
+				assert(other_id->debug_string.Equals(debug_string));
 		}
 		else
 		{
