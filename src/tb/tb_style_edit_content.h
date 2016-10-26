@@ -22,7 +22,7 @@ public:
 	/** Update the position of the content, relative to the first line of text (no scrolling applied). */
 	virtual void UpdatePos(const TBBlock *block, int x, int y) {}
 
-	virtual void Paint(const TBBlock *block, TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props) {}
+	virtual void Paint(const TBPaintProps *props, TBTextFragment *fragment) {}
 	virtual void Click(const TBBlock *block, TBTextFragment *fragment, int button, uint32 modifierkeys) {}
 	virtual int32 GetWidth(const TBBlock *block, TBFontFace *font, TBTextFragment *fragment) { return 0; }
 	virtual int32 GetHeight(const TBBlock *block, TBFontFace *font, TBTextFragment *fragment) { return 0; }
@@ -41,7 +41,7 @@ class TBTextFragmentContentHR : public TBTextFragmentContent
 public:
 	TBTextFragmentContentHR(int32 width_in_percent, int32 height);
 
-	virtual void Paint(const TBBlock *block, TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	virtual void Paint(const TBPaintProps *props, TBTextFragment *fragment);
 	virtual int32 GetWidth(const TBBlock *block, TBFontFace *font, TBTextFragment *fragment);
 	virtual int32 GetHeight(const TBBlock *block, TBFontFace *font, TBTextFragment *fragment);
 private:
@@ -54,7 +54,7 @@ class TBTextFragmentContentUnderline : public TBTextFragmentContent
 {
 public:
 	TBTextFragmentContentUnderline() {}
-	virtual void Paint(const TBBlock *block, TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	virtual void Paint(const TBPaintProps *props, TBTextFragment *fragment);
 	virtual bool GetAllowBreakBefore(const TBBlock *block) { return true; }
 	virtual bool GetAllowBreakAfter(const TBBlock *block) { return false; }
 };
@@ -66,7 +66,7 @@ class TBTextFragmentContentTextColor : public TBTextFragmentContent
 public:
 	TBColor color;
 	TBTextFragmentContentTextColor(const TBColor &color) : color(color) {}
-	virtual void Paint(const TBBlock *block, TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	virtual void Paint(const TBPaintProps *props, TBTextFragment *fragment);
 	virtual bool GetAllowBreakBefore(const TBBlock *block) { return true; }
 	virtual bool GetAllowBreakAfter(const TBBlock *block) { return false; }
 };
@@ -76,7 +76,7 @@ public:
 class TBTextFragmentContentStylePop : public TBTextFragmentContent
 {
 public:
-	virtual void Paint(const TBBlock *block, TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	virtual void Paint(const TBPaintProps *props, TBTextFragment *fragment);
 	virtual bool GetAllowBreakBefore(const TBBlock *block) { return false; }
 	virtual bool GetAllowBreakAfter(const TBBlock *block) { return true; }
 };

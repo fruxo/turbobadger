@@ -657,9 +657,7 @@ TBTextProps::Data *TBTextProps::Push()
 			return nullptr;
 	}
 	Data *next = list.Get(next_index++);
-	next->font_desc = data->font_desc;
-	next->text_color = data->text_color;
-	next->underline = data->underline;
+	*next = *data;
 	data = next;
 	return data;
 }
@@ -1128,10 +1126,16 @@ void TBBlock::BuildSelectionRegion(int32 translate_x, int32 translate_y, TBTextP
 	if (!styledit->selection.IsBlockSelected(this))
 		return;
 
+	TBPaintProps paint_props;
+	paint_props.block = this;
+	paint_props.props = props;
+	paint_props.translate_x = translate_x;
+	paint_props.translate_y = translate_y + ypos;
+
 	TBTextFragment *fragment = fragments.GetFirst();
 	while (fragment)
 	{
-		fragment->BuildSelectionRegion(this, translate_x, translate_y + ypos, props, bg_region, fg_region);
+		fragment->BuildSelectionRegion(&paint_props, bg_region, fg_region);
 		fragment = fragment->GetNext();
 	}
 }
@@ -1140,10 +1144,16 @@ void TBBlock::Paint(int32 translate_x, int32 translate_y, TBTextProps *props)
 {
 	TMPDEBUG(styledit->listener->DrawRect(TBRect(translate_x, translate_y + ypos, styledit->layout_width, height), TBColor(255, 200, 0, 128)));
 
+	TBPaintProps paint_props;
+	paint_props.block = this;
+	paint_props.props = props;
+	paint_props.translate_x = translate_x;
+	paint_props.translate_y = translate_y + ypos;
+
 	TBTextFragment *fragment = fragments.GetFirst();
 	while (fragment)
 	{
-		fragment->Paint(this, translate_x, translate_y + ypos, props);
+		fragment->Paint(&paint_props);
 		fragment = fragment->GetNext();
 	}
 }
@@ -1170,15 +1180,15 @@ void TBTextFragment::UpdateContentPos(const TBBlock *block)
 		content->UpdatePos(block, xpos, ypos + block->ypos);
 }
 
-void TBTextFragment::BuildSelectionRegion(const TBBlock *block, int32 translate_x, int32 translate_y, TBTextProps *props,
-	TBRegion &bg_region, TBRegion &fg_region)
+void TBTextFragment::BuildSelectionRegion(const TBPaintProps *props, TBRegion &bg_region, TBRegion &fg_region)
 {
+	const TBBlock *block = props->block;
 	if (!block->styledit->selection.IsFragmentSelected(block, this))
 		return;
 
-	int x = translate_x + xpos;
-	int y = translate_y + ypos;
-	TBFontFace *font = props->GetFont();
+	const int x = props->translate_x + xpos;
+	const int y = props->translate_y + ypos;
+	TBFontFace *font = props->props->GetFont();
 
 	if (content)
 	{
@@ -1201,18 +1211,19 @@ void TBTextFragment::BuildSelectionRegion(const TBBlock *block, int32 translate_
 	bg_region.IncludeRect(TBRect(x + s1x, y, s2x, GetHeight(block, font)));
 }
 
-void TBTextFragment::Paint(const TBBlock *block, int32 translate_x, int32 translate_y, TBTextProps *props)
+void TBTextFragment::Paint(const TBPaintProps *props)
 {
-	TBStyleEditListener *listener = block->styledit->listener;
+	TBStyleEditListener *listener = props->block->styledit->listener;
 
-	int x = translate_x + xpos;
-	int y = translate_y + ypos;
-	TBColor color = props->data->text_color;
-	TBFontFace *font = props->GetFont();
+	const int x = props->translate_x + xpos;
+	const int y = props->translate_y + ypos;
+	const TBColor color = props->props->data->text_color;
+	TBFontFace *font = props->props->GetFont();
+	TBBlock *block = props->block;
 
 	if (content)
 	{
-		content->Paint(block, this, translate_x, translate_y, props);
+		content->Paint(props, this);
 		return;
 	}
 	TMPDEBUG(listener->DrawRect(TBRect(x, y, GetWidth(block, font), GetHeight(block, font)), TBColor(255, 255, 255, 128)));
@@ -1238,7 +1249,7 @@ void TBTextFragment::Paint(const TBBlock *block, int32 translate_x, int32 transl
 	else if (!IsTab() && !IsBreak() && !IsSpace())
 		listener->DrawString(x, y, font, color, Str(block), len);
 
-	if (props->data->underline)
+	if (props->props->data->underline)
 	{
 		int line_h = font->GetHeight() / 16;
 		line_h = MAX(line_h, 1);
