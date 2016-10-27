@@ -48,8 +48,11 @@ public:
 	/** Get Dots Per Inch for the main screen. */
 	static int GetDPI();
 
-	/** Get Path to root of all app files. Must end with path separator. */
+	/** Get Path to root of app static files. Must end with path separator. */
 	static char * GetRoot();
+
+	/** Get Path to root of app preference files. Must end with path separator. */
+	static char * GetPrefPath();
 };
 
 /** TBClipboard is a porting interface for the clipboard. */

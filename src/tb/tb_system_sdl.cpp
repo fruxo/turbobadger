@@ -232,10 +232,18 @@ int TBSystem::GetDPI()
 
 char * TBSystem::GetRoot()
 {
-    static char *basepath = NULL;
+    static char * basepath = NULL;
 	if (!basepath)
 		basepath = SDL_GetBasePath();
 	return basepath;
+}
+
+char * TBSystem::GetPrefPath()
+{
+    static char * prefpath = NULL;
+	if (!prefpath)
+		prefpath = SDL_GetPrefPath("spindrops", "SpinDrops");
+	return prefpath;
 }
 
 } // namespace tb
