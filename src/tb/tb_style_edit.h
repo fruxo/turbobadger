@@ -230,6 +230,7 @@ public:
 
 	TBStr str;
 	int32 str_len;
+	uint32 syntax_data;		///< Free to use in any way from TBSyntaxHighlighter subclasses
 
 private:
 	int GetStartIndentation(TBFontFace *font, int first_line_len) const;
@@ -264,6 +265,30 @@ public:
 	bool applying;
 private:
 	void Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse);
+};
+
+/** TBSyntaxHighlighter can be subclassed to give syntax highlighting on TBStyleEdit
+	without altering the text (without inserting style markup) */
+class TBSyntaxHighlighter
+{
+public:
+	virtual ~TBSyntaxHighlighter() {}
+
+	/** Called when all fragments has been updated in the given block and syntax info should
+		be updated. syntax_data can be stored in TBBlock and TBTextFragment */
+	virtual void OnFragmentsUpdated(TBBlock *block) {}
+
+	/** Called after any change in TBStyleEdit when all blocks that changed have been updated. */
+	virtual void OnChange(TBStyleEdit *styledit) {}
+
+	/** Called before painting each block */
+	virtual void OnPaintBlock(const TBPaintProps *props) {}
+
+	/** Called before painting each fragment */
+	virtual void OnBeforePaintFragment(const TBPaintProps *props, TBTextFragment *fragment) {}
+
+	/** Called after painting each fragment */
+	virtual void OnAfterPaintFragment(const TBPaintProps *props, TBTextFragment *fragment) {}
 };
 
 /** The textfragment baseclass for TBStyleEdit.
@@ -321,9 +346,10 @@ public:
 	uint16 line_ypos, line_height;
 	union {
 		struct {
-			uint32 is_break			: 1;
-			uint32 is_space			: 1;
-			uint32 is_tab			: 1;
+			uint32 is_break			: 1;  ///< Fragment is hard line break
+			uint32 is_space			: 1;  ///< Fragment is white space
+			uint32 is_tab			: 1;  ///< Fragment is tab
+			uint32 syntax_data		: 10; ///< Free to use in any way from TBSyntaxHighlighter subclasses
 		} m_packed;
 		uint32 m_packed_init;
 	};
@@ -340,6 +366,7 @@ public:
 
 	void SetListener(TBStyleEditListener *listener);
 	void SetContentFactory(TBTextFragmentContentFactory *content_factory);
+	void SetSyntaxHighlighter(TBSyntaxHighlighter *syntax_highlighter);
 
 	void SetFont(const TBFontDescription &font_desc);
 
@@ -404,6 +431,7 @@ public:
 	TBStyleEditListener *listener;
 	TBTextFragmentContentFactory default_content_factory;
 	TBTextFragmentContentFactory *content_factory;
+	TBSyntaxHighlighter *syntax_highlighter;
 	int32 layout_width;
 	int32 layout_height;
 	int32 content_width;
@@ -451,6 +479,8 @@ public:
 
 	/** Return true if changing layout_width and layout_height requires relayouting. */
 	bool GetSizeAffectsLayout() const;
+
+	void InvokeOnChange();
 };
 
 } // namespace tb
