@@ -218,16 +218,16 @@ int TBSystem::GetPixelsPerLine()
 	return 40 * GetDPI() / 96;
 }
 
+int TBSystem::_dpi = 96;
+
 int TBSystem::GetDPI()
 {
-#if SDL_VERSION_ATLEAST(2,0,4)
-	float ddpi;
-	if (SDL_GetDisplayDPI(0, &ddpi, NULL, NULL))
-		return 96;
-	return (int)ddpi;
-#else
-	return 96;
-#endif
+    return _dpi;
+}
+
+void TBSystem::SetDPI(int dpi)
+{
+    _dpi = dpi;
 }
 
 char * TBSystem::GetRoot()
