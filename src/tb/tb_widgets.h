@@ -404,7 +404,7 @@ public:
 
 	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
 		The skin may expand outside this rect to draw f.ex shadows. */
-	void SetRect(const TBRect &rect);
+	virtual void SetRect(const TBRect &rect);
 	inline TBRect GetRect() const { return m_rect; }
 
 	/** Set position of this widget in its parent. The position is relative to the parent widget. */
