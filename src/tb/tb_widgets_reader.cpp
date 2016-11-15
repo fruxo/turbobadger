@@ -182,6 +182,12 @@ void TBEditField::OnInflate(const INFLATE_INFO &info)
 		SetVirtualWidth(g_tb_skin->GetDimensionConverter()->GetPxFromString(virtual_width, GetVirtualWidth()));
 	if (const char *text = info.node->GetValueString("placeholder", nullptr))
 		SetPlaceholderText(text);
+	if (const char *text_align = info.node->GetValueString("text-align", nullptr))
+	{
+		if (!strcmp(text_align, "left"))		SetTextAlign(TB_TEXT_ALIGN_LEFT);
+		else if (!strcmp(text_align, "center"))	SetTextAlign(TB_TEXT_ALIGN_CENTER);
+		else if (!strcmp(text_align, "right"))	SetTextAlign(TB_TEXT_ALIGN_RIGHT);
+	}
 	if (const char *type = info.node->GetValueString("type", nullptr))
 	{
 		if (stristr(type, "text"))			SetEditType(EDIT_TYPE_TEXT);
