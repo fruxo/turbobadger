@@ -58,6 +58,7 @@ TBEditField
 	virtual-width <dimension>
 	placeholder <string/lngstring>
 	type text, search, password, email, phone, url, number
+	text-align left, center, right
 TBTextField
 	text-align left, center, right
 TBLayout
