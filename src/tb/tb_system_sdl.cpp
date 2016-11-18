@@ -248,4 +248,4 @@ char * TBSystem::GetPrefPath()
 
 } // namespace tb
 
-#endif // TB_SYSTEM_LINUX
+#endif // TB_SYSTEM_SDL
