@@ -69,7 +69,7 @@ protected:
 	remember to call InvokeItem[Added/...] to notify viewers that they need to update.
 */
 
-class TBSelectItemSource
+class TBSelectItemSource : public TBTypedObject
 {
 public:
 	TBSelectItemSource() : m_sort(TB_SORT_NONE) {}
@@ -124,6 +124,7 @@ template<class T>
 class TBSelectItemSourceList : public TBSelectItemSource
 {
 public:
+    TBOBJECT_SUBCLASS(TBSelectItemSourceList, TBSelectItemSource);
 	TBSelectItemSourceList() {}
 	virtual ~TBSelectItemSourceList()					{ DeleteAllItems(); }
 	virtual const char *GetItemString(int index)		{ return GetItem(index)->str; }
@@ -204,7 +205,10 @@ public:
 
 /** TBGenericStringItemSource is a item source list providing items of type TBGenericStringItem. */
 
-class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem> { };
+class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem> {
+public:
+    TBOBJECT_SUBCLASS(TBGenericStringItemSource, TBSelectItemSourceList<TBGenericStringItem>);
+ };
 
 } // namespace tb
 
