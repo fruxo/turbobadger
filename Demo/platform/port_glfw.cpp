@@ -43,7 +43,7 @@ public:
 	bool Init(App *app);
 	AppBackendGLFW()	: m_app(nullptr)
 						, m_renderer(nullptr)
-						, mainWindow(0)
+						, mainWindow(nullptr)
 						, m_cursor_i_beam(nullptr)
 						, m_has_pending_update(false)
 						, m_quit_requested(false) {}
@@ -392,7 +392,7 @@ bool AppBackendGLFW::Init(App *app)
 		return false;
 	const int width = app->GetWidth() > 0 ? app->GetWidth() : 1920;
 	const int height = app->GetHeight() > 0 ? app->GetHeight() : 1080;
-	mainWindow = glfwCreateWindow(width, height, app->GetTitle(), NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, app->GetTitle(), nullptr, nullptr);
 	if (!mainWindow)
 	{
 		glfwTerminate();

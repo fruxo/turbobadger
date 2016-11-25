@@ -16,7 +16,7 @@ namespace tb {
 // == TBHashTable =======================================================================
 
 TBHashTable::TBHashTable()
-	: m_buckets(0)
+	: m_buckets(nullptr)
 	, m_num_buckets(0)
 	, m_num_items(0)
 {
