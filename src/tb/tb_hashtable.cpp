@@ -141,6 +141,7 @@ void *TBHashTable::Remove(uint32 key)
 				prev_item->next = item->next;
 			else
 				m_buckets[bucket] = item->next;
+			m_num_items--;
 			void *content = item->content;
 			delete item;
 			return content;

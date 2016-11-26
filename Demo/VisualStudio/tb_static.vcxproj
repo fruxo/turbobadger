@@ -73,6 +73,7 @@
     <ClCompile Include="..\..\src\tb\tests\test_tb_color.cpp" />
     <ClCompile Include="..\..\src\tb\tests\test_tb_dimension.cpp" />
     <ClCompile Include="..\..\src\tb\tests\test_tb_geometry.cpp" />
+    <ClCompile Include="..\..\src\tb\tests\test_tb_hashtable.cpp" />
     <ClCompile Include="..\..\src\tb\tests\test_tb_linklist.cpp" />
     <ClCompile Include="..\..\src\tb\tests\test_tb_node_ref_tree.cpp" />
     <ClCompile Include="..\..\src\tb\tests\test_tb_object.cpp" />

@@ -14,6 +14,7 @@ TB_FORCE_LINK_TEST_GROUP(tb_color);
 TB_FORCE_LINK_TEST_GROUP(tb_dimension_converter);
 TB_FORCE_LINK_TEST_GROUP(tb_geometry);
 TB_FORCE_LINK_TEST_GROUP(tb_linklist);
+TB_FORCE_LINK_TEST_GROUP(tb_hashtable);
 TB_FORCE_LINK_TEST_GROUP(tb_node_ref_tree);
 TB_FORCE_LINK_TEST_GROUP(tb_object);
 TB_FORCE_LINK_TEST_GROUP(tb_parser);
