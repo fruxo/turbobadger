@@ -26,9 +26,13 @@ Turbo Badger will handle input capture, focus, etc. automatically.
 
 List of input triggers (root is your root TBWidget):
 
-	root->InvokePointer[Down/Up/Move] - Mouse or touch input.
-	root->InvokeWheel                 - Mouse wheel input
-	root->InvokeKey                   - Keyboard input
+	root->InvokePointer[Down/Up/Move/Cancel] - Mouse or touch input
+	root->InvokeTouch[Down/Up/Move/Cancel]   - Touch input (touch indices > 0).
+	root->InvokeWheel                        - Mouse wheel input
+	root->InvokeKey                          - Keyboard input
+
+Additionally, there's common event types that can be invoked by root->InvokeEvent
+like f.ex: EVENT_TYPE_SHORTCUT, EVENT_TYPE_CONTEXT_MENU, EVENT_TYPE_FILE_DROP...
 
 Animations, Layout and Painting
 -------------------------------
