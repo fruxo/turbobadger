@@ -62,12 +62,12 @@ public:
 	TB_WIDGET_FACTORY(MyWidget, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 	*/
 #define TB_WIDGET_FACTORY(classname, sync_type, add_child_z) \
-	class classname##WidgetFactory : public TBWidgetFactory \
+	class classname##WidgetFactory : public tb::TBWidgetFactory \
 	{ \
 	public: \
 		classname##WidgetFactory() \
-			: TBWidgetFactory(#classname, sync_type) { Register(); } \
-		virtual TBWidget *Create(INFLATE_INFO *info) \
+			: tb::TBWidgetFactory(#classname, sync_type) { Register(); } \
+		virtual tb::TBWidget *Create(tb::INFLATE_INFO *info) \
 		{ \
 			classname *widget = new classname(); \
 			if (widget) { \
@@ -76,10 +76,10 @@ public:
 			} \
 			return widget; \
 		} \
-		void ReadCustomProps(classname *widget, INFLATE_INFO *info); \
+		void ReadCustomProps(classname *widget, tb::INFLATE_INFO *info); \
 	}; \
 	static classname##WidgetFactory classname##_wf; \
-	void classname##WidgetFactory::ReadCustomProps(classname *widget, INFLATE_INFO *info)
+	void classname##WidgetFactory::ReadCustomProps(classname *widget, tb::INFLATE_INFO *info)
 
 /**
 	TBWidgetsReader parse a resource file (or buffer) into a TBNode tree,
