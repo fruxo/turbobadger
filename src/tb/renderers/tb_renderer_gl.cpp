@@ -28,7 +28,7 @@ uint32 dbg_bitmap_validations = 0;
 			TBDebugPrint("%s:%d, GL error 0x%x\n", __FILE__, __LINE__, err); \
 		} } while (0)
 #else
-#define GLCALL(xxx) do {} while (0)
+#define GLCALL(xxx) do { xxx; } while (0)
 #endif
 
 #if !defined(TB_RENDERER_GLES_2) && !defined(TB_RENDERER_GL3)

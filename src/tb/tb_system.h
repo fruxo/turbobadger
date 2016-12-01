@@ -9,7 +9,7 @@
 #include "tb_core.h"
 #include "tb_str.h"
 
-#ifdef TB_RUNTIME_DEBUG_INFO
+#if defined(TB_RUNTIME_DEBUG_INFO) || 1 
 void TBDebugOut(const char *str);
 #define TBDebugPrint(str, ...) { tb::TBStr tmp; tmp.SetFormatted(str, __VA_ARGS__); TBDebugOut(tmp); }
 #else
