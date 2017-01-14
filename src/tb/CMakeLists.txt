@@ -9,10 +9,9 @@ aux_source_directory(renderers LOCAL_SRCS)
 aux_source_directory(tests LOCAL_SRCS)
 aux_source_directory(utf8 LOCAL_SRCS)
 
-add_library(TurboBadgerLib ${LOCAL_SRCS})
+add_library(TurboBadgerLib STATIC ${LOCAL_SRCS})
 
 install(TARGETS TurboBadgerLib
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
-    

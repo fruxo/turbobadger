@@ -15,6 +15,7 @@ option(TB_RENDERER_BATCHER "Enable to get TBRendererBatcher" ON)
 option(TB_RENDERER_GL "Enable renderer using OpenGL. This renderer depends on TB_RENDERER_BATCHER." ON)
 option(TB_RENDERER_GLES_1 "Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_IMAGE "Enable support for TBImage, TBImageManager, TBImageWidget." ON)
+option(TB_UNIT_TESTING "Enable compilation of unit tests." ON)
 
 # Runtime/subsystem configurations
 # Needs further work
@@ -25,6 +26,10 @@ option(TB_IMAGE "Enable support for TBImage, TBImageManager, TBImageWidget." ON)
 
 if(TB_DEBUG_POSTFIX)
     set(CMAKE_DEBUG_POSTFIX _d)
+endif()
+
+if(TB_UNIT_TESTING)
+    set(TB_UNIT_TESTING_CONFIG "#define TB_UNIT_TESTING")
 endif()
 
 if(TB_FONT_RENDERER_TBBF)
@@ -49,12 +54,12 @@ endif()
 if(TB_RENDERER_GLES_1)
     set(TB_RENDERER_GLES_1_CONFIG "#define TB_RENDERER_GLES_1")
 endif()
-if(TB_IMAGE) 
+if(TB_IMAGE)
     set(TB_IMAGE_CONFIG "#define TB_IMAGE")
 endif()
 
-configure_file(tb_config.h.in src/tb/config.h)
- 
+configure_file(tb_config.h.in ${PROJECT_SOURCE_DIR}/src/tb/tb_config.h)
+
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
 endif()
