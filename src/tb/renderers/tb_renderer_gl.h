@@ -39,10 +39,20 @@
 #else
 #include <GLES/gl.h>
 #endif
+
+#ifdef ANDROID
+extern PFNGLBINDVERTEXARRAYOESPROC glBindVertexArrayOESEXT;
+extern PFNGLDELETEVERTEXARRAYSOESPROC glDeleteVertexArraysOESEXT;
+extern PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT;
+#define glDeleteVertexArrays glDeleteVertexArraysOESEXT
+#define glGenVertexArrays glGenVertexArraysOESEXT
+#define glBindVertexArray glBindVertexArrayOESEXT
+#else
 #define glGenVertexArrays glGenVertexArraysOES
 #define glBindVertexArray glBindVertexArrayOES
 #define glDeleteVertexArrays glDeleteVertexArraysOES
 #define glIsVertexArray glIsVertexArrayOES
+#endif
 
 #elif defined(TB_RENDERER_GL3)
 

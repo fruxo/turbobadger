@@ -25,39 +25,17 @@
 #include "SDL.h"
 #endif
 
-#ifdef ANDROID
-
-// for native asset manager
-#include <sys/types.h>
-#include <android/asset_manager.h>
-#include <android/asset_manager_jni.h>
-#include <android/configuration.h>
-
 #ifdef TB_RUNTIME_DEBUG_INFO
+#ifdef ANDROID
+#include <android/log.h>
 #define  LOG_TAG    "TB"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+
 void TBDebugOut(const char *str)
 {
 	LOGI("%s", str);
 }
-#endif // TB_RUNTIME_DEBUG_INFO
-#define JNI_VOID_TB_LIB(func) JNIEXPORT void JNICALL Java_org_libsdl_app_##func
-
-extern "C"
-{
-	JNI_VOID_TB_LIB(createAssetManager)(JNIEnv * env, jobject obj, jobject assetManager);
-}
-
-AAssetManager * g_pManager = NULL;
-JNI_VOID_TB_LIB(createAssetManager)(JNIEnv * env, jobject obj, jobject assetManager)
-{
-	AAssetManager * mgr = AAssetManager_fromJava(env, assetManager);
-	assert(mgr);
-	// Store the assest manager for future use.
-	g_pManager = mgr;
-}
-
 #else // ANDROID
 
 #if defined(TB_RUNTIME_DEBUG_INFO) || 1
@@ -66,9 +44,9 @@ void TBDebugOut(const char *str)
 	SDL_Log("%s", str);
 	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", str);
 }
+#endif // ANDROID
 #endif // TB_RUNTIME_DEBUG_INFO
 
-#endif // ANDROID
 
 namespace tb {
 
@@ -233,8 +211,15 @@ void TBSystem::SetDPI(int dpi)
 char * TBSystem::GetRoot()
 {
 	static char * basepath = NULL;
-	if (!basepath)
+	if (!basepath) {
+#ifdef ANDROID
+		TBStr ExtPath(SDL_AndroidGetExternalStoragePath());
+		ExtPath.Append("/");
+		basepath = strdup(ExtPath.CStr());
+#else
 		basepath = SDL_GetBasePath();
+#endif
+	}
 	return basepath;
 }
 
