@@ -25,7 +25,7 @@
 #include "SDL.h"
 #endif
 
-#ifdef TB_RUNTIME_DEBUG_INFO
+#if defined(TB_RUNTIME_DEBUG_INFO) || 1
 #ifdef ANDROID
 #include <android/log.h>
 #define  LOG_TAG    "TB"
@@ -36,9 +36,9 @@ void TBDebugOut(const char *str)
 {
 	LOGI("%s", str);
 }
+
 #else // ANDROID
 
-#if defined(TB_RUNTIME_DEBUG_INFO) || 1
 void TBDebugOut(const char *str)
 {
 	SDL_Log("%s", str);
