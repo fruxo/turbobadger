@@ -211,7 +211,8 @@ void TBSystem::SetDPI(int dpi)
 char * TBSystem::GetRoot()
 {
 	static char * basepath = NULL;
-	if (!basepath) {
+	if (!basepath)
+	{
 #ifdef ANDROID
 		TBStr ExtPath(SDL_AndroidGetExternalStoragePath());
 		ExtPath.Append("/");
@@ -226,8 +227,30 @@ char * TBSystem::GetRoot()
 char * TBSystem::GetPrefPath()
 {
 	static char * prefpath = NULL;
+#ifdef __EMSCRIPTEN__
+	if (!prefpath)
+	{
+		EM_ASM(
+			   // this actually is launched in preRun, just wait for syncdone
+			   //FS.mkdir('/data');
+			   //FS.mount(IDBFS, {}, '/data');
+			   //Module.syncdone = 0;
+			   //FS.syncfs(true, function (err) {
+			   //	   Module.syncdone = 1;
+			   //	   assert(!err);
+			   //	   Module.print("done filesystem load.");
+			   //  });
+			   Module.print("waiting for fs syncdone...");
+			   while (Module.syncdone==0) {
+			   }
+			   Module.print("fs syncdone.");
+			   );
+		prefpath = "/data/";
+	}
+#else
 	if (!prefpath)
 		prefpath = SDL_GetPrefPath("spindrops", "SpinDrops");
+#endif
 	return prefpath;
 }
 
