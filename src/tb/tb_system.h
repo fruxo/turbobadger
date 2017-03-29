@@ -52,10 +52,10 @@ public:
 	static void SetDPI(int dpi);
     
 	/** Get Path to root of app static files. Must end with path separator. */
-	static char * GetRoot();
+	static const char * GetRoot();
 
 	/** Get Path to root of app preference files. Must end with path separator. */
-	static char * GetPrefPath();
+	static const char * GetPrefPath();
 
 private:
     static int _dpi; //< the current dpi value

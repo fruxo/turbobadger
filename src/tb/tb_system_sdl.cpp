@@ -208,7 +208,7 @@ void TBSystem::SetDPI(int dpi)
 	_dpi = dpi;
 }
 
-char * TBSystem::GetRoot()
+const char * TBSystem::GetRoot()
 {
 	static char * basepath = NULL;
 	if (!basepath)
@@ -224,26 +224,18 @@ char * TBSystem::GetRoot()
 	return basepath;
 }
 
-char * TBSystem::GetPrefPath()
+const char * TBSystem::GetPrefPath()
 {
-	static char * prefpath = NULL;
+	static const char * prefpath = NULL;
 #ifdef __EMSCRIPTEN__
 	if (!prefpath)
 	{
 		EM_ASM(
-			   // this actually is launched in preRun, just wait for syncdone
-			   //FS.mkdir('/data');
-			   //FS.mount(IDBFS, {}, '/data');
-			   //Module.syncdone = 0;
-			   //FS.syncfs(true, function (err) {
-			   //	   Module.syncdone = 1;
-			   //	   assert(!err);
-			   //	   Module.print("done filesystem load.");
-			   //  });
-			   Module.print("waiting for fs syncdone...");
-			   while (Module.syncdone==0) {
+			   // /data should have been mounted in preRun(), check if Module.syncdone
+			   if (!Module.syncdone) {
+				   Module.print("WARNING GetPrefPath() : fs syncdone=" + Module.syncdone);
+				   assert(Module.syncdone);
 			   }
-			   Module.print("fs syncdone.");
 			   );
 		prefpath = "/data/";
 	}
