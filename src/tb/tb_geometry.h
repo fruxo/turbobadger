@@ -51,6 +51,9 @@ public:
 	/** Return a rect centered in bounding_rect. */
 	TBRect CenterIn(const TBRect &bounding_rect) const;
 
+    /** Return a rect vertically centered on the right side in bounding_rect. */
+	TBRect RightCenterIn(const TBRect &bounding_rect) const;
+
 	TBRect Union(const TBRect &rect) const;
 	TBRect Clip(const TBRect &clip_rect) const;
 };

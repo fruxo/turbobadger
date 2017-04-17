@@ -84,6 +84,8 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 	{
 		if (strstr(state, "disabled"))
 			SetState(WIDGET_STATE_DISABLED, true);
+		else if (strstr(state, "selected"))
+			SetState(WIDGET_STATE_SELECTED, true);
 	}
 	if (const char *skin = info.node->GetValueString("skin", nullptr))
 	{
@@ -350,11 +352,11 @@ void ReadItems(TBNode *node, TBGenericStringItemSource *target_source)
 				delete item;
 				break;
 			}
-            if (strcmp(n->GetName(), "menu") == 0) {
-                TBGenericStringItemSource * msource = new TBGenericStringItemSource();
-                ReadItems(n, msource);
-                item->sub_source = msource;
-            }
+			if (strcmp(n->GetName(), "menu") == 0) {
+				TBGenericStringItemSource * msource = new TBGenericStringItemSource();
+				ReadItems(n, msource);
+				item->sub_source = msource;
+			}
 		}
 	}
 }

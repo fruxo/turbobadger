@@ -1279,7 +1279,7 @@ bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 			SetAutoFocusState(false);
 
 		// Start long click timer. Only for touch events for now.
-		if (touch && captured_widget && captured_widget->GetWantLongClick())
+		if (captured_widget && captured_widget->GetWantLongClick())
 			captured_widget->StartLongClickTimer(touch);
 
 		// Get the closest parent window and bring it to the top

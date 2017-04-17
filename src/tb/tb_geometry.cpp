@@ -32,6 +32,11 @@ TBRect TBRect::CenterIn(const TBRect &bounding_rect) const
 	return TBRect(bounding_rect.x + (bounding_rect.w - w) / 2, bounding_rect.y + (bounding_rect.h - h) / 2, w, h);
 }
 
+TBRect TBRect::RightCenterIn(const TBRect &bounding_rect) const
+{
+	return TBRect(bounding_rect.x + bounding_rect.w - w, bounding_rect.y + (bounding_rect.h - h) / 2, w, h);
+}
+
 TBRect TBRect::Union(const TBRect &rect) const
 {
 	assert(!IsInsideOut());
