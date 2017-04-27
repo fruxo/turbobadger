@@ -971,7 +971,7 @@ public:
 	bool InvokeEvent(TBWidgetEvent &ev);
 
 	bool InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch);
-	bool InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
+	bool InvokePointerUp(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch);
 	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
 	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 

@@ -1330,13 +1330,15 @@ bool TBWidget::InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS mo
 	return false;
 }
 
-bool TBWidget::InvokePointerUp(int x, int y, MODIFIER_KEYS modifierkeys, bool touch)
+bool TBWidget::InvokePointerUp(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch)
 {
 	if (captured_widget)
 	{
 		captured_widget->ConvertFromRoot(x, y);
 		TBWidgetEvent ev_up(EVENT_TYPE_POINTER_UP, x, y, touch, modifierkeys);
 		TBWidgetEvent ev_click(EVENT_TYPE_CLICK, x, y, touch, modifierkeys);
+		ev_up.count = click_count;
+		ev_click.count = click_count;
 		captured_widget->InvokeEvent(ev_up);
 		if (!cancel_click && captured_widget && captured_widget->GetHitStatus(x, y))
 			captured_widget->InvokeEvent(ev_click);
