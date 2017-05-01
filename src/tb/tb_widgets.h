@@ -979,10 +979,8 @@ public:
 													 uint16 numFingers, bool isTouchScreen);
 
 	bool InvokeFingerMotion (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen);
-	bool InvokeFingerDown (int target_x, int target_y, int click_count,
-						   float x, float y, float dx, float dy, bool isTouchScreen);
-	bool InvokeFingerUp (int target_x, int target_y, int click_count,
-						 float x, float y, float dx, float dy, bool isTouchScreen);
+	bool InvokeFingerDown (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen);
+	bool InvokeFingerUp (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */
