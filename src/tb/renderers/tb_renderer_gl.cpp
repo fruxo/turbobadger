@@ -165,9 +165,9 @@ TBRendererGL::TBRendererGL()
 		"#define texture2D texture                     \n"
 #endif
 		"precision mediump float;                      \n"
+		"uniform sampler2D tex;                        \n"
 		"varying vec2 uvo;                             \n"
 		"varying lowp vec4 color;                      \n"
-		"uniform sampler2D tex;                        \n"
 		"void main()                                   \n"
 		"{                                             \n"
 		"  gl_FragColor = color * texture2D(tex, uvo); \n"

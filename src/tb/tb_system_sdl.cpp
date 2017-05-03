@@ -42,7 +42,7 @@ void TBDebugOut(const char *str)
 void TBDebugOut(const char *str)
 {
 	SDL_Log("%s", str);
-	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", str);
+	//SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", str);
 }
 #endif // ANDROID
 #endif // TB_RUNTIME_DEBUG_INFO

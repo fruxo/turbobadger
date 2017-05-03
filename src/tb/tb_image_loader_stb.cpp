@@ -10,7 +10,7 @@
 #ifdef TB_IMAGE_LOADER_STB
 
 // Configure stb image and remove some features we don't use to reduce binary size.
-#define STB_IMAGE_STATIC
+//#define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 //#define STBI_SIMD
 #define STBI_NO_STDIO
