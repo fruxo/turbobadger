@@ -124,7 +124,7 @@ public:
 	MODIFIER_KEYS modifierkeys;
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 	bool touch;			///< Set for pointer events. True if the event is a touch event (finger or pen on screen)
-					      	///< False if mouse or other cursor input.
+						///< False if mouse or other cursor input.
 
 
 	TBOBJECT_SUBCLASS(TBWidgetEvent, TBTypedObject);
@@ -183,8 +183,8 @@ public:
 
 	TBOBJECT_SUBCLASS(TBWidgetEventFinger, TBWidgetEvent);
 
-	TBWidgetEventFinger(EVENT_TYPE type, int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen) :
-		TBWidgetEvent(type, target_x, target_y, 1), x(x), y(y), dx(dx), dy(dy) {}
+ TBWidgetEventFinger(EVENT_TYPE type, int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int fingerid) :
+		TBWidgetEvent(type, target_x, target_y, 1), x(x), y(y), dx(dx), dy(dy) { key = fingerid; }
 };
 
 /** TBWidgetEventFileDrop is a event of type EVENT_TYPE_FILE_DROP.
@@ -975,12 +975,12 @@ public:
 	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
 	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
-	bool InvokeMultiGesture (float dTheta, float dDist, int targetx, int targety, float x, float y,
+	bool InvokeMultiGesture(float dTheta, float dDist, int targetx, int targety, float x, float y,
 													 uint16 numFingers, bool isTouchScreen);
 
-	bool InvokeFingerMotion (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen);
-	bool InvokeFingerDown (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen);
-	bool InvokeFingerUp (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen);
+	bool InvokeFingerMotion(int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger);
+	bool InvokeFingerDown(int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger);
+	bool InvokeFingerUp(int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */

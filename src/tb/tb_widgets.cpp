@@ -1491,7 +1491,7 @@ bool TBWidget::InvokeMultiGesture (float dTheta, float dDist, int target_x, int 
 	return false;
 }
 
-bool TBWidget::InvokeFingerMotion (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen)
+bool TBWidget::InvokeFingerMotion (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger)
 {
 	SetHoveredWidget(GetWidgetAt(target_x,target_y,true), true);
 
@@ -1499,7 +1499,7 @@ bool TBWidget::InvokeFingerMotion (int target_x, int target_y, float x, float y,
 	if (target)
 	{
 		target->ConvertFromRoot(target_x,target_y);
-		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_MOVE, target_x, target_y, x, y, dx, dy, isTouchScreen);
+		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_MOVE, target_x, target_y, x, y, dx, dy, isTouchScreen, finger);
 		target->InvokeEvent(ev);
 
 		// Return true when we have a target instead of InvokeEvent result. If a widget is
@@ -1509,7 +1509,7 @@ bool TBWidget::InvokeFingerMotion (int target_x, int target_y, float x, float y,
 	return false;
 }
 
-bool TBWidget::InvokeFingerDown (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen)
+bool TBWidget::InvokeFingerDown (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger)
 {
 	SetHoveredWidget(GetWidgetAt(target_x,target_y,true), true);
 
@@ -1517,7 +1517,7 @@ bool TBWidget::InvokeFingerDown (int target_x, int target_y, float x, float y, f
 	if (target)
 	{
 		target->ConvertFromRoot(target_x,target_y);
-		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_DOWN, target_x, target_y, x, y, dx, dy, isTouchScreen);
+		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_DOWN, target_x, target_y, x, y, dx, dy, isTouchScreen, finger);
 		target->InvokeEvent(ev);
 
 		// Return true when we have a target instead of InvokeEvent result. If a widget is
@@ -1527,7 +1527,7 @@ bool TBWidget::InvokeFingerDown (int target_x, int target_y, float x, float y, f
 	return false;
 }
 
-bool TBWidget::InvokeFingerUp (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen)
+bool TBWidget::InvokeFingerUp (int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger)
 {
 	SetHoveredWidget(GetWidgetAt(target_x,target_y,true), true);
 
@@ -1535,7 +1535,7 @@ bool TBWidget::InvokeFingerUp (int target_x, int target_y, float x, float y, flo
 	if (target)
 	{
 		target->ConvertFromRoot(target_x,target_y);
-		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_UP, target_x, target_y, x, y, dx, dy, isTouchScreen);
+		TBWidgetEventFinger ev(EVENT_TYPE_FINGER_UP, target_x, target_y, x, y, dx, dy, isTouchScreen, finger);
 		target->InvokeEvent(ev);
 
 		// Return true when we have a target instead of InvokeEvent result. If a widget is
