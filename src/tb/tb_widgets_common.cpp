@@ -164,14 +164,14 @@ bool TBButton::SetText(const char *text)
 
 void TBButton::SetValue(int value)
 {
-    TBWidgetSafePointer this_widget(this);
+	TBWidgetSafePointer this_widget(this);
 
 	if (value == GetValue())
 		return;
 	SetState(WIDGET_STATE_SELECTED, value ? true : false);
 
-    if (!this_widget.Get())
-        return;
+	if (!this_widget.Get())
+		return;
 
 	if (CanToggle())
 	{
@@ -180,8 +180,8 @@ void TBButton::SetValue(int value)
 		InvokeEvent(ev);
 	}
 
-    if (!this_widget.Get())
-        return;
+	if (!this_widget.Get())
+		return;
 
 	if (value && GetGroupID())
 		TBRadioCheckBox::UpdateGroupWidgets(this);
