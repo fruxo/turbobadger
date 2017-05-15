@@ -20,7 +20,7 @@ uint32 dbg_bitmap_validations = 0;
 
 // == Utilities ===================================================================================
 
-#ifdef TB_RUNTIME_DEBUG_INFO
+#if defined(TB_RUNTIME_DEBUG_INFO) && !(defined(__APPLE__) && TARGET_OS_IPHONE)
 #define GLCALL(CALL) do {												\
 		CALL;															\
 		GLenum err;														\
@@ -213,13 +213,22 @@ TBRendererGL::TBRendererGL()
 	m_orthoLoc = glGetUniformLocation(m_program, "ortho");
 	m_texLoc = glGetUniformLocation(m_program, "tex");
 
-	GLCALL(glGenVertexArrays(1, &m_vao));
-	GLCALL(glBindVertexArray(m_vao));
+	GLCALL(glGenVertexArrays(_NUM_VBOS, m_vao));
 
-	// Generate 1 buffer
-	GLCALL(glGenBuffers(1, &m_vbo));
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
-	GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(batch.vertex), (void *)&batch.vertex[0], GL_DYNAMIC_DRAW));
+	// Generate & allocate GL_ARRAY_BUFFER buffers
+	_vboidx = 0;
+	GLCALL(glGenBuffers(_NUM_VBOS, m_vbo));
+	for (unsigned int ii = 0; ii < _NUM_VBOS; ii++) {
+		GLCALL(glBindVertexArray(m_vao[ii]));
+		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo[ii]));
+		GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(batch.vertex), nullptr, GL_STREAM_DRAW)); // or DYNAMIC?
+		GLCALL(glEnableVertexAttribArray(0));
+		GLCALL(glEnableVertexAttribArray(1));
+		GLCALL(glEnableVertexAttribArray(2));
+		GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->x));
+		GLCALL(glVertexAttribPointer(1, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->u));
+		GLCALL(glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), &((Vertex *)nullptr)->col));
+	}
 
 	// Setup white 1-pixel "texture" as default
 	{
@@ -227,6 +236,11 @@ TBRendererGL::TBRendererGL()
 		m_white.Init(1, 1, &whitepix);
 	}
 #endif
+}
+
+TBRendererGL::~TBRendererGL()
+{
+	GLCALL(glDeleteBuffers(_NUM_VBOS, m_vbo));
 }
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
@@ -265,6 +279,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 #ifdef TB_RUNTIME_DEBUG_INFO
 	dbg_bitmap_validations = 0;
 #endif
+	//TBDebugPrint("Frame start idx %d.\n", _vboidx);
 
 	TBRendererBatcher::BeginPaint(render_target_w, render_target_h);
 
@@ -272,7 +287,6 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	g_current_batch = nullptr;
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
-	GLCALL(glBindVertexArray(m_vao));
 	GLCALL(glUseProgram(m_program));
 	static float ortho[16];
 	MakeOrtho(ortho, 0, (GLfloat)render_target_w, (GLfloat)render_target_h, 0, -1.0, 1.0);
@@ -299,6 +313,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	glEnableClientState(GL_COLOR_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
+#else
 #endif
 }
 
@@ -312,6 +327,7 @@ void TBRendererGL::EndPaint()
 	if (TB_DEBUG_SETTING(RENDER_BATCHES))
 		TBDebugPrint("Frame caused %d bitmap validations.\n", dbg_bitmap_validations);
 #endif // TB_RUNTIME_DEBUG_INFO
+	//TBDebugPrint("Frame end idx %d.\n", _vboidx);
 }
 
 TBBitmap *TBRendererGL::CreateBitmap(int width, int height, uint32 *data)
@@ -336,28 +352,24 @@ void TBRendererGL::RenderBatch(Batch *batch)
 
 	if (g_current_batch != batch)
 	{
-#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
-		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo));
-		GLCALL(glEnableVertexAttribArray(0));
-		GLCALL(glEnableVertexAttribArray(1));
-		GLCALL(glEnableVertexAttribArray(2));
-		GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->x));
-		GLCALL(glVertexAttribPointer(1, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->u));
-		GLCALL(glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), &((Vertex *)nullptr)->col));
-		g_current_batch = batch;
-#else
+#if !defined(TB_RENDERER_GLES_2) && !defined(TB_RENDERER_GL3)
 		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (void *) &batch->vertex[0].r);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void *) &batch->vertex[0].u);
 		glVertexPointer(2, GL_FLOAT, sizeof(Vertex), (void *) &batch->vertex[0].x);
-		g_current_batch = batch;
+#else
 #endif
+		g_current_batch = batch;
 	}
 
 	// Flush
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+		_vboidx = (_vboidx + 1) % _NUM_VBOS;
+		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo[_vboidx]));
 	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, batch->vertex_count * sizeof(Vertex), (void *)&batch->vertex[0]));
+		GLCALL(glBindVertexArray(m_vao[_vboidx]));
 #endif
 	GLCALL(glDrawArrays(GL_TRIANGLES, 0, batch->vertex_count));
+	//TBDebugPrint("Batch: %d\n", batch->vertex_count);
 }
 
 void TBRendererGL::SetClipRect(const TBRect &rect)

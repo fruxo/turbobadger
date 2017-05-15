@@ -106,6 +106,7 @@ class TBRendererGL : public TBRendererBatcher
 {
 public:
 	TBRendererGL();
+	virtual ~TBRendererGL();
 
 	// == TBRenderer ====================================================================
 
@@ -121,10 +122,12 @@ public:
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
 private:
+	static const GLuint _NUM_VBOS = 256;
 	GLuint LoadShader(GLenum type, const GLchar * shaderSrc);
 	GLuint m_program;
-	GLuint m_vao;
-	GLuint m_vbo;
+	GLuint m_vao[_NUM_VBOS];
+	GLuint m_vbo[_NUM_VBOS];
+	GLuint _vboidx;
 	GLint m_orthoLoc;
 	GLint m_texLoc;
 	TBBitmapGL m_white;

@@ -12,7 +12,7 @@ namespace tb {
 int TBGetNearestPowerOfTwo(int val)
 {
 	int i;
-	for(i = 31; i >= 0; i--)
+	for(i = 30; i >= 0; i--)
 		if ((val - 1) & (1<<i))
 			break;
 	return (1<<(i + 1));
