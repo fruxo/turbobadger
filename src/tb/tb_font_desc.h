@@ -50,6 +50,10 @@ public:
 	//void SetItalic(bool italic)										{ m_packed.italic = italic; }
 	//bool GetItalic() const											{ return m_packed.italic; }
 
+	// ask the font renderer to outline the font
+	void SetOutline(bool outline)										{ m_packed.outline = outline; }
+	bool GetOutline() const												{ return m_packed.outline; }
+
 	TBFontDescription() : m_packed_init(0) {}
 	TBFontDescription(const TBFontDescription &src)						{ m_packed_init = src.m_packed_init; m_id = src.m_id; }
 	const TBFontDescription& operator = (const TBFontDescription &src)	{ m_packed_init = src.m_packed_init; m_id = src.m_id; return *this; }
@@ -62,6 +66,7 @@ private:
 			uint32 size : 15;
 			uint32 italic : 1;
 			uint32 bold : 1;
+			uint32 outline : 1;
 		} m_packed;
 		uint32 m_packed_init;
 	};

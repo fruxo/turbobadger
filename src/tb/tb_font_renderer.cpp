@@ -267,7 +267,7 @@ void TBFontFace::SetBackgroundFont(TBFontFace *font, const TBColor &col, int xof
 	m_bgColor = col;
 }
 
-bool TBFontFace::RenderGlyphs(const char *glyph_str, int glyph_str_len)
+bool TBFontFace::RenderGlyphs(const char *glyph_str, int glyph_str_len, const TBColor color)
 {
 	if (!m_font_renderer)
 		return true; // This is the test font
@@ -280,7 +280,7 @@ bool TBFontFace::RenderGlyphs(const char *glyph_str, int glyph_str_len)
 	while (glyph_str[i] && i < glyph_str_len)
 	{
 		UCS4 cp = utf8::decode_next(glyph_str, &i, glyph_str_len);
-		if (!GetGlyph(cp, true))
+		if (!GetGlyph(cp, true, color))
 			has_all_glyphs = false;
 	}
 	return has_all_glyphs;
@@ -298,11 +298,11 @@ TBFontGlyph *TBFontFace::CreateAndCacheGlyph(UCS4 cp)
 	return glyph;
 }
 
-void TBFontFace::RenderGlyph(TBFontGlyph *glyph)
+void TBFontFace::RenderGlyph(TBFontGlyph *glyph, const TBColor &color)
 {
 	assert(!glyph->frag);
 	TBFontGlyphData glyph_data;
-	if (m_font_renderer->RenderGlyph(&glyph_data, glyph->cp))
+	if (m_font_renderer->RenderGlyph(&glyph_data, glyph->cp, color))
 	{
 		TBFontGlyphData *effect_glyph_data = m_effect.Render(&glyph->metrics, &glyph_data);
 		TBFontGlyphData *result_glyph_data = effect_glyph_data ? effect_glyph_data : &glyph_data;
@@ -353,13 +353,13 @@ TBID TBFontFace::GetHashId(UCS4 cp) const
 	return cp * 31 + m_font_desc.GetFontFaceID();
 }
 
-TBFontGlyph *TBFontFace::GetGlyph(UCS4 cp, bool render_if_needed)
+TBFontGlyph *TBFontFace::GetGlyph(UCS4 cp, bool render_if_needed, const TBColor &color)
 {
 	TBFontGlyph *glyph = m_glyph_cache->GetGlyph(GetHashId(cp), cp);
 	if (!glyph)
 		glyph = CreateAndCacheGlyph(cp);
 	if (glyph && !glyph->frag && render_if_needed)
-		RenderGlyph(glyph);
+		RenderGlyph(glyph, color);
 	return glyph;
 }
 
@@ -377,7 +377,7 @@ void TBFontFace::DrawString(int x, int y, const TBColor &color, const char *str,
 		UCS4 cp = utf8::decode_next(str, &i, len);
 		if (cp == 0xFFFF)
 			continue;
-		if (TBFontGlyph *glyph = GetGlyph(cp, true))
+		if (TBFontGlyph *glyph = GetGlyph(cp, true, color))
 		{
 			if (glyph->frag)
 			{
@@ -412,7 +412,7 @@ int TBFontFace::GetStringWidth(const char *str, int len)
 			continue;
 		if (!m_font_renderer) // This is the test font. Use same glyph width as height.
 			width += m_metrics.height / 3 + 1;
-		else if (TBFontGlyph *glyph = GetGlyph(cp, false))
+		else if (TBFontGlyph *glyph = GetGlyph(cp, false, TBColor()))
 			width += glyph->metrics.advance;
 	}
 	return width;

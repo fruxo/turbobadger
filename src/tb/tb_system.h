@@ -11,10 +11,10 @@
 
 #if defined(TB_RUNTIME_DEBUG_INFO) || 1 
 void TBDebugOut(const char *str);
-#define TBDebugPrint(str, ...) { tb::TBStr tmp; tmp.SetFormatted(str, __VA_ARGS__); TBDebugOut(tmp); }
+#define TBDebugPrint(str, ...) do { tb::TBStr tmp; tmp.SetFormatted(str, __VA_ARGS__); TBDebugOut(tmp); } while (0)
 #else
-#define TBDebugOut(str) ((void)0)
-#define TBDebugPrint(str, ...) ((void)0)
+#define TBDebugOut(str) do { } while (0)
+#define TBDebugPrint(str, ...) do { } while (0)
 #endif
 
 namespace tb {
