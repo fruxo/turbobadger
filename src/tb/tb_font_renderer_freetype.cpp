@@ -102,15 +102,29 @@ TBFontMetrics FreetypeFontRenderer::GetMetrics()
 	metrics.height = (int16) (m_size->metrics.height >> 6);
 	return metrics;
 }
+
+bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBColor &color)
+{
+	FT_Activate_Size(m_size);
+	if (!m_face->outline) {
+		FT_GlyphSlot slot = m_face->f_face->glyph;
+		if (FT_Load_Char(m_face->f_face, cp, FT_LOAD_RENDER) ||
+			slot->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
+			return false;
+		data->w = slot->bitmap.width;
+		data->h = slot->bitmap.rows;
+		data->stride = slot->bitmap.pitch;
+		data->data8 = slot->bitmap.buffer;
+		return data->data8 ? true : false;
+	}
+#if 0
 #define FTC(CALL) do {													\
 		FT_Error err = CALL;											\
 		if (err) TBDebugPrint("Error %s:%d = %d\n", __FILE__, __LINE__, err); \
 		/*else TBDebugPrint("OK %s:%d\n", __FILE__, __LINE__);	*/		\
 	} while(0)
-bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBColor &color)
-{
-	FT_Activate_Size(m_size);
-	if (m_face->outline) {
+
+	else {
 		FT_Face face = m_face->f_face;
 		memset(&m_data[0], 0, sizeof(m_data));
 		// initialize stroker, so you can create outline font
@@ -136,15 +150,16 @@ bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBC
 		assert(glyph->format == FT_GLYPH_FORMAT_BITMAP);
 		//assert(slot->bitmap.rows);
 		// blit the outline
-		TBDebugPrint("%d x %d, l:%d t:%d stride:%d\n", slot->bitmap.width, slot->bitmap.rows,
+		TBDebugPrint("%d x %d, l:%d t:%d stride:%d\n",
+					 slot->bitmap.width, slot->bitmap.rows,
 					 slot->left, slot->top, slot->bitmap.pitch);
-		int stride = advance;
+		int stride = Max((int)advance, slot->bitmap.pitch) + 1;
 		TBColor outlineCol(255 - color.r, 255 - color.g, 255 - color.b);
 		for (unsigned int rr = 0; rr < slot->bitmap.rows; rr++)
 			for (unsigned int cc = 0; cc < slot->bitmap.width; cc++) {
 				auto v = slot->bitmap.buffer[rr * slot->bitmap.pitch + cc];
 				if (v) {
-					int ix = rr * stride + cc + slot->left;
+					int ix = rr * stride + cc + slot->left + 1;
 					m_data[ix] = outlineCol;
 					m_data[ix].a = v;
 				}
@@ -158,14 +173,15 @@ bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBC
 		slot = reinterpret_cast<FT_BitmapGlyph>(glyph);
 		//assert(slot->bitmap.rows);
 		// blit the text
-		TBDebugPrint("%d %d stride:%d  adv%d\n", slot->bitmap.width,
-					 slot->bitmap.rows, slot->bitmap.pitch, stride);
-#if 0
+		TBDebugPrint("%d x %d, l:%d t:%d stride:%d / %d\n",
+					 slot->bitmap.width, slot->bitmap.rows,
+					 slot->left, slot->top, slot->bitmap.pitch, stride);
+#if 1
 		for (unsigned int rr = 0; rr < slot->bitmap.rows; rr++)
 			for (unsigned int cc = 0; cc < slot->bitmap.width; cc++) {
 				auto v = slot->bitmap.buffer[rr * slot->bitmap.pitch + cc];
 				if (v) {
-					int ix = rr * stride + cc + slot->left;
+					int ix = rr * stride + cc + slot->left + 1;
 					m_data[ix] = color;
 					m_data[ix].a = v;
 				}
@@ -181,17 +197,7 @@ bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBC
 		FT_Stroker_Done(stroker);
 		return true;
 	}
-	else {
-		FT_GlyphSlot slot = m_face->f_face->glyph;
-		if (FT_Load_Char(m_face->f_face, cp, FT_LOAD_RENDER) ||
-			slot->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
-			return false;
-		data->w = slot->bitmap.width;
-		data->h = slot->bitmap.rows;
-		data->stride = slot->bitmap.pitch;
-		data->data8 = slot->bitmap.buffer;
-		return data->data8 ? true : false;
-	}
+#endif
 }
 
 void FreetypeFontRenderer::GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp)
@@ -211,7 +217,7 @@ bool FreetypeFontRenderer::Load(FreetypeFace *face, const TBFontDescription &fon
 	// Should not be possible to have a face if freetype is not initialized
 	assert(ft_initialized);
 	m_face = face;
-	m_face->outline = 1; //font_desc.GetOutline();
+	m_face->outline = font_desc.GetOutline();
 	if (FT_New_Size(m_face->f_face, &m_size) ||
 		FT_Activate_Size(m_size) ||
 		FT_Set_Pixel_Sizes(m_face->f_face, 0, size))

@@ -227,9 +227,9 @@ const char * TBSystem::GetRoot()
 const char * TBSystem::GetPrefPath()
 {
 	static const char * prefpath = NULL;
-#ifdef __EMSCRIPTEN__
 	if (!prefpath)
 	{
+#ifdef __EMSCRIPTEN__
 		EM_ASM(
 			   // /data should have been mounted in preRun(), check if Module.syncdone
 			   if (!Module.syncdone) {
@@ -238,11 +238,10 @@ const char * TBSystem::GetPrefPath()
 			   }
 			   );
 		prefpath = "/data/";
-	}
 #else
-	if (!prefpath)
 		prefpath = SDL_GetPrefPath("spindrops", "SpinDrops");
 #endif
+	}
 	return prefpath;
 }
 
