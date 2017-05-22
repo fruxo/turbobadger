@@ -197,6 +197,8 @@ bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBC
 		FT_Stroker_Done(stroker);
 		return true;
 	}
+#else
+	return false;
 #endif
 }
 
