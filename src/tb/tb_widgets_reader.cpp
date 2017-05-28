@@ -352,11 +352,11 @@ void ReadItems(TBNode *node, TBGenericStringItemSource *target_source)
 				delete item;
 				break;
 			}
-            if (strcmp(n->GetName(), "menu") == 0) {
-                TBGenericStringItemSource * msource = new TBGenericStringItemSource();
-                ReadItems(n, msource);
-                item->sub_source = msource;
-            }
+			if (strcmp(n->GetName(), "menu") == 0) {
+				TBGenericStringItemSource * msource = new TBGenericStringItemSource();
+				ReadItems(n, msource);
+				item->sub_source = msource;
+			}
 		}
 	}
 }
@@ -419,6 +419,7 @@ void TBImageWidget::OnInflate(const INFLATE_INFO &info)
 {
 	if (const char *filename = info.node->GetValueString("filename", nullptr))
 		SetImage(filename);
+	SetAdaptTextColor(info.node->GetValueInt("adapt-text-color", false) ? true : false);
 	TBWidget::OnInflate(info);
 }
 

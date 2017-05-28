@@ -29,12 +29,14 @@ public:
 	void SetImage(const TBImage &image) { m_image = image; }
 	void SetImage(const char *filename) { m_image = g_image_manager->GetImage(filename); }
 
+	void SetAdaptTextColor(bool adapt) { m_adapt_text_color = adapt; }
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnPaint(const PaintProps &paint_props);
 private:
 	TBImage m_image;
+	bool m_adapt_text_color;
 };
 
 } // namespace tb
