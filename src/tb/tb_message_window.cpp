@@ -57,6 +57,7 @@ bool TBMessageWindow::Show(const char *title, const char *message, TBMessageWind
 	TBEditField *editfield = GetWidgetByIDAndType<TBEditField>(1);
 	editfield->SetStyling(settings->styling);
 	editfield->SetText(message);
+	editfield->SetTextAlign(settings->align);
 	editfield->SetSkinBg("");
 
 	// Create buttons
