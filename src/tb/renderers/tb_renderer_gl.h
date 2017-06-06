@@ -125,6 +125,7 @@ private:
 	static const GLuint _NUM_VBOS = 256;
 	GLuint LoadShader(GLenum type, const GLchar * shaderSrc);
 	GLuint m_program;
+	bool m_hasvao;
 	GLuint m_vao[_NUM_VBOS];
 	GLuint m_vbo[_NUM_VBOS];
 	GLuint _vboidx;

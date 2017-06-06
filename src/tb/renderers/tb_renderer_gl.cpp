@@ -37,7 +37,7 @@ static void Ortho2D(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top)
 #ifdef TB_RENDERER_GLES_1
 	glOrthof(left, right, bottom, top, -1.0, 1.0);
 #else
-	glOrtho(left, right, bottom, top, -1.0, 1.0);
+	GLCALL(glOrtho(left, right, bottom, top, -1.0, 1.0));
 #endif
 }
 
@@ -66,6 +66,33 @@ static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n
 	ortho[15] = 1;
 }
 #endif
+
+static bool gl_supports_ext(const char * extname)
+{
+	int NumberOfExtensions;
+	bool supported = false;
+	const char * fullext = (const char *)glGetString(GL_EXTENSIONS);
+	if (fullext) {
+		return strstr(fullext, extname) != NULL;
+	}
+#if defined(GL_NUM_EXTENSIONS)
+	else {
+		glGetError(); // clear error from glGetString()
+		// try individually
+		GLCALL(glGetIntegerv(GL_NUM_EXTENSIONS, &NumberOfExtensions));
+		for (int i = 0; i < NumberOfExtensions; i++) {
+			const char *ccc = (const char *)glGetStringi(GL_EXTENSIONS, i);
+			if (!ccc)
+				continue;
+			if (!strcmp(ccc, extname))
+				supported = true;
+		}
+		return supported;
+	}
+#else
+    return false;
+#endif
+}
 
 // == Batching ====================================================================================
 
@@ -189,9 +216,9 @@ TBRendererGL::TBRendererGL()
 
 	glAttachShader(m_program, vertexShader);
 	glAttachShader(m_program, fragmentShader);
-	glBindAttribLocation(m_program, 0, "xy");
-	glBindAttribLocation(m_program, 1, "uv");
-	glBindAttribLocation(m_program, 2, "color");
+	GLCALL(glBindAttribLocation(m_program, 0, "xy"));
+	GLCALL(glBindAttribLocation(m_program, 1, "uv"));
+	GLCALL(glBindAttribLocation(m_program, 2, "color"));
 	glLinkProgram(m_program);
 	glGetProgramiv(m_program, GL_LINK_STATUS, &linked);
 	if (!linked)
@@ -213,13 +240,20 @@ TBRendererGL::TBRendererGL()
 	m_orthoLoc = glGetUniformLocation(m_program, "ortho");
 	m_texLoc = glGetUniformLocation(m_program, "tex");
 
-	GLCALL(glGenVertexArrays(_NUM_VBOS, m_vao));
+	if (gl_supports_ext("OES_vertex_array_object") || gl_supports_ext("GL_ARB_vertex_array_object")) {
+		m_hasvao = true;
+		GLCALL(glGenVertexArrays(_NUM_VBOS, m_vao));
+	}
+	else {
+		m_hasvao = false;
+	}
 
 	// Generate & allocate GL_ARRAY_BUFFER buffers
 	_vboidx = 0;
 	GLCALL(glGenBuffers(_NUM_VBOS, m_vbo));
 	for (unsigned int ii = 0; ii < _NUM_VBOS; ii++) {
-		GLCALL(glBindVertexArray(m_vao[ii]));
+		if (m_hasvao)
+			GLCALL(glBindVertexArray(m_vao[ii]));
 		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo[ii]));
 		GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(batch.vertex), nullptr, GL_STREAM_DRAW)); // or DYNAMIC?
 		GLCALL(glEnableVertexAttribArray(0));
@@ -314,6 +348,9 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnableClientState(GL_VERTEX_ARRAY);
 #else
+	//GLCALL(glEnableVertexAttribArray(0));
+	//GLCALL(glEnableVertexAttribArray(1));
+	//GLCALL(glEnableVertexAttribArray(2));
 #endif
 }
 
@@ -356,17 +393,28 @@ void TBRendererGL::RenderBatch(Batch *batch)
 		glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (void *) &batch->vertex[0].r);
 		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void *) &batch->vertex[0].u);
 		glVertexPointer(2, GL_FLOAT, sizeof(Vertex), (void *) &batch->vertex[0].x);
-#else
 #endif
 		g_current_batch = batch;
 	}
 
 	// Flush
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
-		_vboidx = (_vboidx + 1) % _NUM_VBOS;
-		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo[_vboidx]));
-	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, batch->vertex_count * sizeof(Vertex), (void *)&batch->vertex[0]));
+	_vboidx = (_vboidx + 1) % _NUM_VBOS;
+	if (m_hasvao) {
 		GLCALL(glBindVertexArray(m_vao[_vboidx]));
+		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo[_vboidx]));
+		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, batch->vertex_count * sizeof(Vertex), (void *)&batch->vertex[0]));
+	}
+	else {
+		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_vbo[_vboidx]));
+		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, batch->vertex_count * sizeof(Vertex), (void *)&batch->vertex[0]));
+		GLCALL(glEnableVertexAttribArray(0));
+		GLCALL(glEnableVertexAttribArray(1));
+		GLCALL(glEnableVertexAttribArray(2));
+		GLCALL(glVertexAttribPointer(0, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->x));
+		GLCALL(glVertexAttribPointer(1, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->u));
+		GLCALL(glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), &((Vertex *)nullptr)->col));
+	}
 #endif
 	GLCALL(glDrawArrays(GL_TRIANGLES, 0, batch->vertex_count));
 	//TBDebugPrint("Batch: %d\n", batch->vertex_count);
