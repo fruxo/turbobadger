@@ -188,7 +188,7 @@ class TBGenericStringItem
 public:
 	TBGenericStringItem(const TBGenericStringItem& other) : str(other.str), id(other.id), sub_source(other.sub_source), tag(other.tag) {}
 	TBGenericStringItem(const char *str) : str(str), sub_source(nullptr) {}
-	TBGenericStringItem(const char *str, TBID id) : str(str), id(id), sub_source(nullptr) {}
+	TBGenericStringItem(const char *str, TBID id, TBValue val = TBValue()) : str(str), id(id), sub_source(nullptr), tag(val) {}
 	TBGenericStringItem(const char *str, TBSelectItemSource *sub_source) : str(str), sub_source(sub_source) {}
 	const TBGenericStringItem& operator = (const TBGenericStringItem &other) { str.Set(other.str); id = other.id; sub_source = other.sub_source; tag = other.tag; return *this; }
 
