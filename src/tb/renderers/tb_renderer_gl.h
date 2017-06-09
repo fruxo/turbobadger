@@ -128,6 +128,7 @@ private:
 	bool m_hasvao;
 	GLuint m_vao[_NUM_VBOS];
 	GLuint m_vbo[_NUM_VBOS];
+	float m_ortho[16];
 	GLuint _vboidx;
 	GLint m_orthoLoc;
 	GLint m_texLoc;

@@ -122,6 +122,7 @@ TBBitmapGL::TBBitmapGL(TBRendererGL *renderer)
 TBBitmapGL::~TBBitmapGL()
 {
 	// Must flush and unbind before we delete the texture
+  printf("delete TEX %d\n", m_texture);
 	m_renderer->FlushBitmap(this);
 	if (m_texture == g_current_texture)
 		BindBitmap(nullptr);
@@ -240,7 +241,11 @@ TBRendererGL::TBRendererGL()
 	m_orthoLoc = glGetUniformLocation(m_program, "ortho");
 	m_texLoc = glGetUniformLocation(m_program, "tex");
 
+#if defined(TB_RENDERER_GL3)
+	if (1) {
+#else
 	if (gl_supports_ext("OES_vertex_array_object") || gl_supports_ext("GL_ARB_vertex_array_object")) {
+#endif
 		m_hasvao = true;
 		GLCALL(glGenVertexArrays(_NUM_VBOS, m_vao));
 	}
@@ -321,10 +326,7 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	g_current_batch = nullptr;
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
-	GLCALL(glUseProgram(m_program));
-	static float ortho[16];
-	MakeOrtho(ortho, 0, (GLfloat)render_target_w, (GLfloat)render_target_h, 0, -1.0, 1.0);
-	GLCALL(glUniformMatrix4fv(m_orthoLoc, 1, GL_FALSE, ortho));
+	MakeOrtho(m_ortho, 0, (GLfloat)render_target_w, (GLfloat)render_target_h, 0, -1.0, 1.0);
 #else
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -382,6 +384,8 @@ void TBRendererGL::RenderBatch(Batch *batch)
 {
 	// Bind texture and array pointers
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+	GLCALL(glUseProgram(m_program));
+	GLCALL(glUniformMatrix4fv(m_orthoLoc, 1, GL_FALSE, m_ortho));
 	BindBitmap(batch->bitmap ? batch->bitmap : &m_white);
 #else
 	BindBitmap(batch->bitmap);
