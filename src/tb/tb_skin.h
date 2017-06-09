@@ -324,6 +324,9 @@ public:
 	/** Get the default text color for all skin elements */
 	TBColor GetDefaultTextColor() const { return m_default_text_color; }
 
+	/** Set the default text color for all skin elements */
+	void SetDefaultTextColor(TBColor color) { m_default_text_color = color; }
+
 	/** Get the default disabled opacity for all skin elements */
 	float GetDefaultDisabledOpacity() const { return m_default_disabled_opacity; }
 
