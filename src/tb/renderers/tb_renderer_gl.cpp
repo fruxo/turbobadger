@@ -122,8 +122,7 @@ TBBitmapGL::TBBitmapGL(TBRendererGL *renderer)
 TBBitmapGL::~TBBitmapGL()
 {
 	// Must flush and unbind before we delete the texture
-  printf("delete TEX %d\n", m_texture);
-	m_renderer->FlushBitmap(this);
+	if (g_renderer) m_renderer->FlushBitmap(this);
 	if (m_texture == g_current_texture)
 		BindBitmap(nullptr);
 

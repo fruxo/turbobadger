@@ -39,11 +39,16 @@ void tb_core_shutdown()
 	TBAnimationManager::AbortAllAnimations();
 #ifdef TB_IMAGE
 	delete g_image_manager;
+	g_image_manager = nullptr;
 #endif
 	delete g_widgets_reader;
 	delete g_tb_skin;
 	delete g_font_manager;
 	delete g_tb_lng;
+	g_widgets_reader = nullptr;
+	g_tb_skin = nullptr;
+	g_font_manager = nullptr;
+	g_tb_lng = nullptr;
 }
 
 bool tb_core_is_initialized()
