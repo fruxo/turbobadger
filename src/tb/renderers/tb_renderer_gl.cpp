@@ -67,6 +67,7 @@ static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n
 }
 #endif
 
+#if !defined(TB_RENDERER_GL3)
 static bool gl_supports_ext(const char * extname)
 {
 	int NumberOfExtensions;
@@ -93,6 +94,7 @@ static bool gl_supports_ext(const char * extname)
     return false;
 #endif
 }
+#endif
 
 // == Batching ====================================================================================
 
@@ -131,8 +133,11 @@ TBBitmapGL::~TBBitmapGL()
 
 bool TBBitmapGL::Init(int width, int height, uint32 *data)
 {
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+#else
 	assert(width == TBGetNearestPowerOfTwo(width));
 	assert(height == TBGetNearestPowerOfTwo(height));
+#endif
 
 	m_w = width;
 	m_h = height;
@@ -343,6 +348,9 @@ void TBRendererGL::BeginPaint(int render_target_w, int render_target_h)
 	GLCALL(glDisable(GL_DEPTH_TEST));
 	GLCALL(glEnable(GL_SCISSOR_TEST));
 	GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	//GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA));
+	//GLCALL(glAlphaFunc(GL_GREATER, 0.1));
+	//GLCALL(glEnable(GL_ALPHA_TEST));
 
 #if !defined(TB_RENDERER_GLES_2) && !defined(TB_RENDERER_GL3)
 	glEnableClientState(GL_COLOR_ARRAY);

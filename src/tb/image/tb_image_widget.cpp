@@ -18,11 +18,12 @@ PreferredSize TBImageWidget::OnCalculatePreferredContentSize(const SizeConstrain
 
 void TBImageWidget::OnPaint(const PaintProps &paint_props)
 {
-	if (TBBitmapFragment *fragment = m_image.GetBitmap())
+	if (TBBitmapFragment *fragment = m_image.GetBitmap()) {
 		if (m_adapt_text_color)
 			g_renderer->DrawBitmapColored(GetPaddingRect(), TBRect(0, 0, m_image.Width(), m_image.Height()), paint_props.text_color, fragment);
 		else
 			g_renderer->DrawBitmap(GetPaddingRect(), TBRect(0, 0, m_image.Width(), m_image.Height()), fragment);
+	}
 }
 
 

@@ -6,7 +6,7 @@
 #include "renderers/tb_renderer_batcher.h"
 #include "tb_bitmap_fragment.h"
 #include "tb_system.h"
-
+#include <stdio.h>
 #ifdef TB_RENDERER_BATCHER
 
 namespace tb {
@@ -243,6 +243,8 @@ void TBRendererBatcher::AddQuadInternal(const TBRect &dst_rect, const TBRect &sr
 	ver[5].u = m_uu;
 	ver[5].v = m_v;
 	ver[5].col = color;
+	//for (int ii = 0; ii < 6; ii++)
+	//	fprintf(stderr, "x:%f y:%f u:%f v:%f col:0x%08x\n", ver[ii].x, ver[ii].y, ver[ii].u, ver[ii].v, ver[ii].col);
 
 	// Update fragments batch id (See FlushBitmapFragment)
 	if (fragment)

@@ -29,7 +29,9 @@
 
 #elif defined(TB_RENDERER_GLES_2)
 
-#define GL_GLEXT_PROTOTYPES
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
+#endif
 #if defined(__APPLE__)
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
