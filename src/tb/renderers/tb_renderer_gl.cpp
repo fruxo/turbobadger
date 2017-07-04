@@ -70,14 +70,14 @@ static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n
 #if !defined(TB_RENDERER_GL3)
 static bool gl_supports_ext(const char * extname)
 {
-	int NumberOfExtensions;
-	bool supported = false;
 	const char * fullext = (const char *)glGetString(GL_EXTENSIONS);
 	if (fullext) {
 		return strstr(fullext, extname) != NULL;
 	}
 #if defined(GL_NUM_EXTENSIONS)
 	else {
+		int NumberOfExtensions;
+		bool supported = false;
 		glGetError(); // clear error from glGetString()
 		// try individually
 		GLCALL(glGetIntegerv(GL_NUM_EXTENSIONS, &NumberOfExtensions));
