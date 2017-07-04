@@ -61,7 +61,7 @@ TBFile *TBFile::Open(const char *filename, TBFileMode mode)
 	default:
 		break;
 	}
-#ifdef TB_RUNTIME_DEBUG_INFO
+#if defined(TB_RUNTIME_DEBUG_INFO) && 0
 	if (!f)
 		TBDebugPrint("TBFile::Open, unable to open file '%s'\n", pathfile.CStr());
 #endif

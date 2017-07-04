@@ -13,8 +13,8 @@ set_property(SOURCE tb_image_loader_stb.cpp APPEND_STRING PROPERTY COMPILE_FLAGS
 endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 add_library(TurboBadgerLib ${LOCAL_SRCS})
 
-install(TARGETS TurboBadgerLib
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
+#install(TARGETS TurboBadgerLib
+#    RUNTIME DESTINATION bin
+#    LIBRARY DESTINATION lib
+#    ARCHIVE DESTINATION lib)
     

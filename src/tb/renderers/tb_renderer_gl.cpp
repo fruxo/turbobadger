@@ -368,7 +368,7 @@ void TBRendererGL::EndPaint()
 	TBRendererBatcher::EndPaint();
 	GLCALL(glDisable(GL_BLEND));
 	GLCALL(glDisable(GL_SCISSOR_TEST));
-
+	GLCALL(glFlush());
 #ifdef TB_RUNTIME_DEBUG_INFO
 	if (TB_DEBUG_SETTING(RENDER_BATCHES))
 		TBDebugPrint("Frame caused %d bitmap validations.\n", dbg_bitmap_validations);
