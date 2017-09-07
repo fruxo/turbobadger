@@ -195,6 +195,14 @@ void TBRendererBatcher::DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap)
 					VER_COL_OPACITY(m_opacity), bitmap, nullptr);
 }
 
+void TBRendererBatcher::DrawBitmapTileColored(const TBRect &dst_rect, const TBColor &color, TBBitmap *bitmap)
+{
+	uint32 a = (color.a * m_opacity) / 255;
+	AddQuadInternal(dst_rect.Offset(m_translation_x, m_translation_y),
+					TBRect(0, 0, dst_rect.w, dst_rect.h),
+					VER_COL(color.r, color.g, color.b, a), bitmap, nullptr);
+}
+
 void TBRendererBatcher::AddQuadInternal(const TBRect &dst_rect, const TBRect &src_rect, uint32 color, TBBitmap *bitmap, TBBitmapFragment *fragment)
 {
 	if (batch.bitmap != bitmap)

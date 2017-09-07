@@ -1161,7 +1161,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	// Paint background skin
 	TBRect local_rect(0, 0, m_rect.w, m_rect.h);
 	TBWidgetSkinConditionContext context(this);
-	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, static_cast<SKIN_STATE>(state), context);
+	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, static_cast<SKIN_STATE>(state), context, parent_paint_props.text_color);
 	assert(!!used_element == !!skin_element);
 
 	TB_IF_DEBUG_SETTING(LAYOUT_BOUNDS, g_tb_skin->PaintRect(local_rect, TBColor(255, 255, 255, 50), 1));
@@ -1386,7 +1386,8 @@ void TBWidget::InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool 
 		pointer_move_widget_y = y;
 
 		TBWidgetEvent ev(EVENT_TYPE_POINTER_MOVE, x, y, touch, modifierkeys);
-
+        if (captured_widget)
+            ev.ref_id = TBIDC("POINTER_DOWN");
 		if (target->InvokeEvent(ev))
 			return;
 

@@ -100,6 +100,10 @@ public:
 	/** Draw the bitmap tiled into dst_rect. */
 	virtual void DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap) = 0;
 
+    /** Draw the bitmap tiled into dst_rect.
+        The bitmap will be used as a mask for the color */
+	virtual void DrawBitmapTileColored(const TBRect &dst_rect, const TBColor &color, TBBitmap *bitmap) = 0;
+
 	/** Make sure the given bitmap fragment is flushed from any batching, because it may
 		be changed or deleted after this call. */
 	virtual void FlushBitmapFragment(TBBitmapFragment *bitmap_fragment) = 0;
