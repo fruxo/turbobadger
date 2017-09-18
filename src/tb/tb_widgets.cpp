@@ -1127,12 +1127,13 @@ void TBWidget::InvokeProcessStates(bool force_update)
 		child->InvokeProcessStates(true);
 }
 
-float TBWidget::CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element) const
+float TBWidget::CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element)
 {
 	float opacity = m_opacity;
+    TBWidgetSkinConditionContext context(this);
 	if (skin_element)
 		opacity *= skin_element->opacity;
-	if (state & WIDGET_STATE_DISABLED)
+	if (state & WIDGET_STATE_DISABLED && !skin_element->HasState(SKIN_STATE_DISABLED,context))
 		opacity *= g_tb_skin->GetDefaultDisabledOpacity();
 	return Clamp(opacity, 0.f, 1.f);
 }

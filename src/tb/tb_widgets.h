@@ -1098,7 +1098,7 @@ private:
 	friend class TBLongClickTimer;
 	void MaybeInvokeLongClickOrContextMenu(bool touch);
 	/** Returns the opacity for this widget multiplied with its skin opacity and state opacity. */
-	float CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element) const;
+	float CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element);
 };
 
 } // namespace tb
