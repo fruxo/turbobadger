@@ -10,7 +10,7 @@
 #include <glm/vec2.hpp>
 using glm::vec2;
 
-#ifdef TB_FONT_RENDERER_FREETYPE
+#ifdef TB_FONT_RENDERER_FREETYPE_NONO
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
