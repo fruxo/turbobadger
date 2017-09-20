@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "tb_id.h"
+#include "tb_system.h"
 #include "tb_hashtable.h"
 
 namespace tb {
@@ -23,7 +24,7 @@ void TBID::Set(uint32 newid)
 	debug_string.Clear();
 	if (!is_adding && tb_core_is_initialized())
 	{
-		if (!all_id_hash.Get(id))
+		if (!all_id_hash.Get(id) && debug_string.Length())
 		{
 			is_adding = true;
 			all_id_hash.Add(id, new TBID(*this));
@@ -45,7 +46,7 @@ void TBID::Set(const TBID &newid)
 			if (!debug_string.IsEmpty() && !other_id->debug_string.IsEmpty())
 				assert(other_id->debug_string.Equals(debug_string));
 		}
-		else
+		else if (debug_string.Length())
 		{
 			is_adding = true;
 			all_id_hash.Add(id, new TBID(*this));
@@ -62,10 +63,17 @@ void TBID::Set(const char *string)
 	{
 		if (TBID *other_id = all_id_hash.Get(id))
 		{
+#ifndef NDEBUG
+			if (!other_id->debug_string.Equals(debug_string)) {
+				TBDebugPrint("ID collision btw '%s' and '%s'\n",
+							 other_id->debug_string.CStr(), debug_string.CStr());
+			}
+#endif
 			assert(other_id->debug_string.Equals(debug_string));
 		}
-		else
+		else if (debug_string.Length())
 		{
+			assert(debug_string.Length());
 			is_adding = true;
 			all_id_hash.Add(id, new TBID(*this));
 			is_adding = false;
