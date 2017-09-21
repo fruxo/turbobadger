@@ -1130,10 +1130,10 @@ void TBWidget::InvokeProcessStates(bool force_update)
 float TBWidget::CalculateOpacityInternal(WIDGET_STATE state, TBSkinElement *skin_element)
 {
 	float opacity = m_opacity;
-    TBWidgetSkinConditionContext context(this);
+	//TBWidgetSkinConditionContext context(this);
 	if (skin_element)
 		opacity *= skin_element->opacity;
-	if (state & WIDGET_STATE_DISABLED && !skin_element->HasState(SKIN_STATE_DISABLED,context))
+	if (state & WIDGET_STATE_DISABLED/* && !skin_element->HasState(SKIN_STATE_DISABLED,context)*/)
 		opacity *= g_tb_skin->GetDefaultDisabledOpacity();
 	return Clamp(opacity, 0.f, 1.f);
 }
@@ -1162,7 +1162,7 @@ void TBWidget::InvokePaint(const PaintProps &parent_paint_props)
 	// Paint background skin
 	TBRect local_rect(0, 0, m_rect.w, m_rect.h);
 	TBWidgetSkinConditionContext context(this);
-	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, static_cast<SKIN_STATE>(state), context, parent_paint_props.text_color);
+	TBSkinElement *used_element = g_tb_skin->PaintSkin(local_rect, skin_element, static_cast<SKIN_STATE>(state), context/*, parent_paint_props.text_color*/);
 	assert(!!used_element == !!skin_element);
 
 	TB_IF_DEBUG_SETTING(LAYOUT_BOUNDS, g_tb_skin->PaintRect(local_rect, TBColor(255, 255, 255, 50), 1));
