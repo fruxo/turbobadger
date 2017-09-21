@@ -331,12 +331,12 @@ TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, SKIN_ST
 	return nullptr;
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context, const TBColor &parent_text_color)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context)
 {
-	return PaintSkin(dst_rect, GetSkinElement(skin_id), state, context, parent_text_color);
+	return PaintSkin(dst_rect, GetSkinElement(skin_id), state, context);
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context, const TBColor &parent_text_color)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return nullptr;
@@ -353,7 +353,7 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	TBSkinElementState *override_state = element->m_override_elements.GetStateElement(state, context);
 	if (override_state)
 	{
-		if (TBSkinElement *used_override = PaintSkin(dst_rect, override_state->element_id, state, context, parent_text_color))
+		if (TBSkinElement *used_override = PaintSkin(dst_rect, override_state->element_id, state, context))
 			return_element = used_override;
 		else
 		{
@@ -364,15 +364,9 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 		}
 	}
 
-    TBColor tint_color;
-    if (element->tint_bitmap) {
-        tint_color = element->text_color != 0 ? element->text_color : parent_text_color;
-    } else {
-        tint_color = TBColor(255,255,255,255);
-    }
 	// If there was no override, paint the standard skin element.
 	if (!override_state)
-		PaintElement(dst_rect, element, tint_color);
+		PaintElement(dst_rect, element);
 
 	// Paint all child elements that matches the state (or should be painted for all states)
 	if (element->m_child_elements.HasStateElements())
@@ -381,7 +375,7 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 		while (state_element)
 		{
 			if (state_element->IsMatch(state, context))
-				PaintSkin(dst_rect, state_element->element_id, state_element->state & state, context, parent_text_color);
+				PaintSkin(dst_rect, state_element->element_id, state_element->state & state, context);
 			state_element = state_element->GetNext();
 		}
 	}
@@ -394,7 +388,7 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	return return_element;
 }
 
-void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context, const TBColor &parent_text_color)
+void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return;
@@ -407,28 +401,28 @@ void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SK
 	while (state_element)
 	{
 		if (state_element->IsMatch(state, context))
-			PaintSkin(dst_rect, state_element->element_id, state_element->state & state, context, parent_text_color);
+			PaintSkin(dst_rect, state_element->element_id, state_element->state & state, context);
 		state_element = state_element->GetNext();
 	}
 
 	element->is_painting = false;
 }
 
-void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element, const TBColor &tint_color)
+void TBSkin::PaintElement(const TBRect &dst_rect, TBSkinElement *element)
 {
 	PaintElementBGColor(dst_rect, element);
 	if (!element->bitmap)
 		return;
 	if (element->type == SKIN_ELEMENT_TYPE_IMAGE)
-		PaintElementImage(dst_rect, element, tint_color);
+		PaintElementImage(dst_rect, element);
 	else if (element->type == SKIN_ELEMENT_TYPE_TILE)
-		PaintElementTile(dst_rect, element, tint_color);
+		PaintElementTile(dst_rect, element);
 	else if (element->type == SKIN_ELEMENT_TYPE_STRETCH_IMAGE || element->cut == 0)
-		PaintElementStretchImage(dst_rect, element, tint_color);
+		PaintElementStretchImage(dst_rect, element);
 	else if (element->type == SKIN_ELEMENT_TYPE_STRETCH_BORDER)
-		PaintElementStretchBox(dst_rect, element, false, tint_color);
+		PaintElementStretchBox(dst_rect, element, false);
 	else
-		PaintElementStretchBox(dst_rect, element, true, tint_color);
+		PaintElementStretchBox(dst_rect, element, true);
 }
 
 TBRect TBSkin::GetFlippedRect(const TBRect &src_rect, TBSkinElement *element) const
@@ -478,32 +472,32 @@ void TBSkin::PaintElementBGColor(const TBRect &dst_rect, TBSkinElement *element)
 	PaintRectFill(dst_rect, element->bg_color);
 }
 
-void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element, const TBColor &tint_color)
+void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
 {
 	TBRect src_rect(0, 0, element->bitmap->Width(), element->bitmap->Height());
 	TBRect rect = dst_rect.Expand(element->expand, element->expand);
 	rect.Set(rect.x + element->img_ofs_x + (rect.w - src_rect.w) * element->img_position_x / 100,
 			rect.y + element->img_ofs_y + (rect.h - src_rect.h) * element->img_position_y / 100,
 			src_rect.w, src_rect.h);
-	g_renderer->DrawBitmapColored(rect, GetFlippedRect(src_rect, element), tint_color, element->bitmap);
+	g_renderer->DrawBitmap(rect, GetFlippedRect(src_rect, element), element->bitmap);
 }
 
-void TBSkin::PaintElementTile(const TBRect &dst_rect, TBSkinElement *element, const TBColor &tint_color)
+void TBSkin::PaintElementTile(const TBRect &dst_rect, TBSkinElement *element)
 {
 	TBRect rect = dst_rect.Expand(element->expand, element->expand);
-	g_renderer->DrawBitmapTileColored(rect, tint_color, element->bitmap->GetBitmap());
+	g_renderer->DrawBitmapTile(rect, element->bitmap->GetBitmap());
 }
 
-void TBSkin::PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element, const TBColor &tint_color)
+void TBSkin::PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *element)
 {
 	if (dst_rect.IsEmpty())
 		return;
 	TBRect rect = dst_rect.Expand(element->expand, element->expand);
 	TBRect src_rect = GetFlippedRect(TBRect(0, 0, element->bitmap->Width(), element->bitmap->Height()), element);
-	g_renderer->DrawBitmapColored(rect, src_rect, tint_color, element->bitmap);
+	g_renderer->DrawBitmap(rect, src_rect, element->bitmap);
 }
 
-void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center, const TBColor &tint_color)
+void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center)
 {
 	if (dst_rect.IsEmpty())
 		return;
@@ -528,28 +522,28 @@ void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *eleme
 		dst_cut_h = -dst_cut_h;
 
 	// Corners
-	g_renderer->DrawBitmapColored(TBRect(rect.x, rect.y, dst_cut_w, dst_cut_h), TBRect(0, 0, cut, cut), tint_color, element->bitmap);
-	g_renderer->DrawBitmapColored(TBRect(rect.x + rect.w - dst_cut_w, rect.y, dst_cut_w, dst_cut_h), TBRect(bw - cut, 0, cut, cut), tint_color, element->bitmap);
-	g_renderer->DrawBitmapColored(TBRect(rect.x, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(0, bh - cut, cut, cut), tint_color, element->bitmap);
-	g_renderer->DrawBitmapColored(TBRect(rect.x + rect.w - dst_cut_w, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(bw - cut, bh - cut, cut, cut), tint_color, element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x, rect.y, dst_cut_w, dst_cut_h), TBRect(0, 0, cut, cut), element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y, dst_cut_w, dst_cut_h), TBRect(bw - cut, 0, cut, cut), element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(0, bh - cut, cut, cut), element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(bw - cut, bh - cut, cut, cut), element->bitmap);
 
 	// Left & right edge
 	if (has_left_right_edges)
 	{
-		g_renderer->DrawBitmapColored(TBRect(rect.x, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(0, cut, cut, bh - cut * 2), tint_color, element->bitmap);
-		g_renderer->DrawBitmapColored(TBRect(rect.x + rect.w - dst_cut_w, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(bw - cut, cut, cut, bh - cut * 2), tint_color, element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(0, cut, cut, bh - cut * 2), element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(bw - cut, cut, cut, bh - cut * 2), element->bitmap);
 	}
 
 	// Top & bottom edge
 	if (has_top_bottom_edges)
 	{
-		g_renderer->DrawBitmapColored(TBRect(rect.x + dst_cut_w, rect.y, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, 0, bw - cut * 2, cut), tint_color, element->bitmap);
-		g_renderer->DrawBitmapColored(TBRect(rect.x + dst_cut_w, rect.y + rect.h - dst_cut_h, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, bh - cut, bw - cut * 2, cut), tint_color, element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, 0, bw - cut * 2, cut), element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + rect.h - dst_cut_h, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, bh - cut, bw - cut * 2, cut), element->bitmap);
 	}
 
 	// Center
 	if (fill_center && has_top_bottom_edges && has_left_right_edges)
-		g_renderer->DrawBitmapColored(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h, rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2), TBRect(cut, cut, bw - cut * 2, bh - cut * 2), tint_color, element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h, rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2), TBRect(cut, cut, bw - cut * 2, bh - cut * 2), element->bitmap);
 }
 
 #ifdef TB_RUNTIME_DEBUG_INFO
@@ -594,7 +588,6 @@ TBSkinElement::TBSkinElement()
 	, img_ofs_x(0), img_ofs_y(0)
 	, img_position_x(50), img_position_y(50)
 	, flip_x(0), flip_y(0), opacity(1.f)
-    , tint_bitmap(false)
 	, text_color(0, 0, 0, 0)
 	, bg_color(0, 0, 0, 0)
 	, bitmap_dpi(0)
@@ -737,7 +730,6 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 	flip_x = n->GetValueInt("flip-x", flip_x);
 	flip_y = n->GetValueInt("flip-y", flip_y);
 	opacity = n->GetValueFloat("opacity", opacity);
-    tint_bitmap = n->GetValueInt("tint-bitmap", tint_bitmap) ? true : false;
 
 	if (const char *color = n->GetValueString("text-color", nullptr))
 		text_color.SetFromString(color, strlen(color));
