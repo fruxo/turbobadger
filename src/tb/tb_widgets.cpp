@@ -384,7 +384,7 @@ void TBWidget::SetSkinBg(const TBID &skin_bg, WIDGET_INVOKE_INFO info)
 		return;
 
 	// Set the skin and m_skin_bg_expected. During InvokeProcess, we will detect
-	// if any widget get a different element due to conditions and strong override.
+	// if any widget gets a different element due to conditions and strong override.
 	// If that happens, OnSkinChanged will be called and m_skin_bg_expected updated to
 	// match that override.
 	m_skin_bg = skin_bg;

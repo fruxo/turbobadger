@@ -244,9 +244,11 @@ bool TBSkin::ReloadBitmaps()
 		success = m_frag_manager.ValidateBitmaps();
 
 #ifdef TB_RUNTIME_DEBUG_INFO
-	TBStr info;
-	info.SetFormatted("Skin loaded using %d bitmaps.\n", m_frag_manager.GetNumMaps());
-	TBDebugOut(info);
+	if (!success) {
+		TBStr info;
+		info.SetFormatted("Skin loaded using %d bitmaps, but fail state.\n", m_frag_manager.GetNumMaps());
+		TBDebugOut(info);
+	}
 #endif
 	return success;
 }
@@ -368,7 +370,7 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	if (!override_state)
 		PaintElement(dst_rect, element);
 
-	// Paint all child elements that matches the state (or should be painted for all states)
+	// Paint all child elements that match the state (or should be painted for all states)
 	if (element->m_child_elements.HasStateElements())
 	{
 		const TBSkinElementState *state_element = element->m_child_elements.GetFirstElement();
