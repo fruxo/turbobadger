@@ -246,7 +246,7 @@ bool TBSkin::ReloadBitmaps()
 #ifdef TB_RUNTIME_DEBUG_INFO
 	if (!success) {
 		TBStr info;
-		info.SetFormatted("Skin loaded using %d bitmaps, but fail state.\n", m_frag_manager.GetNumMaps());
+		info.SetFormatted("Skin loaded using %d bitmaps, incomplete.\n", m_frag_manager.GetNumMaps());
 		TBDebugOut(info);
 	}
 #endif
@@ -283,8 +283,10 @@ bool TBSkin::ReloadBitmapsInternal()
 			if (!element->bitmap)
 				element->bitmap = m_frag_manager.GetFragmentFromFile(element->bitmap_file, dedicated_map);
 
-			if (!element->bitmap)
+			if (!element->bitmap) {
+				TBDebugPrint("Bitmap %s: '%s' load failed\n", element->name.CStr(), element->bitmap_file.CStr());
 				success = false;
+			}
 		}
 	}
 	// Create fragment used for color fills. Use 2x2px and inset source rect to center 0x0

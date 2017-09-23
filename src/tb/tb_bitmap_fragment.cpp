@@ -381,6 +381,9 @@ bool TBBitmapFragmentMap::ValidateBitmap()
 			m_bitmap = g_renderer->CreateBitmap(m_bitmap_w, m_bitmap_h, m_bitmap_data);
 		m_need_update = false;
 	}
+	if (!m_bitmap) {
+		TBDebugPrint("ValidateBitmap failed, %d x %d\n", m_bitmap_w, m_bitmap_h);
+	}
 	return m_bitmap ? true : false;
 }
 
