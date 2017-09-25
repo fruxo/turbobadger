@@ -145,8 +145,7 @@ TBImage TBImageManager::GetImage(const char *filename)
 		}
 		//TBDebugOut(image_rep ? "TBImageManager - Loaded new image.\n" : "TBImageManager - Loading image failed.\n");
 		if (!image_rep) {
-			TBDebugOut("TBImageManager - Loading image failed:\n  ");
-			TBDebugOut(filename);
+			TBDebugPrint("TBImageManager - Loading image failed: '%s'\n", filename);
 		}
 	}
 	return TBImage(image_rep);

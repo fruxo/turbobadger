@@ -45,7 +45,7 @@ public:
 	/** Set the value of this widget. 1 will turn on the toggle, 0 will turn it off (or
 		the opposite if the invert mode is set). */
 	virtual void SetValue(int value);
-	virtual int GetValue() { return m_value; }
+	virtual int GetValue() const { return m_value; }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 private:
@@ -98,7 +98,7 @@ public:
 
 	/** Set the text of the text field. */
 	virtual bool SetText(const char *text) { return m_header.SetText(text); }
-	virtual bool GetText(TBStr &text) { return m_header.GetText(text); }
+	virtual bool GetText(TBStr &text) const { return m_header.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	virtual void SetValue(int value);

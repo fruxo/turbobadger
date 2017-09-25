@@ -113,7 +113,7 @@ public:
 
 	int GetInt() const;
 	float GetFloat() const;
-	const char *GetString();
+	const char *GetString() const;
 	TBTypedObject *GetObject() const { return IsObject() ? val_obj : nullptr; }
 	TBValueArray *GetArray() const { return IsArray() ? val_arr : nullptr; }
 

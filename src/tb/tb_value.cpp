@@ -342,19 +342,19 @@ float TBValue::GetFloat() const
 	return m_packed.type == TYPE_FLOAT ? val_float : 0;
 }
 
-const char *TBValue::GetString()
+const char *TBValue::GetString() const
 {
 	if (m_packed.type == TYPE_INT)
 	{
 		char tmp[32];
 		sprintf(tmp, "%d", val_int);
-		SetString(tmp, SET_NEW_COPY);
+		const_cast<TBValue *>(this)->SetString(tmp, SET_NEW_COPY);
 	}
 	else if (m_packed.type == TYPE_FLOAT)
 	{
 		char tmp[32];
 		sprintf(tmp, "%f", val_float);
-		SetString(tmp, SET_NEW_COPY);
+		const_cast<TBValue *>(this)->SetString(tmp, SET_NEW_COPY);
 	}
 	else if (m_packed.type == TYPE_OBJECT)
 		return val_obj ? val_obj->GetClassName() : "";

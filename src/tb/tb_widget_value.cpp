@@ -27,6 +27,13 @@ void TBWidgetValueConnection::Unconnect()
 	m_widget = nullptr;
 }
 
+TBID TBWidgetValueConnection::GetName() const
+{
+	if (m_value)
+		return m_value->GetName();
+	return TBID();
+}
+
 void TBWidgetValueConnection::SyncFromWidget(TBWidget *source_widget)
 {
 	if (m_value)

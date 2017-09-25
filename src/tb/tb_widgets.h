@@ -447,12 +447,14 @@ public:
 		preferable TBSafeGetByID to avoid dangerous casts). */
 	void SetID(const TBID &id);
 	TBID &GetID() { return m_id; }
+	const TBID &GetID() const { return m_id; }
 
 	/** Set the group id reference for this widgets. This id is 0 by default.
 		All widgets with the same group id under the same group root will
 		be automatically changed when one change its value. */
 	void SetGroupID(const TBID &id) { m_group_id = id; }
 	TBID &GetGroupID() { return m_group_id; }
+	const TBID &GetGroupID() const { return m_group_id; }
 
 	/** Get this widget or any child widget with a matching id, or nullptr if none is found. */
 	TBWidget *GetWidgetByID(const TBID &id) { return GetWidgetByIDInternal(id); }
@@ -858,7 +860,7 @@ public:
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
 	virtual void SetValue(int value) {}
-	virtual int GetValue() { return 0; }
+	virtual int GetValue() const { return 0; }
 
 	/** Set the value in double precision. It only makes sense to use this instead
 		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
@@ -866,17 +868,17 @@ public:
 
 	/** Return the value in double precision. It only makes sense to use this instead
 		of GetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
-	virtual double GetValueDouble() { return (double) GetValue(); }
+	virtual double GetValueDouble() const { return (double) GetValue(); }
 
 	/** Set the text of this widget. Implemented by most widgets (that has text). */
 	virtual bool SetText(const char *text) { return true; }
 
 	/** Get the text of this widget. Implemented by most widgets (that has text).
 		returns false if it failed. */
-	virtual bool GetText(TBStr &text) { text.Clear(); return true; }
+	virtual bool GetText(TBStr &text) const { text.Clear(); return true; }
 
 	/** Get the text of this widget. Implemented by most widgets (that has text). */
-	TBStr GetText() { TBStr str; GetText(str); return str; }
+	TBStr GetText() const { TBStr str; GetText(str); return str; }
 
 	/** Connect this widget to a widget value.
 
@@ -889,6 +891,9 @@ public:
 
 	/** Unconnect, if this widget is connected to a TBWidgetValue. */
 	void Unconnect() { m_connection.Unconnect(); }
+
+	/** Get the widget TBWidgetValue. */
+	const TBWidgetValueConnection & GetConnection() const { return m_connection; }
 
 	/** Get the rectangle inside any padding, relative to this widget. This is the
 		rectangle in which the content should be rendered.

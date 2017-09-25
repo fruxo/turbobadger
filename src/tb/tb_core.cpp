@@ -31,7 +31,8 @@ bool tb_core_init(TBRenderer *renderer)
 #ifdef TB_IMAGE
 	g_image_manager = new TBImageManager();
 #endif
-	return true;
+	return renderer && g_tb_lng && g_font_manager && g_tb_skin
+		&& g_widgets_reader && g_image_manager;
 }
 
 void tb_core_shutdown()
@@ -42,12 +43,12 @@ void tb_core_shutdown()
 	g_image_manager = nullptr;
 #endif
 	delete g_widgets_reader;
-	delete g_tb_skin;
-	delete g_font_manager;
-	delete g_tb_lng;
 	g_widgets_reader = nullptr;
+	delete g_tb_skin;
 	g_tb_skin = nullptr;
+	delete g_font_manager;
 	g_font_manager = nullptr;
+	delete g_tb_lng;
 	g_tb_lng = nullptr;
 }
 

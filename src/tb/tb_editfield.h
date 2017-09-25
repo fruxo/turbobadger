@@ -137,17 +137,17 @@ public:
 		This changes the default for new blocks, as wel as the currently selected blocks or the block
 		of the current caret position if nothing is selected. */
 	void SetTextAlign(TB_TEXT_ALIGN align) { m_style_edit.SetAlign(align); }
-	TB_TEXT_ALIGN GetTextAlign() { return m_style_edit.align; }
+	TB_TEXT_ALIGN GetTextAlign() const { return m_style_edit.align; }
 
 	/** Set the value in double precision. It only makes sense to use this instead
 		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
 	virtual void SetValueDouble(double value) { TBStr v; v.SetFormatted("%.3f",value); SetText(v.CStr()); }
 
 	/** Return the value in double precision. */
-	virtual double GetValueDouble() { return atof(GetText()); }
+	virtual double GetValueDouble() const { return atof(GetText()); }
 
 	virtual bool SetText(const char *text) { return m_style_edit.SetText(text, TB_CARET_POS_BEGINNING); }
-	virtual bool GetText(TBStr &text) { return m_style_edit.GetText(text); }
+	virtual bool GetText(TBStr &text) const { return m_style_edit.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	using TBWidget::Invalidate; ///< Make Invalidate in base class available.
@@ -163,7 +163,7 @@ public:
 
 	/** Set the placeholder text. It will be visible only when the textfield is empty. */
 	virtual bool SetPlaceholderText(const char *text) { return m_placeholder.SetText(text); }
-	virtual bool GetPlaceholderText(TBStr &text) { return m_placeholder.GetText(text); }
+	virtual bool GetPlaceholderText(TBStr &text) const { return m_placeholder.GetText(text); }
 
 	virtual void ScrollTo(int x, int y);
 	virtual TBWidget::ScrollInfo GetScrollInfo();

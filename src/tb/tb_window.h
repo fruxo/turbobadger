@@ -84,7 +84,7 @@ public:
 
 	/** Set the window title. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
-	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
+	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	/** Get the height of the title bar (or 0 if the WINDOW_SETTINGS say this window

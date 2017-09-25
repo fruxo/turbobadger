@@ -181,7 +181,12 @@ static bool GetNextFragment(const char *text, TBTextFragmentContentFactory *cont
 // == TBSelection ==================================================
 
 TBSelection::TBSelection(TBStyleEdit *styledit)
-	: styledit(styledit)
+	: styledit(styledit), m_const(false)
+{
+}
+
+TBSelection::TBSelection(const TBStyleEdit *styledit)
+	: styledit(const_cast<TBStyleEdit *>(styledit)), m_const(true)
 {
 }
 
@@ -213,6 +218,7 @@ void TBSelection::CopyToClipboard()
 
 void TBSelection::Invalidate() const
 {
+	if (m_const) { TBDebugPrint("Ignoring edit of const: %s\n", __FUNCTION__); return; }
 	TBBlock *block = start.block;
 	while (block)
 	{
@@ -246,6 +252,7 @@ void TBSelection::Select(const TBPoint &from, const TBPoint &to)
 
 void TBSelection::Select(int glob_ofs_from, int glob_ofs_to)
 {
+	if (m_const) { TBDebugPrint("Ignoring edit of const: %s\n", __FUNCTION__); return; }
 	TBTextOfs ofs1, ofs2;
 	ofs1.SetGlobalOfs(styledit, glob_ofs_from);
 	ofs2.SetGlobalOfs(styledit, glob_ofs_to);
@@ -320,6 +327,7 @@ bool TBSelection::IsSelected() const
 
 void TBSelection::RemoveContent()
 {
+	if (m_const) { TBDebugPrint("Ignoring edit of const: %s\n", __FUNCTION__); return; }
 	if (!IsSelected())
 		return;
 	styledit->BeginLockScrollbars();
@@ -1371,7 +1379,7 @@ TBStyleEdit::TBStyleEdit()
 	, content_width(0)
 	, content_height(0)
 	, caret(nullptr)
-	, selection(nullptr)
+	, selection((TBStyleEdit *)nullptr)
 	, scroll_x(0)
 	, scroll_y(0)
 	, select_state(0)
@@ -1936,7 +1944,7 @@ bool TBStyleEdit::SetText(const char *text, int text_len, TB_CARET_POS pos)
 	return true;
 }
 
-bool TBStyleEdit::GetText(TBStr &text)
+bool TBStyleEdit::GetText(TBStr &text) const
 {
 	TBSelection tmp_selection(this);
 	tmp_selection.SelectAll();

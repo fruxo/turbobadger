@@ -81,6 +81,7 @@ class TBSelection
 {
 public:
 	TBSelection(TBStyleEdit *styledit);
+	TBSelection(const TBStyleEdit *styledit);
 	void Invalidate() const;
 	void Select(const TBTextOfs &new_start, const TBTextOfs &new_stop);
 	void Select(const TBPoint &from, const TBPoint &to);
@@ -98,6 +99,7 @@ public:
 public:
 	TBStyleEdit *styledit;
 	TBTextOfs start, stop;
+	bool m_const;
 };
 
 enum TB_CARET_POS {
@@ -335,7 +337,7 @@ public:
 	void Clear(bool init_new = true);
 	bool SetText(const char *text, TB_CARET_POS pos = TB_CARET_POS_BEGINNING);
 	bool SetText(const char *text, int text_len, TB_CARET_POS pos = TB_CARET_POS_BEGINNING);
-	bool GetText(TBStr &text);
+	bool GetText(TBStr &text) const;
 	bool IsEmpty() const;
 
 	/** Set the default text alignment and all currently selected blocks,

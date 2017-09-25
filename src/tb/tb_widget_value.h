@@ -32,6 +32,9 @@ public:
 	/** Unconnect the value and widget if it is connected. */
 	void Unconnect();
 
+	/** Get the connection name id. */
+	TBID GetName() const;
+
 	/** Synchronize the value of the widget to the TBWidgetValue and all other
 		connected widgets. */
 	void SyncFromWidget(TBWidget *source_widget);

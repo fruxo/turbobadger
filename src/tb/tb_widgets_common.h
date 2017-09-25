@@ -38,7 +38,7 @@ public:
 	/** Set which alignment the text should have if the space
 		given when painting is larger than the text. */
 	void SetTextAlign(TB_TEXT_ALIGN align) { m_text_align = align; }
-	TB_TEXT_ALIGN GetTextAlign() { return m_text_align; }
+	TB_TEXT_ALIGN GetTextAlign() const { return m_text_align; }
 public:
 	TBStr m_text;
 	TB_TEXT_ALIGN m_text_align;
@@ -56,7 +56,7 @@ public:
 
 	/** Set the text of the text field. */
 	virtual bool SetText(const char *text);
-	virtual bool GetText(TBStr &text) { return m_text.GetText(text); }
+	virtual bool GetText(TBStr &text) const { return m_text.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	bool IsEmpty() const { return m_text.IsEmpty(); }
@@ -64,12 +64,12 @@ public:
 	/** Set which alignment the text should have if the space
 		given when painting is larger than the text. */
 	void SetTextAlign(TB_TEXT_ALIGN align) { m_text.SetTextAlign(align); }
-	TB_TEXT_ALIGN GetTextAlign() { return m_text.GetTextAlign(); }
+	TB_TEXT_ALIGN GetTextAlign() const { return m_text.GetTextAlign(); }
 
 	/** Set if this text field should be allowed to squeeze below its
 		preferred size. If squeezable it may shrink to width 0. */
 	void SetSqueezable(bool squeezable);
-	bool GetSqueezable() { return m_squeezable; }
+	bool GetSqueezable() const { return m_squeezable; }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
@@ -114,11 +114,11 @@ public:
 
 	/** Set the text of the button. */
 	virtual bool SetText(const char *text);
-	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
+	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	virtual void SetValue(int value);
-	virtual int GetValue();
+	virtual int GetValue() const;
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnCaptureChanged(bool captured);
@@ -164,7 +164,7 @@ public:
 
 	/** Set the text of the label. */
 	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
-	virtual bool GetText(TBStr &text) { return m_textfield.GetText(text); }
+	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints) { return m_layout.GetPreferredSize(); }
@@ -226,7 +226,7 @@ public:
 	/** Setting the value to 1 will start the spinner.
 		Setting it to 0 will stop it. */
 	virtual void SetValue(int value);
-	virtual int GetValue() { return m_value; }
+	virtual int GetValue() const { return m_value; }
 
 	virtual void OnPaint(const PaintProps &paint_props);
 
@@ -248,7 +248,7 @@ public:
 	TBRadioCheckBox();
 
 	virtual void SetValue(int value);
-	virtual int GetValue() { return m_value; }
+	virtual int GetValue() const { return m_value; }
 
 	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -318,10 +318,10 @@ public:
 
 	/** Same as SetValue, but with double precision. */
 	virtual void SetValueDouble(double value);
-	virtual double GetValueDouble() { return m_value; }
+	virtual double GetValueDouble() const { return m_value; }
 
 	virtual void SetValue(int value) { SetValueDouble(value); }
-	virtual int GetValue() { return (int) GetValueDouble(); }
+	virtual int GetValue() const { return (int) GetValueDouble(); }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -363,10 +363,10 @@ public:
 
 	/** Same as SetValue, but with double precision. */
 	virtual void SetValueDouble(double value);
-	virtual double GetValueDouble() { return m_value; }
+	virtual double GetValueDouble() const { return m_value; }
 
 	virtual void SetValue(int value) { SetValueDouble(value); }
-	virtual int GetValue() { return (int) GetValueDouble(); }
+	virtual int GetValue() const { return (int) GetValueDouble(); }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
