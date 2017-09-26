@@ -125,7 +125,10 @@ public:
 	virtual void OnSkinChanged();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
-	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints) { return m_layout.GetPreferredSize(); }
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints & /*constraints*/)
+	{
+		return m_layout.GetPreferredSize();
+	}
 
 	virtual TBWidget *GetContentRoot() { return &m_layout; }
 
@@ -167,7 +170,9 @@ public:
 	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
-	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints) { return m_layout.GetPreferredSize(); }
+	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints & /*constraints*/) {
+		return m_layout.GetPreferredSize();
+	}
 
 	virtual TBWidget *GetContentRoot() { return &m_layout; }
 

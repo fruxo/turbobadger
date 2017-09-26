@@ -477,14 +477,14 @@ void TBLayout::OnProcess()
 	ValidateLayout(sc);
 }
 
-void TBLayout::OnResized(int old_w, int old_h)
+void TBLayout::OnResized(int /*old_w*/, int /*old_h*/)
 {
 	InvalidateLayout(INVALIDATE_LAYOUT_TARGET_ONLY);
 	SizeConstraints sc(GetRect().w, GetRect().h);
 	ValidateLayout(sc);
 }
 
-void TBLayout::OnInflateChild(TBWidget *child)
+void TBLayout::OnInflateChild(TBWidget * /*child*/)
 {
 	// Do nothing since we're going to layout the child soon.
 }

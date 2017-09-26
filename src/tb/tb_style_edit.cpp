@@ -649,7 +649,7 @@ TBTextFragment *TBCaret::GetFragment()
 	return pos.block->FindFragment(pos.ofs, prefer_first);
 }
 
-void TBCaret::SwitchBlock(bool second)
+void TBCaret::SwitchBlock(bool /*second*/)
 {
 }
 
@@ -1819,7 +1819,7 @@ void TBStyleEdit::Redo()
 	}
 }
 
-bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS modifierkeys, bool touch)
+bool TBStyleEdit::MouseDown(const TBPoint &point, int button, int clicks, MODIFIER_KEYS /*modifierkeys*/, bool touch)
 {
 	if (button != 1)
 		return false;

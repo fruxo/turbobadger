@@ -105,7 +105,7 @@ public:
 
 		This message won't be found using GetMessageByID. It is already removed from the list.
 		You should not call DeleteMessage on this message. That is done automatically after this method exit. */
-	virtual void OnMessageReceived(TBMessage *msg) {}
+	virtual void OnMessageReceived(TBMessage * /*msg*/) {}
 
 	// == static methods to handle the queue of messages ====================================================
 

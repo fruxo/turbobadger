@@ -102,7 +102,7 @@ public:
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
 	virtual void SetValue(int value);
-	virtual int GetValue() { return m_toggle_container.GetValue(); }
+	virtual int GetValue() const { return m_toggle_container.GetValue(); }
 
 	virtual TBWidget *GetContentRoot() { return m_toggle_container.GetContentRoot(); }
 	virtual void OnProcessAfterChildren();

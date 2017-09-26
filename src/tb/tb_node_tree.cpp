@@ -213,7 +213,7 @@ public:
 		TBDebugOut(err);
 #endif // TB_RUNTIME_DEBUG_INFO
 	}
-	virtual void OnComment(int line_nr, const char *comment)
+	virtual void OnComment(int /*line_nr*/, const char * /*comment*/)
 	{
 	}
 	virtual void OnToken(int line_nr, const char *name, TBValue &value)

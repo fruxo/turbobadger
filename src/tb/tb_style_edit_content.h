@@ -20,13 +20,13 @@ public:
 	virtual ~TBTextFragmentContent() {}
 
 	/** Update the position of the content, relative to the first line of text (no scrolling applied). */
-	virtual void UpdatePos(int x, int y) {}
+	virtual void UpdatePos(int /*x*/, int /*y*/) {}
 
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props) {}
-	virtual void Click(TBTextFragment *fragment, int button, uint32 modifierkeys) {}
-	virtual int32 GetWidth(TBFontFace *font, TBTextFragment *fragment) { return 0; }
-	virtual int32 GetHeight(TBFontFace *font, TBTextFragment *fragment) { return 0; }
-	virtual int32 GetBaseline(TBFontFace *font, TBTextFragment *fragment) { return GetHeight(font, fragment); }
+	virtual void Paint(TBTextFragment * /*fragment*/, int32 /*translate_x*/, int32 /*translate_y*/, TBTextProps * /*props*/) {}
+	virtual void Click(TBTextFragment * /*fragment*/, int /*button*/, uint32 /*modifierkeys*/) {}
+	virtual int32 GetWidth(TBFontFace * /*font*/, TBTextFragment * /*fragment*/) { return 0; }
+	virtual int32 GetHeight(TBFontFace * /*font*/, TBTextFragment * /*fragment*/) { return 0; }
+	virtual int32 GetBaseline(TBFontFace * font, TBTextFragment * fragment) { return GetHeight(font, fragment); }
 	virtual bool GetAllowBreakBefore() { return true; }
 	virtual bool GetAllowBreakAfter() { return true; }
 

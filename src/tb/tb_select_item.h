@@ -86,13 +86,13 @@ public:
 	virtual const char *GetItemString(int index) = 0;
 
 	/** Get the source to be used if this item should open a sub menu. */
-	virtual TBSelectItemSource *GetItemSubSource(int index) { return nullptr; }
+	virtual TBSelectItemSource *GetItemSubSource(int /*index*/) { return nullptr; }
 
 	/** Get the skin image to be painted before the text for this item. */
-	virtual TBID GetItemImage(int index) { return TBID(); }
+	virtual TBID GetItemImage(int /*index*/) { return TBID(); }
 
 	/** Get the if of the item. */
-	virtual TBID GetItemID(int index) { return TBID(); }
+	virtual TBID GetItemID(int /*index*/) { return TBID(); }
 
 	/** Create the item representation widget(s). By default, it will create
 		a TBTextField for string-only items, and other types for items that

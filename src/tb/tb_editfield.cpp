@@ -459,7 +459,7 @@ bool TBEditField::OnEnter()
 	return false;
 }
 
-void TBEditField::Invalidate(const TBRect &rect)
+void TBEditField::Invalidate(const TBRect & /*rect*/)
 {
 	TBWidget::Invalidate();
 }
@@ -501,7 +501,7 @@ void TBEditField::DrawCaret(const TBRect &rect)
 	}
 }
 
-void TBEditField::Scroll(int32 dx, int32 dy)
+void TBEditField::Scroll(int32 /*dx*/, int32 /*dy*/)
 {
 	TBWidget::Invalidate();
 	m_scrollbar_x.SetValue(m_style_edit.scroll_x);
@@ -591,12 +591,12 @@ void TBTextFragmentContentWidget::UpdatePos(int x, int y)
 	m_widget->SetRect(TBRect(x, y, GetWidth(nullptr, nullptr), GetHeight(nullptr, nullptr)));
 }
 
-int32 TBTextFragmentContentWidget::GetWidth(TBFontFace *font, TBTextFragment *fragment)
+int32 TBTextFragmentContentWidget::GetWidth(TBFontFace * /*font*/, TBTextFragment * /*fragment*/)
 {
 	return m_widget->GetRect().w ? m_widget->GetRect().w : m_widget->GetPreferredSize().pref_w;
 }
 
-int32 TBTextFragmentContentWidget::GetHeight(TBFontFace *font, TBTextFragment *fragment)
+int32 TBTextFragmentContentWidget::GetHeight(TBFontFace * /*font*/, TBTextFragment * /*fragment*/)
 {
 	return m_widget->GetRect().h ? m_widget->GetRect().h : m_widget->GetPreferredSize().pref_h;
 }

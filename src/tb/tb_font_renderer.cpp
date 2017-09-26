@@ -136,7 +136,7 @@ TBFontGlyphCache::~TBFontGlyphCache()
 	g_renderer->RemoveListener(this);
 }
 
-TBFontGlyph *TBFontGlyphCache::GetGlyph(const TBID &hash_id, UCS4 cp)
+TBFontGlyph *TBFontGlyphCache::GetGlyph(const TBID &hash_id, UCS4 /*cp*/)
 {
 	if (TBFontGlyph *glyph = m_glyphs.Get(hash_id))
 	{

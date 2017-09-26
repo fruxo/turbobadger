@@ -304,7 +304,7 @@ void TBScrollContainer::ValidateLayout(const SizeConstraints &constraints)
 	}
 }
 
-void TBScrollContainer::OnResized(int old_w, int old_h)
+void TBScrollContainer::OnResized(int /*old_w*/, int /*old_h*/)
 {
 	InvalidateLayout(INVALIDATE_LAYOUT_TARGET_ONLY);
 	SizeConstraints sc(GetRect().w, GetRect().h);

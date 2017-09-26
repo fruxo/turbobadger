@@ -12,7 +12,7 @@
 
 namespace tb {
 
-PreferredSize TBImageWidget::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
+PreferredSize TBImageWidget::OnCalculatePreferredContentSize(const SizeConstraints & /*constraints*/)
 {
 	//TBDebugPrint("PCS: %d x %d\n", m_image.Width(), m_image.Height());
 	return PreferredSize(m_image.Width(), m_image.Height());

@@ -149,7 +149,7 @@ bool TBSelectItemSource::Filter(int index, const char *filter)
 	return false;
 }
 
-TBWidget *TBSelectItemSource::CreateItemWidget(int index, TBSelectItemViewer *viewer)
+TBWidget *TBSelectItemSource::CreateItemWidget(int index, TBSelectItemViewer * /*viewer*/)
 {
 	const char *string = GetItemString(index);
 	TBSelectItemSource *sub_source = GetItemSubSource(index);

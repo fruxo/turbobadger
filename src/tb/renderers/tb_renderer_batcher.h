@@ -71,7 +71,7 @@ public:
 	virtual void FlushBitmap(TBBitmap *bitmap);
 	virtual void FlushBitmapFragment(TBBitmapFragment *bitmap_fragment);
 
-	virtual void BeginBatchHint(TBRenderer::BATCH_HINT hint) {}
+	virtual void BeginBatchHint(TBRenderer::BATCH_HINT /*hint*/) {}
 	virtual void EndBatchHint() {}
 
 	// == Methods that need implementation in subclasses ================================

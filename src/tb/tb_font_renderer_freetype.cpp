@@ -103,7 +103,7 @@ TBFontMetrics FreetypeFontRenderer::GetMetrics()
 	return metrics;
 }
 
-bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBColor &color)
+bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBColor & /*color*/)
 {
 	FT_Activate_Size(m_size);
 	if (!m_face->outline) {

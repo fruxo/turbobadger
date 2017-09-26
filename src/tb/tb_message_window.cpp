@@ -148,7 +148,7 @@ void TBMessageWindow::OnDie()
 		dimmer->Die();
 }
 
-void TBMessageWindow::OnWidgetDelete(TBWidget *widget)
+void TBMessageWindow::OnWidgetDelete(TBWidget * /*widget*/)
 {
 	// If the target widget is deleted, close!
 	if (!m_target.Get())

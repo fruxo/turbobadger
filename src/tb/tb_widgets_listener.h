@@ -33,7 +33,7 @@ public:
 	static void RemoveGlobalListener(TBWidgetListener *listener);
 
 	/** Called when widget is being deleted (in its destructor, so virtual functions are already gone). */
-	virtual void OnWidgetDelete(TBWidget *widget) {}
+	virtual void OnWidgetDelete(TBWidget * /*widget*/) {}
 
 	/** This is called when the widget request to be deleted.
 		Return true if you want the widget to not die immediately, f.ex. to fade it out before it
@@ -42,23 +42,23 @@ public:
 		Remember that the widget may still be deleted prematurely for many other reasons (f.ex if its parent is
 		deleted or several listeners respond true and take on the task to delete it at some point). You can
 		use TBWidgetSafePointer to safely handle that. */
-	virtual bool OnWidgetDying(TBWidget *widget) { return false; }
+	virtual bool OnWidgetDying(TBWidget * /*widget*/) { return false; }
 
 	/** Called when the child has been added to parent, after its parents OnChildAdded.
 		Local listeners are invoked on the parent widget. */
-	virtual void OnWidgetAdded(TBWidget *parent, TBWidget *child) {}
+	virtual void OnWidgetAdded(TBWidget * /*parent*/, TBWidget * /*child*/) {}
 
 	/** Called when the child is about to be removed from parent, after its parents OnChildRemove.
 		Local listeners are invoked on the parent widget. */
-	virtual void OnWidgetRemove(TBWidget *parent, TBWidget *child) {}
+	virtual void OnWidgetRemove(TBWidget * /*parent*/, TBWidget * /*child*/) {}
 
 	/** Called when widget focus has changed on a widget. */
-	virtual void OnWidgetFocusChanged(TBWidget *widget, bool focused) {}
+	virtual void OnWidgetFocusChanged(TBWidget * /*widget*/, bool /*focused*/) {}
 
 	/** Called when a event is about to be invoked on a widget. This make it possible
 		to intercept events before they are handled, and block it (by returning true).
 		Note, if returning true, other global listeners will still also be notified. */
-	virtual bool OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev) { return false; }
+	virtual bool OnWidgetInvokeEvent(TBWidget * /*widget*/, const TBWidgetEvent & /*ev*/) { return false; }
 private:
 	friend class TBWidget;
 	static void InvokeWidgetDelete(TBWidget *widget);

@@ -586,7 +586,7 @@ bool TBWidget::SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info)
 	return true;
 }
 
-bool TBWidget::SetFocusRecursive(WIDGET_FOCUS_REASON reason)
+bool TBWidget::SetFocusRecursive(WIDGET_FOCUS_REASON /*reason*/)
 {
 	// Search for a child widget that accepts focus
 	TBWidget *child = GetFirstChild();

@@ -128,7 +128,7 @@ public:
 
 	/** Set the selected item. */
 	virtual void SetValue(int value);
-	virtual int GetValue() { return m_value; }
+	virtual int GetValue() const { return m_value; }
 
 	/** Get the ID of the selected item, or 0 if there is no item selected. */
 	TBID GetSelectedItemID();
@@ -148,8 +148,8 @@ public:
 	// == TBSelectItemViewer ==================================================
 	virtual void OnSourceChanged();
 	virtual void OnItemChanged(int index);
-	virtual void OnItemAdded(int index) {}
-	virtual void OnItemRemoved(int index) {}
+	virtual void OnItemAdded(int /*index*/) {}
+	virtual void OnItemRemoved(int /*index*/) {}
 	virtual void OnAllItemsRemoved() {}
 protected:
 	TBGenericStringItemSource m_default_source;

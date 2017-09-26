@@ -99,7 +99,7 @@ void TBTextField::SetSqueezable(bool squeezable)
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 }
 
-PreferredSize TBTextField::OnCalculatePreferredContentSize(const SizeConstraints &constraints)
+PreferredSize TBTextField::OnCalculatePreferredContentSize(const SizeConstraints & /*constraints*/)
 {
 	PreferredSize ps;
 	if (m_cached_text_width == UPDATE_TEXT_WIDTH_CACHE)
@@ -121,7 +121,7 @@ void TBTextField::OnFontChanged()
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
 }
 
-void TBTextField::OnPaint(const PaintProps &paint_props)
+void TBTextField::OnPaint(const PaintProps & paint_props)
 {
 	m_text.Paint(this, GetPaddingRect(), paint_props.text_color);
 }
@@ -256,12 +256,12 @@ void TBButton::UpdateTextFieldVisibility()
 	m_textfield.SetVisibility(collapse_textfield ? WIDGET_VISIBILITY_GONE : WIDGET_VISIBILITY_VISIBLE);
 }
 
-void TBButton::ButtonLayout::OnChildAdded(TBWidget *child)
+void TBButton::ButtonLayout::OnChildAdded(TBWidget * /*child*/)
 {
 	static_cast<TBButton*>(GetParent())->UpdateTextFieldVisibility();
 }
 
-void TBButton::ButtonLayout::OnChildRemove(TBWidget *child)
+void TBButton::ButtonLayout::OnChildRemove(TBWidget * /*child*/)
 {
 	static_cast<TBButton*>(GetParent())->UpdateTextFieldVisibility();
 }
@@ -369,7 +369,7 @@ void TBProgressSpinner::SetValue(int value)
 	}
 }
 
-void TBProgressSpinner::OnPaint(const PaintProps &paint_props)
+void TBProgressSpinner::OnPaint(const PaintProps & /*paint_props*/)
 {
 	if (IsRunning())
 	{
@@ -384,7 +384,7 @@ void TBProgressSpinner::OnPaint(const PaintProps &paint_props)
 	}
 }
 
-void TBProgressSpinner::OnMessageReceived(TBMessage *msg)
+void TBProgressSpinner::OnMessageReceived(TBMessage * /*msg*/)
 {
 	m_frame++;
 	Invalidate();
@@ -593,7 +593,7 @@ void TBScrollBar::UpdateHandle()
 	m_handle.SetRect(rect);
 }
 
-void TBScrollBar::OnResized(int old_w, int old_h)
+void TBScrollBar::OnResized(int /*old_w*/, int /*old_h*/)
 {
 	UpdateHandle();
 }
@@ -724,7 +724,7 @@ void TBSlider::UpdateHandle()
 	m_handle.SetRect(rect);
 }
 
-void TBSlider::OnResized(int old_w, int old_h)
+void TBSlider::OnResized(int /*old_w*/, int /*old_h*/)
 {
 	UpdateHandle();
 }

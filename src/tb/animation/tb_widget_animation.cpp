@@ -131,7 +131,7 @@ void TBWidgetAnimationRect::OnAnimationUpdate(float progress)
 	m_widget->SetRect(rect);
 }
 
-void TBWidgetAnimationRect::OnAnimationStop(bool aborted)
+void TBWidgetAnimationRect::OnAnimationStop(bool /*aborted*/)
 {
 	if (m_mode == MODE_SRC_TO_DST) // m_dst_rect may still be unset if aborted.
 		m_widget->SetRect(m_dst_rect);
@@ -208,7 +208,7 @@ bool TBWidgetsAnimationManager::OnWidgetDying(TBWidget *widget)
 	return handled;
 }
 
-void TBWidgetsAnimationManager::OnWidgetAdded(TBWidget *parent, TBWidget *widget)
+void TBWidgetsAnimationManager::OnWidgetAdded(TBWidget * /*parent*/, TBWidget *widget)
 {
 	if (TBWindow *window = TBSafeCast<TBWindow>(widget))
 	{
@@ -230,7 +230,7 @@ void TBWidgetsAnimationManager::OnWidgetAdded(TBWidget *parent, TBWidget *widget
 	}
 }
 
-void TBWidgetsAnimationManager::OnWidgetRemove(TBWidget *parent, TBWidget *widget)
+void TBWidgetsAnimationManager::OnWidgetRemove(TBWidget * /*parent*/, TBWidget * /*widget*/)
 {
 }
 

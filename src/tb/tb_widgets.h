@@ -183,7 +183,8 @@ public:
 
 	TBOBJECT_SUBCLASS(TBWidgetEventFinger, TBWidgetEvent);
 
- TBWidgetEventFinger(EVENT_TYPE type, int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int fingerid) :
+	TBWidgetEventFinger(EVENT_TYPE type, int target_x, int target_y, float x, float y, float dx, float dy,
+						bool /*isTouchScreen*/, int fingerid) :
 		TBWidgetEvent(type, target_x, target_y, 1), x(x), y(y), dx(dx), dy(dy) { key = fingerid; }
 };
 
@@ -658,7 +659,7 @@ public:
 	/** Callback for handling events.
 		Return true if the event is handled and should not
 		continue to be handled by any parent widgets. */
-	virtual bool OnEvent(const TBWidgetEvent &ev) { return false; }
+	virtual bool OnEvent(const TBWidgetEvent & /*ev*/) { return false; }
 
 	/** Callback for doing anything that might be needed before paint.
 		F.ex Updating invalid layout, formatting text etc. */
@@ -689,7 +690,7 @@ public:
 	/** Callback for painting this widget.
 		The skin is already painted and the opacity set to reflect this widgets.
 		This is only called for widgets with a opacity > 0 */
-	virtual void OnPaint(const PaintProps &paint_props) {}
+	virtual void OnPaint(const PaintProps & /*paint_props*/) {}
 
 	/** Callback for painting child widgets.
 		The default implementation is painting all children. */
@@ -711,7 +712,7 @@ public:
 	virtual void OnFontChanged() {}
 
 	/** Called when the focus has changed. */
-	virtual void OnFocusChanged(bool focused) {}
+	virtual void OnFocusChanged(bool /*focused*/) {}
 
 	/** Called when the visibility has changed.
 		Note: This is not called when combined visibility change, so it may change visibility
@@ -719,13 +720,13 @@ public:
 	virtual void OnVisibilityChanged() {}
 
 	/** Called when the capture has changed. */
-	virtual void OnCaptureChanged(bool captured) {}
+	virtual void OnCaptureChanged(bool /*captured*/) {}
 
 	/** Called when a child widget has been added to this widget (before calling OnAdded on child). */
-	virtual void OnChildAdded(TBWidget *child) {}
+	virtual void OnChildAdded(TBWidget * /*child*/) {}
 
 	/** Called when a child widget is about to be removed from this widget (before calling OnRemove on child). */
-	virtual void OnChildRemove(TBWidget *child) {}
+	virtual void OnChildRemove(TBWidget * /*child*/) {}
 
 	/** Called when this widget has been added to a parent (after calling OnChildAdded on parent). */
 	virtual void OnAdded() {}
@@ -742,7 +743,7 @@ public:
 	virtual void OnResized(int old_w, int old_h);
 
 	/** Called when this widget has been scrolled. */
-	virtual void OnScroll(int scroll_x, int scroll_y) {}
+	virtual void OnScroll(int /*scroll_x*/, int /*scroll_y*/) {}
 
 	/** Called just after a child has been inflated into this widget.
 		The default implementation will resize the child to it's preferred size
@@ -764,7 +765,7 @@ public:
 	/** Get if skin condition applies to this widget. This is called when a skin condition has the property
 		PROPERTY_CUSTOM (not a generic one known by skin and the default widget condition context).
 		This can be used to extend the skin conditions support with properties specific to different widgets. */
-	virtual bool GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &info) { return false; }
+	virtual bool GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO & /*info*/) { return false; }
 
 	/** Get this widget or a child widget that should be root for other children. This is useful
 		for widgets having multiple children by default, to specify which one that should get the children. */
@@ -796,7 +797,7 @@ public:
 	/** If this is a widget that scroll children (see GetChildTranslation), it should
 		scroll to the coordinates x, y.
 		This must result in calling OnScroll if scrolling occured. */
-	virtual void ScrollTo(int x, int y) {}
+	virtual void ScrollTo(int /*x*/, int /*y*/) {}
 
 	/** Start the TBScroller for this widget and scroll it to the given position.
 		Will cancel any on going smooth scroll operation. */
@@ -854,12 +855,12 @@ public:
 	// == Setter shared for many types of widgets ============
 
 	/** Set along which axis the content should be layed out. */
-	virtual void SetAxis(AXIS axis) {}
+	virtual void SetAxis(AXIS /*axis*/) {}
 	virtual AXIS GetAxis() const { return AXIS_X; }
 
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
-	virtual void SetValue(int value) {}
+	virtual void SetValue(int /*value*/) {}
 	virtual int GetValue() const { return 0; }
 
 	/** Set the value in double precision. It only makes sense to use this instead
@@ -871,7 +872,7 @@ public:
 	virtual double GetValueDouble() const { return (double) GetValue(); }
 
 	/** Set the text of this widget. Implemented by most widgets (that has text). */
-	virtual bool SetText(const char *text) { return true; }
+	virtual bool SetText(const char * /*text*/) { return true; }
 
 	/** Get the text of this widget. Implemented by most widgets (that has text).
 		returns false if it failed. */

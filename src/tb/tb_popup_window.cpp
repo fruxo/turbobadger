@@ -118,7 +118,7 @@ void TBPopupWindow::OnWidgetFocusChanged(TBWidget *widget, bool focused)
 		Close();
 }
 
-bool TBPopupWindow::OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &ev)
+bool TBPopupWindow::OnWidgetInvokeEvent(TBWidget * /*widget*/, const TBWidgetEvent &ev)
 {
 	if ((ev.type == EVENT_TYPE_POINTER_DOWN || ev.type == EVENT_TYPE_CONTEXT_MENU) &&
 		!IsEventDestinationFor(ev.target))
@@ -126,7 +126,7 @@ bool TBPopupWindow::OnWidgetInvokeEvent(TBWidget *widget, const TBWidgetEvent &e
 	return false;
 }
 
-void TBPopupWindow::OnWidgetDelete(TBWidget *widget)
+void TBPopupWindow::OnWidgetDelete(TBWidget * /*widget*/)
 {
 	// If the target widget is deleted, close!
 	if (!m_target.Get())

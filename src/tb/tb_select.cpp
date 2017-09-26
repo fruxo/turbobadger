@@ -76,7 +76,7 @@ void TBSelectList::OnItemChanged(int index)
 	delete old_widget;
 }
 
-void TBSelectList::OnItemAdded(int index)
+void TBSelectList::OnItemAdded(int /*index*/)
 {
 	if (m_list_is_invalid) // We're updating all widgets soon.
 		return;
@@ -86,7 +86,7 @@ void TBSelectList::OnItemAdded(int index)
 	InvalidateList();
 }
 
-void TBSelectList::OnItemRemoved(int index)
+void TBSelectList::OnItemRemoved(int /*index*/)
 {
 	if (m_list_is_invalid) // We're updating all widgets soon.
 		return;
@@ -380,7 +380,7 @@ void TBSelectDropdown::OnSourceChanged()
 		SetValue(0);
 }
 
-void TBSelectDropdown::OnItemChanged(int index)
+void TBSelectDropdown::OnItemChanged(int /*index*/)
 {
 }
 

@@ -17,6 +17,9 @@
 
 namespace tb {
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 TB_WIDGET_FACTORY(TBWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 void TBWidget::OnInflate(const INFLATE_INFO &info)
 {
@@ -543,5 +546,7 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node)
 
 	return true;
 }
+
+#pragma GCC diagnostic pop
 
 } // namespace tb

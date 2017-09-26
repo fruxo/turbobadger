@@ -242,7 +242,7 @@ void TBWindow::OnRemove()
 		active_window->Activate();
 }
 
-void TBWindow::OnChildAdded(TBWidget *child)
+void TBWindow::OnChildAdded(TBWidget * /*child*/)
 {
 	m_resizer.SetZ(WIDGET_Z_TOP);
 }

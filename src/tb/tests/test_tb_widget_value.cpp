@@ -159,7 +159,7 @@ TB_TEST_GROUP(tb_widget_value_listener)
 		int change_counter;
 		TBValue val;
 		MyListener() : change_counter(0) {}
-		virtual void OnValueChanged(const TBValueGroup *group, const TBWidgetValue *value)
+		virtual void OnValueChanged(const TBValueGroup * group, const TBWidgetValue *value)
 		{
 			val = value->GetValue();
 			change_counter++;

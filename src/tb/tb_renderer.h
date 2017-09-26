@@ -139,7 +139,7 @@ public:
 		The hint defines what operations are allowed between BeginBatchHint
 		until EndBatchHint is called. All other draw operations are invalid.
 		It's not valid to nest calls to BeginBatchHint. */
-	virtual void BeginBatchHint(BATCH_HINT hint) {}
+	virtual void BeginBatchHint(BATCH_HINT /*hint*/) {}
 
 	/** End the hint scope started with BeginBatchHint. */
 	virtual void EndBatchHint() {}

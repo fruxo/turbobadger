@@ -90,7 +90,7 @@ public:
 		return TBWindow::OnEvent(ev);
 	}
 
-	virtual void OnPaint(const PaintProps &paint_props)
+	virtual void OnPaint(const PaintProps & /*paint_props*/)
 	{
 		// Draw stuff to the right of the debug window
 		g_renderer->Translate(GetRect().w, 0);
