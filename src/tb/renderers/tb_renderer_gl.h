@@ -65,7 +65,7 @@ extern PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT;
 #include <GL/glew.h>
 //#include <GL3/gl3.h>
 #else
-#define GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
 #endif
 
