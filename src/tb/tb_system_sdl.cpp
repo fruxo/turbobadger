@@ -71,7 +71,7 @@ double TBSystem::GetTimeMS()
 }
 
 static SDL_TimerID tb_sdl_timer_id = 0;
-static Uint32 tb_sdl_timer_callback(Uint32 interval, void *param)
+static Uint32 tb_sdl_timer_callback(Uint32 /*interval*/, void * /*param*/)
 {
 	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
 	double now = TBSystem::GetTimeMS();

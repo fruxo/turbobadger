@@ -670,7 +670,7 @@ public:
 	virtual void OnProcessAfterChildren() {}
 
 	/** Callback for doing state updates that depend on your application state.
-		F.ex setting the disabled state on a widget which action is currently not
+		F.ex setting the disabled state on a widget whose action is currently not
 		available. This callback is called for all widgets before OnProcess if
 		something has called InvalidateStates().*/
 	virtual void OnProcessStates() {}
