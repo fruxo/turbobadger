@@ -218,7 +218,6 @@ void TBSelection::CopyToClipboard()
 
 void TBSelection::Invalidate() const
 {
-	if (m_const) { TBDebugPrint("Ignoring edit of const: %s\n", __FUNCTION__); return; }
 	TBBlock *block = start.block;
 	while (block)
 	{
@@ -252,7 +251,6 @@ void TBSelection::Select(const TBPoint &from, const TBPoint &to)
 
 void TBSelection::Select(int glob_ofs_from, int glob_ofs_to)
 {
-	if (m_const) { TBDebugPrint("Ignoring edit of const: %s\n", __FUNCTION__); return; }
 	TBTextOfs ofs1, ofs2;
 	ofs1.SetGlobalOfs(styledit, glob_ofs_from);
 	ofs2.SetGlobalOfs(styledit, glob_ofs_to);
@@ -1135,7 +1133,7 @@ TBTextFragment *TBBlock::FindFragment(int32 x, int32 y) const
 	return fragments.GetLast();
 }
 
-void TBBlock::Invalidate()
+void TBBlock::Invalidate() const
 {
 	if (styledit->listener)
 		styledit->listener->Invalidate(TBRect(0, - styledit->scroll_y + ypos, styledit->layout_width, height));
