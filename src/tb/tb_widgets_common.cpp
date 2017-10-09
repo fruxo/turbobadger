@@ -778,7 +778,7 @@ TBResizer::TBResizer()
 WIDGET_HIT_STATUS TBResizer::GetHitStatus(int x, int y)
 {
 	// Shave off some of the upper left diagonal half from the hit area.
-	const int extra_hit_area = 3;
+	const int extra_hit_area = 10;
 	if (x < GetRect().w - y - extra_hit_area)
 		return WIDGET_HIT_STATUS_NO_HIT;
 	return TBWidget::GetHitStatus(x, y);
