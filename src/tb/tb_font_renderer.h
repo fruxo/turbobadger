@@ -62,7 +62,7 @@ public:
 	virtual TBFontFace *Create(TBFontManager *font_manager, const char *filename,
 								const TBFontDescription &font_desc) = 0;
 
-	virtual bool RenderGlyph(TBFontGlyphData *data, UCS4 cp, const TBColor &color) = 0;
+	virtual bool RenderGlyph(TBFontGlyphData *data, UCS4 cp) = 0;
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp) = 0;
 	virtual TBFontMetrics GetMetrics() = 0;
 	//virtual int GetKernAdvance(UCS4 cp1, UCS4 cp2) = 0;
@@ -146,7 +146,7 @@ public:
 	~TBFontFace();
 
 	/** Render all glyphs needed to display the string. */
-	bool RenderGlyphs(const char *glyph_str, int glyph_str_len = TB_ALL_TO_TERMINATION, const TBColor color = TBColor());
+	bool RenderGlyphs(const char *glyph_str, int glyph_str_len = TB_ALL_TO_TERMINATION);
 
 	/** Get the vertical distance (positive) from the horizontal baseline to the highest character coordinate
 		in a font face. */
@@ -183,9 +183,9 @@ public:
 	void SetBackgroundFont(TBFontFace *font, const TBColor &col, int xofs, int yofs);
 private:
 	TBID GetHashId(UCS4 cp) const;
-	TBFontGlyph *GetGlyph(UCS4 cp, bool render_if_needed, const TBColor &color);
+	TBFontGlyph *GetGlyph(UCS4 cp, bool render_if_needed);
 	TBFontGlyph *CreateAndCacheGlyph(UCS4 cp);
-	void RenderGlyph(TBFontGlyph *glyph, const TBColor &color);
+	void RenderGlyph(TBFontGlyph *glyph);
 	TBFontGlyphCache *m_glyph_cache;
 	TBFontRenderer *m_font_renderer;
 	TBFontDescription m_font_desc;

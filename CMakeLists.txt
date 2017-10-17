@@ -1,5 +1,7 @@
 project(TurboBadger CXX)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
+include(CheckCXXCompilerFlag)
+set(CMAKE_CXX_STANDARD 11)
 
 option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." ON)
 option(TB_BUILD_DEMO_SDL2 "Build the Demo application. Depends on SDL2." OFF)
@@ -141,12 +143,11 @@ endif()
 configure_file(tb_config.h.in src/tb/tb_config.h)
 
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
 endif()
 
 if(APPLE)
  add_definitions(-DMACOSX)
- add_definitions(-Dnullptr=0)
 endif(APPLE)
 
 if(MSVC)

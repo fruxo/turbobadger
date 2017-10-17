@@ -70,6 +70,11 @@ set (LOCAL_SRCS
   utf8/utf8.cpp
   )
 
+if(TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
+ file(GLOB SRCS tests/*.cpp)
+ set(LOCAL_SRCS ${LOCAL_SRCS} ${SRCS})
+endif()
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set_property(SOURCE tb_image_loader_stb.cpp APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-function")
 endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")

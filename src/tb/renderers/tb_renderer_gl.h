@@ -57,7 +57,6 @@ extern PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT;
 #endif
 
 #elif defined(TB_RENDERER_GL3)
-
 #if defined(__APPLE__)
 #include <OpenGL/gl3.h>
 #elif defined (_WIN32)
