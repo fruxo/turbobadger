@@ -31,7 +31,7 @@ TBWidget
 	axis x, y
 	gravity left | top | right | bottom | all
 	visibility visible, invisible, gone
-	state disabled
+	state disabled | selected
 	skin <id>
 	lp
 		width <dimension>
