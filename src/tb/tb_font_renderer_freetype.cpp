@@ -61,7 +61,7 @@ public:
 								const TBFontDescription &font_desc);
 
 	virtual TBFontMetrics GetMetrics();
-	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp, const TBColor &color);
+	virtual bool RenderGlyph(TBFontGlyphData *dst_bitmap, UCS4 cp);
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp);
 private:
 	bool Load(FreetypeFace *face, const TBFontDescription &font_desc);
