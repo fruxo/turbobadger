@@ -363,27 +363,13 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 		int y = event.button.y;
 		if (event.button.button == SDL_BUTTON_LEFT)
 		{
+			int counter = event.button.clicks;
 			if (event.type == SDL_MOUSEBUTTONDOWN)
 			{
-				// This is a quick fix with n-click support :)
-				static double last_time = 0;
-				static int last_x = 0;
-				static int last_y = 0;
-				static int counter = 1;
-
-				double time = TBSystem::GetTimeMS();
-				if (time < last_time + 600 && last_x == x && last_y == y)
-					counter++;
-				else
-					counter = 1;
-				last_x = x;
-				last_y = y;
-				last_time = time;
-
 				m_app->GetRoot()->InvokePointerDown(x, y, counter, modifier, ShouldEmulateTouchEvent());
 			}
 			else
-				m_app->GetRoot()->InvokePointerUp(x, y, modifier, ShouldEmulateTouchEvent());
+				m_app->GetRoot()->InvokePointerUp(x, y, counter, modifier, ShouldEmulateTouchEvent());
 		}
 		else if (event.button.button == SDL_BUTTON_RIGHT && event.type == SDL_MOUSEBUTTONUP)
 		{
