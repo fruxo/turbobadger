@@ -32,6 +32,7 @@ gen
 * gitignore
 
 documentation
+doc/html
 
 DemoAndroid/libs
 DemoAndroid/assets/demo_skin
