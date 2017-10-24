@@ -9,14 +9,6 @@
 #include "tb_core.h"
 #include "tb_str.h"
 
-#if defined(TB_RUNTIME_DEBUG_INFO) || 1 
-void TBDebugOut(const char *str);
-#define TBDebugPrint(str, ...) do { tb::TBStr tmp; tmp.SetFormatted(str, __VA_ARGS__); TBDebugOut(tmp); } while (0)
-#else
-#define TBDebugOut(str) do { } while (0)
-#define TBDebugPrint(str, ...) do { } while (0)
-#endif
-
 namespace tb {
 
 // == Platform interface ===================================================
