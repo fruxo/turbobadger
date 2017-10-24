@@ -124,7 +124,7 @@ template<class T>
 class TBSelectItemSourceList : public TBSelectItemSource
 {
 public:
-    TBOBJECT_SUBCLASS(TBSelectItemSourceList, TBSelectItemSource);
+	TBOBJECT_SUBCLASS(TBSelectItemSourceList, TBSelectItemSource);
 	TBSelectItemSourceList() {}
 	virtual ~TBSelectItemSourceList()					{ DeleteAllItems(); }
 	virtual const char *GetItemString(int index)		{ return GetItem(index)->str; }

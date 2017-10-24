@@ -136,8 +136,9 @@ void TBPopupWindow::OnWidgetDelete(TBWidget * /*widget*/)
 bool TBPopupWindow::OnWidgetDying(TBWidget *widget)
 {
 	// If the target widget or an ancestor of it is dying, close!
-	if (widget == m_target.Get() || widget->IsAncestorOf(m_target.Get()))
+	if (widget == m_target.Get() || widget->IsAncestorOf(m_target.Get())) {
 		Close();
+	}
 	return false;
 }
 
