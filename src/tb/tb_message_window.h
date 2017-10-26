@@ -14,7 +14,8 @@ namespace tb {
 enum TB_MSG {
 	TB_MSG_OK,
 	TB_MSG_OK_CANCEL,
-	TB_MSG_YES_NO
+	TB_MSG_YES_NO,
+	TB_MSG_YES_NO_CANCEL,
 };
 
 /** TBMessageWindowSettings contains additional settings for TBMessageWindow. */
