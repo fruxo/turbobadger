@@ -145,7 +145,12 @@ bool TBMessageWindow::OnEvent(const TBWidgetEvent &ev)
 		m_close_button.InvokeEvent(click_ev);
 		return true;
 	}
-	return TBWindow::OnEvent(ev);
+
+	bool handled = TBWindow::OnEvent(ev);
+	// If we're dimmed, dont propagate events up.
+	if (m_dimmer.Get())
+		return true;
+	return handled;
 }
 
 void TBMessageWindow::OnDie()
