@@ -147,8 +147,8 @@ bool TBMessageWindow::OnEvent(const TBWidgetEvent &ev)
 	}
 
 	bool handled = TBWindow::OnEvent(ev);
-	// If we're dimmed, dont propagate events up.
-	if (m_dimmer.Get())
+	// If we're dimmed, only propagate click events up.
+	if (m_dimmer.Get() && ev.type != EVENT_TYPE_CLICK)
 		return true;
 	return handled;
 }

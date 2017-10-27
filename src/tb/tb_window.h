@@ -99,6 +99,7 @@ public:
 	virtual void OnRemove();
 	virtual void OnChildAdded(TBWidget *child);
 	virtual void OnResized(int old_w, int old_h);
+
 protected:
 	TBMover m_mover;
 	TBResizer m_resizer;
