@@ -5,6 +5,7 @@
 
 #include "animation/tb_animation.h"
 #include "tb_system.h"
+#include "tb_debug.h"
 
 namespace tb {
 
