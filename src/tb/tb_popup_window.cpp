@@ -45,17 +45,24 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 			if (expand_to_target_width)
 				w = MAX(w, target->GetRect().w);
 
-			// If the menu is aligned top or bottom, limit its height to the worst case available height.
-			// Being in the center of the root, that is half the root height minus the target rect.
-			h = MIN(h, root->GetRect().h / 2 - target->GetRect().h);
+			// If the menu is aligned top or bottom, limit its height
+			// to the worst case available height. (??? Being in the
+			// center of the root, that is half the root height minus
+			// the target rect. ???)
+			//
+			// 
+			//h = MIN(h, root->GetRect().h / 2 - target->GetRect().h);
+			h = MIN(h, root->GetRect().h - target->GetRect().h);
 		}
 		avoid_w = target->GetRect().w;
 		avoid_h = target->GetRect().h;
 	}
 
-	if (align == TB_ALIGN_BOTTOM)
-		y = y + avoid_h + h > root->GetRect().h ? y - h : y + avoid_h;
-	else if (align == TB_ALIGN_TOP)
+	if (align == TB_ALIGN_BOTTOM) // Below point
+	{
+		y = y + avoid_h + h > root->GetRect().h ? y : y + avoid_h;
+	}
+	else if (align == TB_ALIGN_TOP) // Above point
 	{
 		y = y - h < 0 ? y + avoid_h : y - h;
 	}
