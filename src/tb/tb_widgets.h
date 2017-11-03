@@ -996,9 +996,9 @@ public:
 	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
 	bool InvokeMultiGesture(float dTheta, float dDist, int targetx, int targety, float x, float y, uint16 numFingers);
-	bool InvokeFingerMotion(int target_x, int target_y, float x, float y, float dx, float dy, int finger);
-	bool InvokeFingerDown(int target_x, int target_y, float x, float y, float dx, float dy, int finger);
-	bool InvokeFingerUp(int target_x, int target_y, float x, float y, float dx, float dy, int finger);
+	bool InvokeFingerMotion(int x, int y, float cx, float cy, float dx, float dy, int finger);
+	bool InvokeFingerDown(int x, int y, float cx, float cy, float dx, float dy, int finger);
+	bool InvokeFingerUp(int x, int y, float cx, float cy, float dx, float dy, int finger);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */
