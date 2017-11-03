@@ -118,14 +118,19 @@ public:
 	int target_y;		///< Y position in target widget. Set for all pointer events, click and wheel.
 	int delta_x;		///< Set for EVENT_TYPE_WHEEL. Positive is a turn right.
 	int delta_y;		///< Set for EVENT_TYPE_WHEEL. Positive is a turn against the user.
-	int count;			///< 1 for all events, but increased for POINTER_DOWN event to 2 for doubleclick, 3 for tripleclick and so on.
-	int key;
+	int count;			///< 1 for all events, but increased for
+						///  POINTER_DOWN event to 2 for doubleclick,
+						///  3 for tripleclick and so on. For FINGER
+						///  events, this is the number of active
+						///  fingers.
+	int key;			///< for EVENT_TYPE_KEY_* the key, or 0 if key
+						///  is in special_key; for
+						///  EVENT_TYPE_FINGER_* is the finger number.
 	SPECIAL_KEY special_key;
 	MODIFIER_KEYS modifierkeys;
 	TBID ref_id;		///< Sometimes (when documented) events have a ref_id (The id that caused this event)
 	bool touch;			///< Set for pointer events. True if the event is a touch event (finger or pen on screen)
 						///< False if mouse or other cursor input.
-
 
 	TBOBJECT_SUBCLASS(TBWidgetEvent, TBTypedObject);
 
@@ -150,7 +155,8 @@ public:
 };
 
 /** TBWidgetEventMultiGesture is a event of type EVENT_TYPE_MULTI_GESTURE
-	It contains the corresponding values for MultiGesture events */
+ *	It contains the corresponding values for MultiGesture events.
+ */
 class TBWidgetEventMultiGesture : public TBWidgetEvent
 {
 public:
@@ -158,34 +164,42 @@ public:
 	float center_y;	    ///< the normalized center of gesture
 	float dTheta;       ///< the amount that the fingers rotated during this motion
 	float dDist;	    ///< the amount that the fingers pinched during this motion
-	uint16 numFingers;  ///< the number of fingers used in the gesture
-	bool isTouchScreen; ///< true if the MultiGesture event was initiated on touchscreen; false f. ex. if triggered by touchpad
 
 	TBOBJECT_SUBCLASS(TBWidgetEventMultiGesture, TBWidgetEvent);
 
-	TBWidgetEventMultiGesture(int tx, int ty, float cx, float cy, float dTheta, float dDist, uint16 numFingers, bool isTouchScreen) :
-		TBWidgetEvent (EVENT_TYPE_MULTI_GESTURE, tx, ty, 1),
-		center_x(cx), center_y(cy), dTheta(dTheta), dDist(dDist), numFingers(numFingers),
-		isTouchScreen(isTouchScreen){}
+	TBWidgetEventMultiGesture(int target_x, int target_y, float cx, float cy, float dTheta, float dDist, uint16 numFingers)
+		: TBWidgetEvent(EVENT_TYPE_MULTI_GESTURE, target_x, target_y, 1),
+		  center_x(cx), center_y(cy), dTheta(dTheta), dDist(dDist) 
+	{
+		count = numFingers;
+	}
 };
 
 /** TBWidgetEventFinger is a subclass of TBWidgetEvent
  *  It is triggered by finger event such as up down or move.
+ * 
+ * type is one of:
+ *  EVENT_TYPE_FINGER_DOWN,
+ *  EVENT_TYPE_FINGER_UP,
+ *  EVENT_TYPE_FINGER_MOVE,
+ *
  */
 class TBWidgetEventFinger : public TBWidgetEvent
 {
 public:
-	float x;  ///< the x-axis location of the touch event, normalized (0...1)
-	float y;  ///< the y-axis location of the touch event, normalized (0...1)
-	float dx; ///< the distance moved in the x-axis, normalized (-1...1)
-	float dy; ///< the distance moved in the y-axis, normalized (-1...1)
-	bool isTouchScreen; ///< true if the MultiGesture event was initiated on touchscreen; false f. ex. if triggered by touchpad
+	float x;  ///< the x-location of the touch event, normalized [0 1]
+	float y;  ///< the y-location of the touch event, normalized [0 1]
+	float dx; ///< the distance moved in the x direction, normalized [-1 1]
+	float dy; ///< the distance moved in the y direction, normalized [-1 1]
 
 	TBOBJECT_SUBCLASS(TBWidgetEventFinger, TBWidgetEvent);
 
-	TBWidgetEventFinger(EVENT_TYPE type, int target_x, int target_y, float x, float y, float dx, float dy,
-						bool /*isTouchScreen*/, int fingerid) :
-		TBWidgetEvent(type, target_x, target_y, 1), x(x), y(y), dx(dx), dy(dy) { key = fingerid; }
+	TBWidgetEventFinger(EVENT_TYPE type, int target_x, int target_y, float x, float y, float dx, float dy, int fingerid)
+		: TBWidgetEvent(type, target_x, target_y, 1), x(x), y(y), dx(dx), dy(dy)
+	{
+		//count = numFingers;
+		key = fingerid;
+	}
 };
 
 /** TBWidgetEventFileDrop is a event of type EVENT_TYPE_FILE_DROP.
@@ -981,12 +995,10 @@ public:
 	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
 	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
-	bool InvokeMultiGesture(float dTheta, float dDist, int targetx, int targety, float x, float y,
-													 uint16 numFingers, bool isTouchScreen);
-
-	bool InvokeFingerMotion(int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger);
-	bool InvokeFingerDown(int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger);
-	bool InvokeFingerUp(int target_x, int target_y, float x, float y, float dx, float dy, bool isTouchScreen, int finger);
+	bool InvokeMultiGesture(float dTheta, float dDist, int targetx, int targety, float x, float y, uint16 numFingers);
+	bool InvokeFingerMotion(int target_x, int target_y, float x, float y, float dx, float dy, int finger);
+	bool InvokeFingerDown(int target_x, int target_y, float x, float y, float dx, float dy, int finger);
+	bool InvokeFingerUp(int target_x, int target_y, float x, float y, float dx, float dy, int finger);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
 		This will also do some generic key handling, such as cycling focus on tab etc. */
