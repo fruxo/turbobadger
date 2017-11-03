@@ -64,21 +64,21 @@ void TBWidgetValue::SetFromWidget(TBWidget *source_widget)
 	TBStr text;
 	switch (m_value.GetType())
 	{
-		case TBValue::TYPE_STRING:
-			if (!source_widget->GetText(text))
-				return;
-			m_value.SetString(text, TBValue::SET_NEW_COPY);
-			break;
-		case TBValue::TYPE_NULL:
-		case TBValue::TYPE_INT:
-			m_value.SetInt(source_widget->GetValue());
-			break;
-		case TBValue::TYPE_FLOAT:
-			// FIX: TBValue should use double instead of float?
-			m_value.SetFloat((float)source_widget->GetValueDouble());
-			break;
-		default:
-			assert(!"Unsupported value type!");
+	case TBValue::TYPE_STRING:
+		if (!source_widget->GetText(text))
+			return;
+		m_value.SetString(text, TBValue::SET_NEW_COPY);
+		break;
+	case TBValue::TYPE_NULL:
+	case TBValue::TYPE_INT:
+		m_value.SetInt(source_widget->GetValue());
+		break;
+	case TBValue::TYPE_FLOAT:
+		// FIX: TBValue should use double instead of float?
+		m_value.SetFloat((float)source_widget->GetValueDouble());
+		break;
+	default:
+		assert(!"Unsupported value type!");
 	}
 
 	SyncToWidgets(source_widget);

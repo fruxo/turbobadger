@@ -364,7 +364,8 @@ public:
 	double GetMaxValue() const { return m_max; }
 
 	/** Get a small value (depending on the min and max limits) for stepping by f.ex. keyboard. */
-	double GetSmallStep() const { return (m_max - m_min) / 100.0; }
+	double GetSmallStep() const { return m_step; }
+	void SetSmallStep(double step) { m_step = step; }
 
 	/** Same as SetValue, but with double precision. */
 	virtual void SetValueDouble(double value);
@@ -380,7 +381,7 @@ protected:
 	TBWidget m_handle;
 	AXIS m_axis;
 	double m_value;
-	double m_min, m_max;
+	double m_min, m_max, m_step;
 	double m_to_pixel_factor;
 	void UpdateHandle();
 };

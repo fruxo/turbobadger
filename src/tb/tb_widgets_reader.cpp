@@ -330,6 +330,8 @@ void TBSlider::OnInflate(const INFLATE_INFO &info)
 	double min = (double)info.node->GetValueFloat("min", (float)GetMinValue());
 	double max = (double)info.node->GetValueFloat("max", (float)GetMaxValue());
 	SetLimits(min, max);
+	double step = (double)info.node->GetValueFloat("step", (float)GetSmallStep());
+	SetSmallStep(step);
 	TBWidget::OnInflate(info);
 }
 

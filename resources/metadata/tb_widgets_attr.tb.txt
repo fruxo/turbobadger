@@ -87,6 +87,7 @@ TBScrollBar
 TBSlider
 	min <number>
 	max <number>
+	step <number>
 TBInlineSelect
 	min <number>
 	max <number>

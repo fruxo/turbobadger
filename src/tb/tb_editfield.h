@@ -141,7 +141,7 @@ public:
 
 	/** Set the value in double precision. It only makes sense to use this instead
 		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
-	virtual void SetValueDouble(double value) { TBStr v; v.SetFormatted("%.3f",value); SetText(v.CStr()); }
+	virtual void SetValueDouble(double value) { TBStr v; v.SetFormatted("%.2f", value); SetText(v.CStr()); }
 
 	/** Return the value in double precision. */
 	virtual double GetValueDouble() const { return atof(GetText()); }

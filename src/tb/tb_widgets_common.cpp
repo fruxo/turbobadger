@@ -642,6 +642,7 @@ void TBSlider::SetLimits(double min, double max)
 		return;
 	m_min = min;
 	m_max = max;
+	m_step = (m_max - m_min) / 100.0;
 	SetValueDouble(m_value);
 	UpdateHandle();
 }
@@ -667,7 +668,7 @@ bool TBSlider::OnEvent(const TBWidgetEvent &ev)
 			int dx = ev.target_x - pointer_down_widget_x;
 			int dy = ev.target_y - pointer_down_widget_y;
 			double delta_val = (m_axis == AXIS_X ? dx : -dy) / m_to_pixel_factor;
-			SetValueDouble(m_value + delta_val);
+			SetValueDouble(m_step * (int)((m_value + delta_val) / m_step));
 		}
 		return true;
 	}
