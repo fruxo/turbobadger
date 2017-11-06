@@ -52,6 +52,25 @@ SKIN_ELEMENT_TYPE StringToType(const char *type_str)
 	return SKIN_ELEMENT_TYPE_STRETCH_BOX;
 }
 
+const char * TypeToString(SKIN_ELEMENT_TYPE type)
+{
+	switch (type) {
+	case SKIN_ELEMENT_TYPE_STRETCH_BOX:
+		return "StretchBox";
+	case SKIN_ELEMENT_TYPE_IMAGE:
+		return "Image";
+	case SKIN_ELEMENT_TYPE_STRETCH_IMAGE:
+		return "Stretch Image";
+	case SKIN_ELEMENT_TYPE_TILE:
+		return "Tile";
+	case SKIN_ELEMENT_TYPE_STRETCH_BORDER:
+		return "StretchBorder";
+	default:
+		return "Uknown";
+	}
+}
+
+
 TBSkinCondition::TARGET StringToTarget(const char *target_str)
 {
 	if (strcmp(target_str, "this") == 0)
@@ -180,6 +199,10 @@ bool TBSkin::LoadInternal(const char *skin_file)
 		m_default_placeholder_opacity);
 	m_default_spacing = GetPxFromNode(node.GetNode("defaults>spacing"), m_default_spacing);
 
+	// Read skin colors
+	if (TBNode *colors = node.GetNode("colors"))
+		g_color_manager->Load(colors, this);
+
 	// Iterate through all elements nodes and add skin elements or patch already
 	// existing elements.
 	TBNode *elements = node.GetNode("elements");
@@ -221,6 +244,15 @@ bool TBSkin::LoadInternal(const char *skin_file)
 		}
 	}
 	return true;
+}
+
+bool TBSkin::Write(const char * skin_file)
+{
+  TBFile * file = TBFile::Open(skin_file, TBFile::MODE_WRITETRUNC);
+	if (file) {
+		
+	}
+	return false;
 }
 
 void TBSkin::UnloadBitmaps()
@@ -483,7 +515,10 @@ void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
 	rect.Set(rect.x + element->img_ofs_x + (rect.w - src_rect.w) * element->img_position_x / 100,
 			rect.y + element->img_ofs_y + (rect.h - src_rect.h) * element->img_position_y / 100,
 			src_rect.w, src_rect.h);
-	g_renderer->DrawBitmap(rect, GetFlippedRect(src_rect, element), element->bitmap);
+	if (element->bitmap_color)
+		g_renderer->DrawBitmapColored(rect, GetFlippedRect(src_rect, element), element->bitmap_color, element->bitmap);
+	else
+		g_renderer->DrawBitmap(rect, GetFlippedRect(src_rect, element), element->bitmap);
 }
 
 void TBSkin::PaintElementTile(const TBRect &dst_rect, TBSkinElement *element)
@@ -498,7 +533,10 @@ void TBSkin::PaintElementStretchImage(const TBRect &dst_rect, TBSkinElement *ele
 		return;
 	TBRect rect = dst_rect.Expand(element->expand, element->expand);
 	TBRect src_rect = GetFlippedRect(TBRect(0, 0, element->bitmap->Width(), element->bitmap->Height()), element);
-	g_renderer->DrawBitmap(rect, src_rect, element->bitmap);
+	if (element->bitmap_color)
+		g_renderer->DrawBitmapColored(rect, src_rect, element->bitmap_color, element->bitmap);
+	else
+		g_renderer->DrawBitmap(rect, src_rect, element->bitmap);
 }
 
 void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *element, bool fill_center)
@@ -594,6 +632,7 @@ TBSkinElement::TBSkinElement()
 	, flip_x(0), flip_y(0), opacity(1.f)
 	, text_color(0, 0, 0, 0)
 	, bg_color(0, 0, 0, 0)
+	, bitmap_color(0, 0, 0, 0)
 	, bitmap_dpi(0)
 {
 }
@@ -741,6 +780,9 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 	if (const char *color = n->GetValueString("background-color", nullptr))
 		bg_color.SetFromString(color, strlen(color));
 
+	if (const char *color = n->GetValueString("bitmap-color", nullptr))
+		bitmap_color.SetFromString(color, strlen(color));
+
 	if (const char *type_str = n->GetValueString("type", nullptr))
 		type = StringToType(type_str);
 
@@ -750,6 +792,54 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 	m_child_elements.Load(n->GetNode("children"));
 	m_overlay_elements.Load(n->GetNode("overlays"));
 }
+
+#if 0
+void TBSkinElement::Write(json & obj, TBSkin *skin)
+{
+	obj["name"] = n->GetName();
+
+	if (bitmap_file.Length()) obj["bitmap"] = bitmap_file.CStr();
+	if (cut) obj["cut"] = cut;
+	if (expand) obj["expand"] = expand;
+
+	const TBDimensionConverter *dim_conv = skin->GetDimensionConverter();
+	if (padding_top || padding_right || padding_bottom || padding_left)
+		obj["padding"] = {padding_top, padding_right, padding_bottom, padding_left};
+
+	if (expand) obj["expand"] = expand;
+
+#define SET(x) do { if (x) obj[#x] = x; } while (0)
+	SET(width);
+	SET(height);
+	SET(pref_width);
+	SET(pref_height);
+	SET(min_width);
+	SET(min_height);
+	SET(max_width);
+	SET(max_height);
+	SET(spacing);
+	SET(content_ofs_x);
+	SET(content_ofs_y);
+	SET(img_position_x);
+	SET(img_position_y);
+	SET(img_ofs_x);
+	SET(img_ofs_y);
+	SET(flip_x);
+	SET(flip_y);
+	SET(opacity);
+#undef SET
+
+	if (text_color.Length()) obj["text-color"] = text_color.CStr();
+	if (bg_color.Length()) obj["background-color"] = bg_color.CStr();
+	obj["type"] = TypeToString(type);
+
+	// Create all state elements
+	//m_override_elements.Load(n->GetNode("overrides"));
+	//m_strong_override_elements.Load(n->GetNode("strong-overrides"));
+	//m_child_elements.Load(n->GetNode("children"));
+	//m_overlay_elements.Load(n->GetNode("overlays"));
+}
+#endif
 
 // == TBSkinElementState ====================================================
 

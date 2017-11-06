@@ -42,11 +42,12 @@ MAKE_ENUM_FLAG_COMBO(SKIN_STATE);
 
 /** Type of painting that should be done for a TBSkinElement. */
 enum SKIN_ELEMENT_TYPE {
-	SKIN_ELEMENT_TYPE_STRETCH_BOX,
-	SKIN_ELEMENT_TYPE_STRETCH_BORDER,
-	SKIN_ELEMENT_TYPE_STRETCH_IMAGE,
-	SKIN_ELEMENT_TYPE_TILE,
-	SKIN_ELEMENT_TYPE_IMAGE
+	SKIN_ELEMENT_TYPE_STRETCH_BOX,		///< Default element type, cut
+										///  bitmap into 9 pieces "cut" wide
+	SKIN_ELEMENT_TYPE_STRETCH_BORDER,	///< Same as above, but dont fill the center
+	SKIN_ELEMENT_TYPE_STRETCH_IMAGE,	///< Scale the bitmap to the dest rect
+	SKIN_ELEMENT_TYPE_TILE,				///< Tile the bitmap to the dest rect
+	SKIN_ELEMENT_TYPE_IMAGE				///< 
 };
 
 /** TBSkinCondition checks if a condition is true for a given TBSkinConditionContext.
@@ -205,6 +206,7 @@ public:
 	float opacity;			///< Opacity that should be used for the whole widget (0.f - 1.f).
 	TBColor text_color;		///< Color of the text in the widget.
 	TBColor bg_color;		///< Color of the background in the widget.
+	TBColor bitmap_color;	///< Color to paint the bitmap with. (for now assume text_color if true).
 	int16 bitmap_dpi;		///< The DPI of the bitmap that was loaded.
 	TBValue tag;			///< This value is free to use for anything. It's not used internally.
 
@@ -267,6 +269,8 @@ public:
 	bool HasOverlayElements() const { return m_overlay_elements.HasStateElements(); }
 
 	void Load(TBNode *n, TBSkin *skin, const char *skin_path);
+
+	void Write(TBNode * n, TBSkin * skin);
 };
 
 class TBSkinListener
@@ -300,6 +304,9 @@ public:
 		Returns true on success, and all bitmaps referred to also loaded successfully. */
 	bool Load(const char *skin_file, const char *override_skin_file = nullptr);
 
+	/** Write the current skin to a file */
+	bool Write(const char *skin_file);
+
 	/** Unload all bitmaps used in this skin. */
 	void UnloadBitmaps();
 
@@ -319,7 +326,8 @@ public:
 		This is like calling GetSkinElement and also following any strong overrides that
 		match the current state (if any). See details about strong overrides in PaintSkin.
 		Returns nullptr if there's no match. */
-	TBSkinElement *GetSkinElementStrongOverride(const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context) const;
+	TBSkinElement *GetSkinElementStrongOverride(const TBID &skin_id, SKIN_STATE state,
+												TBSkinConditionContext &context) const;
 
 	/** Get the default text color for all skin elements */
 	TBColor GetDefaultTextColor() const { return m_default_text_color; }
@@ -363,14 +371,17 @@ public:
 
 		Return the skin element used (after following override elements),
 		or nullptr if no skin element was found matching the skin_id. */
-	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context);
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state,
+							 TBSkinConditionContext &context);
 
 	/** Paint the skin at dst_rect. Just like the PaintSkin above, but takes a specific
 		skin element instead of looking it up from the id. */
-	TBSkinElement *PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context);
+	TBSkinElement *PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state,
+							 TBSkinConditionContext &context);
 
 	/** Paint the overlay elements for the given skin element and state. */
-	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context);
+	void PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state,
+						  TBSkinConditionContext &context);
 
 	/** Paint a rectangle outline inside dst_rect with the given thickness and color. */
 	void PaintRect(const TBRect &dst_rect, const TBColor &color, int thickness);

@@ -340,8 +340,6 @@ void TBNode::Clear()
 	m_children.DeleteAll();
 }
 
-#ifdef TB_RUNTIME_DEBUG_INFO
-
 bool TBNode::WriteFile(const char *filename)
 {
 	TBStr selfstr;
@@ -395,7 +393,5 @@ void TBNode::WriteNode(TBStr & str, int depth)
 		n->WriteNode(str, depth + 1);
 	}
 }
-
-#endif // TB_RUNTIME_DEBUG_INFO
 
 } // namespace tb

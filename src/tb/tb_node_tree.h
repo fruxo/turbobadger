@@ -48,13 +48,11 @@ public:
 	/** Clear the contens of this node. */
 	void Clear();
 
-#ifdef TB_RUNTIME_DEBUG_INFO
 	/** Write a node and it's children to a file. */
 	bool WriteFile(const char *filename);
 
 	/** Recursively write a node and it's children to a string at depth. */
 	void WriteNode(TBStr & str, int depth = 0);
-#endif
 
 	/** Add node as child to this node. */
 	void Add(TBNode *n) { m_children.AddLast(n); n->m_parent = this; }

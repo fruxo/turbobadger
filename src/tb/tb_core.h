@@ -44,12 +44,14 @@ class TBSkin;
 class TBWidgetsReader;
 class TBLanguage;
 class TBFontManager;
+class TBColorManager;
 
 extern TBRenderer *g_renderer;
 extern TBSkin *g_tb_skin;
 extern TBWidgetsReader *g_widgets_reader;
 extern TBLanguage *g_tb_lng;
 extern TBFontManager *g_font_manager;
+extern TBColorManager *g_color_manager;
 
 /** Initialize turbo badger. Call this before using any turbo badger API. */
 bool tb_core_init(TBRenderer *renderer);

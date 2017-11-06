@@ -7,8 +7,15 @@
 #define TB_COLOR_H
 
 #include "tb_types.h"
+#include "tb_str.h"
+#include "tb_id.h"
+#include <map>
+
 
 namespace tb {
+
+class TBNode;
+class TBSkin;
 
 /** TBColor contains a 32bit color. */
 
@@ -26,9 +33,41 @@ public:
 		"#rrggbbaa", "#rrggbb", "#rgba", "#rgb" */
 	void SetFromString(const char *str, int len);
 
+	void GetString(TBStr & str) const;
+
 	operator uint32 () const		{ return *((uint32*)this); }
 	bool operator == (const TBColor &c) const { return *this == (uint32)c; }
 	bool operator != (const TBColor &c) const { return !(*this == c); }
+};
+
+/** TBColorManager contains a map of global color names. */
+
+class TBColorManager
+{
+public:
+
+	/** Load a list of colors from a node. */
+	void Load(TBNode *n, TBSkin *skin);
+
+	/** Define a color, if not already defined. */
+	bool Define(const TBID & id, TBColor color);
+
+	/** Is the color defined? */
+	bool IsDefined(const TBID & id) { return 0 != _colors.count(id); }
+
+	/** (Re)Define a color, no matter what. */
+	void ReDefine(const TBID & id, TBColor color);
+
+	/** Clear the list of colors. */
+	void Clear();
+
+	/** Return the color with the given id.
+	 * If there is no color with that id, 0 will be returned.
+	 */
+	TBColor GetColor(const TBID &id) const;
+
+private:
+	std::map<TBID, TBColor> _colors;
 };
 
 } // namespace tb

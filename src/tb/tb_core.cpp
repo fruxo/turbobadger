@@ -19,6 +19,7 @@ TBSkin *g_tb_skin = nullptr;
 TBWidgetsReader *g_widgets_reader = nullptr;
 TBLanguage *g_tb_lng = nullptr;
 TBFontManager *g_font_manager = nullptr;
+TBColorManager *g_color_manager = nullptr;
 
 bool tb_core_init(TBRenderer *renderer)
 {
@@ -26,6 +27,7 @@ bool tb_core_init(TBRenderer *renderer)
 	g_renderer = renderer;
 	g_tb_lng = new TBLanguage;
 	g_font_manager = new TBFontManager();
+	g_color_manager = new TBColorManager();
 	g_tb_skin = new TBSkin();
 	g_widgets_reader = TBWidgetsReader::Create();
 #ifdef TB_IMAGE
