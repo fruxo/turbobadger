@@ -41,7 +41,7 @@ void TBColor::GetString(TBStr & str) const
 void TBColorManager::Load(TBNode * n, TBSkin * skin)
 {
 	// Go through all nodes and add to the strings hash table
-	for (TBNode * n = n->GetFirstChild(); n; n = n->GetNext())
+	for (n = n->GetFirstChild(); n; n = n->GetNext())
 	{
 		TBColor c;
 		const char * cname = n->GetValue().GetString();
