@@ -61,10 +61,12 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 	if (align == TB_ALIGN_BOTTOM) // Below point
 	{
 		y = y + avoid_h + h > root->GetRect().h ? y : y + avoid_h;
+		x = MIN(x, root->GetRect().w - w);
 	}
 	else if (align == TB_ALIGN_TOP) // Above point
 	{
 		y = y - h < 0 ? y + avoid_h : y - h;
+		x = MIN(x, root->GetRect().w - w);
 	}
 	else if (align == TB_ALIGN_RIGHT)
 	{
@@ -76,6 +78,7 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 		x = (x - w < 0) ? (x + avoid_w) : (x - w);
 		y = MIN(y, root->GetRect().h - h);
 	}
+
 	// just dont accept any nonsense
 	if (x < -5) {
 		//std::cout << "TBRect:" << x << "," << y << "," << w << "," << h << "| " << align << "\n";
