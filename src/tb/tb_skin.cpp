@@ -248,9 +248,12 @@ bool TBSkin::LoadInternal(const char *skin_file)
 
 bool TBSkin::Write(const char * skin_file)
 {
-  TBFile * file = TBFile::Open(skin_file, TBFile::MODE_WRITETRUNC);
+	TBFile * file = TBFile::Open(skin_file, TBFile::MODE_WRITETRUNC);
 	if (file) {
-		
+		json elements = json::array();
+		TBHashTableIteratorOf<TBSkinElement> it(&m_elements);
+		while (TBSkinElement *element = it.GetNextContent())
+			element->Write(file, this);
 	}
 	return false;
 }
@@ -793,10 +796,11 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 	m_overlay_elements.Load(n->GetNode("overlays"));
 }
 
-#if 0
-void TBSkinElement::Write(json & obj, TBSkin *skin)
+void TBSkinElement::Write(TBFile * file, TBSkin * skin)
 {
-	obj["name"] = n->GetName();
+#if 1
+	json obj;
+	obj["name"] = name.CStr();
 
 	if (bitmap_file.Length()) obj["bitmap"] = bitmap_file.CStr();
 	if (cut) obj["cut"] = cut;
@@ -808,7 +812,7 @@ void TBSkinElement::Write(json & obj, TBSkin *skin)
 
 	if (expand) obj["expand"] = expand;
 
-#define SET(x) do { if (x) obj[#x] = x; } while (0)
+#define SET(x) do { if (x && x != TB_INVALID_DIMENSION) obj[#x] = x; } while (0)
 	SET(width);
 	SET(height);
 	SET(pref_width);
@@ -829,8 +833,21 @@ void TBSkinElement::Write(json & obj, TBSkin *skin)
 	SET(opacity);
 #undef SET
 
-	if (text_color.Length()) obj["text-color"] = text_color.CStr();
-	if (bg_color.Length()) obj["background-color"] = bg_color.CStr();
+	if (text_color) {
+		TBStr str;
+		text_color.GetString(str);
+		obj["text-color"] = str.CStr();
+	}
+	if (bg_color) {
+		TBStr str;
+		bg_color.GetString(str);
+		obj["background-color"] = str.CStr();
+	}
+	if (bitmap_color) {
+		TBStr str;
+		bitmap_color.GetString(str);
+		obj["bitmap-color"] = str.CStr();
+	}
 	obj["type"] = TypeToString(type);
 
 	// Create all state elements
@@ -838,8 +855,10 @@ void TBSkinElement::Write(json & obj, TBSkin *skin)
 	//m_strong_override_elements.Load(n->GetNode("strong-overrides"));
 	//m_child_elements.Load(n->GetNode("children"));
 	//m_overlay_elements.Load(n->GetNode("overlays"));
-}
+	std::string tmp = obj.dump(2);
+	file->Write(tmp.c_str(), 1, tmp.size());
 #endif
+}
 
 // == TBSkinElementState ====================================================
 

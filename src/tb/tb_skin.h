@@ -7,12 +7,15 @@
 #define TB_SKIN_H
 
 #include "tb_core.h"
+#include "tb_system.h"
 #include "tb_renderer.h"
 #include "tb_bitmap_fragment.h"
 #include "tb_hashtable.h"
 #include "tb_linklist.h"
 #include "tb_dimension.h"
 #include "tb_value.h"
+#include "json/src/json.hpp"
+using json = nlohmann::json;
 
 namespace tb {
 
@@ -269,8 +272,7 @@ public:
 	bool HasOverlayElements() const { return m_overlay_elements.HasStateElements(); }
 
 	void Load(TBNode *n, TBSkin *skin, const char *skin_path);
-
-	void Write(TBNode * n, TBSkin * skin);
+	void Write(TBFile * file, TBSkin * skin);
 };
 
 class TBSkinListener

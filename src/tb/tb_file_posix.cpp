@@ -30,7 +30,7 @@ public:
 		return fread(buf, elemSize, count, file);
 	}
 #ifdef TB_RUNTIME_DEBUG_INFO
-	virtual size_t Write(void *buf, size_t elemSize, size_t count)
+	virtual size_t Write(const void *buf, size_t elemSize, size_t count)
 	{
 		return fwrite(buf, elemSize, count, file);
 	}
