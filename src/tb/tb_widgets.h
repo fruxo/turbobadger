@@ -466,7 +466,7 @@ public:
 
 	/** Set the group id reference for this widgets. This id is 0 by default.
 		All widgets with the same group id under the same group root will
-		be automatically changed when one change its value. */
+		be automatically changed when one changes its value. */
 	void SetGroupID(const TBID &id) { m_group_id = id; }
 	TBID &GetGroupID() { return m_group_id; }
 	const TBID &GetGroupID() const { return m_group_id; }
@@ -897,7 +897,7 @@ public:
 
 	/** Connect this widget to a widget value.
 
-		When this widget invoke EVENT_TYPE_CHANGED, it will automatically update the
+		When this widget invokes EVENT_TYPE_CHANGED, it will automatically update the
 		connected widget value, and any other widgets that may be connected to it.
 
 		On connection, the value of this widget will be updated to the value of the
