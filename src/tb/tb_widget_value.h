@@ -78,16 +78,16 @@ public:
 	void SetFromWidget(TBWidget *source_widget);
 
 	/** Get value as integer. */
-	int GetInt() { return m_value.GetInt(); }
+	int GetInt() const { return m_value.GetInt(); }
 
 	/** Get value as text. Return false on fail. */
-	bool GetText(TBStr &text) { return text.Set(m_value.GetString()); }
+	bool GetText(TBStr &text) const { return text.Set(m_value.GetString()); }
 
 	/** Get value as text. */
-	TBStr GetText() { TBStr text; GetText(text); return text; }
+	TBStr GetText() const { TBStr text; GetText(text); return text; }
 
 	/** Get the value as double. */
-	double GetDouble() { return m_value.GetFloat(); }
+	double GetDouble() const { return m_value.GetFloat(); }
 
 	/** Get the TBValue used to store the value. */
 	const TBValue &GetValue() const { return m_value; }

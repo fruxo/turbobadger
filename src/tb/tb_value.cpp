@@ -157,7 +157,7 @@ TBValue::TBValue(int value)
 	SetInt(value);
 }
 
-TBValue::TBValue(float value)
+TBValue::TBValue(double value)
 	: m_packed_init(0)
 {
 	SetFloat(value);
@@ -230,7 +230,7 @@ void TBValue::SetInt(int val)
 	val_int = val;
 }
 
-void TBValue::SetFloat(float val)
+void TBValue::SetFloat(double val)
 {
 	SetNull();
 	m_packed.type = TYPE_FLOAT;
@@ -278,7 +278,7 @@ void TBValue::SetFromStringAuto(const char *str, SET set)
 	else if (is_number_only(str))
 	{
 		if (is_number_float(str))
-			SetFloat((float)atof(str));
+			SetFloat(atof(str));
 		else
 			SetInt(atoi(str));
 	}
@@ -333,12 +333,12 @@ int TBValue::GetInt() const
 	return m_packed.type == TYPE_INT ? val_int : 0;
 }
 
-float TBValue::GetFloat() const
+double TBValue::GetFloat() const
 {
 	if (m_packed.type == TYPE_STRING)
-		return (float) atof(val_str);
+		return atof(val_str);
 	else if (m_packed.type == TYPE_INT)
-		return (float) val_int;
+		return (double) val_int;
 	return m_packed.type == TYPE_FLOAT ? val_float : 0;
 }
 
@@ -353,7 +353,7 @@ const char *TBValue::GetString() const
 	else if (m_packed.type == TYPE_FLOAT)
 	{
 		char tmp[32];
-		sprintf(tmp, "%f", val_float);
+		sprintf(tmp, "%lf", val_float);
 		const_cast<TBValue *>(this)->SetString(tmp, SET_NEW_COPY);
 	}
 	else if (m_packed.type == TYPE_OBJECT)

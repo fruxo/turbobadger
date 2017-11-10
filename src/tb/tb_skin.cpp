@@ -806,7 +806,7 @@ void TBSkinElement::Write(TBFile * file, TBSkin * skin)
 	if (cut) obj["cut"] = cut;
 	if (expand) obj["expand"] = expand;
 
-	const TBDimensionConverter *dim_conv = skin->GetDimensionConverter();
+	//const TBDimensionConverter *dim_conv = skin->GetDimensionConverter();
 	if (padding_top || padding_right || padding_bottom || padding_left)
 		obj["padding"] = {padding_top, padding_right, padding_bottom, padding_left};
 

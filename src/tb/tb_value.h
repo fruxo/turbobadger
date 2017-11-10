@@ -80,7 +80,7 @@ public:
 	TBValue(TYPE type);
 
 	TBValue(int value);
-	TBValue(float value);
+	TBValue(double value);
 	TBValue(const char *value, SET set = SET_NEW_COPY);
 	TBValue(TBTypedObject *object);
 
@@ -97,7 +97,7 @@ public:
 
 	void SetNull();
 	void SetInt(int val);
-	void SetFloat(float val);
+	void SetFloat(double val);
 
 	/** Set the passed in string */
 	void SetString(const char *val, SET set);
@@ -112,7 +112,7 @@ public:
 	void SetFromStringAuto(const char *str, SET set);
 
 	int GetInt() const;
-	float GetFloat() const;
+	double GetFloat() const;
 	const char *GetString() const;
 	TBTypedObject *GetObject() const { return IsObject() ? val_obj : nullptr; }
 	TBValueArray *GetArray() const { return IsArray() ? val_arr : nullptr; }
@@ -128,7 +128,7 @@ public:
 	const TBValue& operator = (const TBValue &val) { Copy(val); return *this; }
 private:
 	union {
-		float val_float;
+		double val_float;
 		int val_int;
 		char *val_str;
 		TBTypedObject *val_obj;

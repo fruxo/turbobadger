@@ -74,8 +74,7 @@ void TBWidgetValue::SetFromWidget(TBWidget *source_widget)
 		m_value.SetInt(source_widget->GetValue());
 		break;
 	case TBValue::TYPE_FLOAT:
-		// FIX: TBValue should use double instead of float?
-		m_value.SetFloat((float)source_widget->GetValueDouble());
+		m_value.SetFloat(source_widget->GetValueDouble());
 		break;
 	default:
 		assert(!"Unsupported value type!");
@@ -116,7 +115,6 @@ bool TBWidgetValue::SyncToWidget(TBWidget *dst_widget)
 			dst_widget->SetValue(m_value.GetInt());
 			break;
 		case TBValue::TYPE_FLOAT:
-			// FIX: TBValue should use double instead of float?
 			dst_widget->SetValueDouble(m_value.GetFloat());
 			break;
 		default:
@@ -140,8 +138,7 @@ bool TBWidgetValue::SetText(const char *text)
 
 void TBWidgetValue::SetDouble(double value)
 {
-	// FIX: TBValue should use double instead of float?
-	m_value.SetFloat((float)value);
+	m_value.SetFloat(value);
 	SyncToWidgets(nullptr);
 }
 

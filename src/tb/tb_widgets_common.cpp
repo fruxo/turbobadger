@@ -526,7 +526,7 @@ void TBScrollBar::SetValueDouble(double value)
 
 bool TBScrollBar::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_POINTER_MOVE && captured_widget == &m_handle)
+	if (ev.type == EVENT_TYPE_POINTER_MOVE && m_handle.IsAncestorOf(captured_widget))
 	{
 		if (m_to_pixel_factor > 0)
 		{
@@ -661,7 +661,7 @@ void TBSlider::SetValueDouble(double value)
 
 bool TBSlider::OnEvent(const TBWidgetEvent &ev)
 {
-	if (ev.type == EVENT_TYPE_POINTER_MOVE && captured_widget == &m_handle)
+	if (ev.type == EVENT_TYPE_POINTER_MOVE && m_handle.IsAncestorOf(captured_widget))
 	{
 		if (m_to_pixel_factor > 0)
 		{
