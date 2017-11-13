@@ -53,7 +53,10 @@ public:
 	bool Define(const TBID & id, TBColor color);
 
 	/** Is the color defined? */
-	bool IsDefined(const TBID & id) { return 0 != _colors.count(id); }
+	bool IsDefined(const TBID & id) { return 0 != _id2color.count(id); }
+
+	/** Is the color defined? */
+	bool IsDefined(const TBColor & color) { return 0 != _color2id.count(color); }
 
 	/** (Re)Define a color, no matter what. */
 	void ReDefine(const TBID & id, TBColor color);
@@ -66,8 +69,17 @@ public:
 	 */
 	TBColor GetColor(const TBID &id) const;
 
+	/** Return the id of the given color, or 0.
+	 * If there is no color with that id, 0 will be returned.
+	 */
+	TBID GetColorID(const TBColor & color) const;
+
+	/** Dump the current color map */
+	void Dump(const char * filename);
+
 private:
-	std::map<TBID, TBColor> _colors;
+	std::map<TBID, TBColor> _id2color;
+	std::map<TBColor, TBID> _color2id;
 };
 
 } // namespace tb

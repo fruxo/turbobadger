@@ -5,6 +5,7 @@
 
 #include "tb_color.h"
 #include "tb_core.h"
+#include "tb_system.h"
 #include "tb_node_tree.h"
 #include <stdio.h>
 
@@ -29,11 +30,13 @@ void TBColor::SetFromString(const char *str, int len)
 		TBDebugPrint("Invalid color '%s'\n", str);
 		Set(TBColor());
 	}
+	if (g_color_manager)
+		g_color_manager->Define(str, *this);
 }
 
 void TBColor::GetString(TBStr & str) const
 {
-	str.SetFormatted("#%2x%2x%2x%2x", r, g, b, a);
+	str.SetFormatted("#%02x%02x%02x%02x", r, g, b, a);
 }
 
 // == TBColorManager ========================================================================
@@ -52,8 +55,9 @@ void TBColorManager::Load(TBNode * n, TBSkin * skin)
 
 bool TBColorManager::Define(const TBID & id, TBColor color)
 {
-	if (!_colors.count(id)) {
-		_colors[id] = color;
+	if (!_id2color.count(id)) {
+		_id2color[id] = color;
+		_color2id[color] = id;
 		return true;
 	}
 	return false;
@@ -61,19 +65,45 @@ bool TBColorManager::Define(const TBID & id, TBColor color)
 
 void TBColorManager::ReDefine(const TBID & id, TBColor color)
 {
-	_colors[id] = color;
+	_id2color[id] = color;
+	_color2id[color] = id;
 }
 
 void TBColorManager::Clear()
 {
-	_colors.clear();
+	_id2color.clear();
+	_color2id.clear();
 }
 
 TBColor TBColorManager::GetColor(const TBID &id) const
 {
-	if (_colors.count(id))
-		return _colors.at(id);
+	if (_id2color.count(id))
+		return _id2color.at(id);
 	return TBColor(0, 0, 0, 0);
+}
+
+TBID TBColorManager::GetColorID(const TBColor & color) const
+{
+	if (_color2id.count(color))
+		return _color2id.at(color);
+	return TBID();
+}
+
+void TBColorManager::Dump(const char * filename)
+{
+	TBFile * file = TBFile::Open(filename, TBFile::MODE_WRITETRUNC);
+	if (file) {
+		TBStr str;
+		str.SetFormatted("colors\n");
+		file->Write(str);
+		for (auto & id_co : _id2color) {
+			TBStr cs;
+			id_co.second.GetString(cs);
+			str.SetFormatted("	%s %s\n", id_co.first.debug_string.CStr(), cs.CStr());
+			file->Write(str);
+		}
+		delete file;
+	}
 }
 
 } // namespace tb

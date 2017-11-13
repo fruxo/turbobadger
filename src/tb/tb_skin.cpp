@@ -190,6 +190,10 @@ bool TBSkin::LoadInternal(const char *skin_file)
 		m_dim_conv.SetDPI(base_dpi, supported_dpi);
 	}
 
+	// Read skin colors
+	if (TBNode *colors = node.GetNode("colors"))
+		g_color_manager->Load(colors, this);
+
 	// Read skin constants
 	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
 		m_default_text_color.SetFromString(color, strlen(color));
@@ -198,10 +202,6 @@ bool TBSkin::LoadInternal(const char *skin_file)
 	m_default_placeholder_opacity = node.GetValueFloat("defaults>placeholder>opacity",
 		m_default_placeholder_opacity);
 	m_default_spacing = GetPxFromNode(node.GetNode("defaults>spacing"), m_default_spacing);
-
-	// Read skin colors
-	if (TBNode *colors = node.GetNode("colors"))
-		g_color_manager->Load(colors, this);
 
 	// Iterate through all elements nodes and add skin elements or patch already
 	// existing elements.
@@ -250,10 +250,11 @@ bool TBSkin::Write(const char * skin_file)
 {
 	TBFile * file = TBFile::Open(skin_file, TBFile::MODE_WRITETRUNC);
 	if (file) {
-		json elements = json::array();
 		TBHashTableIteratorOf<TBSkinElement> it(&m_elements);
 		while (TBSkinElement *element = it.GetNextContent())
 			element->Write(file, this);
+		delete file;
+		return true;
 	}
 	return false;
 }

@@ -34,6 +34,10 @@ public:
 	{
 		return fwrite(buf, elemSize, count, file);
 	}
+	virtual size_t Write(const TBStr & str)
+	{
+		return Write(str.CStr(), 1, str.Length());
+	}
 #endif
 private:
 	FILE *file;
