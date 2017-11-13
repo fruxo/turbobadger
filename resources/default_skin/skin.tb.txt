@@ -12,21 +12,20 @@ description
 colors
 	black #000000
 	white #ffffff
-	gray #808080
+	grey #808080
+	grey70 #b3b3b3
 	silver #c0c0c0
-	Text #fefefe
-	Foreground #ffffff
-	Background #000000
+	off-white #fefefe
 defaults
 	spacing 5
-	text-color Text
+	text-color off-white
 	placeholder
 		opacity 0.2
 	disabled
 		opacity 0.3
 elements
 	TBButton
-		text-color Text
+		text-color off-white
 		bitmap button.png
 		cut 17
 		expand 7
@@ -38,7 +37,7 @@ elements
 			element TBButton.pressed
 				state pressed
 	TBButton.pressed
-		text-color Text
+		text-color off-white
 		bitmap button_pressed.png
 		cut 17
 		expand 7
@@ -46,7 +45,7 @@ elements
 		content-ofs-y 1
 
 	TBButton.flat
-		text-color Text
+		text-color off-white
 		padding 6 8
 		children
 			element TBButton.flat.hovered
@@ -308,7 +307,7 @@ elements
 		min-width 20
 		min-height 20
 	TBWindow.mover
-		text-color #b8b8b8
+		text-color grey70
 		bitmap window_mover_bg_tile.png
 		type Tile
 		expand -1
@@ -325,7 +324,7 @@ elements
 		expand 3
 	TBWindow.mover.active
 		clone TBWindow.mover
-		text-color Text
+		text-color off-white
 		overrides
 		overlays
 		children
