@@ -10,10 +10,10 @@ description
 	# The skin also has graphics available in these DPI modes
 	supported-dpi 96 192 240 288 384
 colors
-	Black #000000
-	White #ffffff
-	Gray #808080
-	Silver #c0c0c0
+	black #000000
+	white #ffffff
+	gray #808080
+	silver #c0c0c0
 	Text #fefefe
 	Foreground #ffffff
 	Background #000000

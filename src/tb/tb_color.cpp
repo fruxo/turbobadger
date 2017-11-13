@@ -56,6 +56,7 @@ void TBColorManager::Load(TBNode * n, TBSkin * skin)
 bool TBColorManager::Define(const std::string & id, TBColor color)
 {
 	if (!_id2color.count(id)) {
+		//TBDebugPrint("Define color '%s' -> %x\n", id.c_str(), (uint32)color);
 		_id2color[id] = color;
 		_color2id[color] = id;
 		return true;
@@ -65,6 +66,7 @@ bool TBColorManager::Define(const std::string & id, TBColor color)
 
 void TBColorManager::ReDefine(const std::string & id, TBColor color)
 {
+	//TBDebugPrint("ReDefine color '%s' -> %x\n", id.c_str(), (uint32)color);
 	_id2color[id] = color;
 	_color2id[color] = id;
 }
