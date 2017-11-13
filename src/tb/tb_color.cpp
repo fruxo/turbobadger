@@ -30,8 +30,8 @@ void TBColor::SetFromString(const char *str, int len)
 		TBDebugPrint("Invalid color '%s'\n", str);
 		Set(TBColor());
 	}
-	if (g_color_manager)
-		g_color_manager->Define(str, *this);
+	//if (g_color_manager)
+	//	g_color_manager->Define(str, *this);
 }
 
 void TBColor::GetString(TBStr & str) const
@@ -53,7 +53,7 @@ void TBColorManager::Load(TBNode * n, TBSkin * skin)
 	}
 }
 
-bool TBColorManager::Define(const TBID & id, TBColor color)
+bool TBColorManager::Define(const std::string & id, TBColor color)
 {
 	if (!_id2color.count(id)) {
 		_id2color[id] = color;
@@ -63,7 +63,7 @@ bool TBColorManager::Define(const TBID & id, TBColor color)
 	return false;
 }
 
-void TBColorManager::ReDefine(const TBID & id, TBColor color)
+void TBColorManager::ReDefine(const std::string & id, TBColor color)
 {
 	_id2color[id] = color;
 	_color2id[color] = id;
@@ -75,18 +75,18 @@ void TBColorManager::Clear()
 	_color2id.clear();
 }
 
-TBColor TBColorManager::GetColor(const TBID &id) const
+TBColor TBColorManager::GetColor(const std::string &id) const
 {
 	if (_id2color.count(id))
 		return _id2color.at(id);
 	return TBColor(0, 0, 0, 0);
 }
 
-TBID TBColorManager::GetColorID(const TBColor & color) const
+std::string TBColorManager::GetColorID(const TBColor & color) const
 {
 	if (_color2id.count(color))
 		return _color2id.at(color);
-	return TBID();
+	return std::string();
 }
 
 void TBColorManager::Dump(const char * filename)
@@ -99,7 +99,7 @@ void TBColorManager::Dump(const char * filename)
 		for (auto & id_co : _id2color) {
 			TBStr cs;
 			id_co.second.GetString(cs);
-			str.SetFormatted("	%s %s\n", id_co.first.debug_string.CStr(), cs.CStr());
+			str.SetFormatted("	%s %s\n", id_co.first.c_str(), cs.CStr());
 			file->Write(str);
 		}
 		delete file;

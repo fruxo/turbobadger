@@ -50,16 +50,16 @@ public:
 	void Load(TBNode *n, TBSkin *skin);
 
 	/** Define a color, if not already defined. */
-	bool Define(const TBID & id, TBColor color);
+	bool Define(const std::string & id, TBColor color);
 
 	/** Is the color defined? */
-	bool IsDefined(const TBID & id) { return 0 != _id2color.count(id); }
+	bool IsDefined(const std::string & id) { return 0 != _id2color.count(id); }
 
 	/** Is the color defined? */
 	bool IsDefined(const TBColor & color) { return 0 != _color2id.count(color); }
 
 	/** (Re)Define a color, no matter what. */
-	void ReDefine(const TBID & id, TBColor color);
+	void ReDefine(const std::string & id, TBColor color);
 
 	/** Clear the list of colors. */
 	void Clear();
@@ -67,19 +67,24 @@ public:
 	/** Return the color with the given id.
 	 * If there is no color with that id, 0 will be returned.
 	 */
-	TBColor GetColor(const TBID &id) const;
+	TBColor GetColor(const std::string &id) const;
 
 	/** Return the id of the given color, or 0.
 	 * If there is no color with that id, 0 will be returned.
 	 */
-	TBID GetColorID(const TBColor & color) const;
+	std::string GetColorID(const TBColor & color) const;
+
+	/** Return the id of the given color, or 0.
+	 * If there is no color with that id, 0 will be returned.
+	 */
+	const std::map<std::string, TBColor> GetColorMap() const { return _id2color; }
 
 	/** Dump the current color map */
 	void Dump(const char * filename);
 
 private:
-	std::map<TBID, TBColor> _id2color;
-	std::map<TBColor, TBID> _color2id;
+	std::map<std::string, TBColor> _id2color;
+	std::map<TBColor, std::string> _color2id;
 };
 
 } // namespace tb
