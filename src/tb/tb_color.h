@@ -10,7 +10,7 @@
 #include "tb_str.h"
 #include "tb_id.h"
 #include <map>
-
+#include <string>
 
 namespace tb {
 
