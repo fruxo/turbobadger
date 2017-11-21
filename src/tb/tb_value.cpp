@@ -140,7 +140,7 @@ TBValue::TBValue(TYPE type)
 		SetInt(0);
 		break;
 	case TYPE_OBJECT:
-		SetObject(nullptr);
+		SetObject(nullptr, SET_AS_STATIC);
 		break;
 	case TYPE_ARRAY:
 		if (TBValueArray *arr = new TBValueArray())
@@ -163,16 +163,16 @@ TBValue::TBValue(double value)
 	SetFloat(value);
 }
 
-TBValue::TBValue(const char *value, SET set)
+TBValue::TBValue(const char *value, SET_MODE set)
 	: m_packed_init(0)
 {
 	SetString(value, set);
 }
 
-TBValue::TBValue(TBTypedObject *object)
+TBValue::TBValue(TBTypedObject *object, SET_MODE set)
 	: m_packed_init(0)
 {
-	SetObject(object);
+	SetObject(object, set);
 }
 
 TBValue::~TBValue()
@@ -200,7 +200,7 @@ void TBValue::Copy(const TBValue &source_value)
 	else if (source_value.m_packed.type == TYPE_OBJECT)
 	{
 		assert(!"We can't copy objects! The value will be nulled!");
-		SetObject(nullptr);
+		SetObject(nullptr, SET_TAKE_OWNERSHIP);
 	}
 	else
 	{
@@ -237,7 +237,7 @@ void TBValue::SetFloat(double val)
 	val_float = val;
 }
 
-void TBValue::SetString(const char *val, SET set)
+void TBValue::SetString(const char *val, SET_MODE set)
 {
 	SetNull();
 	m_packed.allocated = (set == SET_NEW_COPY || set == SET_TAKE_OWNERSHIP);
@@ -250,15 +250,18 @@ void TBValue::SetString(const char *val, SET set)
 		m_packed.type = TYPE_STRING;
 }
 
-void TBValue::SetObject(TBTypedObject *object)
+void TBValue::SetObject(TBTypedObject *object, SET_MODE set)
 {
+	if (set == SET_NEW_COPY) {
+		assert(!"Can't copy objects");
+	}
 	SetNull();
-	m_packed.type = TYPE_OBJECT;
-	m_packed.allocated = true;
+	m_packed.allocated = set == SET_TAKE_OWNERSHIP;
 	val_obj = object;
+	m_packed.type = TYPE_OBJECT;
 }
 
-void TBValue::SetArray(TBValueArray *arr, SET set)
+void TBValue::SetArray(TBValueArray *arr, SET_MODE set)
 {
 	SetNull();
 	m_packed.allocated = (set == SET_NEW_COPY || set == SET_TAKE_OWNERSHIP);
@@ -271,7 +274,7 @@ void TBValue::SetArray(TBValueArray *arr, SET set)
 		m_packed.type = TYPE_ARRAY;
 }
 
-void TBValue::SetFromStringAuto(const char *str, SET set)
+void TBValue::SetFromStringAuto(const char *str, SET_MODE set)
 {
 	if (!str)
 		SetNull();

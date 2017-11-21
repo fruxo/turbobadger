@@ -74,6 +74,7 @@ class TBSelectItemSource : public TBTypedObject
 public:
 	TBSelectItemSource() : m_sort(TB_SORT_NONE) {}
 	virtual ~TBSelectItemSource();
+	TBOBJECT_SUBCLASS(TBSelectItemSource, TBTypedObject);
 
 	/** Return true if a item matches the given filter text.
 		By default, it returns true if GetItemString contains filter. */

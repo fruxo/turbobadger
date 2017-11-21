@@ -801,7 +801,7 @@ public:
 	/** Return translation the children should have. Any scrolling of child widgets
 		should be done with this method, by returning the wanted translation.
 
-		When implementing this, you must also implement ScrollTo and GetScrollInfo
+		When reimplementing this, you must also implement ScrollTo and GetScrollInfo
 		so focus-scroll and panning will work automatically when dragging this or
 		any child widget. Note: You can apply the translation on one widget and
 		implement those methods on a parent, by returning this widget from the
@@ -875,6 +875,7 @@ public:
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
 	virtual void SetValue(int /*value*/) {}
+	virtual void SetValue(const TBValue & value) { data = value; }
 	virtual int GetValue() const { return 0; }
 
 	/** Set the value in double precision. It only makes sense to use this instead

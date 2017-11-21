@@ -410,21 +410,9 @@ PreferredSize TBLayout::OnCalculatePreferredContentSize(const SizeConstraints &c
 
 WIDGET_HIT_STATUS TBLayout::GetHitStatus(int x, int y)
 {
-	if (!GetIsInteractable())
-		return WIDGET_HIT_STATUS_NO_HIT;
-
-	TBWidget *tmp = GetFirstChild();
-	while (tmp)
-	{
-		WIDGET_HIT_STATUS hit_status = tmp->GetHitStatus(x - tmp->GetRect().x, y - tmp->GetRect().y);
-		if (hit_status)
-		{
-			return WIDGET_HIT_STATUS_HIT;
-		}
-		tmp = tmp->GetNext();
-	}
-
-	// didn't find an interactable child at the location
+	// Return no hit on this widget, but maybe on any of the children.
+	if (TBWidget::GetHitStatus(x, y) && GetWidgetAt(x, y, true))
+		return WIDGET_HIT_STATUS_HIT;
 	return WIDGET_HIT_STATUS_NO_HIT;
 }
 

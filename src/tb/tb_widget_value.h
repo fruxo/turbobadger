@@ -74,6 +74,9 @@ public:
 	/** Set double value and sync to connected widgets. */
 	void SetDouble(double value);
 
+	/** Set tb value and sync to connected widgets. */
+	void SetValue(const TBValue & value);
+
 	/** Set the value from the given widget. Using the current format type.*/
 	void SetFromWidget(TBWidget *source_widget);
 

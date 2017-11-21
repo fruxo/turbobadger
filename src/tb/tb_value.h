@@ -69,7 +69,7 @@ public:
 	};
 
 	/** How to deal with the dynamic memory when setting string and array. */
-	enum SET {
+	enum SET_MODE {
 		SET_NEW_COPY,			///< A new copy of the data will be made.
 		SET_TAKE_OWNERSHIP,		///< The data passed in will be stored and freed.
 		SET_AS_STATIC			///< The data passed in will be stored but never freed.
@@ -81,8 +81,8 @@ public:
 
 	TBValue(int value);
 	TBValue(double value);
-	TBValue(const char *value, SET set = SET_NEW_COPY);
-	TBValue(TBTypedObject *object);
+	TBValue(const char *value, SET_MODE set = SET_NEW_COPY);
+	TBValue(TBTypedObject *object, SET_MODE set = SET_TAKE_OWNERSHIP);
 
 	~TBValue();
 
@@ -92,7 +92,7 @@ public:
 	void TakeOver(TBValue &source_value);
 
 	/** Copy the content of source_value to this value.
-		Note: This value will become TYPE_NULL if source_value holds an object. We can't copy objects. */
+		Note: This value will become TYPE_NULL if source_value holds an owned object. We can't copy objects. */
 	void Copy(const TBValue &source_value);
 
 	void SetNull();
@@ -100,16 +100,16 @@ public:
 	void SetFloat(double val);
 
 	/** Set the passed in string */
-	void SetString(const char *val, SET set);
+	void SetString(const char *val, SET_MODE set);
 
-	/** Set the passed in object. Takes the ownership of the object! */
-	void SetObject(TBTypedObject *object);
+	/** Set the passed in object. */
+	void SetObject(TBTypedObject *object, SET_MODE set);
 
 	/** Set the passed in array */
-	void SetArray(TBValueArray *arr, SET set);
+	void SetArray(TBValueArray *arr, SET_MODE set);
 
 	/** Set the value either as a string, number or array of numbers, depending of the string syntax. */
-	void SetFromStringAuto(const char *str, SET set);
+	void SetFromStringAuto(const char *str, SET_MODE set);
 
 	int GetInt() const;
 	double GetFloat() const;

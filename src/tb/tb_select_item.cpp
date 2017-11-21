@@ -22,8 +22,11 @@ class TBSimpleLayoutItemWidget : public TBLayout, private TBWidgetListener
 {
 public:
 	TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const char *str);
+	TBOBJECT_SUBCLASS(TBSimpleLayoutItemWidget, TBLayout);
 	~TBSimpleLayoutItemWidget();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
+	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
+
 private:
 	TBSelectItemSource *m_source;
 	TBTextField m_textfield;
@@ -41,7 +44,7 @@ TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSourc
 	: m_source(source)
 	, m_menu(nullptr)
 {
-	SetSkinBg(TBIDC("TBSelectItem"));
+	SetSkinBg("TBSelectItem");
 	SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
 	SetPaintOverflowFadeout(false);
 
@@ -59,7 +62,7 @@ TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSourc
 
 	if (source)
 	{
-		m_image_arrow.SetSkinBg(TBIDC("arrow.right"));
+		m_image_arrow.SetSkinBg("arrow.right");
 		m_image_arrow.SetIgnoreInput(true);
 		AddChild(&m_image_arrow);
 	}
@@ -89,13 +92,20 @@ void TBSimpleLayoutItemWidget::OnWidgetDelete(TBWidget *widget)
 	CloseSubMenu();
 }
 
+WIDGET_HIT_STATUS TBSimpleLayoutItemWidget::GetHitStatus(int x, int y)
+{
+	if (!GetIsInteractable())
+		return WIDGET_HIT_STATUS_NO_HIT;
+	return x >= 0 && y >= 0 && x < GetRect().w && y < GetRect().h ? WIDGET_HIT_STATUS_HIT : WIDGET_HIT_STATUS_NO_HIT;
+}
+
 void TBSimpleLayoutItemWidget::OpenSubMenu()
 {
 	if (m_menu)
 		return;
 
 	// Open a new menu window for the submenu with this widget as target
-	m_menu = new TBMenuWindow(this, TBIDC("submenu"));
+	m_menu = new TBMenuWindow(this, "submenu");
 	if (m_menu)
 	{
 		SetState(WIDGET_STATE_SELECTED, true);
@@ -164,7 +174,7 @@ TBWidget *TBSelectItemSource::CreateItemWidget(int index, TBSelectItemViewer * /
 		if (TBSeparator *separator = new TBSeparator)
 		{
 			separator->SetGravity(WIDGET_GRAVITY_ALL);
-			separator->SetSkinBg(TBIDC("TBSelectItem.separator"));
+			separator->SetSkinBg("TBSelectItem.separator");
 			return separator;
 		}
 	}

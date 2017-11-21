@@ -76,6 +76,9 @@ void TBWidgetValue::SetFromWidget(TBWidget *source_widget)
 	case TBValue::TYPE_FLOAT:
 		m_value.SetFloat(source_widget->GetValueDouble());
 		break;
+	case TBValue::TYPE_OBJECT:
+		m_value.SetObject(source_widget->data.GetObject(), TBValue::SET_AS_STATIC);
+		break;
 	default:
 		assert(!"Unsupported value type!");
 	}
@@ -117,8 +120,10 @@ bool TBWidgetValue::SyncToWidget(TBWidget *dst_widget)
 		case TBValue::TYPE_FLOAT:
 			dst_widget->SetValueDouble(m_value.GetFloat());
 			break;
+		case TBValue::TYPE_OBJECT:
 		default:
-			assert(!"Unsupported value type!");
+			dst_widget->SetValue(m_value);
+			break;
 	}
 	m_syncing = false;
 	return ret;
@@ -139,6 +144,12 @@ bool TBWidgetValue::SetText(const char *text)
 void TBWidgetValue::SetDouble(double value)
 {
 	m_value.SetFloat(value);
+	SyncToWidgets(nullptr);
+}
+
+void TBWidgetValue::SetValue(const TBValue & value)
+{
+	m_value = value;
 	SyncToWidgets(nullptr);
 }
 
