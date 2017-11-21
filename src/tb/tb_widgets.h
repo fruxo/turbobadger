@@ -1099,6 +1099,8 @@ public:
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
 	static bool update_skin_states;		///< true if something has called InvalidateStates() and skin still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
+
+	void StopLongClickTimer();
 private:
 	/** Return this widget or the nearest parent that is scrollable
 		in the given axis, or nullptr if there is none. */
@@ -1112,7 +1114,6 @@ private:
 	static void SetCapturedWidget(TBWidget *widget);
 	void HandlePanningOnMove(int x, int y);
 	void StartLongClickTimer(bool touch);
-	void StopLongClickTimer();
 	friend class TBLongClickTimer;
 	void MaybeInvokeLongClickOrContextMenu(bool touch);
 	/** Returns the opacity for this widget multiplied with its skin opacity and state opacity. */

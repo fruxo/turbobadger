@@ -223,6 +223,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			ls = LAYOUT_SIZE_AVAILABLE;
 		else if (strstr(size, "gravity"))
 			ls = LAYOUT_SIZE_GRAVITY;
+		else if (strstr(size, "preferred"))
+			;
 		else
 			TBDebugPrint("TBLayout: Unknown size '%s'\n", size);
 		SetLayoutSize(ls);
@@ -236,6 +238,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			lp = LAYOUT_POSITION_RIGHT_BOTTOM;
 		else if (strstr(pos, "gravity"))
 			lp = LAYOUT_POSITION_GRAVITY;
+		else if (!strcmp(pos, "center"))
+			;
 		else
 			TBDebugPrint("TBLayout: Unknown position '%s'\n", pos);
 		SetLayoutPosition(lp);
@@ -245,6 +249,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		LAYOUT_OVERFLOW lo = LAYOUT_OVERFLOW_CLIP;
 		if (strstr(pos, "scroll"))
 			lo = LAYOUT_OVERFLOW_SCROLL;
+		else if (strstr(pos, "clip"))
+			;
 		else
 			TBDebugPrint("TBLayout: Unknown overflow '%s'\n", pos);
 		SetLayoutOverflow(lo);
@@ -256,6 +262,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			ld = LAYOUT_DISTRIBUTION_AVAILABLE;
 		else if (strstr(dist, "gravity"))
 			ld = LAYOUT_DISTRIBUTION_GRAVITY;
+		else if (strstr(dist, "preferred"))
+			;
 		else
 			TBDebugPrint("TBLayout: Unknown distribution '%s'\n", dist);
 		SetLayoutDistribution(ld);
@@ -267,6 +275,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			ld = LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP;
 		else if (strstr(dist, "right") || strstr(dist, "bottom"))
 			ld = LAYOUT_DISTRIBUTION_POSITION_RIGHT_BOTTOM;
+		else if (!strcmp(dist, "center"))
+			;
 		else
 			TBDebugPrint("TBLayout: Unknown distribution-position '%s'\n", dist);
 		SetLayoutDistributionPosition(ld);

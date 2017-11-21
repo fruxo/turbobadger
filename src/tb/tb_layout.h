@@ -125,6 +125,8 @@ public:
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
 	virtual void OnInflate(const INFLATE_INFO &info);
+	/** Check if there's an interactible child at the location. */
+	virtual WIDGET_HIT_STATUS GetHitStatus(int x, int y);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnPaintChildren(const PaintProps &paint_props);
 	virtual void OnProcess();

@@ -408,6 +408,26 @@ PreferredSize TBLayout::OnCalculatePreferredContentSize(const SizeConstraints &c
 	return ps;
 }
 
+WIDGET_HIT_STATUS TBLayout::GetHitStatus(int x, int y)
+{
+	if (!GetIsInteractable())
+		return WIDGET_HIT_STATUS_NO_HIT;
+
+	TBWidget *tmp = GetFirstChild();
+	while (tmp)
+	{
+		WIDGET_HIT_STATUS hit_status = tmp->GetHitStatus(x - tmp->GetRect().x, y - tmp->GetRect().y);
+		if (hit_status)
+		{
+			return WIDGET_HIT_STATUS_HIT;
+		}
+		tmp = tmp->GetNext();
+	}
+
+	// didn't find an interactable child at the location
+	return WIDGET_HIT_STATUS_NO_HIT;
+}
+
 bool TBLayout::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_WHEEL && ev.modifierkeys == TB_MODIFIER_NONE)
