@@ -92,6 +92,8 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 	}
 	if (const char *skin = info.node->GetValueString("skin", nullptr))
 	{
+		if (!g_tb_skin->GetSkinElement(skin))
+			TBDebugPrint("Widget '%s' requesting invalid skin element '%s'\n", GetClassName(), skin);
 		SetSkinBg(skin);
 	}
 	if (TBNode *lp = info.node->GetNode("lp"))
