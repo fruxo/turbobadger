@@ -811,8 +811,6 @@ void TBSkinElement::Write(TBFile * file, TBSkin * skin)
 	if (padding_top || padding_right || padding_bottom || padding_left)
 		obj["padding"] = {padding_top, padding_right, padding_bottom, padding_left};
 
-	if (expand) obj["expand"] = expand;
-
 #define SET(x) do { if (x && x != TB_INVALID_DIMENSION) obj[#x] = x; } while (0)
 	SET(width);
 	SET(height);
