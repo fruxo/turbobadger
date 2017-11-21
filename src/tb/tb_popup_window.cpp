@@ -18,7 +18,8 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 
 	PreferredSize ps = popup->GetPreferredSize(sc);
 
-	// Amount of pixels that should be avoided if the target rect needs to be moved.
+	// Amount of pixels that should be avoided if the target rect
+	// needs to be moved.
 	int avoid_w = 0, avoid_h = 0;
 
 	int x = 0, y = 0;
@@ -28,6 +29,7 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 	if (pos_in_root.x != UNSPECIFIED &&
 		pos_in_root.y != UNSPECIFIED)
 	{
+		// Position is specified in absolute root coords
 		x = pos_in_root.x;
 		y = pos_in_root.y;
 		avoid_w = pos_offset.x;
@@ -60,7 +62,7 @@ TBRect TBPopupAlignment::GetAlignedRect(TBWidget *popup, TBWidget *target) const
 
 	if (align == TB_ALIGN_BOTTOM) // Below point
 	{
-		y = y + avoid_h + h > root->GetRect().h ? y : y + avoid_h;
+		y = y + avoid_h + h > root->GetRect().h ? root->GetRect().h - h : y + avoid_h;
 		x = MIN(x, root->GetRect().w - w);
 	}
 	else if (align == TB_ALIGN_TOP) // Above point
