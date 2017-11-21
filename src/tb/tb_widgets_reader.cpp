@@ -198,12 +198,14 @@ void TBEditField::OnInflate(const INFLATE_INFO &info)
 		else if (stristr(type, "phone"))	SetEditType(EDIT_TYPE_PHONE);
 		else if (stristr(type, "url"))		SetEditType(EDIT_TYPE_URL);
 		else if (stristr(type, "number"))	SetEditType(EDIT_TYPE_NUMBER);
+		else TBDebugPrint("TBEditField: Unknown type '%s'\n", type);
 	}
 	if (const char *text_align = info.node->GetValueString("text-align", nullptr))
 	{
 		if (!strcmp(text_align, "left"))		SetTextAlign(TB_TEXT_ALIGN_LEFT);
 		else if (!strcmp(text_align, "center"))	SetTextAlign(TB_TEXT_ALIGN_CENTER);
 		else if (!strcmp(text_align, "right"))	SetTextAlign(TB_TEXT_ALIGN_RIGHT);
+		else TBDebugPrint("TBEditField: Unknown text-align '%s'\n", text_align);
 	}
 	TBWidget::OnInflate(info);
 }
@@ -221,6 +223,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			ls = LAYOUT_SIZE_AVAILABLE;
 		else if (strstr(size, "gravity"))
 			ls = LAYOUT_SIZE_GRAVITY;
+		else
+			TBDebugPrint("TBLayout: Unknown size '%s'\n", size);
 		SetLayoutSize(ls);
 	}
 	if (const char *pos = info.node->GetValueString("position", nullptr))
@@ -232,6 +236,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			lp = LAYOUT_POSITION_RIGHT_BOTTOM;
 		else if (strstr(pos, "gravity"))
 			lp = LAYOUT_POSITION_GRAVITY;
+		else
+			TBDebugPrint("TBLayout: Unknown position '%s'\n", pos);
 		SetLayoutPosition(lp);
 	}
 	if (const char *pos = info.node->GetValueString("overflow", nullptr))
@@ -239,6 +245,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		LAYOUT_OVERFLOW lo = LAYOUT_OVERFLOW_CLIP;
 		if (strstr(pos, "scroll"))
 			lo = LAYOUT_OVERFLOW_SCROLL;
+		else
+			TBDebugPrint("TBLayout: Unknown overflow '%s'\n", pos);
 		SetLayoutOverflow(lo);
 	}
 	if (const char *dist = info.node->GetValueString("distribution", nullptr))
@@ -248,6 +256,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			ld = LAYOUT_DISTRIBUTION_AVAILABLE;
 		else if (strstr(dist, "gravity"))
 			ld = LAYOUT_DISTRIBUTION_GRAVITY;
+		else
+			TBDebugPrint("TBLayout: Unknown distribution '%s'\n", dist);
 		SetLayoutDistribution(ld);
 	}
 	if (const char *dist = info.node->GetValueString("distribution-position", nullptr))
@@ -257,6 +267,8 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 			ld = LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP;
 		else if (strstr(dist, "right") || strstr(dist, "bottom"))
 			ld = LAYOUT_DISTRIBUTION_POSITION_RIGHT_BOTTOM;
+		else
+			TBDebugPrint("TBLayout: Unknown distribution-position '%s'\n", dist);
 		SetLayoutDistributionPosition(ld);
 	}
 	TBWidget::OnInflate(info);
@@ -271,10 +283,11 @@ void TBScrollContainer::OnInflate(const INFLATE_INFO &info)
 	if (const char *mode = info.node->GetValueString("scroll-mode", nullptr))
 	{
 		if (!strcmp(mode, "xy"))			SetScrollMode(SCROLL_MODE_X_Y);
-		if (!strcmp(mode, "y"))				SetScrollMode(SCROLL_MODE_Y);
-		if (!strcmp(mode, "y-auto"))			SetScrollMode(SCROLL_MODE_Y_AUTO);
-		if (!strcmp(mode, "auto"))			SetScrollMode(SCROLL_MODE_X_AUTO_Y_AUTO);
-		if (!strcmp(mode, "off"))			SetScrollMode(SCROLL_MODE_OFF);
+		else if (!strcmp(mode, "y"))		SetScrollMode(SCROLL_MODE_Y);
+		else if (!strcmp(mode, "y-auto"))	SetScrollMode(SCROLL_MODE_Y_AUTO);
+		else if (!strcmp(mode, "auto"))		SetScrollMode(SCROLL_MODE_X_AUTO_Y_AUTO);
+		else if (!strcmp(mode, "off"))		SetScrollMode(SCROLL_MODE_OFF);
+		else TBDebugPrint("TBScrollContainer: Unknown scroll-mode '%s'\n", mode);
 	}
 	TBWidget::OnInflate(info);
 }
@@ -290,6 +303,7 @@ void TBTabContainer::OnInflate(const INFLATE_INFO &info)
 		else if (!strcmp(align, "top"))		SetAlignment(TB_ALIGN_TOP);
 		else if (!strcmp(align, "right"))	SetAlignment(TB_ALIGN_RIGHT);
 		else if (!strcmp(align, "bottom"))	SetAlignment(TB_ALIGN_BOTTOM);
+		else TBDebugPrint("TBTabContainer: Unknown align '%s'\n", align);
 	}
 	// Allow additional attributes to be specified for the "tabs", "content" and "root" layouts by
 	// calling OnInflate.

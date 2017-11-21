@@ -900,7 +900,7 @@ PreferredSize TBWidget::OnCalculatePreferredContentSize(const SizeConstraints &c
 {
 	// The default preferred size is calculated to satisfy the children
 	// in the best way. Since this is the default, it's probably not a
-	// layouting widget and children are resized purely by gravity.
+	// layout widget and children are resized purely by gravity.
 
 	// Allow this widget a larger maximum if our gravity wants both ways,
 	// otherwise don't grow more than the largest child.
