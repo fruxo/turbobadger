@@ -84,16 +84,16 @@ public:
 		return the one that should be used for inline-find (pressing keys
 		in the list will scroll to the item starting with the same letters),
 		and for sorting the list. */
-	virtual const char *GetItemString(int index) = 0;
+	virtual const char *GetItemString(int index) const = 0;
 
 	/** Get the source to be used if this item should open a sub menu. */
 	virtual TBSelectItemSource *GetItemSubSource(int /*index*/) { return nullptr; }
 
 	/** Get the skin image to be painted before the text for this item. */
-	virtual TBID GetItemImage(int /*index*/) { return TBID(); }
+	virtual TBID GetItemImage(int /*index*/) const { return TBID(); }
 
 	/** Get the if of the item. */
-	virtual TBID GetItemID(int /*index*/) { return TBID(); }
+	virtual TBID GetItemID(int /*index*/) const { return TBID(); }
 
 	/** Create the item representation widget(s). By default, it will create
 		a TBTextField for string-only items, and other types for items that
@@ -101,7 +101,7 @@ public:
 	virtual TBWidget *CreateItemWidget(int index, TBSelectItemViewer *viewer);
 
 	/** Get the number of items */
-	virtual int GetNumItems() = 0;
+	virtual int GetNumItems() const = 0;
 
 	/** Set sort type. Default is TB_SORT_NONE. */
 	void SetSort(TB_SORT sort) { m_sort = sort; }
@@ -128,11 +128,11 @@ public:
 	TBOBJECT_SUBCLASS(TBSelectItemSourceList, TBSelectItemSource);
 	TBSelectItemSourceList() {}
 	virtual ~TBSelectItemSourceList()					{ DeleteAllItems(); }
-	virtual const char *GetItemString(int index)		{ return GetItem(index)->str; }
+	virtual const char *GetItemString(int index) const	{ return GetItem(index)->str; }
 	virtual TBSelectItemSource *GetItemSubSource(int index){ return GetItem(index)->sub_source; }
-	virtual TBID GetItemImage(int index)				{ return GetItem(index)->skin_image; }
-	virtual TBID GetItemID(int index)					{ return GetItem(index)->id; }
-	virtual int GetNumItems()							{ return m_items.GetNumItems(); }
+	virtual TBID GetItemImage(int index) const			{ return GetItem(index)->skin_image; }
+	virtual TBID GetItemID(int index) const				{ return GetItem(index)->id; }
+	virtual int GetNumItems() const						{ return m_items.GetNumItems(); }
 	virtual TBWidget *CreateItemWidget(int index, TBSelectItemViewer *viewer)
 	{
 		if (TBWidget *widget = TBSelectItemSource::CreateItemWidget(index, viewer))
@@ -160,6 +160,9 @@ public:
 
 	/** Get the item at the given index. */
 	T *GetItem(int index)				{ return m_items[index]; }
+
+	/** Get the item at the given index. */
+	const T *GetItem(int index) const	{ return m_items[index]; }
 
 	/** Delete the item at the given index. */
 	void DeleteItem(int index)
@@ -191,12 +194,13 @@ public:
 	TBGenericStringItem(const TBGenericStringItem& other) = delete;
 	TBGenericStringItem(const char *str) : str(str), sub_source(nullptr) {}
 	TBGenericStringItem(const char *str, TBID id, TBValue val = TBValue()) : str(str), id(id), sub_source(nullptr), tag(val) {}
-	TBGenericStringItem(const char *str, TBSelectItemSource *sub_source) : str(str), sub_source(sub_source) {}
+    TBGenericStringItem(const char *str, TBSelectItemSource *sub_source) : str(str), id(str), sub_source(sub_source) {}
 	//const TBGenericStringItem& operator = (const TBGenericStringItem &other) { str.Set(other.str); id = other.id; sub_source = other.sub_source; tag = other.tag; return *this; }
 	const TBGenericStringItem& operator = (const TBGenericStringItem &other) = delete;
 	~TBGenericStringItem() { if (sub_source) delete sub_source; }
 	void SetSkinImage(const TBID &image) { skin_image = image; }
-public:
+
+ public:
 	TBStr str;
 	TBID id;
 	TBID skin_image;

@@ -44,6 +44,7 @@ TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSourc
 	: m_source(source)
 	, m_menu(nullptr)
 {
+	SetID(str);
 	SetSkinBg("TBSelectItem");
 	SetLayoutDistribution(LAYOUT_DISTRIBUTION_AVAILABLE);
 	SetPaintOverflowFadeout(false);
@@ -105,7 +106,8 @@ void TBSimpleLayoutItemWidget::OpenSubMenu()
 		return;
 
 	// Open a new menu window for the submenu with this widget as target
-	m_menu = new TBMenuWindow(this, "submenu");
+	m_menu = new TBMenuWindow(this, TBID());
+	m_menu->SetID(GetID());
 	if (m_menu)
 	{
 		SetState(WIDGET_STATE_SELECTED, true);

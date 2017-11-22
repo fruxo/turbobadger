@@ -30,6 +30,9 @@ void TBID::Set(uint32 newid)
 			all_id_hash.Add(id, new TBID(*this));
 			is_adding = false;
 		}
+		if (TBID *other_id = all_id_hash.Get(id))
+			if (!debug_string.Length())
+				debug_string = other_id->debug_string;
 	}
 }
 
@@ -45,6 +48,9 @@ void TBID::Set(const TBID &newid)
 			// It might be a good idea to change one of them, but it might not matter.
 			if (!debug_string.IsEmpty() && !other_id->debug_string.IsEmpty())
 				assert(other_id->debug_string.Equals(debug_string));
+			// Otherwise copy the debug string
+			if (debug_string.IsEmpty() && !other_id->debug_string.IsEmpty())
+				debug_string = other_id->debug_string;
 		}
 		else if (debug_string.Length())
 		{

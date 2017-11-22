@@ -115,12 +115,16 @@ public:
 	{
 		TBStr str;
 #ifdef TB_RUNTIME_DEBUG_INFO
-		str.Append("\"");
-		str.Append(id.debug_string);
-		str.Append("\"");
-#else
-		str.SetFormatted("%u", (uint32)id);
+		TBID idd;
+		idd.Set(id);
+		if (!idd.debug_string.IsEmpty()) {
+			str.Append("\"");
+			str.Append(idd.debug_string);
+			str.Append("\"");
+		}
+		else
 #endif
+			str.SetFormatted("%u", (uint32)id);
 		return str;
 	}
 
@@ -129,6 +133,10 @@ public:
 	{
 		// Skip these events for now
 		if (ev.IsPointerEvent())
+			return false;
+		if (ev.type == EVENT_TYPE_FINGER_DOWN ||
+			ev.type == EVENT_TYPE_FINGER_UP ||
+			ev.type == EVENT_TYPE_FINGER_MOVE)
 			return false;
 
 		// Always ignore activity in this window (or we might get endless recursion)
@@ -194,6 +202,10 @@ public:
 		case EVENT_TYPE_KEY_UP:			return "KEY_UP";
 		case EVENT_TYPE_SHORTCUT:		return "SHORT_CUT";
 		case EVENT_TYPE_CONTEXT_MENU:	return "CONTEXT_MENU";
+		case EVENT_TYPE_FILE_DROP:		return "FILE_DROP";
+		case EVENT_TYPE_FINGER_DOWN:	return "FINGER_DOWN";
+		case EVENT_TYPE_FINGER_UP:		return "FINGER_UP";
+		case EVENT_TYPE_FINGER_MOVE:	return "FINGER_MOVE";
 		default: return "[UNKNOWN]";
 		}
 	}
