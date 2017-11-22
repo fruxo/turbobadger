@@ -410,9 +410,25 @@ PreferredSize TBLayout::OnCalculatePreferredContentSize(const SizeConstraints &c
 
 WIDGET_HIT_STATUS TBLayout::GetHitStatus(int x, int y)
 {
-	// Return no hit on this widget, but maybe on any of the children.
-	if (TBWidget::GetHitStatus(x, y) && GetWidgetAt(x, y, true))
-		return WIDGET_HIT_STATUS_HIT;
+	//if (TBWidget::GetHitStatus(x, y) && GetWidgetAt(x, y, true))
+	//    return WIDGET_HIT_STATUS_HIT;
+	//return TBWidget::GetHitStatus(x, y);
+	// Return whether any child at point x,y, regardless of whether interactable
+
+	int child_translation_x, child_translation_y;
+	GetChildTranslation(child_translation_x, child_translation_y);
+	x -= child_translation_x;
+	y -= child_translation_y;
+
+	TBWidget *tmp = GetFirstChild();
+	while (tmp)
+	{
+		int cx = x - tmp->GetRect().x;
+		int cy = y - tmp->GetRect().y;
+		if (cx >= 0 && cy >= 0 && cx < tmp->GetRect().w && cy < tmp->GetRect().h)
+			return WIDGET_HIT_STATUS_HIT;
+		tmp = tmp->GetNext();
+	}
 	return WIDGET_HIT_STATUS_NO_HIT;
 }
 
@@ -420,9 +436,13 @@ bool TBLayout::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_WHEEL && ev.modifierkeys == TB_MODIFIER_NONE)
 	{
-		int old_scroll = GetOverflowScroll();
-		SetOverflowScroll(m_overflow_scroll + ev.delta_y * TBSystem::GetPixelsPerLine());
-		return m_overflow_scroll != old_scroll;
+		//int old_scroll = m_overflow_scroll;
+		//SetOverflowScroll(m_overflow_scroll + ev.delta_y * TBSystem::GetPixelsPerLine());
+		//return m_overflow_scroll != old_scroll;
+		if (m_overflow) {
+			ScrollBySmooth(0, ev.delta_y * TBSystem::GetPixelsPerLine());
+			return true;
+		}
 	}
 	return false;
 }
