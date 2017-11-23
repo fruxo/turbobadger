@@ -368,7 +368,10 @@ void TBNode::WriteNode(TBStr & str, int depth)
 	case TBValue::TYPE_NULL:
 		break;
 	case TBValue::TYPE_STRING:
-		selfstr.SetFormatted(" \"%s\"", m_value.GetString());
+		if (strstr(m_value.GetString(), ","))
+			selfstr.SetFormatted(" \"%s\"", m_value.GetString());
+		else
+			selfstr.SetFormatted(" %s", m_value.GetString());
 		break;
 	case TBValue::TYPE_FLOAT:
 	case TBValue::TYPE_INT:

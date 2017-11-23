@@ -83,7 +83,7 @@ public:
 
 /**
 	TBWidgetsReader parse a resource file (or buffer) into a TBNode tree,
-	and turn it into a hierarchy of widgets. It can create all types of widgets
+	and turns it into a hierarchy of widgets. It can create all types of widgets
 	that have a registered factory (TBWidgetFactory). All core widgets have
 	a factory by default, and you can also add your own.
 
@@ -154,9 +154,14 @@ public:
 	bool LoadData(TBWidget *target, const char *data);
 	bool LoadData(TBWidget *target, const char *data, int data_len);
 	void LoadNodeTree(TBWidget *target, TBNode *node);
+
+	bool DumpFile(TBWidget *source, const char *filename);
+	bool DumpData(TBWidget *source, TBStr & data);
+	void DumpNodeTree(TBWidget *source, TBNode *node);
 private:
 	bool Init();
 	bool CreateWidget(TBWidget *target, TBNode *node);
+	bool CreateNode(TBNode *target, TBWidget *widget);
 	TBLinkListOf<TBWidgetFactory> factories;
 };
 

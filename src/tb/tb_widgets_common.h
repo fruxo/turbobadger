@@ -121,6 +121,7 @@ public:
 	virtual int GetValue() const;
 
 	virtual void OnInflate(const INFLATE_INFO &info);
+	virtual void OnDeflate(const INFLATE_INFO &info);
 	virtual void OnCaptureChanged(bool captured);
 	virtual void OnSkinChanged();
 	virtual bool OnEvent(const TBWidgetEvent &ev);

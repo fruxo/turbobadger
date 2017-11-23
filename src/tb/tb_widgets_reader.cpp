@@ -155,6 +155,191 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 	}
 }
 
+/** Create a named ID node, IF id != def */
+static void OptCreateID(TBNode * target, const char * name, const TBID & id, const TBID def = TBID())
+{
+	if (id != def) {
+		TBNode * new_node = TBNode::Create(name);
+		if (id.debug_string.Length())
+			new_node->GetValue().SetString(id.debug_string, TBValue::SET_NEW_COPY);
+		else
+			new_node->GetValue().SetInt(id);
+		target->Add(new_node);
+	}
+}
+
+/** Create a named int node, IF val != def */
+static void OptCreateInt(TBNode * target, const char * name, const int val, const int def = 0)
+{
+	if (val != def) {
+		TBNode * new_node = TBNode::Create(name);
+		new_node->GetValue().SetInt(val);
+		target->Add(new_node);
+	}
+}
+
+/** Create a named float node, IF val != def */
+static void OptCreateFloat(TBNode * target, const char * name, const double val, const double def = 0)
+{
+	if (val != def) {
+		TBNode * new_node = TBNode::Create(name);
+		new_node->GetValue().SetFloat(val);
+		target->Add(new_node);
+	}
+}
+
+/** Create a named string node, IF val != def */
+static void OptCreateString(TBNode * target, const char * name, const char * val, const char * def = nullptr)
+{
+	if (val && strlen(val) && (!def || strcmp(val, def))) {
+		TBNode * new_node = TBNode::Create(name);
+		new_node->GetValue().SetString(val, TBValue::SET_NEW_COPY);
+		target->Add(new_node);
+	}
+}
+
+struct MTEnum {
+	const char *name;
+	int val;
+};
+
+/** Create an enum node, IF val != def */
+static void OptCreateEnum(TBNode * target, const char * name, int val, int def, MTEnum * enums, bool bitmask = false)
+{
+	if (val != def) {
+		TBNode * new_node = TBNode::Create(name);
+		TBStr s;
+		for (MTEnum * e = enums; e->name; e++) {
+			if ((bitmask && (e->val & val)) || (!bitmask && e->val == val)) {
+				if (s.Length())
+					s.Append(" ");
+				s.Append(e->name);
+			}
+		}
+		new_node->GetValue().SetString(s, TBValue::SET_NEW_COPY);
+		target->Add(new_node);
+	}
+}
+
+/** Create a rect node, IF val != def */
+static void OptCreateRect(TBNode * target, const char * name, const TBRect & val, const TBRect & def = TBRect())
+{
+	if (!val.Equals(def)) {
+		TBNode * new_node = TBNode::Create(name);
+		TBStr s;
+		s.SetFormatted("[%d x %d @ %d,%d]", val.w, val.h, val.x, val.y);
+		new_node->GetValue().SetString(s, TBValue::SET_NEW_COPY);
+		target->Add(new_node);
+	}
+}
+
+void TBWidget::OnDeflate(const INFLATE_INFO &info)
+{
+	TBNode * node = info.node;
+	OptCreateID(node, "id", GetID());
+	OptCreateID(node, "group-id", GetGroupID());
+
+#if 0
+	if (info.sync_type == TBValue::TYPE_FLOAT)
+		SetValueDouble(info.node->GetValueFloat("value", 0));
+	else
+		SetValue(info.node->GetValueInt("value", 0));
+
+	if (TBNode *data_node = info.node->GetNode("data"))
+		data.Copy(data_node->GetValue());
+#endif
+
+	OptCreateInt(node, "is-group-root", GetIsGroupRoot(), false);
+	OptCreateInt(node, "is-focusable", GetIsFocusable(), false);
+	OptCreateInt(node, "want-long-click", GetWantLongClick(), false);
+	OptCreateInt(node, "ignore-input", GetIgnoreInput(), false);
+	OptCreateFloat(node, "opacity", GetOpacity(), 1.);
+	OptCreateString(node, "text", GetText());
+
+#if 0
+	if (const char *connection = info.node->GetValueStringRaw("connection", nullptr))
+	{
+		// If we already have a widget value with this name, just connect to it and the widget will
+		// adjust its value to it. Otherwise create a new widget value, and give it the value we
+		// got from the resource.
+		if (TBWidgetValue *value = g_value_group.GetValue(connection))
+			Connect(value);
+		else if (TBWidgetValue *value = g_value_group.CreateValueIfNeeded(connection, info.sync_type))
+		{
+			value->SetFromWidget(this);
+			Connect(value);
+		}
+	}
+#endif
+
+	MTEnum axis [] = {{"x", AXIS_X}, {"y", AXIS_Y}, {nullptr, 0}};
+	OptCreateEnum(node, "axis", GetAxis(), AXIS_X, axis);
+
+	MTEnum gravity [] = {{"left", WIDGET_GRAVITY_LEFT},
+						 {"top", WIDGET_GRAVITY_TOP},
+						 {"right", WIDGET_GRAVITY_RIGHT},
+						 {"bottom", WIDGET_GRAVITY_BOTTOM},
+						 {nullptr, 0}};
+	OptCreateEnum(node, "gravity", GetGravity(), WIDGET_GRAVITY_NONE, gravity, true);
+
+	MTEnum visibility [] = {{"visible", WIDGET_VISIBILITY_VISIBLE},
+							{"invisible", WIDGET_VISIBILITY_INVISIBLE},
+							{"gone", WIDGET_VISIBILITY_GONE},
+							{nullptr, 0}};
+	OptCreateEnum(node, "visibility", GetVisibility(), WIDGET_VISIBILITY_VISIBLE, visibility);
+
+	MTEnum state [] = {{"disabled", WIDGET_STATE_DISABLED},
+					   {"selected", WIDGET_STATE_SELECTED},
+					   {"pressed", WIDGET_STATE_PRESSED},
+					   {"hovered", WIDGET_STATE_HOVERED},
+					   {"focused", WIDGET_STATE_FOCUSED},
+					   {nullptr, 0}};
+	OptCreateEnum(node, "state", GetStateRaw(), WIDGET_STATE_NONE, state, true);
+
+	if (m_skin_bg)
+		OptCreateID(node, "skin", m_skin_bg, node->GetName());
+
+	if (0 && m_font_desc.GetFontFaceID() != 0) {
+		OptCreateID(node, "font>name", m_font_desc.GetID());
+		OptCreateInt(node, "font>size", m_font_desc.GetSize());
+	}
+
+	OptCreateRect(node, "rect", GetRect());
+
+#if 0
+	if (const char *skin = info.node->GetValueString("skin", nullptr))
+	{
+		if (!g_tb_skin->GetSkinElement(skin))
+			TBDebugPrint("Widget '%s' requesting invalid skin element '%s'\n", GetClassName(), skin);
+		SetSkinBg(skin);
+	}
+	if (TBNode *lp = info.node->GetNode("lp"))
+	{
+		LayoutParams layout_params;
+		if (GetLayoutParams())
+			layout_params = *GetLayoutParams();
+		const TBDimensionConverter *dc = g_tb_skin->GetDimensionConverter();
+		if (const char *str = lp->GetValueString("width", nullptr))
+			layout_params.SetWidth(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
+		if (const char *str = lp->GetValueString("height", nullptr))
+			layout_params.SetHeight(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
+		if (const char *str = lp->GetValueString("min-width", nullptr))
+			layout_params.min_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("max-width", nullptr))
+			layout_params.max_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("pref-width", nullptr))
+			layout_params.pref_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("min-height", nullptr))
+			layout_params.min_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("max-height", nullptr))
+			layout_params.max_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		if (const char *str = lp->GetValueString("pref-height", nullptr))
+			layout_params.pref_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
+		SetLayoutParams(layout_params);
+	}
+#endif
+}
+
 TB_WIDGET_FACTORY(TBWindow, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 
 TB_WIDGET_FACTORY(TBButton, TBValue::TYPE_NULL, WIDGET_Z_BOTTOM) {}
@@ -164,6 +349,15 @@ void TBButton::OnInflate(const INFLATE_INFO &info)
 	SetAutoRepeat(info.node->GetValueInt("auto-repeat", GetAutoRepeat()) ? true : false);
 	SetToggleMode(info.node->GetValueInt("toggle-mode", GetToggleMode()) ? true : false);
 	TBWidget::OnInflate(info);
+}
+
+void TBButton::OnDeflate(const INFLATE_INFO &info)
+{
+	TBNode * node = info.node;
+	TBWidget::OnDeflate(info);
+	OptCreateInt(node, "squeezable", GetSqueezable(), false);
+	OptCreateInt(node, "auto-repeat", GetAutoRepeat(), false);
+	OptCreateInt(node, "toggle-mode", GetToggleMode(), false);
 }
 
 TB_WIDGET_FACTORY(TBInlineSelect, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
@@ -282,6 +476,46 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		SetLayoutDistributionPosition(ld);
 	}
 	TBWidget::OnInflate(info);
+}
+
+void TBLayout::OnDeflate(const INFLATE_INFO &info)
+{
+	TBNode * node = info.node;
+	TBWidget::OnDeflate(info);
+
+	OptCreateInt(node, "spacing", GetSpacing(), 0);
+
+	MTEnum size [] = {{"preferred", LAYOUT_SIZE_PREFERRED},
+					  {"available", LAYOUT_SIZE_AVAILABLE},
+					  {"gravity", LAYOUT_SIZE_GRAVITY},
+					  {nullptr, 0}};
+	OptCreateEnum(node, "size", m_packed.layout_mode_size, -1 /*LAYOUT_SIZE_PREFERRED*/, size);
+
+	MTEnum position [] = {{"center", LAYOUT_POSITION_CENTER},
+						  {"left top", LAYOUT_POSITION_LEFT_TOP},
+						  {"bottom right", LAYOUT_POSITION_RIGHT_BOTTOM},
+						  {"gravity", LAYOUT_POSITION_GRAVITY},
+						  {nullptr, 0}};
+	OptCreateEnum(node, "position", m_packed.layout_mode_pos, -1 /*LAYOUT_POSITION_CENTER*/, position);
+
+	MTEnum overflow [] = {{"scroll", LAYOUT_OVERFLOW_SCROLL},
+						  {"clip", LAYOUT_OVERFLOW_CLIP},
+						  {nullptr, 0}};
+	OptCreateEnum(node, "overflow", m_packed.layout_mode_overflow, -1 /*LAYOUT_POSITION_CENTER*/, overflow);
+
+	MTEnum distribution [] = {{"preferred", LAYOUT_DISTRIBUTION_PREFERRED},
+							  {"available", LAYOUT_DISTRIBUTION_AVAILABLE},
+							  {"gravity", LAYOUT_DISTRIBUTION_GRAVITY},
+							  {nullptr, 0}};
+	OptCreateEnum(node, "distribution", m_packed.layout_mode_dist,
+				  -1 /*LAYOUT_POSITION_CENTER*/, distribution);
+
+	MTEnum distribution_pos [] = {{"center", LAYOUT_DISTRIBUTION_POSITION_CENTER},
+								  {"left top", LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP},
+								  {"bottom right", LAYOUT_DISTRIBUTION_POSITION_RIGHT_BOTTOM},
+								  {nullptr, 0}};
+	OptCreateEnum(node, "distribution-position", m_packed.layout_mode_dist_pos,
+				  -1 /*LAYOUT_POSITION_CENTER*/, distribution_pos);
 }
 
 TB_WIDGET_FACTORY(TBScrollContainer, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
@@ -533,6 +767,33 @@ void TBWidgetsReader::LoadNodeTree(TBWidget *target, TBNode *node)
 		CreateWidget(target, child);
 }
 
+bool TBWidgetsReader::DumpFile(TBWidget *source, const char *filename)
+{
+	TBNode node;
+	DumpNodeTree(source, &node);
+	if (!node.WriteFile(filename))
+		return false;
+	return true;
+}
+
+bool TBWidgetsReader::DumpData(TBWidget *source, TBStr & data)
+{
+	TBNode node;
+	DumpNodeTree(source, &node);
+	node.WriteNode(data);
+	return true;
+}
+
+void TBWidgetsReader::DumpNodeTree(TBWidget *source, TBNode *node)
+{
+	// Dump the top widget into node
+	CreateNode(node, source);
+
+	// Iterate through all widgets and create child nodes
+	for (TBWidget *child = source->GetFirstChild(); child; child = child->GetNext())
+		CreateNode(node, child);
+}
+
 void TBWidgetsReader::SetIDFromNode(TBID &id, TBNode *node)
 {
 	if (!node)
@@ -571,6 +832,35 @@ bool TBWidgetsReader::CreateWidget(TBWidget *target, TBNode *node)
 
 	if (node->GetValueInt("autofocus", 0))
 		new_widget->SetFocus(WIDGET_FOCUS_REASON_UNKNOWN);
+
+	return true;
+}
+
+bool TBWidgetsReader::CreateNode(TBNode *target, TBWidget *widget)
+{
+	// Find a widget creator from the node name
+	TBWidgetFactory *wc = nullptr;
+	for (wc = factories.GetFirst(); wc; wc = wc->GetNext())
+		if (strcmp(widget->GetClassName(), wc->name) == 0)
+			break;
+	if (!wc)
+		return false;
+
+	// Create the node
+	TBNode *new_node = TBNode::Create(widget->GetClassName());
+	if (!new_node)
+		return false;
+    INFLATE_INFO info(this, widget, new_node, wc->sync_type);
+
+	// Read properties and add i to the hierarchy.
+	widget->OnDeflate(info);
+
+	// If this assert is trigged, you probably forgot to call TBWidget::OnInflate from an overridden version.
+	target->Add(new_node);
+
+	// Iterate through all children and create their nodes
+	for (TBWidget *w = widget->GetFirstChild(); w; w = w->GetNext())
+		CreateNode(new_node, w);
 
 	return true;
 }
