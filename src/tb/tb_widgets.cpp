@@ -117,6 +117,19 @@ void TBWidget::SetRect(const TBRect &rect)
 	Invalidate();
 }
 
+void TBWidget::SetSize(int width, int height)
+{
+	int dw = width - m_rect.w;
+	int dh = height - m_rect.h;
+	TBRect rect(m_rect.x, m_rect.y, width, height);
+	// If the widget is anchored to an edge, move its origin appropriately
+	if ((m_gravity & WIDGET_GRAVITY_RIGHT) && !((m_gravity & WIDGET_GRAVITY_LEFT)))
+		rect.x -= dw;
+	if ((m_gravity & WIDGET_GRAVITY_BOTTOM) && !((m_gravity & WIDGET_GRAVITY_TOP)))
+		rect.y -= dh;
+	SetRect(rect);
+}
+
 void TBWidget::Invalidate()
 {
 	if (!GetVisibilityCombined() && !m_rect.IsEmpty())

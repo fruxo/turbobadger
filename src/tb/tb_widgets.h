@@ -426,7 +426,7 @@ public:
 	void SetPosition(const TBPoint &pos) { SetRect(TBRect(pos.x, pos.y, m_rect.w, m_rect.h)); }
 
 	/** Set size of this widget. */
-	void SetSize(int width, int height) { SetRect(TBRect(m_rect.x, m_rect.y, width, height)); }
+	void SetSize(int width, int height);
 
 	/** Invalidate should be called if the widget need to be repainted,
 		to make sure the renderer repaints it and its children next frame. */
@@ -766,13 +766,13 @@ public:
 	virtual void OnInflateChild(TBWidget *child);
 
 	/** Called when this widget is inflated from resources, before any children
-		has been inflated. This will read generic widget properties and add the
+		have been inflated. This will read generic widget properties and add the
 		widget to the hierarchy if it's not already added. If overridden, you
 		must call the super implementation. */
 	virtual void OnInflate(const INFLATE_INFO &info);
 
 	/** Called when this widget is deflated to a node, before any
-		children has been deflated. This will write generic widget
+		children have been deflated. This will write generic widget
 		properties and add the widget to the node. If overridden, you
 		must call the super implementation. */
 	virtual void OnDeflate(const INFLATE_INFO &info);
@@ -1011,9 +1011,11 @@ public:
 		This will also do some generic key handling, such as cycling focus on tab etc. */
 	bool InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifierkeys, bool down);
 
-	/** A widget that receive a EVENT_TYPE_POINTER_DOWN event, will stay "captured" until EVENT_TYPE_POINTER_UP
-		is received. While captured, all EVENT_TYPE_POINTER_MOVE are sent to it. This method can force release the capture,
-		which may happen f.ex if the TBWidget is removed while captured. */
+	/** A widget that receive a EVENT_TYPE_POINTER_DOWN event, will
+		stay "captured" until EVENT_TYPE_POINTER_UP is received. While
+		captured, all EVENT_TYPE_POINTER_MOVE are sent to it. This
+		method can force release the capture, which may happen, ie. if
+		the TBWidget is removed while captured. */
 	void ReleaseCapture();
 
 	/** Make x and y (relative to this widget) relative to the upper left corner of the root widget. */
@@ -1104,7 +1106,7 @@ public:
 	static int pointer_move_widget_y;	///< Pointer y position on last pointer event, relative to the captured widget (if any) or hovered widget.
 	static bool cancel_click;			///< true if the pointer up event should not generate a click event.
 	static bool update_widget_states;	///< true if something has called InvalidateStates() and it still hasn't been updated.
-	static bool update_skin_states;		///< true if something has called InvalidateStates() and skin still hasn't been updated.
+	static bool update_skin_states;		///< true if something has called InvalidateSkinStates() and skin still hasn't been updated.
 	static bool show_focus_state;		///< true if the focused state should be painted automatically.
 
 	void StopLongClickTimer();

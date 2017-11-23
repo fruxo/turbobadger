@@ -280,7 +280,10 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 						 {"right", WIDGET_GRAVITY_RIGHT},
 						 {"bottom", WIDGET_GRAVITY_BOTTOM},
 						 {nullptr, 0}};
-	OptCreateEnum(node, "gravity", GetGravity(), WIDGET_GRAVITY_NONE, gravity, true);
+	if (GetGravity() == WIDGET_GRAVITY_ALL)
+		OptCreateString(node, "gravity", "all");
+	else
+		OptCreateEnum(node, "gravity", GetGravity(), WIDGET_GRAVITY_NONE, gravity, true);
 
 	MTEnum visibility [] = {{"visible", WIDGET_VISIBILITY_VISIBLE},
 							{"invisible", WIDGET_VISIBILITY_INVISIBLE},
@@ -307,12 +310,6 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 	OptCreateRect(node, "rect", GetRect());
 
 #if 0
-	if (const char *skin = info.node->GetValueString("skin", nullptr))
-	{
-		if (!g_tb_skin->GetSkinElement(skin))
-			TBDebugPrint("Widget '%s' requesting invalid skin element '%s'\n", GetClassName(), skin);
-		SetSkinBg(skin);
-	}
 	if (TBNode *lp = info.node->GetNode("lp"))
 	{
 		LayoutParams layout_params;
@@ -840,17 +837,18 @@ bool TBWidgetsReader::CreateNode(TBNode *target, TBWidget *widget)
 {
 	// Find a widget creator from the node name
 	TBWidgetFactory *wc = nullptr;
+	TBValue::TYPE sync_type = TBValue::TYPE_NULL;
 	for (wc = factories.GetFirst(); wc; wc = wc->GetNext())
 		if (strcmp(widget->GetClassName(), wc->name) == 0)
 			break;
-	if (!wc)
-		return false;
+	if (wc)
+		sync_type = wc->sync_type;
 
 	// Create the node
 	TBNode *new_node = TBNode::Create(widget->GetClassName());
 	if (!new_node)
 		return false;
-    INFLATE_INFO info(this, widget, new_node, wc->sync_type);
+    INFLATE_INFO info(this, widget, new_node, sync_type);
 
 	// Read properties and add i to the hierarchy.
 	widget->OnDeflate(info);
