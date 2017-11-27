@@ -853,7 +853,7 @@ bool TBWidgetsReader::CreateNode(TBNode *target, TBWidget *widget)
 	// Read properties and add i to the hierarchy.
 	widget->OnDeflate(info);
 
-	// If this assert is trigged, you probably forgot to call TBWidget::OnInflate from an overridden version.
+	// Add the node to the node tree
 	target->Add(new_node);
 
 	// Iterate through all children and create their nodes
