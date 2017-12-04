@@ -190,13 +190,14 @@ private:
 class TBGenericStringItem
 {
 public:
-	//TBGenericStringItem(const TBGenericStringItem& other) : str(other.str), id(other.id), sub_source(other.sub_source), tag(other.tag) {}
-	TBGenericStringItem(const TBGenericStringItem& other) = delete;
-	TBGenericStringItem(const char *str) : str(str), sub_source(nullptr) {}
+	TBGenericStringItem(const char *str) : str(str), id(str), sub_source(nullptr) {}
 	TBGenericStringItem(const char *str, TBID id, TBValue val = TBValue()) : str(str), id(id), sub_source(nullptr), tag(val) {}
     TBGenericStringItem(const char *str, TBSelectItemSource *sub_source) : str(str), id(str), sub_source(sub_source) {}
-	//const TBGenericStringItem& operator = (const TBGenericStringItem &other) { str.Set(other.str); id = other.id; sub_source = other.sub_source; tag = other.tag; return *this; }
+
+	// protect the sub_source pointer from copy, since we own it.
 	const TBGenericStringItem& operator = (const TBGenericStringItem &other) = delete;
+	TBGenericStringItem(const TBGenericStringItem& other) = delete;
+
 	~TBGenericStringItem() { if (sub_source) delete sub_source; }
 	void SetSkinImage(const TBID &image) { skin_image = image; }
 

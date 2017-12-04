@@ -93,6 +93,7 @@ std::string TBColorManager::GetColorID(const TBColor & color) const
 
 void TBColorManager::Dump(const char * filename)
 {
+#ifdef TB_RUNTIME_DEBUG_INFO
 	TBFile * file = TBFile::Open(filename, TBFile::MODE_WRITETRUNC);
 	if (file) {
 		TBStr str;
@@ -106,6 +107,7 @@ void TBColorManager::Dump(const char * filename)
 		}
 		delete file;
 	}
+#endif
 }
 
 } // namespace tb

@@ -81,8 +81,10 @@ public:
 	virtual ~TBFile() {}
 	virtual long Size() = 0;
 	virtual size_t Read(void *buf, size_t elemSize, size_t count) = 0;
+#ifdef TB_RUNTIME_DEBUG_INFO
 	virtual size_t Write(const void *buf, size_t elemSize, size_t count) = 0;
 	virtual size_t Write(const TBStr & str) = 0;
+#endif
 };
 
 } // namespace tb

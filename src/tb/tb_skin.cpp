@@ -251,8 +251,10 @@ bool TBSkin::Write(const char * skin_file)
 	TBFile * file = TBFile::Open(skin_file, TBFile::MODE_WRITETRUNC);
 	if (file) {
 		TBHashTableIteratorOf<TBSkinElement> it(&m_elements);
+#ifdef TB_RUNTIME_DEBUG_INFO
 		while (TBSkinElement *element = it.GetNextContent())
 			element->Write(file, this);
+#endif
 		delete file;
 		return true;
 	}
@@ -799,7 +801,7 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 
 void TBSkinElement::Write(TBFile * file, TBSkin * skin)
 {
-#if 1
+#ifdef TB_RUNTIME_DEBUG_INFO
 	json obj;
 	obj["name"] = name.CStr();
 

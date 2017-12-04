@@ -347,7 +347,10 @@ bool TBNode::WriteFile(const char *filename)
 	if (!f)
 		return false;
 	WriteNode(selfstr);
-	bool success = selfstr.Length() == (int)f->Write(selfstr.CStr(), sizeof(char), selfstr.Length());
+	bool success = true;
+#ifdef TB_RUNTIME_DEBUG_INFO
+	success = selfstr.Length() == (int)f->Write(selfstr.CStr(), sizeof(char), selfstr.Length());
+#endif
 	delete f;
 	return success;
 }

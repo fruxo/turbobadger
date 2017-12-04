@@ -160,9 +160,11 @@ static void OptCreateID(TBNode * target, const char * name, const TBID & id, con
 {
 	if (id != def) {
 		TBNode * new_node = TBNode::Create(name);
+#ifdef TB_RUNTIME_DEBUG_INFO
 		if (id.debug_string.Length())
 			new_node->GetValue().SetString(id.debug_string, TBValue::SET_NEW_COPY);
 		else
+#endif
 			new_node->GetValue().SetInt(id);
 		target->Add(new_node);
 	}
