@@ -139,6 +139,7 @@ public:
 		{
 			T *item = m_items[index];
 			widget->SetID(item->id);
+			widget->SetStateRaw(item->state);
 			return widget;
 		}
 		return nullptr;
@@ -190,9 +191,12 @@ private:
 class TBGenericStringItem
 {
 public:
-	TBGenericStringItem(const char *str) : str(str), id(str), sub_source(nullptr) {}
-	TBGenericStringItem(const char *str, TBID id, TBValue val = TBValue()) : str(str), id(id), sub_source(nullptr), tag(val) {}
-    TBGenericStringItem(const char *str, TBSelectItemSource *sub_source) : str(str), id(str), sub_source(sub_source) {}
+#define def_skin TBIDC("NormalItem")
+	TBGenericStringItem(const char *str) : str(str), id(str) {}
+	TBGenericStringItem(const char *str, TBID id, TBValue val = TBValue(), TBID img_id = def_skin)
+		: str(str), id(id), skin_image(img_id), tag(val) {}
+    TBGenericStringItem(const char *str, TBSelectItemSource *sub_source, TBID img_id = def_skin)
+		: str(str), id(str), skin_image(img_id), sub_source(sub_source) {}
 
 	// protect the sub_source pointer from copy, since we own it.
 	const TBGenericStringItem& operator = (const TBGenericStringItem &other) = delete;
@@ -204,11 +208,18 @@ public:
  public:
 	TBStr str;
 	TBID id;
-	TBID skin_image;
-	TBSelectItemSource *sub_source;
+	TBID skin_image = def_skin;
+	TBSelectItemSource *sub_source = nullptr;
+	WIDGET_STATE state = WIDGET_STATE_NONE;
 
 	/** This value is free to use for anything. It's not used internally. */
 	TBValue tag;
+};
+
+/** Item Separator */
+class TBGenericSeparatorItem : public TBGenericStringItem {
+public:
+	TBGenericSeparatorItem() : TBGenericStringItem("-", nullptr, TBID()) {}
 };
 
 /** TBGenericStringItemSource is a item source list providing items of type TBGenericStringItem. */
@@ -216,7 +227,7 @@ public:
 class TBGenericStringItemSource : public TBSelectItemSourceList<TBGenericStringItem> {
 public:
     TBOBJECT_SUBCLASS(TBGenericStringItemSource, TBSelectItemSourceList<TBGenericStringItem>);
- };
+};
 
 } // namespace tb
 
