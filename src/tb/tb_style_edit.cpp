@@ -113,6 +113,7 @@ static bool is_never_break_before(const char *str, int ofs)
 		// Simple test if it's the first quote in a word surrounded by space.
 		if (ofs > 0 && !is_space(str[ofs - 1]))
 			return true;
+		/* Intentionally Fall Through */
 	default:
 		return false;
 	}
@@ -134,6 +135,7 @@ static bool is_never_break_after(const char *str, int ofs)
 		// Simple test if it's the last quote in a word surrounded by space.
 		if (!is_space(str[ofs+ 1]))
 			return true;
+		/* Intentionally Fall Through */
 	default:
 		return false;
 	}
