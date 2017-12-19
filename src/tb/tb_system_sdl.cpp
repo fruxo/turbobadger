@@ -20,7 +20,7 @@
 #include <emscripten.h>
 #endif
 
-#ifdef __APPLE__
+#ifdef SPIND_XCODE
 #include "SDL2/SDL.h"
 #else
 #include "SDL.h"

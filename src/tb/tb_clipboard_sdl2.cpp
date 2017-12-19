@@ -7,7 +7,7 @@
 
 #ifdef TB_CLIPBOARD_SDL2
 
-#ifdef __APPLE__
+#ifdef SPIND_XCODE
 #include "SDL2/SDL.h"
 #else
 #include "SDL.h"
