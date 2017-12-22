@@ -190,6 +190,14 @@ TBWidget *TBSelectItemSource::CreateItemWidget(int index, TBSelectItemViewer * /
 	return nullptr;
 }
 
+int TBSelectItemSource::FindIDIndex(TBID id) const
+{
+	for (int index = 0; index < GetNumItems(); index++)
+		if (GetItemID(index) == id)
+			return index;
+	return -1;
+}
+
 void TBSelectItemSource::InvokeItemChanged(int index, TBSelectItemViewer *exclude_viewer)
 {
 	TBLinkListOf<TBSelectItemViewer>::Iterator iter = m_viewers.IterateForward();

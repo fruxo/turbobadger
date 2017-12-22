@@ -131,10 +131,10 @@ TBImage TBImageManager::GetImage(const char *filename)
 		{
 			TBTempBuffer filename_dst_DPI;
 			g_tb_skin->GetDimensionConverter()->GetDstDPIFilename(filename, &filename_dst_DPI);
-			fragment = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(), false);
+			fragment = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(), false, TBSystem::GetDPI());
 		}
 		if (!fragment)
-			fragment = m_frag_manager.GetFragmentFromFile(filename, false);
+			fragment = m_frag_manager.GetFragmentFromFile(filename, false, TBSystem::GetDPI());
 
 		image_rep = new TBImageRep(this, fragment, hash_key);
 		if (!image_rep || !fragment || !m_image_rep_hash.Add(hash_key, image_rep))

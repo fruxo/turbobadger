@@ -30,7 +30,7 @@ class TBImageLoader
 public:
 	/** Static method used to create an image loader. The system must implement this
 		function and create an implementation of the TBImageLoader interface. */
-	static TBImageLoader *CreateFromFile(const char *filename);
+	static TBImageLoader *CreateFromFile(const char *filename, float dpi);
 
 	virtual ~TBImageLoader() {}
 
@@ -186,7 +186,7 @@ public:
 	/** Get the fragment with the given image filename. If it's not already loaded,
 		it will be loaded into a new fragment with the filename as id.
 		returns nullptr on fail. */
-	TBBitmapFragment *GetFragmentFromFile(const char *filename, bool dedicated_map);
+	TBBitmapFragment *GetFragmentFromFile(const char *filename, bool dedicated_map, float dpi);
 
 	/** Get the fragment with the given id, or nullptr if it doesn't exist. */
 	TBBitmapFragment *GetFragment(const TBID &id) const;

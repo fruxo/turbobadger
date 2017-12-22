@@ -76,7 +76,7 @@ public:
 	virtual ~TBSelectItemSource();
 	TBOBJECT_SUBCLASS(TBSelectItemSource, TBTypedObject);
 
-	/** Return true if a item matches the given filter text.
+	/** Return true if an item matches the given filter text.
 		By default, it returns true if GetItemString contains filter. */
 	virtual bool Filter(int index, const char *filter);
 
@@ -92,7 +92,7 @@ public:
 	/** Get the skin image to be painted before the text for this item. */
 	virtual TBID GetItemImage(int /*index*/) const { return TBID(); }
 
-	/** Get the if of the item. */
+	/** Get the id of the item. */
 	virtual TBID GetItemID(int /*index*/) const { return TBID(); }
 
 	/** Create the item representation widget(s). By default, it will create
@@ -102,6 +102,9 @@ public:
 
 	/** Get the number of items */
 	virtual int GetNumItems() const = 0;
+
+	/** Get the index of the first item having this id or -1 if not found */
+	virtual int FindIDIndex(TBID id) const;
 
 	/** Set sort type. Default is TB_SORT_NONE. */
 	void SetSort(TB_SORT sort) { m_sort = sort; }
@@ -164,6 +167,12 @@ public:
 
 	/** Get the item at the given index. */
 	const T *GetItem(int index) const	{ return m_items[index]; }
+
+	/** Get the item at the given index. */
+	T *FindItemByID(TBID id)			{ int index = FindIDIndex(id); return index >= 0 ? m_items[index] : nullptr; }
+
+	/** Get the item at the given index. */
+	const T *FindItemByID(TBID id) const { int index = FindIDIndex(id); return index >= 0 ? m_items[index] : nullptr; }
 
 	/** Delete the item at the given index. */
 	void DeleteItem(int index)

@@ -27,6 +27,11 @@
 // support all formats fully)
 #include "thirdparty/stb_image.h"
 
+#define NANOSVG_IMPLEMENTATION
+#include "thirdparty/nanosvg.h"
+#define NANOSVGRAST_IMPLEMENTATION
+#include "thirdparty/nanosvgrast.h"
+
 #pragma GCC diagnostic pop
 
 namespace tb {
@@ -45,13 +50,44 @@ public:
 	virtual uint32 *Data() { return (uint32*)data; }
 };
 
-TBImageLoader *TBImageLoader::CreateFromFile(const char *filename)
+class NSVG_Loader : public TBImageLoader
+{
+public:
+	int width, height;
+	unsigned char *data;
+
+	NSVG_Loader() : width(0), height(0), data(nullptr) {}
+	~NSVG_Loader() { stbi_image_free(data); }
+
+	virtual int Width() { return width; }
+	virtual int Height() { return height; }
+	virtual uint32 *Data() { return (uint32*)data; }
+};
+
+TBImageLoader *TBImageLoader::CreateFromFile(const char *filename, float dpi)
 {
 	TBTempBuffer buf;
 	if (buf.AppendFile(filename))
 	{
 		int w, h, comp;
-		if (unsigned char *img_data = stbi_load_from_memory(
+		if (strstr(filename, ".svg")) {
+			if (NSVGimage * image = nsvgParse((char *)buf.GetData(), "px", dpi)) {
+				struct NSVGrasterizer * rast = nsvgCreateRasterizer();
+				unsigned char * img_data = (unsigned char *)malloc(image->width * image->height * 4);
+				nsvgRasterize(rast, image, 0,0,1, img_data, image->width, image->height, image->width * 4);
+				nsvgDeleteRasterizer(rast);
+				nsvgDelete(image);
+				if (NSVG_Loader * img = new NSVG_Loader()) {
+					img->width = w;
+					img->height = h;
+					img->data = img_data;
+					return img;
+				}
+				else
+					free(img_data);
+			}
+		}
+		else if (unsigned char *img_data = stbi_load_from_memory(
 			(unsigned char*) buf.GetData(), buf.GetAppendPos(), &w, &h, &comp, 4))
 		{
 			if (STBI_Loader *img = new STBI_Loader())

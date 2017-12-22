@@ -311,7 +311,9 @@ bool TBSkin::ReloadBitmapsInternal()
 			if (m_dim_conv.NeedConversion())
 			{
 				m_dim_conv.GetDstDPIFilename(element->bitmap_file, &filename_dst_DPI);
-				element->bitmap = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(), dedicated_map);
+				element->bitmap = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(),
+																	 dedicated_map,
+																	 m_dim_conv.GetDstDPI());
 				if (element->bitmap)
 					bitmap_dpi = m_dim_conv.GetDstDPI();
 			}
@@ -319,7 +321,7 @@ bool TBSkin::ReloadBitmapsInternal()
 
 			// If we still have no bitmap fragment, load from default file.
 			if (!element->bitmap)
-				element->bitmap = m_frag_manager.GetFragmentFromFile(element->bitmap_file, dedicated_map);
+				element->bitmap = m_frag_manager.GetFragmentFromFile(element->bitmap_file, dedicated_map, bitmap_dpi);
 
 			if (!element->bitmap) {
 				TBDebugPrint("Bitmap %s: '%s' load failed\n", element->name.CStr(), element->bitmap_file.CStr());

@@ -409,7 +409,7 @@ TBBitmapFragmentManager::~TBBitmapFragmentManager()
 	Clear();
 }
 
-TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filename, bool dedicated_map)
+TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filename, bool dedicated_map, float dpi)
 {
 	TBID id(filename);
 
@@ -419,7 +419,7 @@ TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filen
 		return frag;
 
 	// Load the file
-	TBImageLoader *img = TBImageLoader::CreateFromFile(filename);
+	TBImageLoader *img = TBImageLoader::CreateFromFile(filename, dpi);
 	if (!img)
 		return nullptr;
 
