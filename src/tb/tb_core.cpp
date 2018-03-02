@@ -48,6 +48,8 @@ void tb_core_shutdown()
 	g_widgets_reader = nullptr;
 	delete g_tb_skin;
 	g_tb_skin = nullptr;
+	delete g_color_manager;
+	g_color_manager = nullptr;
 	delete g_font_manager;
 	g_font_manager = nullptr;
 	delete g_tb_lng;
