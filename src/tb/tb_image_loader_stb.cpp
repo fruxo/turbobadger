@@ -57,7 +57,7 @@ public:
 	unsigned char *data;
 
 	NSVG_Loader() : width(0), height(0), data(nullptr) {}
-	~NSVG_Loader() { stbi_image_free(data); }
+	~NSVG_Loader() { free(data); }
 
 	virtual int Width() { return width; }
 	virtual int Height() { return height; }
@@ -78,8 +78,8 @@ TBImageLoader *TBImageLoader::CreateFromFile(const char *filename, float dpi)
 				nsvgDeleteRasterizer(rast);
 				nsvgDelete(image);
 				if (NSVG_Loader * img = new NSVG_Loader()) {
-					img->width = w;
-					img->height = h;
+					img->width = image->width;
+					img->height = image->height;
 					img->data = img_data;
 					return img;
 				}
