@@ -251,6 +251,7 @@ MAKE_ENUM_FLAG_COMBO(WIDGET_GRAVITY);
 enum AXIS {
 	AXIS_X, ///< Horizontal layout
 	AXIS_Y, ///< Vertical layout
+	AXIS_Z, ///< Depth
 };
 
 /** Defines how the size in one axis depend on the other axis when a widgets size is
@@ -420,7 +421,7 @@ public:
 	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
 		The skin may expand outside this rect to draw f.ex shadows. */
 	virtual void SetRect(const TBRect &rect);
-	inline TBRect GetRect() const { return m_rect; }
+	inline const TBRect & GetRect() const { return m_rect; }
 
 	/** Set position of this widget in its parent. The position is relative to the parent widget. */
 	void SetPosition(const TBPoint &pos) { SetRect(TBRect(pos.x, pos.y, m_rect.w, m_rect.h)); }
