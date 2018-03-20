@@ -226,27 +226,6 @@ const char * TBSystem::GetRoot()
 	return basepath;
 }
 
-const char * TBSystem::GetPrefPath()
-{
-	static const char * prefpath = NULL;
-	if (!prefpath)
-	{
-#ifdef __EMSCRIPTEN__
-		EM_ASM(
-			   // /data should have been mounted in preRun(), check if Module.syncdone
-			   if (!Module.syncdone) {
-				   Module.print("WARNING GetPrefPath() : fs syncdone=" + Module.syncdone);
-				   assert(Module.syncdone);
-			   }
-			   );
-		prefpath = "/data/";
-#else
-		prefpath = SDL_GetPrefPath("spindrops", "SpinDrops");
-#endif
-	}
-	return prefpath;
-}
-
 } // namespace tb
 
 #endif // TB_SYSTEM_SDL
