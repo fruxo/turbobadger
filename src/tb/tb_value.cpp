@@ -364,4 +364,51 @@ const char *TBValue::GetString() const
 	return m_packed.type == TYPE_STRING ? val_str : "";
 }
 
+bool TBValue::Equals(int value) const
+{
+	if (m_packed.type == TYPE_INT)
+		return val_int == value;
+	if (m_packed.type == TYPE_FLOAT)
+		return val_float == value;
+	if (m_packed.type == TYPE_STRING)
+		return GetInt() == value;
+	return false;
+}
+
+bool TBValue::Equals(double value) const
+{
+	if (m_packed.type == TYPE_INT)
+		return val_int == value;
+	if (m_packed.type == TYPE_FLOAT)
+		return val_float == value;
+	if (m_packed.type == TYPE_STRING)
+		return GetFloat() == value;
+	return false;
+}
+
+bool TBValue::Equals(const char * value) const
+{
+	if (m_packed.type == TYPE_INT)
+		return val_int == atoi(value);
+	if (m_packed.type == TYPE_FLOAT)
+		return val_float == atof(value);
+	if (m_packed.type == TYPE_STRING)
+		return !strcmp(val_str, value);
+	return false;
+}
+
+bool TBValue::Equals(const TBValue & value) const
+{
+	switch (m_packed.type) {
+	case TYPE_NULL:		return value.m_packed.type == TYPE_NULL;
+	case TYPE_STRING:	return value.m_packed.type == TYPE_STRING && !strcmp(val_str, value.val_str);
+	case TYPE_FLOAT:	return Equals(value.GetFloat());
+	case TYPE_INT:		return Equals(value.GetFloat());
+	case TYPE_OBJECT:
+	case TYPE_ARRAY:
+		return false;
+	}
+}
+
+
 } // namespace tb

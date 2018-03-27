@@ -131,26 +131,35 @@ bool TBWidgetValue::SyncToWidget(TBWidget *dst_widget)
 
 void TBWidgetValue::SetInt(int value)
 {
-	m_value.SetInt(value);
-	SyncToWidgets(nullptr);
+	if (!m_value.Equals(value)) {
+		m_value.SetInt(value);
+		SyncToWidgets(nullptr);
+	}
 }
 
 bool TBWidgetValue::SetText(const char *text)
 {
-	m_value.SetString(text, TBValue::SET_NEW_COPY);
-	return SyncToWidgets(nullptr);
+	if (!m_value.Equals(text)) {
+		m_value.SetString(text, TBValue::SET_NEW_COPY);
+		return SyncToWidgets(nullptr);
+	}
+	return false;
 }
 
 void TBWidgetValue::SetDouble(double value)
 {
-	m_value.SetFloat(value);
-	SyncToWidgets(nullptr);
+	if (!m_value.Equals(value)) {
+		m_value.SetFloat(value);
+		SyncToWidgets(nullptr);
+	}
 }
 
 void TBWidgetValue::SetValue(const TBValue & value)
 {
-	m_value = value;
-	SyncToWidgets(nullptr);
+	if (!m_value.Equals(value)) {
+		m_value = value;
+		SyncToWidgets(nullptr);
+	}
 }
 
 // == TBValueGroup ================================================================================

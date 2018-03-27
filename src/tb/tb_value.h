@@ -40,6 +40,7 @@ public:
 	~TBValueArray();
 	TBValue *AddValue();
 	TBValue *GetValue(int index);
+	bool Equals(const TBValueArray & rhs) const;
 	static TBValueArray *Clone(TBValueArray *source);
 	int GetLength() const { return m_list.GetNumItems(); }
 private:
@@ -116,6 +117,11 @@ public:
 	const char *GetString() const;
 	TBTypedObject *GetObject() const { return IsObject() ? val_obj : nullptr; }
 	TBValueArray *GetArray() const { return IsArray() ? val_arr : nullptr; }
+
+	bool Equals(int value) const;
+	bool Equals(double value) const;
+	bool Equals(const char * value) const;
+	bool Equals(const TBValue & value) const;
 
 	TYPE GetType() const { return (TYPE) m_packed.type; }
 	bool IsString() const { return m_packed.type == TYPE_STRING; }
