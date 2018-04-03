@@ -406,6 +406,7 @@ bool TBValue::Equals(const TBValue & value) const
 	case TYPE_INT:		return Equals(value.GetFloat());
 	case TYPE_OBJECT:
 	case TYPE_ARRAY:
+	default:
 		return false;
 	}
 }
