@@ -14,8 +14,6 @@
 #include "tb_linklist.h"
 #include "tb_dimension.h"
 #include "tb_value.h"
-#include "nlohmann/json.hpp"
-using json = nlohmann::json;
 
 namespace tb {
 

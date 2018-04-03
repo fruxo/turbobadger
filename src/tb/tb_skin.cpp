@@ -10,8 +10,10 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+#include "nlohmann/json.hpp"
 
 namespace tb {
+using nlohmann::json;
 
 // == Util functions ==========================================================
 
