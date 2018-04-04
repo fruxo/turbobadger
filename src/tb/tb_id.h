@@ -41,7 +41,8 @@ public:
 		It should not to be used in your code! */
 #ifdef TB_RUNTIME_DEBUG_INFO
 	friend class TBLanguage;
-	TBStr debug_string;
+	const char * c_str() const;
+	mutable TBStr debug_string;
 #endif
 };
 
