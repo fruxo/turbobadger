@@ -87,7 +87,7 @@ void TBID::Set(const char *string)
 	}
 }
 
-const const char * TBID::c_str() const
+const char * TBID::c_str() const
 {
 	if (debug_string.IsEmpty())
 		debug_string.SetFormatted("%d",id);
