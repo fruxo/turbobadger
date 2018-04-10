@@ -2,7 +2,7 @@
 // ==      This file is a part of Turbo Badger. (C) 2011-2014, Emil Segerås      ==
 // ==                     See tb_core.h for more information.                    ==
 // ================================================================================
-
+//#include <iostream>
 #include "tb_font_renderer.h"
 #include "tb_renderer.h"
 #include "tb_system.h"
@@ -28,7 +28,7 @@ static TBHashTableOf<FreetypeFace> ft_face_cache;
 class FreetypeFace
 {
 public:
-	FreetypeFace() : hashID(0), f_face(0), refCount(1), outline(false) { }
+	FreetypeFace() : hashID(0), f_face(0), refCount(1) { }
 	~FreetypeFace()
 	{
 		if (hashID)
@@ -46,7 +46,6 @@ public:
 	TBTempBuffer ttf_buffer;
 	FT_Face f_face;
 	unsigned int refCount;
-	bool outline;
 };
 
 
@@ -69,8 +68,9 @@ private:
 
 	FT_Size m_size;
 	FreetypeFace *m_face;
-	TBColor m_data[1024]; // 32x32
-	static const int maxcw = 32;
+	//bool m_outline;
+	//TBColor m_data[1024]; // 32x32
+	//static const int maxcw = 32;
 };
 
 FreetypeFontRenderer::FreetypeFontRenderer()
@@ -106,7 +106,7 @@ TBFontMetrics FreetypeFontRenderer::GetMetrics()
 bool FreetypeFontRenderer::RenderGlyph(TBFontGlyphData *data, UCS4 cp)
 {
 	FT_Activate_Size(m_size);
-	if (!m_face->outline) {
+	if (true /* || !m_outline*/) {
 		FT_GlyphSlot slot = m_face->f_face->glyph;
 		if (FT_Load_Char(m_face->f_face, cp, FT_LOAD_RENDER) ||
 			slot->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY)
@@ -206,8 +206,12 @@ void FreetypeFontRenderer::GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp)
 {
 	FT_Activate_Size(m_size);
 	FT_GlyphSlot slot = m_face->f_face->glyph;
-	if (FT_Load_Char(m_face->f_face, cp, FT_LOAD_RENDER))
+	if (FT_Load_Char(m_face->f_face, cp, FT_LOAD_RENDER)) {
+		metrics->advance = 0;
+		metrics->x = 0;
+		metrics->y = 0;
 		return;
+	}
 	metrics->advance = (int16) (slot->advance.x >> 6);
 	metrics->x = slot->bitmap_left;
 	metrics->y = - slot->bitmap_top;
@@ -219,7 +223,7 @@ bool FreetypeFontRenderer::Load(FreetypeFace *face, const TBFontDescription &fon
 	// Should not be possible to have a face if freetype is not initialized
 	assert(ft_initialized);
 	m_face = face;
-	m_face->outline = font_desc.GetOutline();
+	//m_outline = font_desc.GetOutline();
 	if (FT_New_Size(m_face->f_face, &m_size) ||
 		FT_Activate_Size(m_size) ||
 		FT_Set_Pixel_Sizes(m_face->f_face, 0, size))
@@ -267,7 +271,7 @@ TBFontFace *FreetypeFontRenderer::Create(TBFontManager *font_manager, const char
 			if (TBFontFace *font = new TBFontFace(font_manager->GetGlyphCache(), fr, font_desc))
 				return font;
 		}
-
+		//std::cerr << "Create(" << filename << " failed\n";
 		delete fr;
 	}
 	return nullptr;

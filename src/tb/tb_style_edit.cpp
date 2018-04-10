@@ -687,13 +687,15 @@ TBTextProps::Data *TBTextProps::Push()
 void TBTextProps::Pop()
 {
 	if (!data_list.GetLast())
-		return; // Unballanced or we previosly got OOM.
+		return; // Unbalanced or we previosly got OOM.
 	data_list.Delete(data_list.GetLast());
 	data = data_list.GetLast() ? data_list.GetLast() : &base_data;
 }
 
 TBFontFace *TBTextProps::GetFont()
 {
+	if (!g_font_manager->HasFontFace(data->font_desc))
+		g_font_manager->CreateFontFace(data->font_desc);
 	return g_font_manager->GetFontFace(data->font_desc);
 }
 

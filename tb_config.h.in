@@ -83,10 +83,16 @@ ${TB_RENDERER_GL3_CONFIG}
 //#define TB_RENDERER_GL3
 
 /** The width of the font glyph cache. Must be a power of two. */
+${TB_GLYPH_CACHE_WIDTH_CONFIG}
+#ifndef TB_GLYPH_CACHE_WIDTH
 #define TB_GLYPH_CACHE_WIDTH 512
+#endif
 
 /** The height of the font glyph cache. Must be a power of two. */
+${TB_GLYPH_CACHE_HEIGHT_CONFIG}
+#ifndef TB_GLYPH_CACHE_HEIGHT
 #define TB_GLYPH_CACHE_HEIGHT 512
+#endif
 
 // == Optional features ===========================================================
 

@@ -5,6 +5,7 @@
 
 #include "tb_style_edit.h"
 #include "tb_style_edit_content.h"
+#include "tb_font_renderer.h"
 #include <assert.h>
 
 namespace tb {
@@ -29,6 +30,7 @@ int TBTextFragmentContentFactory::GetContent(const char *text)
 
 TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const char *text, int text_len)
 {
+	uint32 size;
 	if (strncmp(text, "<hr>", text_len) == 0)
 		return new TBTextFragmentContentHR(100, 2);
 	else if (strncmp(text, "<u>", text_len) == 0)
@@ -38,6 +40,10 @@ TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const
 		TBColor color;
 		color.SetFromString(text + 7, text_len - 8);
 		return new TBTextFragmentContentTextColor(color);
+	}
+	else if (1 == sscanf(text, "<size %u>", &size))
+	{
+		return new TBTextFragmentContentTextSize(size);
 	}
 	else if (strncmp(text, "</", MIN(text_len, 2)) == 0)
 		return new TBTextFragmentContentStylePop();
@@ -64,9 +70,23 @@ void TBTextFragmentContentHR::Paint(TBTextFragment *fragment, int32 translate_x,
 	listener->DrawRectFill(TBRect(x, y, w, height), props->data->text_color);
 }
 
-int32 TBTextFragmentContentHR::GetWidth(TBFontFace * /*font*/, TBTextFragment * fragment) { return MAX(fragment->block->styledit->layout_width, 0); }
+int32 TBTextFragmentContentHR::GetWidth(TBFontFace * /*font*/, TBTextFragment * fragment)
+{
+	return MAX(fragment->block->styledit->layout_width, 0);
+}
 
 int32 TBTextFragmentContentHR::GetHeight(TBFontFace * /*font*/, TBTextFragment * /*fragment*/) { return height; }
+
+#if 0
+int32 TBTextFragmentContentTextSize::GetWidth(TBFontFace * font, TBTextFragment * fragment)
+{
+	return font->
+}
+int32 TBTextFragmentContentTextSize::GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/)
+{
+	return font->GetHeight();
+}
+#endif
 
 // ============================================================================
 
@@ -80,6 +100,12 @@ void TBTextFragmentContentTextColor::Paint(TBTextFragment * /*fragment*/, int32 
 {
 	if (TBTextProps::Data *data = props->Push())
 		data->text_color = color;
+}
+
+void TBTextFragmentContentTextSize::Paint(TBTextFragment * /*fragment*/, int32 /*translate_x*/, int32 /*translate_y*/, TBTextProps * props)
+{
+	if (TBTextProps::Data *data = props->Push())
+		data->font_desc.SetSize(_size);
 }
 
 void TBTextFragmentContentStylePop::Paint(TBTextFragment * /*fragment*/, int32 /*translate_x*/, int32 /*translate_y*/, TBTextProps *props)

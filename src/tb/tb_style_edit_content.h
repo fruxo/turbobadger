@@ -71,6 +71,19 @@ public:
 	virtual bool GetAllowBreakAfter() { return false; }
 };
 
+/** Fragment content that changes size in a TBStyleEdit */
+
+class TBTextFragmentContentTextSize : public TBTextFragmentContent
+{
+public:
+	uint32 _size;
+	TBTextFragmentContentTextSize(uint32 size) : _size(size) {}
+	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	//virtual int32 GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
+	virtual bool GetAllowBreakBefore() { return true; }
+	virtual bool GetAllowBreakAfter() { return false; }
+};
+
 /** Fragment content that ends a change of style in a TBStyleEdit */
 
 class TBTextFragmentContentStylePop : public TBTextFragmentContent
