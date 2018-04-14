@@ -473,10 +473,10 @@ public:
 	const TBID &GetGroupID() const { return m_group_id; }
 
 	/** Get this widget or any child widget with a matching id, or nullptr if none is found. */
-	TBWidget *GetWidgetByID(const TBID &id) { return GetWidgetByIDInternal(id); }
+	TBWidget *GetWidgetByID(const TBID &id) const { return GetWidgetByIDInternal(id); }
 
 	/** Get this widget or any child widget with a matching id and type, or nullptr if none is found. */
-	template<class T> T *GetWidgetByIDAndType(const TBID &id)
+	template<class T> T *GetWidgetByIDAndType(const TBID &id) const
 		{ return (T*) GetWidgetByIDInternal(id, GetTypeId<T>()); }
 
 	/** Enable or disable the given state(s). The state affects which skin state is used when drawing.
@@ -1117,7 +1117,7 @@ private:
 	TBWidget *FindScrollableWidget(bool scroll_x, bool scroll_y);
 	TBScroller *FindStartedScroller();
 	TBScroller *GetReadyScroller(bool scroll_x, bool scroll_y);
-	TBWidget *GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_id = nullptr);
+	TBWidget *GetWidgetByIDInternal(const TBID &id, const TB_TYPE_ID type_id = nullptr) const;
 	void InvokeSkinUpdatesInternal(bool force_update);
 	void InvokeProcessInternal();
 	static void SetHoveredWidget(TBWidget *widget, bool touch);
