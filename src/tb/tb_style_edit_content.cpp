@@ -35,6 +35,10 @@ TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const
 		return new TBTextFragmentContentHR(100, 2);
 	else if (strncmp(text, "<u>", text_len) == 0)
 		return new TBTextFragmentContentUnderline();
+	else if (strncmp(text, "<sup>", text_len) == 0)
+		return new TBTextFragmentContentSuperscript();
+	else if (strncmp(text, "<sub>", text_len) == 0)
+		return new TBTextFragmentContentSubscript();
 	else if (strncmp(text, "<color ", MIN(text_len, 7)) == 0)
 	{
 		TBColor color;

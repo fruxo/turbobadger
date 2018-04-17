@@ -84,6 +84,28 @@ public:
 	virtual bool GetAllowBreakAfter() { return false; }
 };
 
+/** Fragment content that changes size in a TBStyleEdit */
+
+class TBTextFragmentContentSuperscript : public TBTextFragmentContent
+{
+public:
+	uint32 _size;
+	TBTextFragmentContentSuperscript() {}
+	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props) {}
+	//virtual int32 GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
+};
+
+/** Fragment content that changes size in a TBStyleEdit */
+
+class TBTextFragmentContentSubscript : public TBTextFragmentContent
+{
+public:
+	uint32 _size;
+	TBTextFragmentContentSubscript() {}
+	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props) {}
+	//virtual int32 GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
+};
+
 /** Fragment content that ends a change of style in a TBStyleEdit */
 
 class TBTextFragmentContentStylePop : public TBTextFragmentContent
