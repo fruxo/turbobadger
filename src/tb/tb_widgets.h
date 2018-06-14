@@ -619,7 +619,7 @@ public:
 
 	/** Call SetFocus on all children and their children, until a widget is found that accepts it.
 		Returns true if some child was successfully focused. */
-	bool SetFocusRecursive(WIDGET_FOCUS_REASON reason);
+	bool SetFocusRecursive(WIDGET_FOCUS_REASON reason = WIDGET_FOCUS_REASON_UNKNOWN);
 
 	/** Move focus from the currently focused widget to another focusable widget. It will search
 		for a focusable widget in the same TBWindow (or top root if there is no window) forward or
