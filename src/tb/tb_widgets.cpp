@@ -1604,8 +1604,6 @@ bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifie
 		}
 		else
 		{
-
-
 			TBWidgetEvent ev(down ? EVENT_TYPE_KEY_DOWN : EVENT_TYPE_KEY_UP);
 			ev.key = key;
 			ev.special_key = special_key;
