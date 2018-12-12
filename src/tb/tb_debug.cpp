@@ -33,6 +33,7 @@ public:
 
 	DebugSettingsWindow(TBWidget *root)
 	{
+		SetID("DebugSettingsWindow");
 		SetText("Debug settings");
 		g_widgets_reader->LoadData(this,
 			"TBLayout: axis: y, distribution: available, position: left\n"
