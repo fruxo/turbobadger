@@ -95,7 +95,7 @@ TBFontGlyphData *TBFontEffect::Render(TBGlyphMetrics *metrics, const TBFontGlyph
 			delete effect_glyph_data;
 			return nullptr;
 		}
-		effect_glyph_data->data8 = (uint8*) m_data_dst.GetData();
+		effect_glyph_data->data8 = (uint8_t*) m_data_dst.GetData();
 
 		// Blur!
 		blurGlyph(src->data8, src->w, src->h, src->stride,
@@ -161,7 +161,7 @@ TBFontGlyph *TBFontGlyphCache::CreateAndCacheGlyph(const TBID &hash_id, UCS4 cp)
 	return nullptr;
 }
 
-TBBitmapFragment *TBFontGlyphCache::CreateFragment(TBFontGlyph *glyph, int w, int h, int stride, uint32 *data)
+TBBitmapFragment *TBFontGlyphCache::CreateFragment(TBFontGlyph *glyph, int w, int h, int stride, uint32_t *data)
 {
 	assert(GetGlyph(glyph->hash_id, glyph->cp));
 	// Don't bother if the requested glyph is too large.
@@ -307,19 +307,19 @@ void TBFontFace::RenderGlyph(TBFontGlyph *glyph)
 		TBFontGlyphData *effect_glyph_data = m_effect.Render(&glyph->metrics, &glyph_data);
 		TBFontGlyphData *result_glyph_data = effect_glyph_data ? effect_glyph_data : &glyph_data;
 
-		// The glyph data may be in uint8 format, which we have to convert since we always
+		// The glyph data may be in uint8_t format, which we have to convert since we always
 		// create fragments (and TBBitmap) in 32bit format.
-		uint32 *glyph_dsta_src = result_glyph_data->data32;
+		uint32_t *glyph_dsta_src = result_glyph_data->data32;
 		if (!glyph_dsta_src && result_glyph_data->data8)
 		{
-			if (m_temp_buffer.Reserve(result_glyph_data->w * result_glyph_data->h * sizeof(uint32)))
+			if (m_temp_buffer.Reserve(result_glyph_data->w * result_glyph_data->h * sizeof(uint32_t)))
 			{
-				glyph_dsta_src = (uint32 *) m_temp_buffer.GetData();
+				glyph_dsta_src = (uint32_t *) m_temp_buffer.GetData();
 				for (int y = 0; y < result_glyph_data->h; y++)
 					for (int x = 0; x < result_glyph_data->w; x++)
 					{
 #ifdef TB_PREMULTIPLIED_ALPHA
-						uint8 opacity = result_glyph_data->data8[x + y * result_glyph_data->stride];
+						uint8_t opacity = result_glyph_data->data8[x + y * result_glyph_data->stride];
 						glyph_dsta_src[x + y * result_glyph_data->w] = TBColor(opacity, opacity, opacity, opacity);
 #else
 						glyph_dsta_src[x + y * result_glyph_data->w] = TBColor(255, 255, 255, result_glyph_data->data8[x + y * result_glyph_data->stride]);

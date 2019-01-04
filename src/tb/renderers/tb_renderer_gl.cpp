@@ -15,7 +15,7 @@
 namespace tb {
 
 #ifdef TB_RUNTIME_DEBUG_INFO
-uint32 dbg_bitmap_validations = 0;
+uint32_t dbg_bitmap_validations = 0;
 #endif // TB_RUNTIME_DEBUG_INFO
 
 // == Utilities ===================================================================================
@@ -131,7 +131,7 @@ TBBitmapGL::~TBBitmapGL()
 	GLCALL(glDeleteTextures(1, &m_texture));
 }
 
-bool TBBitmapGL::Init(int width, int height, uint32 *data)
+bool TBBitmapGL::Init(int width, int height, uint32_t *data)
 {
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
 #else
@@ -152,7 +152,7 @@ bool TBBitmapGL::Init(int width, int height, uint32 *data)
 	return true;
 }
 
-void TBBitmapGL::SetData(uint32 *data)
+void TBBitmapGL::SetData(uint32_t *data)
 {
 	m_renderer->FlushBitmap(this);
 	BindBitmap(this);
@@ -275,7 +275,7 @@ TBRendererGL::TBRendererGL()
 
 	// Setup white 1-pixel "texture" as default
 	{
-		uint32 whitepix = 0xffffffff;
+		uint32_t whitepix = 0xffffffff;
 		m_white.Init(1, 1, &whitepix);
 	}
 #endif
@@ -376,7 +376,7 @@ void TBRendererGL::EndPaint()
 	//TBDebugPrint("Frame end idx %d.\n", _vboidx);
 }
 
-TBBitmap *TBRendererGL::CreateBitmap(int width, int height, uint32 *data)
+TBBitmap *TBRendererGL::CreateBitmap(int width, int height, uint32_t *data)
 {
 	TBBitmapGL *bitmap = new TBBitmapGL(this);
 	if (!bitmap || !bitmap->Init(width, height, data))

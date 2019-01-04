@@ -15,7 +15,7 @@ namespace tb {
 
 // == TBImageRep ========================================================================
 
-TBImageRep::TBImageRep(TBImageManager *image_manager, TBBitmapFragment *fragment, uint32 hash_key)
+TBImageRep::TBImageRep(TBImageManager *image_manager, TBBitmapFragment *fragment, uint32_t hash_key)
 	: ref_count(0), hash_key(hash_key), image_manager(image_manager), fragment(fragment)
 {
 }
@@ -121,7 +121,7 @@ TBImageManager::~TBImageManager()
 
 TBImage TBImageManager::GetImage(const char *filename)
 {
-	uint32 hash_key = TBGetHash(filename);
+	uint32_t hash_key = TBGetHash(filename);
 	TBImageRep *image_rep = m_image_rep_hash.Get(hash_key);
 	if (!image_rep)
 	{

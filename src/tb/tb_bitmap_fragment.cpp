@@ -171,12 +171,12 @@ TBBitmapFragmentMap::TBBitmapFragmentMap()
 
 bool TBBitmapFragmentMap::Init(int bitmap_w, int bitmap_h)
 {
-	m_bitmap_data = new uint32[bitmap_w * bitmap_h];
+	m_bitmap_data = new uint32_t[bitmap_w * bitmap_h];
 	m_bitmap_w = bitmap_w;
 	m_bitmap_h = bitmap_h;
 #ifdef TB_RUNTIME_DEBUG_INFO
 	if (m_bitmap_data)
-		memset(m_bitmap_data, 0x88, bitmap_w * bitmap_h * sizeof(uint32));
+		memset(m_bitmap_data, 0x88, bitmap_w * bitmap_h * sizeof(uint32_t));
 #endif
 	return m_bitmap_data ? true : false;
 }
@@ -187,7 +187,7 @@ TBBitmapFragmentMap::~TBBitmapFragmentMap()
 	delete [] m_bitmap_data;
 }
 
-TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h, int data_stride, uint32 *frag_data, bool add_border)
+TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h, int data_stride, uint32_t *frag_data, bool add_border)
 {
 	// Finding available space works like this:
 	// The map size is sliced up horizontally in rows (initially just one row covering
@@ -291,10 +291,10 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 #ifdef TB_RUNTIME_DEBUG_INFO
 	// Debug code to clear the area in debug builds so it's easier to
 	// see & debug the allocation & deallocation of fragments in maps.
-	if (uint32 *data32 = new uint32[frag->m_space->width * frag->m_row->height])
+	if (uint32_t *data32 = new uint32_t[frag->m_space->width * frag->m_row->height])
 	{
 		static int c = 0;
-		memset(data32, (c++) * 32, sizeof(uint32) * frag->m_space->width * frag->m_row->height);
+		memset(data32, (c++) * 32, sizeof(uint32_t) * frag->m_space->width * frag->m_row->height);
 		CopyData(frag, frag->m_space->width, data32, false);
 		m_need_update = true;
 		delete [] data32;
@@ -326,14 +326,14 @@ void TBBitmapFragmentMap::FreeFragmentSpace(TBBitmapFragment *frag)
 	}
 }
 
-void TBBitmapFragmentMap::CopyData(TBBitmapFragment *frag, int data_stride, uint32 *frag_data, int border)
+void TBBitmapFragmentMap::CopyData(TBBitmapFragment *frag, int data_stride, uint32_t *frag_data, int border)
 {
 	// Copy the bitmap data
-	uint32 *dst = m_bitmap_data + frag->m_rect.x + frag->m_rect.y * m_bitmap_w;
-	uint32 *src = frag_data;
+	uint32_t *dst = m_bitmap_data + frag->m_rect.x + frag->m_rect.y * m_bitmap_w;
+	uint32_t *src = frag_data;
 	for (int i = 0; i < frag->m_rect.h; i++)
 	{
-		memcpy(dst, src, frag->m_rect.w * sizeof(uint32));
+		memcpy(dst, src, frag->m_rect.w * sizeof(uint32_t));
 		dst += m_bitmap_w;
 		src += data_stride;
 	}
@@ -430,7 +430,7 @@ TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filen
 
 TBBitmapFragment *TBBitmapFragmentManager::CreateNewFragment(const TBID &id, bool dedicated_map,
 															 int data_w, int data_h, int data_stride,
-															 uint32 *data)
+															 uint32_t *data)
 {
 	assert(!GetFragment(id));
 

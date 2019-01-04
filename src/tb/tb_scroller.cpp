@@ -279,7 +279,7 @@ void TBScroller::Scroll(float start_speed_ppms_x, float start_speed_ppms_y)
 		// Update expected translation
 		GetTargetChildTranslation(m_expected_scroll_x, m_expected_scroll_y);
 
-		PostMessageDelayed(TBIDC("scroll"), nullptr, (uint32)PAN_MSG_DELAY_MS);
+		PostMessageDelayed(TBIDC("scroll"), nullptr, (uint32_t)PAN_MSG_DELAY_MS);
 	}
 }
 

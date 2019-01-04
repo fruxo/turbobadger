@@ -176,39 +176,39 @@ public:
 	TBStr name;			///< Name of the skin element, f.ex "TBSelectDropdown.arrow"
 	TBStr bitmap_file;	///< File name of the bitmap (might be empty)
 	TBBitmapFragment *bitmap;///< Bitmap fragment containing the graphics, or nullptr.
-	uint8 cut;			///< How the bitmap should be sliced using StretchBox.
-	int16 expand;		///< How much the skin should expand outside the widgets rect.
+	uint8_t cut;			///< How the bitmap should be sliced using StretchBox.
+	int16_t expand;		///< How much the skin should expand outside the widgets rect.
 	SKIN_ELEMENT_TYPE type;///< Skin element type
 	bool is_painting;	///< If the skin is being painted (avoiding eternal recursing)
 	bool is_getting;	///< If the skin is being got (avoiding eternal recursion)
-	int16 padding_left;		///< Left padding for any content in the element
-	int16 padding_top;		///< Top padding for any content in the element
-	int16 padding_right;	///< Right padding for any content in the element
-	int16 padding_bottom;	///< Bottom padding for any content in the element
-	int16 width;			///< Intrinsic width or SKIN_VALUE_NOT_SPECIFIED
-	int16 height;			///< Intrinsic height or SKIN_VALUE_NOT_SPECIFIED
-	int16 pref_width;		///< Preferred width or SKIN_VALUE_NOT_SPECIFIED
-	int16 pref_height;		///< Preferred height or SKIN_VALUE_NOT_SPECIFIED
-	int16 min_width;		///< Minimum width or SKIN_VALUE_NOT_SPECIFIED
-	int16 min_height;		///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
-	int16 max_width;		///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
-	int16 max_height;		///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
-	int16 spacing;			///< Spacing used on layout or SKIN_VALUE_NOT_SPECIFIED.
-	int16 content_ofs_x;	///< X offset of the content in the widget.
-	int16 content_ofs_y;	///< Y offset of the content in the widget.
-	int16 img_ofs_x;		///< X offset for type image. Relative to image position (img_position_x).
-	int16 img_ofs_y;		///< Y offset for type image. Relative to image position (img_position_y).
-	int8 img_position_x;	///< Horizontal position for type image. 0-100 (left to
+	int16_t padding_left;		///< Left padding for any content in the element
+	int16_t padding_top;		///< Top padding for any content in the element
+	int16_t padding_right;	///< Right padding for any content in the element
+	int16_t padding_bottom;	///< Bottom padding for any content in the element
+	int16_t width;			///< Intrinsic width or SKIN_VALUE_NOT_SPECIFIED
+	int16_t height;			///< Intrinsic height or SKIN_VALUE_NOT_SPECIFIED
+	int16_t pref_width;		///< Preferred width or SKIN_VALUE_NOT_SPECIFIED
+	int16_t pref_height;		///< Preferred height or SKIN_VALUE_NOT_SPECIFIED
+	int16_t min_width;		///< Minimum width or SKIN_VALUE_NOT_SPECIFIED
+	int16_t min_height;		///< Minimum height or SKIN_VALUE_NOT_SPECIFIED
+	int16_t max_width;		///< Maximum width or SKIN_VALUE_NOT_SPECIFIED
+	int16_t max_height;		///< Maximum height or SKIN_VALUE_NOT_SPECIFIED
+	int16_t spacing;			///< Spacing used on layout or SKIN_VALUE_NOT_SPECIFIED.
+	int16_t content_ofs_x;	///< X offset of the content in the widget.
+	int16_t content_ofs_y;	///< Y offset of the content in the widget.
+	int16_t img_ofs_x;		///< X offset for type image. Relative to image position (img_position_x).
+	int16_t img_ofs_y;		///< Y offset for type image. Relative to image position (img_position_y).
+	int8_t img_position_x;	///< Horizontal position for type image. 0-100 (left to
 							///< right in available space). Default 50.
-	int8 img_position_y;	///< Vertical position for type image. 0-100 (top to bottom
+	int8_t img_position_y;	///< Vertical position for type image. 0-100 (top to bottom
 							///< in available space). Default 50.
-	int8 flip_x;			///< The skin is flipped horizontally
-	int8 flip_y;			///< The skin is flipped vertically
+	int8_t flip_x;			///< The skin is flipped horizontally
+	int8_t flip_y;			///< The skin is flipped vertically
 	float opacity;			///< Opacity that should be used for the whole widget (0.f - 1.f).
 	TBColor text_color;		///< Color of the text in the widget.
 	TBColor bg_color;		///< Color of the background in the widget.
 	TBColor bitmap_color;	///< Color to paint the bitmap with. (for now assume text_color if true).
-	int16 bitmap_dpi;		///< The DPI of the bitmap that was loaded.
+	int16_t bitmap_dpi;		///< The DPI of the bitmap that was loaded.
 	TBValue tag;			///< This value is free to use for anything. It's not used internally.
 
 	/** Get the minimum width, or SKIN_VALUE_NOT_SPECIFIED if not specified. */
@@ -410,7 +410,7 @@ private:
 	TBBitmapFragment *m_color_frag;						///< Used for painting single color.
 	float m_default_disabled_opacity;					///< Disabled opacity
 	float m_default_placeholder_opacity;				///< Placeholder opacity
-	int16 m_default_spacing;							///< Default layout spacing
+	int16_t m_default_spacing;							///< Default layout spacing
 	bool LoadInternal(const char *skin_file);
 	bool ReloadBitmapsInternal();
 	void PaintElement(const TBRect &dst_rect, TBSkinElement *element);

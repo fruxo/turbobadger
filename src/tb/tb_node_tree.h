@@ -136,7 +136,7 @@ friend class TBNodeRefTree;
 	TBValue m_value;
 	TBLinkListOf<TBNode> m_children;
 	TBNode *m_parent;
-	uint32 m_cycle_id;	///< Used to detect circular references.
+	uint32_t m_cycle_id;	///< Used to detect circular references.
 };
 
 } // namespace tb

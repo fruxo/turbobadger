@@ -78,7 +78,7 @@ public:
 	/** Posts a message to the target after a delay.
 		data may be nullptr if no extra data need to be sent. It will be deleted
 		automatically when the message is deleted. */
-	bool PostMessageDelayed(TBID message, TBMessageData *data, uint32 delay_in_ms);
+	bool PostMessageDelayed(TBID message, TBMessageData *data, uint32_t delay_in_ms);
 
 	/** Posts a message to the target at the given time (relative to TBSystem::GetTimeMS()).
 		data may be nullptr if no extra data need to be sent. It will be deleted

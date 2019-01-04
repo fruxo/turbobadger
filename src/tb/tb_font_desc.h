@@ -39,8 +39,8 @@ public:
 		should be inherited from the parent widget. */
 	TBID GetFontFaceID() const { return m_id + m_packed_init; }
 
-	void SetSize(uint32 size)											{ m_packed.size = MIN(size, 0x8000u); }
-	uint32 GetSize() const												{ return m_packed.size; }
+	void SetSize(uint32_t size)											{ m_packed.size = MIN(size, 0x8000u); }
+	uint32_t GetSize() const												{ return m_packed.size; }
 
 	//not connected to anything yet
 	//void SetBold(bool bold)											{ m_packed.bold = bold; }
@@ -63,12 +63,12 @@ private:
 	TBID m_id;
 	union {
 		struct {
-			uint32 size : 15;
-			uint32 italic : 1;
-			uint32 bold : 1;
-			uint32 outline : 1;
+			uint32_t size : 15;
+			uint32_t italic : 1;
+			uint32_t bold : 1;
+			uint32_t outline : 1;
 		} m_packed;
-		uint32 m_packed_init;
+		uint32_t m_packed_init;
 	};
 };
 

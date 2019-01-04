@@ -205,7 +205,10 @@ void TBValue::Copy(const TBValue &source_value)
 	else
 	{
 		SetNull();
-		memcpy(this, &source_value, sizeof(TBValue));
+		//memcpy(this, &source_value, sizeof(TBValue));
+		//*this = source_value;
+		val_float = source_value.val_float;
+		m_packed_init = source_value.m_packed_init;
 	}
 }
 

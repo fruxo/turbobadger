@@ -27,7 +27,7 @@ public:
 		float u, v;
 		union {
 			struct { unsigned char r, g, b, a; };
-			uint32 col;
+			uint32_t col;
 		};
 	};
 	/** A batch which should be rendered. */
@@ -44,7 +44,7 @@ public:
 		TBBitmap *bitmap;
 		TBBitmapFragment *fragment;
 
-		uint32 batch_id;
+		uint32_t batch_id;
 		bool is_flushing;
 	};
 
@@ -75,11 +75,11 @@ public:
 	virtual void EndBatchHint() {}
 
 	// == Methods that need implementation in subclasses ================================
-	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data) = 0;
+	virtual TBBitmap *CreateBitmap(int width, int height, uint32_t *data) = 0;
 	virtual void RenderBatch(Batch *batch) = 0;
 	virtual void SetClipRect(const TBRect &rect) = 0;
 protected:
-	uint8 m_opacity;
+	uint8_t m_opacity;
 	TBRect m_screen_rect;
 	TBRect m_clip_rect;
 	int m_translation_x;
@@ -88,7 +88,7 @@ protected:
 	float m_u, m_v, m_uu, m_vv; ///< Some temp variables
 	Batch batch; ///< The one and only batch. this should be improved.
 
-	void AddQuadInternal(const TBRect &dst_rect, const TBRect &src_rect, uint32 color, TBBitmap *bitmap, TBBitmapFragment *fragment);
+	void AddQuadInternal(const TBRect &dst_rect, const TBRect &src_rect, uint32_t color, TBBitmap *bitmap, TBBitmapFragment *fragment);
 	void FlushAllInternal();
 };
 

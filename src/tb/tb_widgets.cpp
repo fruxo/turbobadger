@@ -1491,7 +1491,7 @@ bool TBWidget::InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS
 
 bool TBWidget::InvokeMultiGesture(float dTheta, float dDist,
 								  int x, int y,
-								  float cx, float cy, uint16 numFingers)
+								  float cx, float cy, uint16_t numFingers)
 {
 	SetHoveredWidget(GetWidgetAt(x, y, true), true);
 

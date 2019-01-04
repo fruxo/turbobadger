@@ -142,10 +142,10 @@ private:
 	};
 	union {
 		struct {
-			uint32 type : 8;
-			uint32 allocated : 1;
+			uint32_t type : 8;
+			uint32_t allocated : 1;
 		} m_packed;
-		uint32 m_packed_init;
+		uint32_t m_packed_init;
 	};
 };
 

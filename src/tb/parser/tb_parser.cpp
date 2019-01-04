@@ -18,9 +18,9 @@ static bool is_hex(char c)
 	return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'));
 }
 
-static uint32 parse_hex(char *&src, int max_count)
+static uint32_t parse_hex(char *&src, int max_count)
 {
-	uint32 hex = 0;
+	uint32_t hex = 0;
 	for (int i = 0; i < max_count; i++)
 	{
 		char c = *src;
@@ -179,9 +179,9 @@ TBParser::STATUS TBParser::Read(TBParserStream *stream, TBParserTarget *target)
 
 		// Skip BOM (BYTE ORDER MARK) character, often in the beginning of UTF-8 documents.
 		if (current_line_nr == 1 && read_len > 3 &&
-			(uint8)buf[0] == 239 &&
-			(uint8)buf[1] == 187 &&
-			(uint8)buf[2] == 191)
+			(uint8_t)buf[0] == 239 &&
+			(uint8_t)buf[1] == 187 &&
+			(uint8_t)buf[2] == 191)
 		{
 			read_len -= 3;
 			buf += 3;

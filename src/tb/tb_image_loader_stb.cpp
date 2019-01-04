@@ -48,7 +48,7 @@ public:
 
 	virtual int Width() { return width; }
 	virtual int Height() { return height; }
-	virtual uint32 *Data() { return (uint32*)data; }
+	virtual uint32_t *Data() { return (uint32_t*)data; }
 };
 
 class NSVG_Loader : public TBImageLoader
@@ -62,7 +62,7 @@ public:
 
 	virtual int Width() { return width; }
 	virtual int Height() { return height; }
-	virtual uint32 *Data() { return (uint32*)data; }
+	virtual uint32_t *Data() { return (uint32_t*)data; }
 };
 
 TBImageLoader *TBImageLoader::CreateFromFile(const char *filename, float dpi)
