@@ -44,8 +44,8 @@ public:
 	TB_ALIGN GetAlignment() const { return m_align; }
 
 	/** Set which page should be selected and visible. */
-	virtual void SetValue(int value);
-	virtual int GetValue() const { return m_current_page; }
+	virtual void SetValue(long int value);
+	virtual long int GetValue() const { return m_current_page; }
 
 	/** Set which page should be selected and visible. */
 	void SetCurrentPage(int index) { SetValue(index); }

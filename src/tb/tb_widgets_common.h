@@ -117,8 +117,8 @@ public:
 	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
-	virtual void SetValue(int value);
-	virtual int GetValue() const;
+	virtual void SetValue(long int value);
+	virtual long int GetValue() const;
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnDeflate(const INFLATE_INFO &info);
@@ -231,8 +231,8 @@ public:
 
 	/** Setting the value to 1 will start the spinner.
 		Setting it to 0 will stop it. */
-	virtual void SetValue(int value);
-	virtual int GetValue() const { return m_value; }
+	virtual void SetValue(long int value);
+	virtual long int GetValue() const { return m_value; }
 
 	virtual void OnPaint(const PaintProps &paint_props);
 
@@ -253,8 +253,8 @@ public:
 
 	TBRadioCheckBox();
 
-	virtual void SetValue(int value);
-	virtual int GetValue() const { return m_value; }
+	virtual void SetValue(long int value);
+	virtual long int GetValue() const { return m_value; }
 
 	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -326,8 +326,8 @@ public:
 	virtual void SetValueDouble(double value);
 	virtual double GetValueDouble() const { return m_value; }
 
-	virtual void SetValue(int value) { SetValueDouble(value); }
-	virtual int GetValue() const { return (int) GetValueDouble(); }
+	virtual void SetValue(long int value) { SetValueDouble(value); }
+	virtual long int GetValue() const { return GetValueDouble(); }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -345,35 +345,36 @@ protected:
 
 // FIX: Add a "track value" showing as a line within the track (to be used for buffering etc).
 // FIX: Also add a auto track that keeps it up to date with value (default).
-class TBSlider : public TBWidget
+template <typename VAL_T>
+class TBSliderX : public TBWidget
 {
 public:
 	// For safe typecasting
-	TBOBJECT_SUBCLASS(TBSlider, TBWidget);
+	TBOBJECT_SUBCLASS(TBSliderX<VAL_T>, TBWidget);
 
-	TBSlider();
-	~TBSlider();
+	TBSliderX<VAL_T>();
+	~TBSliderX<VAL_T>();
 
 	/** Set along which axis the scrollbar should scroll */
 	virtual void SetAxis(AXIS axis);
 	virtual AXIS GetAxis() const { return m_axis; }
 
 	/** Set the min, max limits for the slider. */
-	void SetLimits(double min, double max);
+	void SetLimits(VAL_T min, VAL_T max, int nstep = 100);
 
-	double GetMinValue() const { return m_min; }
-	double GetMaxValue() const { return m_max; }
+	VAL_T GetMinValue() const { return m_min; }
+	VAL_T GetMaxValue() const { return m_max; }
 
 	/** Get a small value (depending on the min and max limits) for stepping by f.ex. keyboard. */
-	double GetSmallStep() const { return m_step; }
-	void SetSmallStep(double step) { m_step = step; }
+	VAL_T GetSmallStep() const { return m_step; }
+	void SetSmallStep(VAL_T step) { m_step = step; }
 
 	/** Same as SetValue, but with double precision. */
-	virtual void SetValueDouble(double value);
-	virtual double GetValueDouble() const { return m_value; }
+	virtual void SetValueVal(VAL_T value);
+	virtual VAL_T GetValueVal() const { return m_value; }
 
-	virtual void SetValue(int value) { SetValueDouble(value); }
-	virtual int GetValue() const { return (int) GetValueDouble(); }
+	virtual void SetValue(long int value) { SetValueVal(value); }
+	virtual long int GetValue() const { return m_value; }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -381,11 +382,14 @@ public:
 protected:
 	TBWidget m_handle;
 	AXIS m_axis;
-	double m_value;
-	double m_min, m_max, m_step;
+	VAL_T m_value;
+	VAL_T m_min, m_max, m_step;
 	double m_to_pixel_factor;
 	void UpdateHandle();
 };
+typedef TBSliderX<double> TBSlider;
+typedef TBSliderX<int> TBSliderInt;
+typedef TBSliderX<long int> TBSliderLong;
 
 /** TBContainer is just a TBWidget with border and padding (using skin "TBContainer") */
 class TBContainer : public TBWidget

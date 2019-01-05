@@ -881,13 +881,13 @@ public:
 
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
-	virtual void SetValue(int /*value*/) {}
+	virtual void SetValue(long int /*value*/) {}
 	virtual void SetValue(const TBValue & value) { data = value; }
-	virtual int GetValue() const { return 0; }
+	virtual long int GetValue() const { return 0; }
 
 	/** Set the value in double precision. It only makes sense to use this instead
 		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
-	virtual void SetValueDouble(double value) { SetValue((int) value); }
+	virtual void SetValueDouble(double value) { SetValue((long int) value); }
 
 	/** Return the value in double precision. It only makes sense to use this instead
 		of GetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */

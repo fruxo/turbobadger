@@ -80,7 +80,8 @@ public:
 	TBValue(const TBValue &value);
 	TBValue(TYPE type);
 
-	TBValue(int value);
+	TBValue(int value) : TBValue((long int)value) {}
+	TBValue(long int value);
 	TBValue(double value);
 	TBValue(const char *value, SET_MODE set = SET_NEW_COPY);
 	TBValue(TBTypedObject *object, SET_MODE set = SET_TAKE_OWNERSHIP);
@@ -97,7 +98,7 @@ public:
 	void Copy(const TBValue &source_value);
 
 	void SetNull();
-	void SetInt(int val);
+	void SetInt(long int val);
 	void SetFloat(double val);
 
 	/** Set the passed in string */
@@ -112,13 +113,14 @@ public:
 	/** Set the value either as a string, number or array of numbers, depending of the string syntax. */
 	void SetFromStringAuto(const char *str, SET_MODE set);
 
-	int GetInt() const;
+	long int GetInt() const;
 	double GetFloat() const;
 	const char *GetString() const;
 	TBTypedObject *GetObject() const { return IsObject() ? val_obj : nullptr; }
 	TBValueArray *GetArray() const { return IsArray() ? val_arr : nullptr; }
 
-	bool Equals(int value) const;
+	bool Equals(int value) const { return Equals((long int)value); }
+	bool Equals(long int value) const;
 	bool Equals(double value) const;
 	bool Equals(const char * value) const;
 	bool Equals(const TBValue & value) const;
@@ -135,7 +137,7 @@ public:
 private:
 	union {
 		double val_float;
-		int val_int;
+		long int val_int;
 		char *val_str;
 		TBTypedObject *val_obj;
 		TBValueArray *val_arr;

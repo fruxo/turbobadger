@@ -36,8 +36,8 @@ public:
 	int GetMinValue() const { return m_min; }
 	int GetMaxValue() const { return m_max; }
 
-	virtual void SetValue(int value) { SetValueInternal(value, true); }
-	virtual int GetValue() const { return m_value; }
+	virtual void SetValue(long int value) { SetValueInternal(value, true); }
+	virtual long int GetValue() const { return m_value; }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnSkinChanged();

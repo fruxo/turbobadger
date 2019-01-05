@@ -129,7 +129,7 @@ bool TBWidgetValue::SyncToWidget(TBWidget *dst_widget)
 	return ret;
 }
 
-void TBWidgetValue::SetInt(int value)
+void TBWidgetValue::SetInt(long int value)
 {
 	if (!m_value.Equals(value)) {
 		m_value.SetInt(value);
