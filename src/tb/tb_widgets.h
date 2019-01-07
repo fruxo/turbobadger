@@ -412,7 +412,7 @@ enum WIDGET_HIT_STATUS {
 class TBWidget : public TBTypedObject, public TBLinkOf<TBWidget>
 {
 public:
-	// For safe typecasting
+	//! For safe typecasting
 	TBOBJECT_SUBCLASS(TBWidget, TBTypedObject);
 
 	TBWidget();
@@ -421,6 +421,7 @@ public:
 	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
 		The skin may expand outside this rect to draw f.ex shadows. */
 	virtual void SetRect(const TBRect &rect);
+	/** See TBWidget::SetRect */
 	inline const TBRect & GetRect() const { return m_rect; }
 
 	/** Set position of this widget in its parent. The position is relative to the parent widget. */
@@ -462,14 +463,18 @@ public:
 		You can use this id to receive the widget from GetWidgetByID (or
 		preferable TBSafeGetByID to avoid dangerous casts). */
 	void SetID(const TBID &id);
+	/** See TBWidget::SetID */
 	TBID &GetID() { return m_id; }
+	/** See TBWidget::SetID */
 	const TBID &GetID() const { return m_id; }
 
 	/** Set the group id reference for this widgets. This id is 0 by default.
 		All widgets with the same group id under the same group root will
 		be automatically changed when one changes its value. */
 	void SetGroupID(const TBID &id) { m_group_id = id; }
+	/** See TBWidget::SetGroupID */
 	TBID &GetGroupID() { return m_group_id; }
+	/** See TBWidget::SetGroupID */
 	const TBID &GetGroupID() const { return m_group_id; }
 
 	/** Get this widget or any child widget with a matching id, or nullptr if none is found. */
@@ -510,11 +515,13 @@ public:
 	/** Set opacity for this widget and its children from 0.0 - 1.0.
 		If opacity is 0 (invisible), the widget won't receive any input. */
 	void SetOpacity(float opacity);
+	/** See TBWidget::SetOpacity */
 	float GetOpacity() const { return m_opacity; }
 
 	/** Set visibility for this widget and its children.
 		If visibility is not WIDGET_VISIBILITY_VISIBLE, the widget won't receive any input. */
 	void SetVisibility(WIDGET_VISIBILITY vis);
+	/** See TBWidget::SetVisibility */
 	WIDGET_VISIBILITY GetVisibility() const;
 
 	/** Return true if this widget and all its ancestors are visible
@@ -549,6 +556,7 @@ public:
 
 	/** Set the z order in which children are added during resource loading. */
 	void SetZInflate(WIDGET_Z z) { m_packed.inflate_child_z = z; }
+	/** See TBWidget::SetZInflate */
 	WIDGET_Z GetZInflate() const { return (WIDGET_Z) m_packed.inflate_child_z; }
 
 	/** Set the widget gravity (any combination of WIDGET_GRAVITY).
@@ -559,6 +567,7 @@ public:
 			-top && bottom: Widget resize vertically when parent resize.
 			-!top && bottom: Widget follows the bottom edge when parent resize. */
 	void SetGravity(WIDGET_GRAVITY g);
+	/** See TBWidget::SetGravity */
 	WIDGET_GRAVITY GetGravity() const { return m_gravity; }
 
 	/** Set the skin background for this widget and call OnSkinChanged if it changed.
@@ -582,23 +591,28 @@ public:
 	/** Set if this widget is a group root. Grouped widgets (such as TBRadioButton) will toggle all other
 		widgets with the same group_id under the nearest parent group root. TBWindow is a group root by default. */
 	void SetIsGroupRoot(bool group_root) { m_packed.is_group_root = group_root; }
+	/** See TBWidget::SetIsGroupRoot */
 	bool GetIsGroupRoot() const { return m_packed.is_group_root; }
 
 	/** Set if this widget should be able to receive focus or not. */
 	void SetIsFocusable(bool focusable) { m_packed.is_focusable = focusable; }
+	/** See TBWidget::SetIsFocusable */
 	bool GetIsFocusable() const { return m_packed.is_focusable; }
 
 	/** Set if this widget should emulate a click when it's focused and pressing enter or space. */
 	void SetClickByKey(bool click_by_key) { m_packed.click_by_key = click_by_key; }
+	/** See TBWidget::SetClickByKey */
 	bool GetClickByKey() const { return m_packed.click_by_key; }
 
 	/** Set if this widget should generate long-click event (or context menu event if nothing
 		handles the long click event). The default is false. */
 	void SetWantLongClick(bool want_long_click) { m_packed.want_long_click = want_long_click; }
+	/** See TBWidget::SetWantLongClick */
 	bool GetWantLongClick() const { return m_packed.want_long_click; }
 
 	/** Set if this widget should ignore input, as if it didn't exist. */
 	void SetIgnoreInput(bool ignore_input) { m_packed.ignore_input = ignore_input; }
+	/** See TBWidget::SetIgnoreInput */
 	bool GetIgnoreInput() const { return m_packed.ignore_input; }
 
 	/** Get if this widget wants interaction depending on various states.
@@ -615,6 +629,7 @@ public:
 
 		Returns true if successfully focused, or if set as last focus in its window. */
 	bool SetFocus(WIDGET_FOCUS_REASON reason, WIDGET_INVOKE_INFO info = WIDGET_INVOKE_INFO_NORMAL);
+	/** See TBWidget::SetFocus */
 	bool GetIsFocused() const { return focused_widget == this; }
 
 	/** Call SetFocus on all children and their children, until a widget is found that accepts it.
@@ -648,12 +663,19 @@ public:
 		with that id. */
 	int GetValueByID(const TBID &id);
 
+	/** Get the next node in depth search of the widget tree. */
 	TBWidget *GetNextDeep(const TBWidget *bounding_ancestor = nullptr) const;
+	/** Get the prev node in depth search of the widget tree. */
 	TBWidget *GetPrevDeep() const;
+	/** Get the last leaf of a depth search of the widget tree. */
 	TBWidget *GetLastLeaf() const;
+	/** Get the widget's first child. */
 	inline TBWidget *GetFirstChild() const { return m_children.GetFirst(); }
+	/** Get the widget's last child. */
 	inline TBWidget *GetLastChild() const { return m_children.GetLast(); }
+	/** Create an iterator to iterate through the widget's children, forward. */
 	TBLinkListOf<TBWidget>::Iterator GetIteratorForward() { return m_children.IterateForward(); }
+	/** Create an iterator to iterate through the widget's children, backward. */
 	TBLinkListOf<TBWidget>::Iterator GetIteratorBackward() { return m_children.IterateBackward(); }
 
 	/** Return true if this widget is the same or a ancestor of other_widget. */
@@ -668,7 +690,9 @@ public:
 	/** Add a listener to this widget. It should be removed again with
 		RemoveListener before the widget is deleted. */
 	void AddListener(TBWidgetListener *listener);
+	/** See TBWidget::AddListener */
 	void RemoveListener(TBWidgetListener *listener);
+	/** See TBWidget::AddListener */
 	bool HasListener(TBWidgetListener *listener) const;
 
 	/** Callback for handling events.
@@ -877,12 +901,15 @@ public:
 
 	/** Set along which axis the content should be layed out. */
 	virtual void SetAxis(AXIS /*axis*/) {}
+	/** See TBWidget::SetAxis */
 	virtual AXIS GetAxis() const { return AXIS_X; }
 
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
 	virtual void SetValue(int /*value*/) {}
+	/** See TBWidget::SetValue */
 	virtual void SetValue(const TBValue & value) { data = value; }
+	/** See TBWidget::SetValue */
 	virtual int GetValue() const { return 0; }
 
 	/** Set the value in double precision. It only makes sense to use this instead
@@ -938,6 +965,7 @@ public:
 	/** Get the PreferredSize for this widget.
 		This returns cached data if valid, or calls OnCalculatePreferredSize if needed. */
 	PreferredSize GetPreferredSize(const SizeConstraints &constraints);
+	/** See TBWidget::GetPreferredSize */
 	PreferredSize GetPreferredSize() { return GetPreferredSize(SizeConstraints()); }
 
 	/** Type used for InvalidateLayout */
@@ -998,14 +1026,22 @@ public:
 		this call and are not sure what the event will cause, use TBWidgetSafePointer to detect self deletion. */
 	bool InvokeEvent(TBWidgetEvent &ev);
 
+	/** See TBWidget::InvokeEvent */
 	bool InvokePointerDown(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch);
+	/** See TBWidget::InvokeEvent */
 	bool InvokePointerUp(int x, int y, int click_count, MODIFIER_KEYS modifierkeys, bool touch);
+	/** See TBWidget::InvokeEvent */
 	void InvokePointerMove(int x, int y, MODIFIER_KEYS modifierkeys, bool touch);
+	/** See TBWidget::InvokeEvent */
 	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
+	/** See TBWidget::InvokeEvent */
 	bool InvokeMultiGesture(float dTheta, float dDist, int targetx, int targety, float x, float y, uint16 numFingers);
+	/** See TBWidget::InvokeEvent */
 	bool InvokeFingerMotion(int x, int y, float cx, float cy, float dx, float dy, int finger);
+	/** See TBWidget::InvokeEvent */
 	bool InvokeFingerDown(int x, int y, float cx, float cy, float dx, float dy, int finger);
+	/** See TBWidget::InvokeEvent */
 	bool InvokeFingerUp(int x, int y, float cx, float cy, float dx, float dy, int finger);
 
 	/** Invoke the EVENT_TYPE_KEY_DOWN and EVENT_TYPE_KEY_UP events on the currently focused widget.
@@ -1068,8 +1104,8 @@ private:
 	PreferredSize m_cached_ps;		///< Cached preferred size.
 	SizeConstraints m_cached_sc;	///< Cached size constraints.
 	LayoutParams *m_layout_params;	///< Layout params, or nullptr.
-	TBScroller *m_scroller;
-	TBLongClickTimer *m_long_click_timer;
+	TBScroller *m_scroller;			///< Current scroller
+	TBLongClickTimer *m_long_click_timer;///< Active long-click timer
 	union {
 		struct {
 			uint16 is_group_root : 1;
