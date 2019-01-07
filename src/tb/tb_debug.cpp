@@ -125,7 +125,7 @@ public:
 		}
 		else
 #endif
-			str.SetFormatted("%u", (uint32)id);
+			str.SetFormatted("%u", (uint32_t)id);
 		return str;
 	}
 

@@ -9,12 +9,12 @@ namespace tb {
 
 #ifndef TB_SUPPORT_CONSTEXPR
 
-uint32 TBGetHash(const char *str)
+uint32_t TBGetHash(const char *str)
 {
 	if (!str || !*str)
 		return 0;
 	// FNV hash
-	uint32 hash = 2166136261U;
+	uint32_t hash = 2166136261U;
 	int i = 0;
 	while (str[i])
 	{

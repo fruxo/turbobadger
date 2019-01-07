@@ -581,7 +581,10 @@ void TBScrollBar::OnInflate(const INFLATE_INFO &info)
 }
 
 TB_WIDGET_FACTORY(TBSlider, TBValue::TYPE_FLOAT, WIDGET_Z_TOP) {}
-void TBSlider::OnInflate(const INFLATE_INFO &info)
+TB_WIDGET_FACTORY(TBSliderInt, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSliderLong, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+template <typename VAL_T>
+void TBSliderX<VAL_T>::OnInflate(const INFLATE_INFO &info)
 {
 	const char *axis = info.node->GetValueString("axis", "x");
 	SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
@@ -593,6 +596,9 @@ void TBSlider::OnInflate(const INFLATE_INFO &info)
 	SetSmallStep(step);
 	TBWidget::OnInflate(info);
 }
+template class TBSliderX<double>;
+template class TBSliderX<int>;
+template class TBSliderX<long>;
 
 void ReadItems(TBNode *node, TBGenericStringItemSource *target_source)
 {

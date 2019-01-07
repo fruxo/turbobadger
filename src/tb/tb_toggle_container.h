@@ -44,8 +44,8 @@ public:
 
 	/** Set the value of this widget. 1 will turn on the toggle, 0 will turn it off (or
 		the opposite if the invert mode is set). */
-	virtual void SetValue(int value);
-	virtual int GetValue() const { return m_value; }
+	virtual void SetValue(long int value);
+	virtual long int GetValue() const { return m_value; }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 private:
@@ -101,8 +101,8 @@ public:
 	virtual bool GetText(TBStr &text) const { return m_header.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
-	virtual void SetValue(int value);
-	virtual int GetValue() const { return m_toggle_container.GetValue(); }
+	virtual void SetValue(long int value);
+	virtual long int GetValue() const { return m_toggle_container.GetValue(); }
 
 	virtual TBWidget *GetContentRoot() { return m_toggle_container.GetContentRoot(); }
 	virtual void OnProcessAfterChildren();

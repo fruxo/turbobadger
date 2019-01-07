@@ -42,7 +42,7 @@ public:
 
 	/** Return the data of the loaded bitmap.
 		This data should always be in 32bit RGBA format. */
-	virtual uint32 *Data() = 0;
+	virtual uint32_t *Data() = 0;
 };
 
 /** Allocator of space out of a given available space. */
@@ -113,7 +113,7 @@ public:
 
 	/** Create a new fragment with the given size and data in this map.
 		Returns nullptr if there is not enough room in this map or on any other fail. */
-	TBBitmapFragment *CreateNewFragment(int frag_w, int frag_h, int data_stride, uint32 *frag_data, bool add_border);
+	TBBitmapFragment *CreateNewFragment(int frag_w, int frag_h, int data_stride, uint32_t *frag_data, bool add_border);
 
 	/** Free up the space used by the given fragment, so that other fragments can take its place. */
 	void FreeFragmentSpace(TBBitmapFragment *frag);
@@ -125,10 +125,10 @@ private:
 	friend class TBBitmapFragmentManager;
 	bool ValidateBitmap();
 	void DeleteBitmap();
-	void CopyData(TBBitmapFragment *frag, int data_stride, uint32 *frag_data, int border);
+	void CopyData(TBBitmapFragment *frag, int data_stride, uint32_t *frag_data, int border);
 	TBListAutoDeleteOf<TBFragmentSpaceAllocator> m_rows;
 	int m_bitmap_w, m_bitmap_h;
-	uint32 *m_bitmap_data;
+	uint32_t *m_bitmap_data;
 	TBBitmap *m_bitmap;
 	bool m_need_update;
 	int m_allocated_pixels;
@@ -161,9 +161,9 @@ public:
 	TBID m_id;
 	int m_row_height;
 
-	/** This uint32 is reserved for batching renderer backends. It's not used
+	/** This uint32_t is reserved for batching renderer backends. It's not used
 		internally, but always initialized to 0xffffffff for all new fragments. */
-	uint32 m_batch_id;
+	uint32_t m_batch_id;
 };
 
 /** TBBitmapFragmentManager manages loading bitmaps of arbitrary size,
@@ -200,7 +200,7 @@ public:
 		@param data pointer to the data in BGRA32 format. */
 	TBBitmapFragment *CreateNewFragment(const TBID &id, bool dedicated_map,
 										int data_w, int data_h, int data_stride,
-										uint32 *data);
+										uint32_t *data);
 
 	/** Delete the given fragment and free the space it used in its map,
 		so that other fragments can take its place. */

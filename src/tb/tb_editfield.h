@@ -198,13 +198,13 @@ private:
 	virtual void OnChange();
 	virtual bool OnEnter();
 	virtual void Invalidate(const TBRect &rect);
-	virtual void DrawString(int32 x, int32 y, TBFontFace *font, const TBColor &color, const char *str, int32 len);
+	virtual void DrawString(int32_t x, int32_t y, TBFontFace *font, const TBColor &color, const char *str, int32_t len);
 	virtual void DrawRect(const TBRect &rect, const TBColor &color);
 	virtual void DrawRectFill(const TBRect &rect, const TBColor &color);
 	virtual void DrawTextSelectionBg(const TBRect &rect);
 	virtual void DrawContentSelectionFg(const TBRect &rect);
 	virtual void DrawCaret(const TBRect &rect);
-	virtual void Scroll(int32 dx, int32 dy);
+	virtual void Scroll(int32_t dx, int32_t dy);
 	virtual void UpdateScrollbars();
 	virtual void CaretBlinkStart();
 	virtual void CaretBlinkStop();

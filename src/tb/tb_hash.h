@@ -11,7 +11,7 @@
 namespace tb {
 
 // On C++ compilers that support it, use const expr for hash so that
-// TBID comparisions turn into simple uint32 comparisions compiletime.
+// TBID comparisions turn into simple uint32_t comparisions compiletime.
 // Disabled for TB_RUNTIME_DEBUG_INFO builds, so TBID string debugging
 // is available.
 //
@@ -26,17 +26,17 @@ namespace tb {
 #ifdef TB_SUPPORT_CONSTEXPR
 
 // FNV constants
-static constexpr uint32 basis = 2166136261U;
-static constexpr uint32 prime = 16777619U;
+static constexpr uint32_t basis = 2166136261U;
+static constexpr uint32_t prime = 16777619U;
 
 // compile-time hash helper function
-constexpr uint32 TBGetHash_one(char c, const char* remain, uint32 value)
+constexpr uint32_t TBGetHash_one(char c, const char* remain, uint32_t value)
 {
 	return c == 0 ? value : TBGetHash_one(remain[0], remain + 1, (value ^ c) * prime);
 }
 
 // compile-time hash
-constexpr uint32 TBGetHash(const char* str)
+constexpr uint32_t TBGetHash(const char* str)
 {
 	return (str && *str) ? TBGetHash_one(str[0], str + 1, basis) : 0;
 }
@@ -48,7 +48,7 @@ constexpr uint32 TBGetHash(const char* str)
 #define TBIDC(str) tb::TBID(str)
 
 /** Get hash value from string */
-uint32 TBGetHash(const char *str);
+uint32_t TBGetHash(const char *str);
 
 #endif // !TB_SUPPORT_CONSTEXPR
 

@@ -24,11 +24,11 @@ class TBColor
 public:
 	TBColor() : b(0), g(0), r(0), a(255) {}
 	TBColor(int r, int g, int b, int a = 255) : b(b), g(g), r(r), a(a) {}
-	TBColor(uint32 bgra_) : bgra(bgra_) {}
+	TBColor(uint32_t bgra_) : bgra(bgra_) {}
 
 	union {
-		struct { uint8 b, g, r, a; };
-		uint32 bgra;
+		struct { uint8_t b, g, r, a; };
+		uint32_t bgra;
 	};
 
 	void Set(const TBColor &color) { *this = color; }
@@ -40,9 +40,9 @@ public:
 	/** Write color to string with format #rrggbbaa */
 	void GetString(TBStr & str) const;
 
-	operator uint32 () const		{ return bgra; }
-	//bool operator == (const TBColor &c) const { return bgra == (uint32)c; }
-	//bool operator != (const TBColor &c) const { return bgra != (uint32)c; }
+	operator uint32_t () const		{ return bgra; }
+	//bool operator == (const TBColor &c) const { return bgra == (uint32_t)c; }
+	//bool operator != (const TBColor &c) const { return bgra != (uint32_t)c; }
 };
 
 /** TBColorManager contains a map of global color names. */

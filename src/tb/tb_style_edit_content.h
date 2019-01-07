@@ -22,16 +22,16 @@ public:
 	/** Update the position of the content, relative to the first line of text (no scrolling applied). */
 	virtual void UpdatePos(int /*x*/, int /*y*/) {}
 
-	virtual void Paint(TBTextFragment * /*fragment*/, int32 /*translate_x*/, int32 /*translate_y*/, TBTextProps * /*props*/) {}
-	virtual void Click(TBTextFragment * /*fragment*/, int /*button*/, uint32 /*modifierkeys*/) {}
-	virtual int32 GetWidth(TBFontFace * /*font*/, TBTextFragment * /*fragment*/) { return 0; }
-	virtual int32 GetHeight(TBFontFace * /*font*/, TBTextFragment * /*fragment*/) { return 0; }
-	virtual int32 GetBaseline(TBFontFace * font, TBTextFragment * fragment) { return GetHeight(font, fragment); }
+	virtual void Paint(TBTextFragment * /*fragment*/, int32_t /*translate_x*/, int32_t /*translate_y*/, TBTextProps * /*props*/) {}
+	virtual void Click(TBTextFragment * /*fragment*/, int /*button*/, uint32_t /*modifierkeys*/) {}
+	virtual int32_t GetWidth(TBFontFace * /*font*/, TBTextFragment * /*fragment*/) { return 0; }
+	virtual int32_t GetHeight(TBFontFace * /*font*/, TBTextFragment * /*fragment*/) { return 0; }
+	virtual int32_t GetBaseline(TBFontFace * font, TBTextFragment * fragment) { return GetHeight(font, fragment); }
 	virtual bool GetAllowBreakBefore() { return true; }
 	virtual bool GetAllowBreakAfter() { return true; }
 
 	/** Get type of fragment content. All standard fragments return 0. */
-	virtual uint32 GetType()		{ return 0; }
+	virtual uint32_t GetType()		{ return 0; }
 };
 
 /** A horizontal line for TBStyleEdit. */
@@ -39,13 +39,13 @@ public:
 class TBTextFragmentContentHR : public TBTextFragmentContent
 {
 public:
-	TBTextFragmentContentHR(int32 width_in_percent, int32 height);
+	TBTextFragmentContentHR(int32_t width_in_percent, int32_t height);
 
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
-	virtual int32 GetWidth(TBFontFace *font, TBTextFragment *fragment);
-	virtual int32 GetHeight(TBFontFace *font, TBTextFragment *fragment);
+	virtual void Paint(TBTextFragment *fragment, int32_t translate_x, int32_t translate_y, TBTextProps *props);
+	virtual int32_t GetWidth(TBFontFace *font, TBTextFragment *fragment);
+	virtual int32_t GetHeight(TBFontFace *font, TBTextFragment *fragment);
 private:
-	int32 width_in_percent, height;
+	int32_t width_in_percent, height;
 };
 
 /** Fragment content that enables underline in a TBStyleEdit */
@@ -54,7 +54,7 @@ class TBTextFragmentContentUnderline : public TBTextFragmentContent
 {
 public:
 	TBTextFragmentContentUnderline() {}
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	virtual void Paint(TBTextFragment *fragment, int32_t translate_x, int32_t translate_y, TBTextProps *props);
 	virtual bool GetAllowBreakBefore() { return true; }
 	virtual bool GetAllowBreakAfter() { return false; }
 };
@@ -66,7 +66,7 @@ class TBTextFragmentContentTextColor : public TBTextFragmentContent
 public:
 	TBColor color;
 	TBTextFragmentContentTextColor(const TBColor &color) : color(color) {}
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	virtual void Paint(TBTextFragment *fragment, int32_t translate_x, int32_t translate_y, TBTextProps *props);
 	virtual bool GetAllowBreakBefore() { return true; }
 	virtual bool GetAllowBreakAfter() { return false; }
 };
@@ -76,10 +76,10 @@ public:
 class TBTextFragmentContentTextSize : public TBTextFragmentContent
 {
 public:
-	uint32 _size;
-	TBTextFragmentContentTextSize(uint32 size) : _size(size) {}
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
-	//virtual int32 GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
+	uint32_t _size;
+	TBTextFragmentContentTextSize(uint32_t size) : _size(size) {}
+	virtual void Paint(TBTextFragment *fragment, int32_t translate_x, int32_t translate_y, TBTextProps *props);
+	//virtual int32_t GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
 	virtual bool GetAllowBreakBefore() { return true; }
 	virtual bool GetAllowBreakAfter() { return false; }
 };
@@ -89,10 +89,10 @@ public:
 class TBTextFragmentContentSuperscript : public TBTextFragmentContent
 {
 public:
-	uint32 _size;
+	uint32_t _size;
 	TBTextFragmentContentSuperscript() {}
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props) {}
-	//virtual int32 GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
+	virtual void Paint(TBTextFragment *fragment, int32_t translate_x, int32_t translate_y, TBTextProps *props) {}
+	//virtual int32_t GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
 };
 
 /** Fragment content that changes size in a TBStyleEdit */
@@ -100,10 +100,10 @@ public:
 class TBTextFragmentContentSubscript : public TBTextFragmentContent
 {
 public:
-	uint32 _size;
+	uint32_t _size;
 	TBTextFragmentContentSubscript() {}
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props) {}
-	//virtual int32 GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
+	virtual void Paint(TBTextFragment *fragment, int32_t translate_x, int32_t translate_y, TBTextProps *props) {}
+	//virtual int32_t GetHeight(TBFontFace * font, TBTextFragment * /*fragment*/);
 };
 
 /** Fragment content that ends a change of style in a TBStyleEdit */
@@ -111,7 +111,7 @@ public:
 class TBTextFragmentContentStylePop : public TBTextFragmentContent
 {
 public:
-	virtual void Paint(TBTextFragment *fragment, int32 translate_x, int32 translate_y, TBTextProps *props);
+	virtual void Paint(TBTextFragment *fragment, int32_t translate_x, int32_t translate_y, TBTextProps *props);
 	virtual bool GetAllowBreakBefore() { return false; }
 	virtual bool GetAllowBreakAfter() { return true; }
 };

@@ -333,8 +333,8 @@ bool TBSkin::ReloadBitmapsInternal()
 	}
 	// Create fragment used for color fills. Use 2x2px and inset source rect to center 0x0
 	// to avoid filtering artifacts.
-	uint32 data[4] = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
-	m_color_frag = m_frag_manager.CreateNewFragment(TBID((uint32)0), false, 2, 2, 2, data);
+	uint32_t data[4] = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
+	m_color_frag = m_frag_manager.CreateNewFragment(TBID((uint32_t)0), false, 2, 2, 2, data);
 	m_color_frag->m_rect = m_color_frag->m_rect.Shrink(1, 1);
 	return success;
 }

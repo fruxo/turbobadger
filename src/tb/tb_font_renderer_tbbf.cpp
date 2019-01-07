@@ -181,7 +181,7 @@ bool TBBFRenderer::Load(const char *filename, int size)
 	return FindGlyphs();
 }
 
-inline unsigned char GetAlpha(uint32 color)
+inline unsigned char GetAlpha(uint32_t color)
 {
 	return (color & 0xff000000) >> 24;
 }
@@ -215,7 +215,7 @@ GLYPH *TBBFRenderer::FindNext(UCS4 cp, int x)
 {
 	int width = m_img->Width();
 	int height = m_img->Height();
-	uint32 *data32 = m_img->Data();
+	uint32_t *data32 = m_img->Data();
 
 	if (x >= width)
 		return nullptr;

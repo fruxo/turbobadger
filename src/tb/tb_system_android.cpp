@@ -71,7 +71,7 @@ int TBSystem::GetDPI()
 {
 	AConfiguration *config = AConfiguration_new();
 	AConfiguration_fromAssetManager(config, g_pManager);
-	int32_t density = AConfiguration_getDensity(config);
+	int32_t_t density = AConfiguration_getDensity(config);
 	AConfiguration_delete(config);
 	if (density == 0 || density == ACONFIGURATION_DENSITY_NONE)
 		return 120;

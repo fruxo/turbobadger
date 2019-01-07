@@ -167,7 +167,7 @@ public:
 
 	TBOBJECT_SUBCLASS(TBWidgetEventMultiGesture, TBWidgetEvent);
 
-	TBWidgetEventMultiGesture(int target_x, int target_y, float cx, float cy, float dTheta, float dDist, uint16 numFingers)
+	TBWidgetEventMultiGesture(int target_x, int target_y, float cx, float cy, float dTheta, float dDist, uint16_t numFingers)
 		: TBWidgetEvent(EVENT_TYPE_MULTI_GESTURE, target_x, target_y, 1),
 		  center_x(cx), center_y(cy), dTheta(dTheta), dDist(dDist) 
 	{
@@ -906,15 +906,15 @@ public:
 
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
-	virtual void SetValue(int /*value*/) {}
+	virtual void SetValue(long int /*value*/) {}
 	/** See TBWidget::SetValue */
 	virtual void SetValue(const TBValue & value) { data = value; }
 	/** See TBWidget::SetValue */
-	virtual int GetValue() const { return 0; }
+	virtual long int GetValue() const { return 0; }
 
 	/** Set the value in double precision. It only makes sense to use this instead
 		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
-	virtual void SetValueDouble(double value) { SetValue((int) value); }
+	virtual void SetValueDouble(double value) { SetValue((long int) value); }
 
 	/** Return the value in double precision. It only makes sense to use this instead
 		of GetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
@@ -1036,7 +1036,7 @@ public:
 	bool InvokeWheel(int x, int y, int delta_x, int delta_y, MODIFIER_KEYS modifierkeys);
 
 	/** See TBWidget::InvokeEvent */
-	bool InvokeMultiGesture(float dTheta, float dDist, int targetx, int targety, float x, float y, uint16 numFingers);
+	bool InvokeMultiGesture(float dTheta, float dDist, int targetx, int targety, float x, float y, uint16_t numFingers);
 	/** See TBWidget::InvokeEvent */
 	bool InvokeFingerMotion(int x, int y, float cx, float cy, float dx, float dy, int finger);
 	/** See TBWidget::InvokeEvent */
@@ -1108,20 +1108,20 @@ private:
 	TBLongClickTimer *m_long_click_timer;///< Active long-click timer
 	union {
 		struct {
-			uint16 is_group_root : 1;
-			uint16 is_focusable : 1;
-			uint16 click_by_key : 1;
-			uint16 has_key_pressed_state : 1;
-			uint16 ignore_input : 1;
-			uint16 is_dying : 1;
-			uint16 is_cached_ps_valid : 1;
-			uint16 no_automatic_hover_state : 1;
-			uint16 is_panning : 1;
-			uint16 want_long_click : 1;
-			uint16 visibility : 2;
-			uint16 inflate_child_z : 1; // Should have enough bits to hold WIDGET_Z values.
+			uint16_t is_group_root : 1;
+			uint16_t is_focusable : 1;
+			uint16_t click_by_key : 1;
+			uint16_t has_key_pressed_state : 1;
+			uint16_t ignore_input : 1;
+			uint16_t is_dying : 1;
+			uint16_t is_cached_ps_valid : 1;
+			uint16_t no_automatic_hover_state : 1;
+			uint16_t is_panning : 1;
+			uint16_t want_long_click : 1;
+			uint16_t visibility : 2;
+			uint16_t inflate_child_z : 1; // Should have enough bits to hold WIDGET_Z values.
 		} m_packed;
-		uint16 m_packed_init;
+		uint16_t m_packed_init;
 	};
 public:
 	/** This value is free to use for anything. It's not used by TBWidget itself. Initially TYPE_NULL. */

@@ -11,16 +11,9 @@
 #include <tb_config.h>
 
 #include <string.h>
+#include <cstdint>
 
 namespace tb {
-
-typedef signed char int8;
-typedef signed short int16;
-typedef signed int int32;
-
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
 
 template <class T>
 T Max(const T& left, const T& right) { return left > right ? left : right; }
@@ -67,15 +60,15 @@ T ClampClipMax(const T& value, const T& min, const T& max)
 
 /** Makes it possible to use the given enum types as flag combinations.
 	That will catch use of incorrect type during compilation, that wouldn't be caught
-	using a uint32 flag. */
+	using a uint32_t flag. */
 #define MAKE_ENUM_FLAG_COMBO(Enum) \
-	inline Enum operator | (Enum a, Enum b)  { return static_cast<Enum>(static_cast<uint32>(a) | static_cast<uint32>(b)); } \
-	inline Enum operator & (Enum a, Enum b)  { return static_cast<Enum>(static_cast<uint32>(a) & static_cast<uint32>(b)); } \
-	inline Enum operator ^ (Enum a, Enum b)  { return static_cast<Enum>(static_cast<uint32>(a) ^ static_cast<uint32>(b)); } \
-	inline void operator |= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32>(a) | static_cast<uint32>(b)); } \
-	inline void operator &= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32>(a) & static_cast<uint32>(b)); } \
-	inline void operator ^= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32>(a) ^ static_cast<uint32>(b)); } \
-	inline Enum operator ~ (Enum a)  { return static_cast<Enum>(~static_cast<uint32>(a)); }
+	inline Enum operator | (Enum a, Enum b)  { return static_cast<Enum>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b)); } \
+	inline Enum operator & (Enum a, Enum b)  { return static_cast<Enum>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b)); } \
+	inline Enum operator ^ (Enum a, Enum b)  { return static_cast<Enum>(static_cast<uint32_t>(a) ^ static_cast<uint32_t>(b)); } \
+	inline void operator |= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b)); } \
+	inline void operator &= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b)); } \
+	inline void operator ^= (Enum &a, Enum b) { a = static_cast<Enum>(static_cast<uint32_t>(a) ^ static_cast<uint32_t>(b)); } \
+	inline Enum operator ~ (Enum a)  { return static_cast<Enum>(~static_cast<uint32_t>(a)); }
 
 } // namespace tb
 

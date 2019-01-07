@@ -162,7 +162,7 @@ bool TBButton::SetText(const char *text)
 	return ret;
 }
 
-void TBButton::SetValue(int value)
+void TBButton::SetValue(long int value)
 {
 	TBWidgetSafePointer this_widget(this);
 
@@ -187,7 +187,7 @@ void TBButton::SetValue(int value)
 		TBRadioCheckBox::UpdateGroupWidgets(this);
 }
 
-int TBButton::GetValue() const
+long int TBButton::GetValue() const
 {
 	return GetState(WIDGET_STATE_SELECTED);
 }
@@ -345,7 +345,7 @@ TBProgressSpinner::TBProgressSpinner()
 	m_skin_fg.Set(TBIDC("TBProgressSpinner.fg"));
 }
 
-void TBProgressSpinner::SetValue(int value)
+void TBProgressSpinner::SetValue(long int value)
 {
 	if (value == m_value)
 		return;
@@ -416,7 +416,7 @@ void TBRadioCheckBox::UpdateGroupWidgets(TBWidget *new_leader)
 			child->SetValue(0);
 }
 
-void TBRadioCheckBox::SetValue(int value)
+void TBRadioCheckBox::SetValue(long int value)
 {
 	if (m_value == value)
 		return;
@@ -451,6 +451,10 @@ bool TBRadioCheckBox::OnEvent(const TBWidgetEvent &ev)
 	}
 	return false;
 }
+
+template class TBSliderX<double>;
+template class TBSliderX<int>;
+template class TBSliderX<long>;
 
 // == TBScrollBar =======================================
 
@@ -600,7 +604,8 @@ void TBScrollBar::OnResized(int /*old_w*/, int /*old_h*/)
 
 // == TBSlider ============================================
 
-TBSlider::TBSlider()
+template <typename VAL_T>
+TBSliderX<VAL_T>::TBSliderX()
 	: m_axis(AXIS_Y) ///< Make SetAxis below always succeed and set the skin
 	, m_value(0)
 	, m_min(0)
@@ -612,12 +617,14 @@ TBSlider::TBSlider()
 	AddChild(&m_handle);
 }
 
-TBSlider::~TBSlider()
+template <typename VAL_T>
+TBSliderX<VAL_T>::~TBSliderX()
 {
 	RemoveChild(&m_handle);
 }
 
-void TBSlider::SetAxis(AXIS axis)
+template <typename VAL_T>
+void TBSliderX<VAL_T>::SetAxis(AXIS axis)
 {
 	if (axis == m_axis)
 		return;
@@ -635,19 +642,21 @@ void TBSlider::SetAxis(AXIS axis)
 	Invalidate();
 }
 
-void TBSlider::SetLimits(double min, double max)
+template <typename VAL_T>
+void TBSliderX<VAL_T>::SetLimits(VAL_T min, VAL_T max, int nstep)
 {
 	min = MIN(min, max);
 	if (min == m_min && max == m_max)
 		return;
 	m_min = min;
 	m_max = max;
-	m_step = (m_max - m_min) / 100.0;
-	SetValueDouble(m_value);
+	m_step = (m_max - m_min) / (double)nstep;
+	SetValueVal(m_value);
 	UpdateHandle();
 }
 
-void TBSlider::SetValueDouble(double value)
+template <typename VAL_T>
+void TBSliderX<VAL_T>::SetValueVal(VAL_T value)
 {
 	value = CLAMP(value, m_min, m_max);
 	if (value == m_value)
@@ -659,7 +668,8 @@ void TBSlider::SetValueDouble(double value)
 	InvokeEvent(ev);
 }
 
-bool TBSlider::OnEvent(const TBWidgetEvent &ev)
+template <typename VAL_T>
+bool TBSliderX<VAL_T>::OnEvent(const TBWidgetEvent &ev)
 {
 	if (ev.type == EVENT_TYPE_POINTER_MOVE && m_handle.IsAncestorOf(captured_widget))
 	{
@@ -667,25 +677,25 @@ bool TBSlider::OnEvent(const TBWidgetEvent &ev)
 		{
 			int dx = ev.target_x - pointer_down_widget_x;
 			int dy = ev.target_y - pointer_down_widget_y;
-			double delta_val = (m_axis == AXIS_X ? dx : -dy) / m_to_pixel_factor;
-			SetValueDouble(m_step * (int)((m_value + delta_val) / m_step));
+			VAL_T delta_val = (m_axis == AXIS_X ? dx : -dy) / m_to_pixel_factor;
+			SetValueVal(m_step * (long int)((m_value + delta_val) / m_step));
 		}
 		return true;
 	}
 	else if (ev.type == EVENT_TYPE_WHEEL)
 	{
-		double old_val = m_value;
-		double step = (m_axis == AXIS_X ? GetSmallStep() : -GetSmallStep());
-		SetValueDouble(m_value + step * ev.delta_y);
+		VAL_T old_val = m_value;
+		VAL_T step = (m_axis == AXIS_X ? GetSmallStep() : -GetSmallStep());
+		SetValueVal(m_value + step * ev.delta_y);
 		return m_value != old_val;
 	}
 	else if (ev.type == EVENT_TYPE_KEY_DOWN)
 	{
-		double step = (m_axis == AXIS_X ? GetSmallStep() : -GetSmallStep());
+		VAL_T step = (m_axis == AXIS_X ? GetSmallStep() : -GetSmallStep());
 		if (ev.special_key == TB_KEY_LEFT || ev.special_key == TB_KEY_UP)
-			SetValueDouble(GetValueDouble() - step);
+			SetValueVal(m_value - step);
 		else if (ev.special_key == TB_KEY_RIGHT || ev.special_key == TB_KEY_DOWN)
-			SetValueDouble(GetValueDouble() + step);
+			SetValueVal(m_value + step);
 		else
 			return false;
 		return true;
@@ -699,7 +709,8 @@ bool TBSlider::OnEvent(const TBWidgetEvent &ev)
 	return false;
 }
 
-void TBSlider::UpdateHandle()
+template <typename VAL_T>
+void TBSliderX<VAL_T>::UpdateHandle()
 {
 	// Calculate the handle position
 	bool horizontal = m_axis == AXIS_X;
@@ -725,7 +736,8 @@ void TBSlider::UpdateHandle()
 	m_handle.SetRect(rect);
 }
 
-void TBSlider::OnResized(int /*old_w*/, int /*old_h*/)
+template <typename VAL_T>
+void TBSliderX<VAL_T>::OnResized(int /*old_w*/, int /*old_h*/)
 {
 	UpdateHandle();
 }

@@ -199,7 +199,7 @@ TBWidget *TBSelectList::CreateAndAddItemAfter(int index, TBWidget *reference)
 	return nullptr;
 }
 
-void TBSelectList::SetValue(int value)
+void TBSelectList::SetValue(long int value)
 {
 	if (value == m_value)
 		return;
@@ -384,7 +384,7 @@ void TBSelectDropdown::OnItemChanged(int /*index*/)
 {
 }
 
-void TBSelectDropdown::SetValue(int value)
+void TBSelectDropdown::SetValue(long int value)
 {
 	if (value == m_value || !m_source)
 		return;

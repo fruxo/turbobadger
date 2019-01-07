@@ -14,12 +14,12 @@ namespace tb {
 // == TBRendererBatcher::Batch ==========================================================
 
 #ifdef TB_RUNTIME_DEBUG_INFO
-uint32 dbg_begin_paint_batch_id = 0;
-uint32 dbg_frame_triangle_count = 0;
+uint32_t dbg_begin_paint_batch_id = 0;
+uint32_t dbg_frame_triangle_count = 0;
 #endif // TB_RUNTIME_DEBUG_INFO
 
 #define VER_COL(r, g, b, a) (((a)<<24) + ((b)<<16) + ((g)<<8) + r)
-#define VER_COL_OPACITY(a) (0x00ffffff + (((uint32)a) << 24))
+#define VER_COL_OPACITY(a) (0x00ffffff + (((uint32_t)a) << 24))
 
 void TBRendererBatcher::Batch::Flush(TBRendererBatcher *batch_renderer)
 {
@@ -50,9 +50,9 @@ void TBRendererBatcher::Batch::Flush(TBRendererBatcher *batch_renderer)
 
 		// Draw the triangles again using a random color based on the batch
 		// id. This indicates which triangles belong to the same batch.
-		uint32 id = batch_id - dbg_begin_paint_batch_id;
-		uint32 hash = id * (2166136261U ^ id);
-		uint32 color = 0xAA000000 + (hash & 0x00FFFFFF);
+		uint32_t id = batch_id - dbg_begin_paint_batch_id;
+		uint32_t hash = id * (2166136261U ^ id);
+		uint32_t color = 0xAA000000 + (hash & 0x00FFFFFF);
 		for (int i = 0; i < vertex_count; i++)
 			vertex[i].col = color;
 		bitmap = nullptr;
@@ -120,7 +120,7 @@ void TBRendererBatcher::Translate(int dx, int dy)
 
 void TBRendererBatcher::SetOpacity(float opacity)
 {
-	int8 opacity8 = (uint8) (opacity * 255);
+	int8_t opacity8 = (uint8_t) (opacity * 255);
 	if (opacity8 == m_opacity)
 		return;
 	m_opacity = opacity8;
@@ -174,7 +174,7 @@ void TBRendererBatcher::DrawBitmapColored(const TBRect &dst_rect, const TBRect &
 {
 	if (TBBitmap *bitmap = bitmap_fragment->GetBitmap(TB_VALIDATE_FIRST_TIME))
 	{
-		uint32 a = (color.a * m_opacity) / 255;
+		uint32_t a = (color.a * m_opacity) / 255;
 		AddQuadInternal(dst_rect.Offset(m_translation_x, m_translation_y),
 						src_rect.Offset(bitmap_fragment->m_rect.x, bitmap_fragment->m_rect.y),
 						VER_COL(color.r, color.g, color.b, a), bitmap, bitmap_fragment);
@@ -183,7 +183,7 @@ void TBRendererBatcher::DrawBitmapColored(const TBRect &dst_rect, const TBRect &
 
 void TBRendererBatcher::DrawBitmapColored(const TBRect &dst_rect, const TBRect &src_rect, const TBColor &color, TBBitmap *bitmap)
 {
-	uint32 a = (color.a * m_opacity) / 255;
+	uint32_t a = (color.a * m_opacity) / 255;
 	AddQuadInternal(dst_rect.Offset(m_translation_x, m_translation_y),
 					src_rect, VER_COL(color.r, color.g, color.b, a), bitmap, nullptr);
 }
@@ -197,13 +197,13 @@ void TBRendererBatcher::DrawBitmapTile(const TBRect &dst_rect, TBBitmap *bitmap)
 
 void TBRendererBatcher::DrawBitmapTileColored(const TBRect &dst_rect, const TBColor &color, TBBitmap *bitmap)
 {
-	uint32 a = (color.a * m_opacity) / 255;
+	uint32_t a = (color.a * m_opacity) / 255;
 	AddQuadInternal(dst_rect.Offset(m_translation_x, m_translation_y),
 					TBRect(0, 0, dst_rect.w, dst_rect.h),
 					VER_COL(color.r, color.g, color.b, a), bitmap, nullptr);
 }
 
-void TBRendererBatcher::AddQuadInternal(const TBRect &dst_rect, const TBRect &src_rect, uint32 color, TBBitmap *bitmap, TBBitmapFragment *fragment)
+void TBRendererBatcher::AddQuadInternal(const TBRect &dst_rect, const TBRect &src_rect, uint32_t color, TBBitmap *bitmap, TBBitmapFragment *fragment)
 {
 	if (batch.bitmap != bitmap)
 	{

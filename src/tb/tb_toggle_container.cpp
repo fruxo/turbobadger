@@ -62,7 +62,7 @@ TBSection::~TBSection()
 	RemoveChild(&m_layout);
 }
 
-void TBSection::SetValue(int value)
+void TBSection::SetValue(long int value)
 {
 	m_header.SetValue(value);
 	m_toggle_container.SetValue(value);
@@ -115,7 +115,7 @@ void TBToggleContainer::SetInvert(bool invert)
 	UpdateInternal();
 }
 
-void TBToggleContainer::SetValue(int value)
+void TBToggleContainer::SetValue(long int value)
 {
 	if (value == m_value)
 		return;

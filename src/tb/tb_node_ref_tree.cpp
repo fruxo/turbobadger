@@ -81,8 +81,8 @@ TBNode *TBNodeRefTree::FollowNodeRef(TBNode *node)
 	// and assumes the look up doesn't cause other lookups
 	// recursively.
 	// FIX: Switch to hare and teleporting tortouise?
-	static uint32 s_cycle_id = 0;
-	uint32 cycle_id = ++s_cycle_id;
+	static uint32_t s_cycle_id = 0;
+	uint32_t cycle_id = ++s_cycle_id;
 	TBNode *start_node = node;
 
 	while (node->GetValue().IsString())

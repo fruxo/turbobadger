@@ -143,16 +143,16 @@ protected:
 	int m_overflow_scroll;
 	union {
 		struct {
-			uint32 layout_is_invalid		: 1;
-			uint32 layout_mode_size			: 4;
-			uint32 layout_mode_pos			: 4;
-			uint32 layout_mode_overflow		: 4;
-			uint32 layout_mode_dist			: 4;
-			uint32 layout_mode_dist_pos		: 4;
-			uint32 mode_reverse_order		: 1;
-			uint32 paint_overflow_fadeout	: 1;
+			uint32_t layout_is_invalid		: 1;
+			uint32_t layout_mode_size			: 4;
+			uint32_t layout_mode_pos			: 4;
+			uint32_t layout_mode_overflow		: 4;
+			uint32_t layout_mode_dist			: 4;
+			uint32_t layout_mode_dist_pos		: 4;
+			uint32_t mode_reverse_order		: 1;
+			uint32_t paint_overflow_fadeout	: 1;
 		} m_packed;
-		uint32 m_packed_init;
+		uint32_t m_packed_init;
 	};
 	void ValidateLayout(const SizeConstraints &constraints, PreferredSize *calculate_ps = nullptr);
 	/** Can this TBLayout expand in its direction? */

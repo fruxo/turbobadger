@@ -151,7 +151,7 @@ TBValue::TBValue(TYPE type)
 	}
 }
 
-TBValue::TBValue(int value)
+TBValue::TBValue(long int value)
 	: m_packed_init(0)
 {
 	SetInt(value);
@@ -205,7 +205,10 @@ void TBValue::Copy(const TBValue &source_value)
 	else
 	{
 		SetNull();
-		memcpy(this, &source_value, sizeof(TBValue));
+		//memcpy(this, &source_value, sizeof(TBValue));
+		//*this = source_value;
+		val_float = source_value.val_float;
+		m_packed_init = source_value.m_packed_init;
 	}
 }
 
@@ -223,7 +226,7 @@ void TBValue::SetNull()
 	m_packed.type = TYPE_NULL;
 }
 
-void TBValue::SetInt(int val)
+void TBValue::SetInt(long int val)
 {
 	SetNull();
 	m_packed.type = TYPE_INT;
@@ -327,7 +330,7 @@ void TBValue::SetFromStringAuto(const char *str, SET_MODE set)
 	}
 }
 
-int TBValue::GetInt() const
+long int TBValue::GetInt() const
 {
 	if (m_packed.type == TYPE_STRING)
 		return atoi(val_str);
@@ -350,7 +353,7 @@ const char *TBValue::GetString() const
 	if (m_packed.type == TYPE_INT)
 	{
 		char tmp[32];
-		sprintf(tmp, "%d", val_int);
+		sprintf(tmp, "%ld", val_int);
 		const_cast<TBValue *>(this)->SetString(tmp, SET_NEW_COPY);
 	}
 	else if (m_packed.type == TYPE_FLOAT)
@@ -364,7 +367,7 @@ const char *TBValue::GetString() const
 	return m_packed.type == TYPE_STRING ? val_str : "";
 }
 
-bool TBValue::Equals(int value) const
+bool TBValue::Equals(long int value) const
 {
 	if (m_packed.type == TYPE_INT)
 		return val_int == value;

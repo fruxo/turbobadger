@@ -46,7 +46,7 @@ public:
 	/** Update the bitmap with the given data (in BGRA32 format).
 		Note: Implementations for batched renderers should call TBRenderer::FlushBitmap
 		to make sure any active batch is being flushed before the bitmap is changed. */
-	virtual void SetData(uint32 *data) = 0;
+	virtual void SetData(uint32_t *data) = 0;
 };
 
 /** TBRenderer is a minimal interface for painting strings and bitmaps. */
@@ -111,7 +111,7 @@ public:
 	/** Create a new TBBitmap from the given data (in BGRA32 format).
 		Width and height must be a power of two.
 		Return nullptr if fail. */
-	virtual TBBitmap *CreateBitmap(int width, int height, uint32 *data) = 0;
+	virtual TBBitmap *CreateBitmap(int width, int height, uint32_t *data) = 0;
 
 	/** Add a listener to this renderer. Does not take ownership. */
 	void AddListener(TBRendererListener *listener) { m_listeners.AddLast(listener); }
