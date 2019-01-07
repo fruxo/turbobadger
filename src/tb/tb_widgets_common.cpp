@@ -452,10 +452,6 @@ bool TBRadioCheckBox::OnEvent(const TBWidgetEvent &ev)
 	return false;
 }
 
-template class TBSliderX<double>;
-template class TBSliderX<int>;
-template class TBSliderX<long>;
-
 // == TBScrollBar =======================================
 
 TBScrollBar::TBScrollBar()
@@ -741,6 +737,10 @@ void TBSliderX<VAL_T>::OnResized(int /*old_w*/, int /*old_h*/)
 {
 	UpdateHandle();
 }
+
+template class TBSliderX<double>;
+template class TBSliderX<int>;
+template class TBSliderX<long>;
 
 // == TBContainer ===================================
 
