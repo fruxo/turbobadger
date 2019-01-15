@@ -373,8 +373,14 @@ public:
 	virtual void SetValueVal(VAL_T value);
 	virtual VAL_T GetValueVal() const { return m_value; }
 
+	/** Give SetValue corrent precision. */
 	virtual void SetValue(long int value) { SetValueVal(value); }
+	/** Give GetValue corrent precision. */
 	virtual long int GetValue() const { return m_value; }
+	/** Same as SetValue, but with double precision. */
+	virtual void SetValueDouble(double value) { SetValueVal(value); }
+	/** Same as GetValue, but with double precision. */
+	virtual double GetValueDouble() const { return GetValueVal(); }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
