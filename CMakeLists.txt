@@ -7,7 +7,7 @@ option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." ON)
 option(TB_BUILD_DEMO_SDL2 "Build the Demo application. Depends on SDL2." OFF)
 option(TB_DEMO_IN_SRC "Build the demo application to the source directory" ON)
 option(TB_DEBUG_POSTFIX "Add _d postfix for debug builds" OFF)
-option(TB_GENERATE_CONFIG "Generate the tb_config.h file from provided parameters in cmake. Default Off" OFF)
+option(TB_GENERATE_CONFIG "Generate the tb_config.h file from provided parameters in cmake. Default Off" ON)
 
 # Configure file options
 option(TB_FONT_RENDERER_TBBF "Enable to support TBBF fonts (Turbo Badger Bitmap Fonts)" ON)
@@ -177,6 +177,7 @@ if(EMSCRIPTEN)
 endif(EMSCRIPTEN)
 
 # Add TurboBadgerLib project
+include_directories("${PROJECT_BINARY_DIR}/src/tb")
 include_directories("${PROJECT_SOURCE_DIR}/src/tb")
 add_subdirectory(src/tb)
 

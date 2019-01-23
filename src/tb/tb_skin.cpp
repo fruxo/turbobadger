@@ -10,10 +10,16 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+
+#define TB_JSON_OUT 0
+#if TB_JSON_OUT
 #include "nlohmann/json.hpp"
+#endif
 
 namespace tb {
+#if TB_JSON_OUT
 using nlohmann::json;
+#endif
 
 // == Util functions ==========================================================
 
@@ -806,7 +812,7 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 
 void TBSkinElement::Write(TBFile * file, TBSkin * skin)
 {
-#ifdef TB_RUNTIME_DEBUG_INFO
+#if defined(TB_RUNTIME_DEBUG_INFO) && TB_JSON_OUT
 	json obj;
 	obj["name"] = name.CStr();
 

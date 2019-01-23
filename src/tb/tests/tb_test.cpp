@@ -29,7 +29,7 @@ namespace tb {
 
 #ifdef TB_UNIT_TESTING
 
-uint32 test_settings;
+uint32_t test_settings;
 int fail_line_nr;
 const char *fail_file;
 const char *fail_text;
@@ -113,7 +113,7 @@ void OutputPass(TBTestGroup *test, const char *call_name)
 	TBDebugOut(msg);
 }
 
-int TBRunTests(uint32 settings)
+int TBRunTests(uint32_t settings)
 {
 	test_settings = settings;
 	int num_failed = 0;
