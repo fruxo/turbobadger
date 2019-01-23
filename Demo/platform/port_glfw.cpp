@@ -258,7 +258,7 @@ static void mouse_button_callback(GLFWwindow *window, int button, int action, in
 			GetBackend(window)->GetRoot()->InvokePointerDown(x, y, counter, modifier, ShouldEmulateTouchEvent());
 		}
 		else
-			GetBackend(window)->GetRoot()->InvokePointerUp(x, y, modifier, ShouldEmulateTouchEvent());
+			GetBackend(window)->GetRoot()->InvokePointerUp(x, y, 1, modifier, ShouldEmulateTouchEvent());
 	}
 	else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
 	{
