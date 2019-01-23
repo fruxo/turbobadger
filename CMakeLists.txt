@@ -3,11 +3,12 @@ cmake_minimum_required(VERSION 3.1)
 include(CheckCXXCompilerFlag)
 set(CMAKE_CXX_STANDARD 11)
 
-option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." ON)
+option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." OFF)
 option(TB_BUILD_DEMO_SDL2 "Build the Demo application. Depends on SDL2." OFF)
-option(TB_DEMO_IN_SRC "Build the demo application to the source directory" ON)
-option(TB_DEBUG_POSTFIX "Add _d postfix for debug builds" OFF)
-option(TB_GENERATE_CONFIG "Generate the tb_config.h file from provided parameters in cmake. Default Off" ON)
+option(TB_DEMO_IN_SRC "Build the demo application to the source directory." ON)
+
+option(TB_DEBUG_POSTFIX "Add _d postfix for debug builds." OFF)
+option(TB_GENERATE_CONFIG "Generate the tb_config.h file from provided parameters in cmake." ON)
 
 # Configure file options
 option(TB_FONT_RENDERER_TBBF "Enable to support TBBF fonts (Turbo Badger Bitmap Fonts)" ON)

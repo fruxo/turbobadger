@@ -4,10 +4,19 @@
 set -e
 
 : ${VERBOSE=0}
-: ${CMAKE_FLAGS=}
+: ${MAKE_FLAGS=}
+: ${CMAKE_FLAGS=-DTB_SYSTEM_LINUX=ON}
+
+if command -v nproc &> /dev/null ; then
+    NPROC=$(nproc)
+elif command -v sysctl &> /dev/null ; then
+    NPROC=$(sysctl -n hw.ncpu)
+else
+    NPROC=1
+fi
 
 usage () {
-    echo "usage: ./build.sh [-v]"
+    echo "usage: ./build.sh [-v|-q] [-gl3] [-sdl]"
     exit 1
 }
 
@@ -17,8 +26,11 @@ while [ $# -gt 0 ]; do
     case $key in
         -gl3)                  CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL3=ON" ;;
         -sdl)                  CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON -DTB_BUILD_DEMO_GLFW=OFF" ;;
-        -v|--verbose)          VERBOSE=$(( ${VERBOSE} + 1 )) ;;
-        -q|--quiet)            VERBOSE=$(( ${VERBOSE} - 1 )) ;;
+        -v|--verbose)          VERBOSE=$(( ${VERBOSE} + 1 ))
+                               MAKE_FLAGS="${MAKE_FLAGS} VERBOSE=1"
+                               ;;
+        -q|--quiet)            VERBOSE=$(( ${VERBOSE} - 1 ))
+                               ;;
         *)
             # unknown option
             echo "unknown option $key"
@@ -38,16 +50,7 @@ if [ ! -f Demo/thirdparty/glfw/CMakeLists.txt ]; then
     git submodule update
 fi
 
-mkdir -p build
-cd build
+mkdir -p Build
+cd Build
 cmake ../ ${CMAKE_FLAGS}
-
-if command -v nproc &> /dev/null ; then
-    NPROC=$(nproc)
-elif command -v sysctl &> /dev/null ; then
-    NPROC=$(sysctl -n hw.ncpu)
-else
-    NPROC=1
-fi
-
-make -j${NPROC} VERBOSE=${VERBOSE}
+make -j${NPROC} ${MAKE_FLAGS}
