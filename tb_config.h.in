@@ -62,6 +62,11 @@ ${TB_IMAGE_LOADER_STB_CONFIG}
 ${TB_RENDERER_BATCHER_CONFIG}
 //#define TB_RENDERER_BATCHER
 
+/** Enable renderer using Stub. This renderer depends on
+	TB_RENDERER_BATCHER. */
+${TB_RENDERER_STUB_CONFIG}
+//#define TB_RENDERER_STUB
+
 /** Enable renderer using OpenGL. This renderer depends on TB_RENDERER_BATCHER.
 	It is using GL version 1.1, */
 ${TB_RENDERER_GL_CONFIG}

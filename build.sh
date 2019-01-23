@@ -4,8 +4,11 @@
 set -e
 
 : ${VERBOSE=0}
+: ${BUILD_DIR=Build}
 : ${MAKE_FLAGS=}
 : ${CMAKE_FLAGS=-DTB_SYSTEM_LINUX=ON}
+
+SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if command -v nproc &> /dev/null ; then
     NPROC=$(nproc)
@@ -24,6 +27,7 @@ usage () {
 while [ $# -gt 0 ]; do
     key="$1"
     case $key in
+        -o)                    BUILD_DIR=$(mkdir -p "$2" && cd "$2" && pwd); shift ;;
         -gl3)                  CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL3=ON" ;;
         -sdl)                  CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON -DTB_BUILD_DEMO_GLFW=OFF" ;;
         -v|--verbose)          VERBOSE=$(( ${VERBOSE} + 1 ))
@@ -50,7 +54,7 @@ if [ ! -f Demo/thirdparty/glfw/CMakeLists.txt ]; then
     git submodule update
 fi
 
-mkdir -p Build
-cd Build
-cmake ../ ${CMAKE_FLAGS}
+mkdir -p ${BUILD_DIR}
+cd ${BUILD_DIR}
+cmake ${SRC_DIR} ${CMAKE_FLAGS}
 make -j${NPROC} ${MAKE_FLAGS}

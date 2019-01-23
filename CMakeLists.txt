@@ -10,13 +10,23 @@ option(TB_DEMO_IN_SRC "Build the demo application to the source directory." ON)
 option(TB_DEBUG_POSTFIX "Add _d postfix for debug builds." OFF)
 option(TB_GENERATE_CONFIG "Generate the tb_config.h file from provided parameters in cmake." ON)
 
+set (CMAKE_BUILD_TYPE "Debug" CACHE STRING "Set build type")
+set_property (CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+  "Debug" "Release" "RelWithDebInfo")
+
+# Which types to generate for for Xcode and VS, default to Release
+if (XCODE OR MSVS)
+  set (CMAKE_CONFIGURATION_TYPES "Release;Debug;RelWithDebInfo")
+endif (XCODE OR MSVS)
+
 # Configure file options
 option(TB_FONT_RENDERER_TBBF "Enable to support TBBF fonts (Turbo Badger Bitmap Fonts)" ON)
 option(TB_FONT_RENDERER_FREETYPE "Enable FreeType TB Font. Requires FreeType" OFF)
 option(TB_FONT_RENDERER_STB "Enable to support truetype fonts using stb_truetype.h WARNING VERY UNSAFE" OFF)
 option(TB_IMAGE_LOADER_STB "Enable to support image loading using stb_image.c" OFF)
 option(TB_RENDERER_BATCHER "Enable to get TBRendererBatcher" ON)
-option(TB_RENDERER_GL "Enable renderer using OpenGL. This renderer depends on TB_RENDERER_BATCHER." ON)
+option(TB_RENDERER_STUB "Enable stub renderer." OFF)
+option(TB_RENDERER_GL "Enable renderer using OpenGL. This renderer depends on TB_RENDERER_BATCHER." OFF)
 option(TB_RENDERER_GLES_1 "Enable renderer using OpenGL ES1. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_RENDERER_GLES_2 "Enable renderer using OpenGL ES2. This renderer depends on TB_RENDERER_GL." OFF)
 option(TB_RENDERER_GL3 "Enable renderer using OpenGL 3.2. This renderer depends on TB_RENDERER_GL." OFF)
@@ -125,6 +135,9 @@ endif()
 if(TB_RENDERER_BATCHER)
     set(TB_RENDERER_BATCHER_CONFIG "#define TB_RENDERER_BATCHER")
 endif()
+if(TB_RENDERER_STUB)
+    set(TB_RENDERER_STUB_CONFIG "#define TB_RENDERER_STUB")
+endif()
 if(TB_RENDERER_GL)
     set(TB_RENDERER_GL_CONFIG "#define TB_RENDERER_GL")
 endif()
@@ -144,7 +157,7 @@ endif()
 configure_file(tb_config.h.in src/tb/tb_config.h)
 
 if(${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter")
 endif()
 
 if(APPLE)
