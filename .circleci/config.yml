@@ -1,0 +1,42 @@
+version: 2 # use CircleCI 2.0
+jobs: # a collection of steps
+  build: # runs not using Workflows must have a `build` job as entry point
+    
+    working_directory: ~/turbobadger # directory where steps will run
+
+    docker: # run the steps with Docker
+      - image: buildpack-deps:xenial
+#      - image: ubuntu:16.04
+
+    steps: # a collection of executable commands
+      - checkout # check out source code to working directory
+      - run:
+          name: Install System Dependencies
+          command: |
+            lsb_release -a
+            sudo apt-get install -y gcc g++
+            gcc --version
+            g++ --version
+      - run:
+          name: Build OpenVnmrJ
+          command: |
+            ./build.sh -v
+            cd Build && make
+      - run:
+          name: Build Failed
+          when: on_fail
+          command: |
+            echo build fail
+      - run:
+          name: Test OpenVnmrJ
+          command: |
+            export OVJ_BUILDDIR=$HOME
+            echo run tests
+      - run:
+          name: Tests Failed
+          when: on_fail
+          command: |
+            echo failed
+      - store_artifacts:
+          name: Store Results
+          path: /home/...
