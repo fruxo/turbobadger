@@ -42,7 +42,7 @@ TBTextFragmentContent *TBTextFragmentContentFactory::CreateFragmentContent(const
 	else if (strncmp(text, "<color ", MIN(text_len, 7)) == 0)
 	{
 		TBColor color;
-		color.SetFromString(text + 7, text_len - 8);
+		color.SetFromString(TBStr(text + 7, text_len - 8));
 		return new TBTextFragmentContentTextColor(color);
 	}
 	else if (1 == sscanf(text, "<size %u>", &size))

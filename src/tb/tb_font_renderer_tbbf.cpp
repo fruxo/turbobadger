@@ -64,11 +64,11 @@ public:
 	TBBFRenderer();
 	~TBBFRenderer();
 
-	bool Load(const char *filename, int size);
+	bool Load(const TBStr & filename, int size);
 	bool FindGlyphs();
 	GLYPH *FindNext(UCS4 cp, int x);
 
-	virtual TBFontFace *Create(TBFontManager *font_manager, const char *filename,
+	virtual TBFontFace *Create(TBFontManager *font_manager, const TBStr & filename,
 								const TBFontDescription &font_desc);
 
 	virtual TBFontMetrics GetMetrics();
@@ -136,10 +136,10 @@ void TBBFRenderer::GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp)
 		metrics->advance = glyph->w + m_advance_delta;
 }
 
-bool TBBFRenderer::Load(const char *filename, int size)
+bool TBBFRenderer::Load(const TBStr & filename, int size)
 {
 	m_size = size;
-	if (!m_node.ReadFile(filename))
+	if (!m_node.ReadFile(filename.CStr()))
 		return false;
 
 	// Check for size nodes and get the one closest to the size we want.
@@ -170,7 +170,7 @@ bool TBBFRenderer::Load(const char *filename, int size)
 
 	// Get the path for the bitmap file.
 	TBTempBuffer bitmap_filename;
-	if (!bitmap_filename.AppendPath(filename))
+	if (!bitmap_filename.AppendPath(filename.CStr()))
 		return false;
 
 	// Append the bitmap filename for the given size.
@@ -191,14 +191,14 @@ bool TBBFRenderer::FindGlyphs()
 	if (!m_img)
 		return false;
 
-	const char *glyph_str = m_node.GetValueString("info>glyph_str", nullptr);
+	TBStr glyph_str = m_node.GetValueString("info>glyph_str", nullptr);
 	if (!glyph_str)
 		return false;
 
-	int glyph_str_len = (int)strlen(glyph_str);
+	int glyph_str_len = glyph_str.Length();
 	int i = 0;
 	int x = 0;
-	while (UCS4 uc = utf8::decode_next(glyph_str, &i, glyph_str_len))
+	while (UCS4 uc = utf8::decode_next((const char *)glyph_str, &i, glyph_str_len))
 	{
 		if (GLYPH *glyph = FindNext(uc, x))
 		{
@@ -262,9 +262,11 @@ GLYPH *TBBFRenderer::FindNext(UCS4 cp, int x)
 	return glyph;
 }
 
-TBFontFace *TBBFRenderer::Create(TBFontManager *font_manager, const char *filename, const TBFontDescription &font_desc)
+TBFontFace *TBBFRenderer::Create(TBFontManager *font_manager,
+								 const TBStr & filename,
+								 const TBFontDescription &font_desc)
 {
-	if (!strstr(filename, ".tb.txt"))
+	if (!strstr(filename.CStr(), ".tb.txt"))
 		return nullptr;
 	if (TBBFRenderer *fr = new TBBFRenderer())
 	{

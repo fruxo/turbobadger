@@ -8,6 +8,7 @@
 
 #include "tb_linklist.h"
 #include "tb_widgets.h"
+#include <iostream>
 
 namespace tb {
 
@@ -19,7 +20,7 @@ class TBNode;
 /** INFLATE_INFO contains info passed to TBWidget::OnInflate during resource loading. */
 struct INFLATE_INFO {
 	INFLATE_INFO(TBWidgetsReader *reader, TBWidget *target, TBNode *node, TBValue::TYPE sync_type)
-		: reader(reader), target(target), node(node), sync_type(sync_type) {}
+		: reader(reader), target(target), node(node) , sync_type(sync_type) {}
 	TBWidgetsReader *reader;
 
 	/** The widget that that will be parent to the inflated widget. */
@@ -34,7 +35,7 @@ struct INFLATE_INFO {
 class TBWidgetFactory : public TBLinkOf<TBWidgetFactory>
 {
 public:
-	TBWidgetFactory(const char *name, TBValue::TYPE sync_type);
+	TBWidgetFactory(const char *name, TBValue::TYPE s);
 
 	/** Create and return the new widget or nullptr on out of memory. */
 	virtual TBWidget *Create(INFLATE_INFO *info) = 0;
@@ -61,24 +62,25 @@ public:
 
 	TB_WIDGET_FACTORY(MyWidget, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 	*/
-#define TB_WIDGET_FACTORY(classname, sync_type, add_child_z) \
-	class classname##WidgetFactory : public TBWidgetFactory \
-	{ \
-	public: \
-		classname##WidgetFactory() \
-			: TBWidgetFactory(#classname, sync_type) { Register(); } \
-		virtual TBWidget *Create(INFLATE_INFO *info) \
-		{ \
-			classname *widget = new classname(); \
-			if (widget) { \
-				widget->GetContentRoot()->SetZInflate(add_child_z); \
-				ReadCustomProps(widget, info); \
-			} \
-			return widget; \
-		} \
-		void ReadCustomProps(classname *widget, INFLATE_INFO *info); \
-	}; \
-	static classname##WidgetFactory classname##_wf; \
+#define TB_WIDGET_FACTORY(classname, sync_type, add_child_z)			\
+	class classname##WidgetFactory : public TBWidgetFactory				\
+	{																	\
+	public:																\
+		classname##WidgetFactory()										\
+			: TBWidgetFactory(#classname, sync_type) { Register(); }	\
+		virtual TBWidget *Create(INFLATE_INFO *info)					\
+		{																\
+			classname *widget = new classname();						\
+			if (widget) {												\
+				if (widget->m_sync_type != sync_type) std::cerr << #classname "ERROR\n"; \
+				widget->GetContentRoot()->SetZInflate(add_child_z);		\
+				ReadCustomProps(widget, info);							\
+			}															\
+			return widget;												\
+		}																\
+		void ReadCustomProps(classname *widget, INFLATE_INFO *info);	\
+	};																	\
+	static classname##WidgetFactory classname##_wf;						\
 	void classname##WidgetFactory::ReadCustomProps(classname *widget, INFLATE_INFO *info)
 
 /**

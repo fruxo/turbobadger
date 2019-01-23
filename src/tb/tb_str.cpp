@@ -15,9 +15,11 @@ namespace tb {
 static const char *empty = "";
 inline void safe_delete(char *&str)
 {
-	if (str != empty && str)
-		free(str);
-	str = const_cast<char*>(empty);
+	if (str != empty) {
+		if (str)
+			free(str);
+		str = const_cast<char*>(empty);
+	}
 }
 
 const char *stristr(const char *arg1, const char *arg2)
@@ -43,7 +45,7 @@ TBStr::TBStr()
 }
 
 TBStr::TBStr(const char* str)
-	: TBStrC(str == empty ? empty : strdup(str))
+	: TBStrC((str == empty || str == nullptr) ? empty : strdup(str))
 {
 	if (!s)
 		s = const_cast<char*>(empty);
@@ -56,30 +58,24 @@ TBStr::TBStr(const TBStr &str)
 		s = const_cast<char*>(empty);
 }
 
+TBStr::TBStr(TBStr && str)
+	: TBStrC(str.s)
+{
+	str.s = const_cast<char*>(empty);
+}
+
 TBStr::TBStr(const char* str, int len)
 	: TBStrC(empty)
 {
-	Set(str, len);
+	if (str == nullptr)
+		s = const_cast<char*>(empty);
+	else
+		s = strndup(str, len);
 }
 
 TBStr::~TBStr()
 {
 	safe_delete(s);
-}
-
-bool TBStr::Set(const char* str, int len)
-{
-	safe_delete(s);
-	if (len == TB_ALL_TO_TERMINATION)
-		len = strlen(str);
-	if (char *new_s = (char *) malloc(len + 1))
-	{
-		s = new_s;
-		memcpy(s, str, len);
-		s[len] = 0;
-		return true;
-	}
-	return false;
 }
 
 bool TBStr::SetFormatted(const char* format, ...)
@@ -154,6 +150,11 @@ bool TBStr::Insert(int ofs, const char *ins, int ins_len)
 		return true;
 	}
 	return false;
+}
+
+TBStr::operator bool() const
+{
+	return s != empty;
 }
 
 } // namespace tb

@@ -32,29 +32,29 @@ using nlohmann::json;
 	return state;
 }*/
 
-SKIN_STATE StringToState(const char *state_str)
+static SKIN_STATE StringToState(const TBStr & state_str)
 {
 	SKIN_STATE state = SKIN_STATE_NONE;
-	if (strstr(state_str, "all"))		state |= SKIN_STATE_ALL;
-	if (strstr(state_str, "disabled"))	state |= SKIN_STATE_DISABLED;
-	if (strstr(state_str, "focused"))	state |= SKIN_STATE_FOCUSED;
-	if (strstr(state_str, "pressed"))	state |= SKIN_STATE_PRESSED;
-	if (strstr(state_str, "selected"))	state |= SKIN_STATE_SELECTED;
-	if (strstr(state_str, "hovered"))	state |= SKIN_STATE_HOVERED;
+	if (strstr(state_str.CStr(), "all"))		state |= SKIN_STATE_ALL;
+	if (strstr(state_str.CStr(), "disabled"))	state |= SKIN_STATE_DISABLED;
+	if (strstr(state_str.CStr(), "focused"))	state |= SKIN_STATE_FOCUSED;
+	if (strstr(state_str.CStr(), "pressed"))	state |= SKIN_STATE_PRESSED;
+	if (strstr(state_str.CStr(), "selected"))	state |= SKIN_STATE_SELECTED;
+	if (strstr(state_str.CStr(), "hovered"))	state |= SKIN_STATE_HOVERED;
 	return state;
 }
 
-SKIN_ELEMENT_TYPE StringToType(const char *type_str)
+static SKIN_ELEMENT_TYPE StringToType(const TBStr & type_str)
 {
-	if (strcmp(type_str, "StretchBox") == 0)
+	if (strcmp(type_str.CStr(), "StretchBox") == 0)
 		return SKIN_ELEMENT_TYPE_STRETCH_BOX;
-	else if (strcmp(type_str, "Image") == 0)
+	else if (strcmp(type_str.CStr(), "Image") == 0)
 		return SKIN_ELEMENT_TYPE_IMAGE;
-	else if (strcmp(type_str, "Stretch Image") == 0)
+	else if (strcmp(type_str.CStr(), "Stretch Image") == 0)
 		return SKIN_ELEMENT_TYPE_STRETCH_IMAGE;
-	else if (strcmp(type_str, "Tile") == 0)
+	else if (strcmp(type_str.CStr(), "Tile") == 0)
 		return SKIN_ELEMENT_TYPE_TILE;
-	else if (strcmp(type_str, "StretchBorder") == 0)
+	else if (strcmp(type_str.CStr(), "StretchBorder") == 0)
 		return SKIN_ELEMENT_TYPE_STRETCH_BORDER;
 	TBDebugOut("Skin error: Unknown skin type!\n");
 	return SKIN_ELEMENT_TYPE_STRETCH_BOX;
@@ -79,43 +79,43 @@ const char * TypeToString(SKIN_ELEMENT_TYPE type)
 }
 
 
-TBSkinCondition::TARGET StringToTarget(const char *target_str)
+TBSkinCondition::TARGET StringToTarget(const TBStr & target_str)
 {
-	if (strcmp(target_str, "this") == 0)
+	if (strcmp(target_str.CStr(), "this") == 0)
 		return TBSkinCondition::TARGET_THIS;
-	else if (strcmp(target_str, "parent") == 0)
+	else if (strcmp(target_str.CStr(), "parent") == 0)
 		return TBSkinCondition::TARGET_PARENT;
-	else if (strcmp(target_str, "ancestors") == 0)
+	else if (strcmp(target_str.CStr(), "ancestors") == 0)
 		return TBSkinCondition::TARGET_ANCESTORS;
-	else if (strcmp(target_str, "prev sibling") == 0)
+	else if (strcmp(target_str.CStr(), "prev sibling") == 0)
 		return TBSkinCondition::TARGET_PREV_SIBLING;
-	else if (strcmp(target_str, "next sibling") == 0)
+	else if (strcmp(target_str.CStr(), "next sibling") == 0)
 		return TBSkinCondition::TARGET_NEXT_SIBLING;
 	TBDebugOut("Skin error: Unknown target in condition!\n");
 	return TBSkinCondition::TARGET_THIS;
 }
 
-TBSkinCondition::PROPERTY StringToProperty(const char *prop_str)
+TBSkinCondition::PROPERTY StringToProperty(const TBStr & prop_str)
 {
-	if (strcmp(prop_str, "skin") == 0)
+	if (strcmp(prop_str.CStr(), "skin") == 0)
 		return TBSkinCondition::PROPERTY_SKIN;
-	else if (strcmp(prop_str, "window active") == 0)
+	else if (strcmp(prop_str.CStr(), "window active") == 0)
 		return TBSkinCondition::PROPERTY_WINDOW_ACTIVE;
-	else if (strcmp(prop_str, "axis") == 0)
+	else if (strcmp(prop_str.CStr(), "axis") == 0)
 		return TBSkinCondition::PROPERTY_AXIS;
-	else if (strcmp(prop_str, "align") == 0)
+	else if (strcmp(prop_str.CStr(), "align") == 0)
 		return TBSkinCondition::PROPERTY_ALIGN;
-	else if (strcmp(prop_str, "id") == 0)
+	else if (strcmp(prop_str.CStr(), "id") == 0)
 		return TBSkinCondition::PROPERTY_ID;
-	else if (strcmp(prop_str, "state") == 0)
+	else if (strcmp(prop_str.CStr(), "state") == 0)
 		return TBSkinCondition::PROPERTY_STATE;
-	else if (strcmp(prop_str, "value") == 0)
+	else if (strcmp(prop_str.CStr(), "value") == 0)
 		return TBSkinCondition::PROPERTY_VALUE;
-	else if (strcmp(prop_str, "hover") == 0)
+	else if (strcmp(prop_str.CStr(), "hover") == 0)
 		return TBSkinCondition::PROPERTY_HOVER;
-	else if (strcmp(prop_str, "capture") == 0)
+	else if (strcmp(prop_str.CStr(), "capture") == 0)
 		return TBSkinCondition::PROPERTY_CAPTURE;
-	else if (strcmp(prop_str, "focus") == 0)
+	else if (strcmp(prop_str.CStr(), "focus") == 0)
 		return TBSkinCondition::PROPERTY_FOCUS;
 	return TBSkinCondition::PROPERTY_CUSTOM;
 }
@@ -203,8 +203,8 @@ bool TBSkin::LoadInternal(const char *skin_file)
 		g_color_manager->Load(colors, this);
 
 	// Read skin constants
-	if (const char *color = node.GetValueString("defaults>text-color", nullptr))
-		m_default_text_color.SetFromString(color, strlen(color));
+	if (TBStr color = node.GetValueString("defaults>text-color", nullptr))
+		m_default_text_color.SetFromString(color);
 	m_default_disabled_opacity = node.GetValueFloat("defaults>disabled>opacity",
 		m_default_disabled_opacity);
 	m_default_placeholder_opacity = node.GetValueFloat("defaults>placeholder>opacity",
@@ -225,7 +225,7 @@ bool TBSkin::LoadInternal(const char *skin_file)
 			{
 				n->Remove(clone);
 
-				TBNode *clone_source = elements->GetNode(clone->GetValue().GetString());
+				TBNode *clone_source = elements->GetNode(clone->GetValue().GetString().CStr());
 				if (clone_source)
 					n->CloneChildren(clone_source);
 
@@ -318,7 +318,7 @@ bool TBSkin::ReloadBitmapsInternal()
 			int bitmap_dpi = m_dim_conv.GetSrcDPI();
 			if (m_dim_conv.NeedConversion())
 			{
-				m_dim_conv.GetDstDPIFilename(element->bitmap_file, &filename_dst_DPI);
+				m_dim_conv.GetDstDPIFilename(element->bitmap_file.CStr(), &filename_dst_DPI);
 				element->bitmap = m_frag_manager.GetFragmentFromFile(filename_dst_DPI.GetData(),
 																	 dedicated_map,
 																	 m_dim_conv.GetDstDPI());
@@ -329,7 +329,8 @@ bool TBSkin::ReloadBitmapsInternal()
 
 			// If we still have no bitmap fragment, load from default file.
 			if (!element->bitmap)
-				element->bitmap = m_frag_manager.GetFragmentFromFile(element->bitmap_file, dedicated_map, bitmap_dpi);
+				element->bitmap = m_frag_manager.GetFragmentFromFile(element->bitmap_file.CStr(),
+																	 dedicated_map, bitmap_dpi);
 
 			if (!element->bitmap) {
 				TBDebugPrint("Bitmap %s: '%s' load failed\n", element->name.CStr(), element->bitmap_file.CStr());
@@ -732,9 +733,9 @@ bool TBSkinElement::HasState(SKIN_STATE state, TBSkinConditionContext &context)
 			m_overlay_elements.GetStateElement(state, context, TBSkinElementState::MATCH_RULE_ONLY_SPECIFIC_STATE);
 }
 
-void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
+void TBSkinElement::Load(TBNode *n, TBSkin *skin, const TBStr & skin_path)
 {
-	if (const char *bitmap = n->GetValueString("bitmap", nullptr))
+	if (TBStr bitmap = n->GetValueString("bitmap", nullptr))
 	{
 		bitmap_file.Clear();
 		bitmap_file.Append(skin_path);
@@ -791,16 +792,16 @@ void TBSkinElement::Load(TBNode *n, TBSkin *skin, const char *skin_path)
 	flip_y = n->GetValueInt("flip-y", flip_y);
 	opacity = n->GetValueFloat("opacity", opacity);
 
-	if (const char *color = n->GetValueString("text-color", nullptr))
-		text_color.SetFromString(color, strlen(color));
+	if (TBStr color = n->GetValueString("text-color", nullptr))
+		text_color.SetFromString(color);
 
-	if (const char *color = n->GetValueString("background-color", nullptr))
-		bg_color.SetFromString(color, strlen(color));
+	if (TBStr color = n->GetValueString("background-color", nullptr))
+		bg_color.SetFromString(color);
 
-	if (const char *color = n->GetValueString("bitmap-color", nullptr))
-		bitmap_color.SetFromString(color, strlen(color));
+	if (TBStr color = n->GetValueString("bitmap-color", nullptr))
+		bitmap_color.SetFromString(color);
 
-	if (const char *type_str = n->GetValueString("type", nullptr))
+	if (TBStr type_str = n->GetValueString("type", nullptr))
 		type = StringToType(type_str);
 
 	// Create all state elements
@@ -967,7 +968,7 @@ void TBSkinElementStateList::Load(TBNode *n)
 			{
 				TBSkinCondition::TARGET target = StringToTarget(condition_node->GetValueString("target", ""));
 
-				const char *prop_str = condition_node->GetValueString("property", "");
+				TBStr prop_str = condition_node->GetValueString("property", "");
 				TBSkinCondition::PROPERTY prop = StringToProperty(prop_str);
 				TBID custom_prop;
 				if (prop == TBSkinCondition::PROPERTY_CUSTOM)
@@ -987,9 +988,9 @@ void TBSkinElementStateList::Load(TBNode *n)
 				}
 
 				TBSkinCondition::TEST test = TBSkinCondition::TEST_EQUAL;
-				if (const char *test_str = condition_node->GetValueString("test", nullptr))
+				if (TBStr test_str = condition_node->GetValueString("test", nullptr))
 				{
-					if (strcmp(test_str, "!=") == 0)
+					if (test_str == "!=")
 						test = TBSkinCondition::TEST_NOT_EQUAL;
 				}
 

@@ -33,18 +33,18 @@
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
-void tb::TBDebugOut(const char *str)
+void tb::TBDebugOut(const TBStr & str)
 {
-	LOGI("%s", str);
+	LOGI("%s", str.CStr());
 }
 
 #else // ANDROID
 
-void tb::TBDebugOut(const char *str)
+void tb::TBDebugOut(const TBStr & str)
 {
-	std::cerr << str;
-	SDL_Log("%s", str);
-	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", str);
+	std::cerr << str.CStr();
+	SDL_Log("%s", str.CStr());
+	SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "%s", str.CStr());
 }
 #endif // ANDROID
 #endif // TB_RUNTIME_DEBUG_INFO

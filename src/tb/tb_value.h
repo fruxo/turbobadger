@@ -8,6 +8,7 @@
 
 #include "tb_core.h"
 #include "tb_list.h"
+#include "tb_str.h"
 
 namespace tb {
 
@@ -77,13 +78,16 @@ public:
 	};
 
 	TBValue();
+	TBValue(TBValue && val) = default;
 	TBValue(const TBValue &value);
 	TBValue(TYPE type);
 
-	TBValue(int value) : TBValue((long int)value) {}
-	TBValue(long int value);
+	TBValue(int value) : TBValue((long)value) {}
+	TBValue(long value);
 	TBValue(double value);
 	TBValue(const char *value, SET_MODE set = SET_NEW_COPY);
+	TBValue(const TBStr & str) : TBValue((const char *)str) {}
+	TBValue(TBStr && str);
 	TBValue(TBTypedObject *object, SET_MODE set = SET_TAKE_OWNERSHIP);
 
 	~TBValue();
@@ -98,11 +102,14 @@ public:
 	void Copy(const TBValue &source_value);
 
 	void SetNull();
-	void SetInt(long int val);
+	void SetInt(long val);
 	void SetFloat(double val);
 
 	/** Set the passed in string */
 	void SetString(const char *val, SET_MODE set);
+
+	/** Set the passed in string */
+	void SetString(const TBStr & str) { SetString(str.CStr(), SET_NEW_COPY); }
 
 	/** Set the passed in object. */
 	void SetObject(TBTypedObject *object, SET_MODE set);
@@ -113,16 +120,17 @@ public:
 	/** Set the value either as a string, number or array of numbers, depending of the string syntax. */
 	void SetFromStringAuto(const char *str, SET_MODE set);
 
-	long int GetInt() const;
+	long GetInt() const;
 	double GetFloat() const;
-	const char *GetString() const;
+	TBStr GetString() const;
 	TBTypedObject *GetObject() const { return IsObject() ? val_obj : nullptr; }
 	TBValueArray *GetArray() const { return IsArray() ? val_arr : nullptr; }
 
-	bool Equals(int value) const { return Equals((long int)value); }
-	bool Equals(long int value) const;
+	bool Equals(int value) const { return Equals((long)value); }
+	bool Equals(long value) const;
 	bool Equals(double value) const;
 	bool Equals(const char * value) const;
+	bool Equals(const TBStr & value) const { return Equals(value.CStr()); }
 	bool Equals(const TBValue & value) const;
 
 	TYPE GetType() const { return (TYPE) m_packed.type; }
@@ -134,10 +142,17 @@ public:
 	int GetArrayLength() const { return IsArray() ? val_arr->GetLength() : 0; }
 
 	const TBValue& operator = (const TBValue &val) { Copy(val); return *this; }
+	TBValue & operator = (TBValue && val) = default;
+	/*{
+		std::swap(val_float, val.val_float);
+		std::swap(m_packed_init, val.m_packed_init);
+		return *this;
+		}*/
+
 private:
 	union {
 		double val_float;
-		long int val_int;
+		long val_int;
 		char *val_str;
 		TBTypedObject *val_obj;
 		TBValueArray *val_arr;

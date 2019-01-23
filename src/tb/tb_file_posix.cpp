@@ -44,7 +44,7 @@ private:
 };
 
 // static
-TBFile *TBFile::Open(const char *filename, TBFileMode mode)
+TBFile *TBFile::Open(const TBStr & filename, TBFileMode mode)
 {
 	FILE *f = nullptr;
 	TBStr pathfile(TBSystem::GetRoot());

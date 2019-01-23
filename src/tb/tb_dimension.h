@@ -42,7 +42,7 @@ public:
 
 	/** Get the file name suffix that should be used to load bitmaps in the destination DPI.
 		Examples: "@96", "@196" */
-	const char *GetDstDPIStr() const { return m_dst_dpi_str; }
+	const TBStr & GetDstDPIStr() const { return m_dst_dpi_str; }
 
 	/** Get the file name with destination DPI suffix (F.ex "foo.png" becomes "foo@192.png").
 		The temp buffer will contain the resulting file name. */
@@ -63,7 +63,7 @@ public:
 		Device independent point:		"1", "1dp"
 		Pixel value:					"1px"
 		*/
-	int GetPxFromString(const char *str, int def_value) const;
+	int GetPxFromString(const TBStr & str, int def_value) const;
 
 	/** Get a pixel value from TBValue.
 		value may be nullptr. def_value is returned on fail.

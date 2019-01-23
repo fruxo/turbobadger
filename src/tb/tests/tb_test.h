@@ -86,6 +86,7 @@
 #include "tb_linklist.h"
 #include "tb_str.h"
 #include <math.h>
+#include <iostream>
 
 namespace tb {
 
@@ -104,7 +105,13 @@ int TBRunTests(uint32_t settings = TB_TEST_VERBOSE);
 #define TB_VERIFY_FLOAT(val, ref_val) { TB_VERIFY(fabs(ref_val - val) < 1.0E-5); }
 
 /** Verify that the strings are equal. */
-#define TB_VERIFY_STR(str1, str2) { TB_VERIFY(strcmp(str1, str2) == 0); }
+#define TB_VERIFY_STR(str1, str2) do {									\
+		if (strcmp((const char *)(str1), (const char *)(str2))) {		\
+			std::cerr << "S1:" << (const char *)(str1) << "\n";			\
+			std::cerr << "S2:" << (const char *)(str2) << "\n";			\
+		}																\
+		TB_VERIFY(strcmp((const char *)(str1), (const char *)(str2)) == 0); \
+	} while (0)
 
 /** End the test with a pass. */
 #define TB_PASS() return;

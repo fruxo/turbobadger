@@ -73,7 +73,7 @@ void TBTabContainer::SetAxis(AXIS axis)
 											TBIDC("TBTabContainer.tablayout_x"));
 }
 
-void TBTabContainer::SetValue(long int index)
+void TBTabContainer::SetValue(long index)
 {
 	if (index == m_current_page)
 		return;

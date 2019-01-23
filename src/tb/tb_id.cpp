@@ -47,7 +47,7 @@ void TBID::Set(const TBID &newid)
 			// If this happens, 2 different strings result in the same hash.
 			// It might be a good idea to change one of them, but it might not matter.
 			if (!debug_string.IsEmpty() && !other_id->debug_string.IsEmpty())
-				assert(other_id->debug_string.Equals(debug_string));
+				assert(other_id->debug_string == debug_string);
 			// Otherwise copy the debug string
 			if (debug_string.IsEmpty() && !other_id->debug_string.IsEmpty())
 				debug_string = other_id->debug_string;
@@ -70,12 +70,12 @@ void TBID::Set(const char *string)
 		if (TBID *other_id = all_id_hash.Get(id))
 		{
 #ifndef NDEBUG
-			if (!other_id->debug_string.Equals(debug_string)) {
+			if (other_id->debug_string != debug_string) {
 				TBDebugPrint("ID collision btw '%s' and '%s'\n",
 							 other_id->debug_string.CStr(), debug_string.CStr());
 			}
 #endif
-			assert(other_id->debug_string.Equals(debug_string));
+			assert(other_id->debug_string == debug_string);
 		}
 		else if (debug_string.Length())
 		{

@@ -6,6 +6,8 @@
 #ifndef TB_TEMP_BUFFER_H
 #define TB_TEMP_BUFFER_H
 
+#include "tb_str.h"
+
 namespace tb {
 
 /** TBTempBuffer manages a buffer that will be deleted on destruction.
@@ -47,6 +49,9 @@ public:
 		Returns false on OOM. */
 	bool AppendString(const char *str);
 
+	/** Append a TBStr. */
+	bool AppendString(const TBStr & str) { return AppendString((const char *)str); }
+
 	/** Append a path without the ending filename.
 		The buffer will be null terminated and the append position will be
 		increased with the length of the path (excluding the null termination). */
@@ -57,7 +62,7 @@ public:
 		termination (not included in append position).
 		Returns false of OOM or if loading failed.
 	*/
-	bool AppendFile(const char *filename);
+	bool AppendFile(const TBStr & filename);
 
 	/** Set the position (in bytes) in the buffer where Append should write. */
 	void SetAppendPos(int append_pos);

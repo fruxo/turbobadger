@@ -8,6 +8,9 @@
 
 #include "tb_types.h"
 #include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <utility>
 
 namespace tb {
 
@@ -32,10 +35,15 @@ public:
 
 	inline int Compare(const char* str) const			{ return strcmp(s, str); }
 	inline bool Equals(const char* str) const			{ return !strcmp(s, str); }
-
-	inline char operator[](int n) const					{ return s[n]; }
-	inline operator const char *() const				{ return s; }
 	const char *CStr() const							{ return s; }
+
+	inline const char & operator[](int n) const			{ assert(n <= Length()); return s[n]; }
+	explicit inline operator const char *() const		{ return s; }
+	bool operator ==(const TBStrC &b) const				{ return !strcmp(s, b.s); }
+	bool operator !=(const TBStrC &b) const				{ return strcmp(s, b.s); }
+
+	template <typename T>
+	auto operator ==(const T &b) const -> decltype(s == b) { return s == b; }
 };
 
 /** TBStr is a simple string class.
@@ -56,21 +64,37 @@ public:
 	~TBStr();
 	TBStr();
 	TBStr(const TBStr &str);
+	TBStr(TBStr && str);
 	TBStr(const char* str);
 	TBStr(const char* str, int len);
 
-	bool Set(const char* str, int len = TB_ALL_TO_TERMINATION);
-	bool SetFormatted(const char* format, ...);
+	bool Set(TBStr str) { *this = str; return true; }
+	bool SetFormatted(const char* format, ...)
+		__attribute__ ((format (printf, 2, 3)));
 
 	void Clear();
 
 	void Remove(int ofs, int len);
 	bool Insert(int ofs, const char *ins, int ins_len = TB_ALL_TO_TERMINATION);
-	bool Append(const char *ins, int ins_len = TB_ALL_TO_TERMINATION)	{ return Insert((int)strlen(s), ins, ins_len); }
-
-	inline operator char *() const						{ return s; }
+	bool Append(const char *ins, int ins_len = TB_ALL_TO_TERMINATION) {
+		return Insert((int)strlen(s), ins, ins_len);
+	}
+	bool Append(const TBStr & str) {
+		return Insert((int)strlen(s), (const char *)str, str.Length());
+	}
 	char *CStr() const									{ return s; }
-	const TBStr& operator = (const TBStr &str)			{ Set(str); return *this; }
+
+	double atof() const									{ return ::atof(s); }
+	int atoi() const									{ return ::atoi(s); }
+	long atol() const									{ return ::atol(s); }
+
+	explicit inline operator char *() const				{ return s; }
+	explicit operator bool() const;
+	TBStr & operator = (TBStr str)						{ std::swap(s, str.s); return *this; }
+	char & operator *()									{ return s[0]; }
+	const char & operator *() const						{ return s[0]; }
+
+	friend class TBValue;
 };
 
 } // namespace tb

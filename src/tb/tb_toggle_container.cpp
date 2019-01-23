@@ -36,7 +36,8 @@ bool TBSectionHeader::OnEvent(const TBWidgetEvent &ev)
 // == TBSectionHeader =====================================
 
 TBSection::TBSection()
-	: m_pending_scroll(false)
+	: TBWidget(TBValue::TYPE_INT)
+	, m_pending_scroll(false)
 {
 	SetGravity(WIDGET_GRAVITY_LEFT | WIDGET_GRAVITY_RIGHT);
 
@@ -62,7 +63,7 @@ TBSection::~TBSection()
 	RemoveChild(&m_layout);
 }
 
-void TBSection::SetValue(long int value)
+void TBSection::SetValue(long value)
 {
 	m_header.SetValue(value);
 	m_toggle_container.SetValue(value);
@@ -88,7 +89,8 @@ PreferredSize TBSection::OnCalculatePreferredSize(const SizeConstraints &constra
 // == TBToggleContainer ===================================
 
 TBToggleContainer::TBToggleContainer()
-	: m_toggle(TOGGLE_NOTHING)
+	: TBWidget(TBValue::TYPE_INT)
+	, m_toggle(TOGGLE_NOTHING)
 	, m_invert(false)
 	, m_value(0)
 {
@@ -115,7 +117,7 @@ void TBToggleContainer::SetInvert(bool invert)
 	UpdateInternal();
 }
 
-void TBToggleContainer::SetValue(long int value)
+void TBToggleContainer::SetValue(long value)
 {
 	if (value == m_value)
 		return;

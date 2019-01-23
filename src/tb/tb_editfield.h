@@ -144,9 +144,9 @@ public:
 	virtual void SetValueDouble(double value) { TBStr v; v.SetFormatted("%.2f", value); SetText(v.CStr()); }
 
 	/** Return the value in double precision. */
-	virtual double GetValueDouble() const { return atof(GetText()); }
+	virtual double GetValueDouble() const { return GetText().atof(); }
 
-	virtual bool SetText(const char *text) { return m_style_edit.SetText(text, TB_CARET_POS_BEGINNING); }
+	virtual bool SetText(const TBStr & text) { return m_style_edit.SetText(text, TB_CARET_POS_BEGINNING); }
 	virtual bool GetText(TBStr &text) const { return m_style_edit.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
@@ -154,15 +154,11 @@ public:
 
 	/** Set the text and also specify if the caret should be positioned at the beginning
 		or end of the text. */
-	bool SetText(const char *text, TB_CARET_POS pos)
+	bool SetText(const TBStr & text, TB_CARET_POS pos)
 											{ return m_style_edit.SetText(text, pos); }
-	/** Set the text of the given length and also specify if the caret should be positioned
-		at the beginning or end of the text. */
-	bool SetText(const char *text, int text_len, TB_CARET_POS pos = TB_CARET_POS_BEGINNING)
-											{ return m_style_edit.SetText(text, text_len, pos); }
 
 	/** Set the placeholder text. It will be visible only when the textfield is empty. */
-	virtual bool SetPlaceholderText(const char *text) { return m_placeholder.SetText(text); }
+	virtual bool SetPlaceholderText(const TBStr & text) { return m_placeholder.SetText(text); }
 	virtual bool GetPlaceholderText(TBStr &text) const { return m_placeholder.GetText(text); }
 
 	virtual void ScrollTo(int x, int y);

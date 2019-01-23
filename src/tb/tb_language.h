@@ -41,7 +41,7 @@ public:
 		If there is no string with that id, "<TRANSLATE!>" will be returned
 		in release builds, and "<TRANSLATE:%s>" (populated with the id) will
 		be returned in debug builds. */
-	const char *GetString(const TBID &id);
+	TBStr GetString(const TBID &id);
 private:
 	TBHashTableOf<TBStr> strings;
 };

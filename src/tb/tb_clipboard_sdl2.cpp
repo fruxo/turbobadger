@@ -27,9 +27,9 @@ bool TBClipboard::HasText()
 	return SDL_HasClipboardText();
 }
 
-bool TBClipboard::SetText(const char *text)
+bool TBClipboard::SetText(const TBStr & text)
 {
-	return (0 == SDL_SetClipboardText(text));
+	return (0 == SDL_SetClipboardText((const char *)text));
 }
 
 bool TBClipboard::GetText(TBStr &text)

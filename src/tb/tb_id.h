@@ -18,18 +18,21 @@ namespace tb {
 class TBID
 {
 public:
-	TBID(uint32_t id = 0)				{ Set(id); }
+	TBID(uint32_t id = 0)			{ Set(id); }
 	TBID(const char *string)		{ Set(string); }
 	TBID(const TBID &id)			{ Set(id); }
+	TBID(const TBStr &id)			{ Set((const char *)id); }
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 	void Set(uint32_t newid);
-	void Set(const TBID &newid);
 	void Set(const char *string);
+	void Set(const TBID &newid);
+	void Set(const TBStr &str)		{ Set((const char *)str); }
 #else
-	void Set(uint32_t newid)			{ id = newid; }
-	void Set(const TBID &newid)		{ id = newid; }
+	void Set(uint32_t newid)		{ id = newid; }
 	void Set(const char *string)	{ id = TBGetHash(string); }
+	void Set(const TBID &newid)		{ id = newid; }
+	void Set(const TBStr &str)		{ Set((const char *)str); }
 #endif
 
 	operator uint32_t () const		{ return id; }

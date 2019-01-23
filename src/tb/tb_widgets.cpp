@@ -64,7 +64,7 @@ TBWidget::PaintProps::PaintProps()
 
 // == TBWidget ==========================================================================
 
-TBWidget::TBWidget()
+TBWidget::TBWidget(TBValue::TYPE sync_type)
 	: m_parent(nullptr)
 	, m_opacity(1.f)
 	, m_state(WIDGET_STATE_NONE)
@@ -73,6 +73,7 @@ TBWidget::TBWidget()
 	, m_scroller(nullptr)
 	, m_long_click_timer(nullptr)
 	, m_packed_init(0)
+	, m_sync_type(sync_type)
 {
 #ifdef TB_RUNTIME_DEBUG_INFO
 	last_measure_time = 0;

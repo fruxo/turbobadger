@@ -67,7 +67,7 @@ void TBNodeRefTree::InvokeChangeListenersInternal(const char *request)
 TBNodeRefTree *TBNodeRefTree::GetRefTree(const char *name, int name_len)
 {
 	for (TBNodeRefTree *rt = s_ref_trees.GetFirst(); rt; rt = rt->GetNext())
-		if (strncmp(rt->GetName(), name, name_len) == 0)
+		if (strncmp((const char *)rt->GetName(), name, name_len) == 0)
 			return rt;
 	return nullptr;
 }
@@ -88,12 +88,12 @@ TBNode *TBNodeRefTree::FollowNodeRef(TBNode *node)
 	while (node->GetValue().IsString())
 	{
 		// If not a reference at all, we're done.
-		const char *node_str = node->GetValue().GetString();
+		TBStr node_str = node->GetValue().GetString();
 		if (*node_str != '@')
 			break;
 
 		// If there's no tree name and request, we're done. It's probably a language string.
-		const char *name_start = node_str + 1;
+		const char *name_start = (const char *)node_str + 1;
 		const char *name_end = TBNode::GetNextNodeSeparator(name_start);
 		if (*name_end == 0)
 			break;
@@ -116,13 +116,13 @@ TBNode *TBNodeRefTree::FollowNodeRef(TBNode *node)
 		else
 		{
 			TBDebugPrint("TBNodeRefTree::ResolveNode - No tree found for request \"%s\" from node \"%s\"\n",
-						 node_str, node->GetValue().GetString());
+						 (const char *)node_str, (const char *)node->GetValue().GetString());
 			break;
 		}
 
 		if (!next_node)
 		{
-			TBDebugPrint("TBNodeRefTree::ResolveNode - Node not found on request \"%s\"\n", node_str);
+			TBDebugPrint("TBNodeRefTree::ResolveNode - Node not found on request \"%s\"\n", (const char *)node_str);
 			break;
 		}
 		node = next_node;
@@ -133,7 +133,7 @@ TBNode *TBNodeRefTree::FollowNodeRef(TBNode *node)
 		else
 		{
 			TBDebugPrint("TBNodeRefTree::ResolveNode - Reference loop detected on request \"%s\" from node \"%s\"\n",
-				node_str, node->GetValue().GetString());
+						 (const char *)node_str, (const char *)node->GetValue().GetString());
 			return start_node;
 		}
 	}

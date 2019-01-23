@@ -111,7 +111,7 @@ bool TBTempBuffer::AppendPath(const char *full_path_and_filename)
 	return false;
 }
 
-bool TBTempBuffer::AppendFile(const char *filename)
+bool TBTempBuffer::AppendFile(const TBStr & filename)
 {
 	if (TBFile *file = TBFile::Open(filename, TBFile::MODE_READ))
 	{

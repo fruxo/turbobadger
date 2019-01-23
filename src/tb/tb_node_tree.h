@@ -37,7 +37,7 @@ public:
 	static TBNode *Create(const char *name);
 
 	/** Read a tree of nodes from file into this node. Returns true on success. */
-	bool ReadFile(const char *filename, TB_NODE_READ_FLAGS flags = TB_NODE_READ_FLAGS_NONE);
+	bool ReadFile(const TBStr & filename, TB_NODE_READ_FLAGS flags = TB_NODE_READ_FLAGS_NONE);
 
 	/** Read a tree of nodes from a null terminated string buffer. */
 	void ReadData(const char *data, TB_NODE_READ_FLAGS flags = TB_NODE_READ_FLAGS_NONE);
@@ -49,9 +49,10 @@ public:
 	void Clear();
 
 	/** Write a node and it's children to a file. */
-	bool WriteFile(const char *filename);
+	bool WriteFile(const TBStr & filename);
 
-	/** Recursively write a node and it's children to a string at depth. */
+	/** Recursively write a node and it's children to a string at
+		depth.  \todo use better datastructure than TBStr for this. */
 	void WriteNode(TBStr & str, int depth = 0);
 
 	/** Add node as child to this node. */
@@ -96,27 +97,27 @@ public:
 	TBValue &GetValue() { return m_value; }
 
 	/** Returns the value of this node.
-		Will follow eventual references to TBNodeRefTree. */
+		Will follow possible references to TBNodeRefTree. */
 	TBValue &GetValueFollowRef();
 
 	/** Get a value from the given request as an integer.
-		Will follow eventual references to TBNodeRefTree.
+		Will follow possible references to TBNodeRefTree.
 		If the value is not specified, it returns the default value (def). */
 	int GetValueInt(const char *request, int def);
 
 	/** Get a value from the given request as an float.
-		Will follow eventual references to TBNodeRefTree.
+		Will follow possible references to TBNodeRefTree.
 		If the value is not specified, it returns the default value (def). */
 	float GetValueFloat(const char *request, float def);
 
 	/** Get a value from the given request as an string.
-		Will follow eventual references to TBNodeRefTree.
+		Will follow possible references to TBNodeRefTree.
 		Will also return any referenced language string.
 		If the value is not specified, it returns the default value (def). */
-	const char *GetValueString(const char *request, const char *def);
+	TBStr GetValueString(const char *request, const char *def);
 
 	/** Same as GetValueString, but won't look up language string references. */
-	const char *GetValueStringRaw(const char *request, const char *def);
+	TBStr GetValueStringRaw(const char *request, const char *def);
 
 	/** Get the next position in request that is a sub node separator,
 		or the end of the string. */

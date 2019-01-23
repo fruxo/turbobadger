@@ -30,7 +30,7 @@ public:
 	int GetWidth(TBWidget *widget);
 	int GetHeight(TBWidget *widget);
 
-	bool SetText(const char *text) { return m_text.Set(text); }
+	bool SetText(const TBStr & text) { return m_text.Set(text); }
 	bool GetText(TBStr &text) const { return text.Set(m_text); }
 
 	bool IsEmpty() const { return m_text.IsEmpty(); }
@@ -55,7 +55,7 @@ public:
 	TBTextField();
 
 	/** Set the text of the text field. */
-	virtual bool SetText(const char *text);
+	virtual bool SetText(const TBStr & text);
 	virtual bool GetText(TBStr &text) const { return m_text.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
@@ -94,7 +94,8 @@ public:
 	TBButton();
 	~TBButton();
 
-	/** Set along which axis the content should layouted (If the button has more content than the text) */
+	/** Set along which axis the content should be layed out (If the
+		button has more content than the text) */
 	virtual void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
 	virtual AXIS GetAxis() const { return m_layout.GetAxis(); }
 
@@ -113,12 +114,12 @@ public:
 	bool GetToggleMode() const { return m_toggle_mode; }
 
 	/** Set the text of the button. */
-	virtual bool SetText(const char *text);
+	virtual bool SetText(const TBStr & text);
 	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
-	virtual void SetValue(long int value);
-	virtual long int GetValue() const;
+	virtual void SetValue(long value);
+	virtual long GetValue() const;
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnDeflate(const INFLATE_INFO &info);
@@ -149,9 +150,10 @@ protected:
 	bool m_toggle_mode;
 };
 
-/** TBClickLabel has a text field in its internal layout by default. Pointer input on the
-	text field will be redirected to another child widget (that you add) to it.
-	Typically useful for creating check boxes, radio buttons with labels. */
+/** TBClickLabel has a text field in its internal layout by
+	default. Pointer input on the text field will be redirected to
+	another child widget (that you add) to it.  Typically useful for
+	creating check boxes, radio buttons with labels. */
 
 class TBClickLabel : public TBWidget
 {
@@ -162,12 +164,13 @@ public:
 	TBClickLabel();
 	~TBClickLabel();
 
-	/** Set along which axis the content should layouted (If the label has more content than the text) */
+	/** Set along which axis the content should be layed out (If the
+		label has more content than the text) */
 	virtual void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
 	virtual AXIS GetAxis() const { return m_layout.GetAxis(); }
 
 	/** Set the text of the label. */
-	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
+	virtual bool SetText(const TBStr & text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
@@ -183,9 +186,10 @@ protected:
 	TBTextField m_textfield;
 };
 
-/** TBSkinImage is a widget showing a skin element, constrained in size to its skin.
-	If you need to load and show images dynamically (i.e. not always loaded as the skin),
-	you can use TBImageWidget. */
+/** TBSkinImage is a widget showing a skin element, constrained in
+	size to its skin.  If you need to load and show images dynamically
+	(i.e. not always loaded as the skin), you can use
+	TBImageWidget. */
 
 class TBSkinImage : public TBWidget
 {
@@ -231,8 +235,8 @@ public:
 
 	/** Setting the value to 1 will start the spinner.
 		Setting it to 0 will stop it. */
-	virtual void SetValue(long int value);
-	virtual long int GetValue() const { return m_value; }
+	virtual void SetValue(long value);
+	virtual long GetValue() const { return m_value; }
 
 	virtual void OnPaint(const PaintProps &paint_props);
 
@@ -253,8 +257,8 @@ public:
 
 	TBRadioCheckBox();
 
-	virtual void SetValue(long int value);
-	virtual long int GetValue() const { return m_value; }
+	virtual void SetValue(long value);
+	virtual long GetValue() const { return m_value; }
 
 	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -326,8 +330,8 @@ public:
 	virtual void SetValueDouble(double value);
 	virtual double GetValueDouble() const { return m_value; }
 
-	virtual void SetValue(long int value) { SetValueDouble(value); }
-	virtual long int GetValue() const { return GetValueDouble(); }
+	virtual void SetValue(long value) { SetValueDouble(value); }
+	virtual long GetValue() const { return GetValueDouble(); }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -374,9 +378,9 @@ public:
 	virtual VAL_T GetValueVal() const { return m_value; }
 
 	/** Give SetValue corrent precision. */
-	virtual void SetValue(long int value) { SetValueVal(value); }
+	virtual void SetValue(long value) { SetValueVal(value); }
 	/** Give GetValue corrent precision. */
-	virtual long int GetValue() const { return m_value; }
+	virtual long GetValue() const { return m_value; }
 	/** Same as SetValue, but with double precision. */
 	virtual void SetValueDouble(double value) { SetValueVal(value); }
 	/** Same as GetValue, but with double precision. */
@@ -395,7 +399,7 @@ protected:
 };
 typedef TBSliderX<double> TBSlider;
 typedef TBSliderX<int> TBSliderInt;
-typedef TBSliderX<long int> TBSliderLong;
+typedef TBSliderX<long> TBSliderLong;
 
 /** TBContainer is just a TBWidget with border and padding (using skin "TBContainer") */
 class TBContainer : public TBWidget

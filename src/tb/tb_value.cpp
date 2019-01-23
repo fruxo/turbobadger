@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <errno.h>
 
 namespace tb {
 
@@ -151,7 +152,7 @@ TBValue::TBValue(TYPE type)
 	}
 }
 
-TBValue::TBValue(long int value)
+TBValue::TBValue(long value)
 	: m_packed_init(0)
 {
 	SetInt(value);
@@ -167,6 +168,16 @@ TBValue::TBValue(const char *value, SET_MODE set)
 	: m_packed_init(0)
 {
 	SetString(value, set);
+}
+
+TBValue::TBValue(TBStr && str)
+{
+	m_packed.type = TYPE_STRING;
+	m_packed.allocated = 1;
+	val_str = str.s;
+	str.s = nullptr; // kinda bogus, str.s should never be nullptr,
+					 // but it's about to be deleted, and the
+					 // destructor checks for null, so it's ok here.
 }
 
 TBValue::TBValue(TBTypedObject *object, SET_MODE set)
@@ -226,7 +237,7 @@ void TBValue::SetNull()
 	m_packed.type = TYPE_NULL;
 }
 
-void TBValue::SetInt(long int val)
+void TBValue::SetInt(long val)
 {
 	SetNull();
 	m_packed.type = TYPE_INT;
@@ -286,7 +297,7 @@ void TBValue::SetFromStringAuto(const char *str, SET_MODE set)
 		if (is_number_float(str))
 			SetFloat(atof(str));
 		else
-			SetInt(atoi(str));
+			SetInt(atol(str));
 	}
 	else if (is_start_of_number(str) && contains_non_trailing_space(str))
 	{
@@ -330,12 +341,12 @@ void TBValue::SetFromStringAuto(const char *str, SET_MODE set)
 	}
 }
 
-long int TBValue::GetInt() const
+long TBValue::GetInt() const
 {
 	if (m_packed.type == TYPE_STRING)
-		return atoi(val_str);
+		return atol(val_str);
 	else if (m_packed.type == TYPE_FLOAT)
-		return (int) val_float;
+		return (long) val_float;
 	return m_packed.type == TYPE_INT ? val_int : 0;
 }
 
@@ -348,26 +359,27 @@ double TBValue::GetFloat() const
 	return m_packed.type == TYPE_FLOAT ? val_float : 0;
 }
 
-const char *TBValue::GetString() const
+TBStr TBValue::GetString() const
 {
-	if (m_packed.type == TYPE_INT)
-	{
-		char tmp[32];
-		sprintf(tmp, "%ld", val_int);
-		const_cast<TBValue *>(this)->SetString(tmp, SET_NEW_COPY);
-	}
-	else if (m_packed.type == TYPE_FLOAT)
-	{
-		char tmp[32];
-		sprintf(tmp, "%lf", val_float);
-		const_cast<TBValue *>(this)->SetString(tmp, SET_NEW_COPY);
-	}
-	else if (m_packed.type == TYPE_OBJECT)
+	TBStr text;
+	switch (m_packed.type) {
+	case TYPE_INT:
+		text.SetFormatted("%ld", val_int);
+		break;
+	case TYPE_FLOAT:
+		text.SetFormatted("%lf", val_float);
+		break;
+	case TYPE_OBJECT:
 		return val_obj ? val_obj->GetClassName() : "";
-	return m_packed.type == TYPE_STRING ? val_str : "";
+	case TYPE_STRING:
+		return val_str;
+	case TYPE_NULL:
+		return "";
+	}
+	return text;
 }
 
-bool TBValue::Equals(long int value) const
+bool TBValue::Equals(long value) const
 {
 	if (m_packed.type == TYPE_INT)
 		return val_int == value;
@@ -391,10 +403,12 @@ bool TBValue::Equals(double value) const
 
 bool TBValue::Equals(const char * value) const
 {
+	errno = 0;
+	char *endptr = nullptr;
 	if (m_packed.type == TYPE_INT)
-		return val_int == atoi(value);
+		return val_int == strtol(value, &endptr, 10) && !errno && value != endptr;
 	if (m_packed.type == TYPE_FLOAT)
-		return val_float == atof(value);
+		return val_float == strtod(value, &endptr) && !errno && value != endptr;
 	if (m_packed.type == TYPE_STRING)
 		return !strcmp(val_str, value);
 	return false;
@@ -407,7 +421,7 @@ bool TBValue::Equals(const TBValue & value) const
 	case TYPE_STRING:	return value.m_packed.type == TYPE_STRING && !strcmp(val_str, value.val_str);
 	case TYPE_FLOAT:	return Equals(value.GetFloat());
 	case TYPE_INT:		return Equals(value.GetFloat());
-	case TYPE_OBJECT:
+	case TYPE_OBJECT://	return value.m_packed.type == TYPE_OBJECT && val_obj == value.val_obj;
 	case TYPE_ARRAY:
 	default:
 		return false;

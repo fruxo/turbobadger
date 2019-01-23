@@ -35,7 +35,7 @@ public:
 
 	/** Set the color from string in any of the following formats:
 		"#rrggbbaa", "#rrggbb", "#rgba", "#rgb" */
-	void SetFromString(const char *str, int len);
+	void SetFromString(const TBStr & str);
 
 	/** Write color to string with format #rrggbbaa */
 	void GetString(TBStr & str) const;

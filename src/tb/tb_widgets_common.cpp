@@ -20,7 +20,7 @@ TBWidgetString::TBWidgetString()
 
 int TBWidgetString::GetWidth(TBWidget *widget)
 {
-	return widget->GetFont()->GetStringWidth(m_text);
+	return widget->GetFont()->GetStringWidth(m_text.CStr());
 }
 
 int TBWidgetString::GetHeight(TBWidget *widget)
@@ -41,7 +41,7 @@ void TBWidgetString::Paint(TBWidget *widget, const TBRect &rect, const TBColor &
 	int y = rect.y + (rect.h - GetHeight(widget)) / 2;
 
 	if (string_w <= rect.w)
-		font->DrawString(x, y, color, m_text);
+		font->DrawString(x, y, color, m_text.CStr());
 	else
 	{
 		// There's not enough room for the entire string
@@ -56,14 +56,14 @@ void TBWidgetString::Paint(TBWidget *widget, const TBRect &rect, const TBColor &
 		int startlen = 0;
 		while (m_text.CStr()[startlen])
 		{
-			int new_startw = font->GetStringWidth(m_text, startlen);
+			int new_startw = font->GetStringWidth(m_text.CStr(), startlen);
 			if (new_startw + endw > rect.w)
 				break;
 			startw = new_startw;
 			startlen++;
 		}
 		startlen = MAX(0, startlen - 1);
-		font->DrawString(x, y, color, m_text, startlen);
+		font->DrawString(x, y, color, m_text.CStr(), startlen);
 		font->DrawString(x + startw, y, color, end);
 	}
 }
@@ -74,15 +74,16 @@ void TBWidgetString::Paint(TBWidget *widget, const TBRect &rect, const TBColor &
 #define UPDATE_TEXT_WIDTH_CACHE -1
 
 TBTextField::TBTextField()
-	: m_cached_text_width(UPDATE_TEXT_WIDTH_CACHE)
+	: TBWidget(TBValue::TYPE_STRING)
+	, m_cached_text_width(UPDATE_TEXT_WIDTH_CACHE)
 	, m_squeezable(false)
 {
 	SetSkinBg(TBIDC("TBTextField"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 }
 
-bool TBTextField::SetText(const char *text)
+bool TBTextField::SetText(const TBStr & text)
 {
-	if (m_text.m_text.Equals(text))
+	if (m_text.m_text == text)
 		return true;
 	m_cached_text_width = UPDATE_TEXT_WIDTH_CACHE;
 	Invalidate();
@@ -132,16 +133,18 @@ const int auto_click_first_delay = 500;
 const int auto_click_repeat_delay = 100;
 
 TBButton::TBButton()
-	: m_auto_repeat_click(false)
+	: TBWidget(TBValue::TYPE_INT)
+	, m_auto_repeat_click(false)
 	, m_toggle_mode(false)
 {
 	SetIsFocusable(true);
 	SetClickByKey(true);
 	SetSkinBg(TBIDC("TBButton"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	AddChild(&m_layout);
-	// Set the textfield gravity to all, even though it would display the same with default gravity.
-	// This will make the buttons layout expand if there is space available, without forcing the parent
-	// layout to grow to make the space available.
+	// Set the textfield gravity to all, even though it would display
+	// the same with default gravity.  This will make the buttons
+	// layout expand if there is space available, without forcing the
+	// parent layout to grow to make the space available.
 	m_textfield.SetGravity(WIDGET_GRAVITY_ALL);
 	m_layout.AddChild(&m_textfield);
 	m_layout.SetRect(GetPaddingRect());
@@ -155,14 +158,14 @@ TBButton::~TBButton()
 	RemoveChild(&m_layout);
 }
 
-bool TBButton::SetText(const char *text)
+bool TBButton::SetText(const TBStr & text)
 {
 	bool ret = m_textfield.SetText(text);
 	UpdateTextFieldVisibility();
 	return ret;
 }
 
-void TBButton::SetValue(long int value)
+void TBButton::SetValue(long value)
 {
 	TBWidgetSafePointer this_widget(this);
 
@@ -187,7 +190,7 @@ void TBButton::SetValue(long int value)
 		TBRadioCheckBox::UpdateGroupWidgets(this);
 }
 
-long int TBButton::GetValue() const
+long TBButton::GetValue() const
 {
 	return GetState(WIDGET_STATE_SELECTED);
 }
@@ -269,6 +272,7 @@ void TBButton::ButtonLayout::OnChildRemove(TBWidget * /*child*/)
 // == TBClickLabel ==========================================================================================
 
 TBClickLabel::TBClickLabel()
+	: TBWidget(TBValue::TYPE_STRING)
 {
 	AddChild(&m_layout);
 	m_layout.AddChild(&m_textfield);
@@ -338,14 +342,15 @@ TBSeparator::TBSeparator()
 const int spin_speed = 1000/30; ///< How fast should the spinner animation animate.
 
 TBProgressSpinner::TBProgressSpinner()
-	: m_value(0)
+	: TBWidget(TBValue::TYPE_INT)
+	, m_value(0)
 	, m_frame(0)
 {
 	SetSkinBg(TBIDC("TBProgressSpinner"), WIDGET_INVOKE_INFO_NO_CALLBACKS);
 	m_skin_fg.Set(TBIDC("TBProgressSpinner.fg"));
 }
 
-void TBProgressSpinner::SetValue(long int value)
+void TBProgressSpinner::SetValue(long value)
 {
 	if (value == m_value)
 		return;
@@ -395,7 +400,8 @@ void TBProgressSpinner::OnMessageReceived(TBMessage * /*msg*/)
 // == TBRadioCheckBox =======================================
 
 TBRadioCheckBox::TBRadioCheckBox()
-	: m_value(0)
+	: TBWidget(TBValue::TYPE_INT)
+	, m_value(0)
 {
 	SetIsFocusable(true);
 	SetClickByKey(true);
@@ -416,7 +422,7 @@ void TBRadioCheckBox::UpdateGroupWidgets(TBWidget *new_leader)
 			child->SetValue(0);
 }
 
-void TBRadioCheckBox::SetValue(long int value)
+void TBRadioCheckBox::SetValue(long value)
 {
 	if (m_value == value)
 		return;
@@ -455,7 +461,8 @@ bool TBRadioCheckBox::OnEvent(const TBWidgetEvent &ev)
 // == TBScrollBar =======================================
 
 TBScrollBar::TBScrollBar()
-	: m_axis(AXIS_Y) ///< Make SetAxis below always succeed and set the skin
+	: TBWidget(TBValue::TYPE_FLOAT)
+	, m_axis(AXIS_Y) ///< Make SetAxis below always succeed and set the skin
 	, m_value(0)
 	, m_min(0)
 	, m_max(1)
@@ -599,10 +606,15 @@ void TBScrollBar::OnResized(int /*old_w*/, int /*old_h*/)
 }
 
 // == TBSlider ============================================
+template <class T> TBValue::TYPE SliderType(T x);
+template <> TBValue::TYPE SliderType<double>(double x) { return TBValue::TYPE_FLOAT; }
+template <> TBValue::TYPE SliderType<long>(long x) { return TBValue::TYPE_INT; }
+template <> TBValue::TYPE SliderType<int>(int x) { return TBValue::TYPE_INT; }
 
 template <typename VAL_T>
 TBSliderX<VAL_T>::TBSliderX()
-	: m_axis(AXIS_Y) ///< Make SetAxis below always succeed and set the skin
+	: TBWidget(SliderType(VAL_T(0)))
+	, m_axis(AXIS_Y) ///< Make SetAxis below always succeed and set the skin
 	, m_value(0)
 	, m_min(0)
 	, m_max(1)
@@ -674,7 +686,7 @@ bool TBSliderX<VAL_T>::OnEvent(const TBWidgetEvent &ev)
 			int dx = ev.target_x - pointer_down_widget_x;
 			int dy = ev.target_y - pointer_down_widget_y;
 			VAL_T delta_val = (m_axis == AXIS_X ? dx : -dy) / m_to_pixel_factor;
-			SetValueVal(m_step * (long int)((m_value + delta_val) / m_step));
+			SetValueVal(m_step * (long)((m_value + delta_val) / m_step));
 		}
 		return true;
 	}

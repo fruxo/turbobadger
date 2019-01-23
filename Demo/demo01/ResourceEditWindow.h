@@ -13,7 +13,7 @@ using namespace tb;
 class ResourceItem : public TBGenericStringItem
 {
 public:
-	ResourceItem(TBWidget *widget, const char *str);
+	ResourceItem(TBWidget *widget, const TBStr & str);
 	TBWidget *GetWidget() { return m_widget; }
 private:
 	TBWidget *m_widget;
@@ -38,7 +38,7 @@ public:
 	TBWidget *GetSelectedWidget() { return m_selected_widget.Get(); }
 	void SetSelectedWidget(TBWidget *widget);
 
-	void Load(const char *resource_file);
+	void Load(const TBStr & resource_file);
 	void RefreshFromSource();
 
 	// == TBWindow ======================================================================

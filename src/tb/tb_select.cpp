@@ -16,14 +16,16 @@ namespace tb {
 
 int select_list_sort_cb(TBSelectItemSource *source, const int *a, const int *b)
 {
-	int value = strcmp(source->GetItemString(*a), source->GetItemString(*b));
+	int value = strcmp(source->GetItemString(*a).CStr(),
+					   source->GetItemString(*b).CStr());
 	return source->GetSort() == TB_SORT_DESCENDING ? -value : value;
 }
 
 // == TBSelectList ==============================================
 
 TBSelectList::TBSelectList()
-	: m_value(-1)
+	: TBWidget(TBValue::TYPE_INT)
+	, m_value(-1)
 	, m_list_is_invalid(false)
 	, m_scroll_to_current(false)
 	, m_header_lng_string_id(TBIDC("TBList.header"))
@@ -102,12 +104,9 @@ void TBSelectList::OnAllItemsRemoved()
 	m_value = -1;
 }
 
-void TBSelectList::SetFilter(const char *filter)
+void TBSelectList::SetFilter(const TBStr & new_filter)
 {
-	TBStr new_filter;
-	if (filter && *filter)
-		new_filter.Set(filter);
-	if (m_filter.Equals(new_filter))
+	if (m_filter == new_filter)
 		return;
 	m_filter.Set(new_filter);
 	InvalidateList();
@@ -167,7 +166,8 @@ void TBSelectList::ValidateList()
 		if (TBWidget *widget = new TBTextField())
 		{
 			TBStr str;
-			str.SetFormatted(g_tb_lng->GetString(m_header_lng_string_id), num_sorted_items, m_source->GetNumItems());
+			str.SetFormatted((const char *)g_tb_lng->GetString(m_header_lng_string_id),
+							 num_sorted_items, m_source->GetNumItems());
 			widget->SetText(str);
 			widget->SetSkinBg(TBIDC("TBList.header"));
 			widget->SetState(WIDGET_STATE_DISABLED, true);
@@ -199,7 +199,7 @@ TBWidget *TBSelectList::CreateAndAddItemAfter(int index, TBWidget *reference)
 	return nullptr;
 }
 
-void TBSelectList::SetValue(long int value)
+void TBSelectList::SetValue(long value)
 {
 	if (value == m_value)
 		return;
@@ -384,7 +384,7 @@ void TBSelectDropdown::OnItemChanged(int /*index*/)
 {
 }
 
-void TBSelectDropdown::SetValue(long int value)
+void TBSelectDropdown::SetValue(long value)
 {
 	if (value == m_value || !m_source)
 		return;

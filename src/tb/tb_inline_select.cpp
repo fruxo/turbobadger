@@ -15,7 +15,8 @@ namespace tb {
 // == TBInlineSelect ========================================================================================
 
 TBInlineSelect::TBInlineSelect()
-	: m_value(0)
+	: TBWidget(TBValue::TYPE_INT)
+	, m_value(0)
 	, m_min(0)
 	, m_max(100)
 {
@@ -50,7 +51,7 @@ TBInlineSelect::~TBInlineSelect()
 	RemoveChild(&m_layout);
 }
 
-void TBInlineSelect::SetLimits(int min, int max)
+void TBInlineSelect::SetLimits(long min, long max)
 {
 	assert(min <= max);
 	m_min = min;
@@ -58,7 +59,7 @@ void TBInlineSelect::SetLimits(int min, int max)
 	SetValue(m_value);
 }
 
-void TBInlineSelect::SetValueInternal(int value, bool update_text)
+void TBInlineSelect::SetValueInternal(long value, bool update_text)
 {
 	value = CLAMP(value, m_min, m_max);
 	if (value == m_value)
@@ -68,7 +69,7 @@ void TBInlineSelect::SetValueInternal(int value, bool update_text)
 	if (update_text)
 	{
 		TBStr strval;
-		strval.SetFormatted("%d", m_value);
+		strval.SetFormatted("%ld", m_value);
 		m_editfield.SetText(strval);
 	}
 
@@ -107,9 +108,7 @@ bool TBInlineSelect::OnEvent(const TBWidgetEvent &ev)
 	}
 	else if (ev.type == EVENT_TYPE_CHANGED && ev.target == &m_editfield)
 	{
-		TBStr text;
-		m_editfield.GetText(text);
-		SetValueInternal(atoi(text), false);
+		SetValueInternal(m_editfield.GetText().atol(), false);
 	}
 	return false;
 }

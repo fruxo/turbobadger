@@ -60,17 +60,17 @@ int TBDimensionConverter::MmToPx(int mm) const
 	return (int) (mm * TBSystem::GetDPI() / 25.4f + 0.5f);
 }
 
-int TBDimensionConverter::GetPxFromString(const char *str, int def_value) const
+int TBDimensionConverter::GetPxFromString(const TBStr & str, int def_value) const
 {
-	if (!str || !is_start_of_number(str))
+	if (!str || !is_start_of_number((const char *)str))
 		return def_value;
-	int len = (int)strlen(str);
-	int val = atoi(str);
+	int len = str.Length();
+	int val = str.atoi();
 	// "dp" and unspecified unit is dp.
 	if ((len > 0 && isdigit(str[len - 1])) ||
-		(len > 2 && strcmp(str + len - 2, "dp") == 0))
+		(len > 2 && strcmp((const char *)str + len - 2, "dp") == 0))
 		return DpToPx(val);
-	else if (len > 2 && strcmp(str + len - 2, "mm") == 0)
+	else if (len > 2 && strcmp((const char *)str + len - 2, "mm") == 0)
 		return MmToPx(val);
 	else
 		return val;

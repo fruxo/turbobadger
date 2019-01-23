@@ -17,6 +17,10 @@
 
 namespace tb {
 
+static auto strstr(const TBStr & s1, const char *s2) { return ::strstr(s1.CStr(), s2); }
+static auto stristr(const TBStr & s1, const char *s2) { return stristr(s1.CStr(), s2); }
+static auto strcmp(const TBStr & s1, const char *s2) { return ::strcmp(s1.CStr(), s2); }
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
@@ -27,9 +31,11 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 
 	TBWidgetsReader::SetIDFromNode(GetGroupID(), info.node->GetNode("group-id"));
 
-	if (info.sync_type == TBValue::TYPE_FLOAT)
+	if (m_sync_type == TBValue::TYPE_FLOAT)
 		SetValueDouble(info.node->GetValueFloat("value", 0));
-	else
+	else if (m_sync_type == TBValue::TYPE_STRING)
+		SetText(info.node->GetValueString("value", nullptr));
+	else // if (info.sync_type == TBValue::TYPE_INT)
 		SetValue(info.node->GetValueInt("value", 0));
 
 	if (TBNode *data_node = info.node->GetNode("data"))
@@ -45,25 +51,25 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 
 	SetOpacity(info.node->GetValueFloat("opacity", GetOpacity()));
 
-	if (const char *text = info.node->GetValueString("text", nullptr))
+	if (TBStr text = info.node->GetValueString("text", nullptr))
 		SetText(text);
 
-	if (const char *connection = info.node->GetValueStringRaw("connection", nullptr))
+	if (TBStr connection = info.node->GetValueStringRaw("connection", nullptr))
 	{
 		// If we already have a widget value with this name, just connect to it and the widget will
 		// adjust its value to it. Otherwise create a new widget value, and give it the value we
 		// got from the resource.
 		if (TBWidgetValue *value = g_value_group.GetValue(connection))
 			Connect(value);
-		else if (TBWidgetValue *value = g_value_group.CreateValueIfNeeded(connection, info.sync_type))
+		else if (TBWidgetValue *value = g_value_group.CreateValueIfNeeded(connection, m_sync_type))
 		{
 			value->SetFromWidget(this);
 			Connect(value);
 		}
 	}
-	if (const char *axis = info.node->GetValueString("axis", nullptr))
+	if (TBStr axis = info.node->GetValueString("axis", nullptr))
 		SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
-	if (const char *gravity = info.node->GetValueString("gravity", nullptr))
+	if (TBStr gravity = info.node->GetValueString("gravity", nullptr))
 	{
 		WIDGET_GRAVITY g = WIDGET_GRAVITY_NONE;
 		if (strstr(gravity, "left"))		g |= WIDGET_GRAVITY_LEFT;
@@ -77,23 +83,24 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 			g |= WIDGET_GRAVITY_TOP;
 		SetGravity(g);
 	}
-	if (const char *visibility = info.node->GetValueString("visibility", nullptr))
+	if (TBStr visibility = info.node->GetValueString("visibility", nullptr))
 	{
 		if (!strcmp(visibility, "visible"))			SetVisibility(WIDGET_VISIBILITY_VISIBLE);
 		else if (!strcmp(visibility, "invisible"))	SetVisibility(WIDGET_VISIBILITY_INVISIBLE);
 		else if (!strcmp(visibility, "gone"))		SetVisibility(WIDGET_VISIBILITY_GONE);
 	}
-	if (const char *state = info.node->GetValueString("state", nullptr))
+	if (TBStr state = info.node->GetValueString("state", nullptr))
 	{
 		if (strstr(state, "disabled"))
 			SetState(WIDGET_STATE_DISABLED, true);
 		else if (strstr(state, "selected"))
 			SetState(WIDGET_STATE_SELECTED, true);
 	}
-	if (const char *skin = info.node->GetValueString("skin", nullptr))
+	if (TBStr skin = info.node->GetValueString("skin", nullptr))
 	{
 		if (!g_tb_skin->GetSkinElement(skin))
-			TBDebugPrint("Widget '%s' requesting invalid skin element '%s'\n", GetClassName(), skin);
+			TBDebugPrint("Widget '%s' requesting invalid skin element '%s'\n",
+						 GetClassName(), skin.CStr());
 		SetSkinBg(skin);
 	}
 	if (TBNode *lp = info.node->GetNode("lp"))
@@ -102,21 +109,21 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 		if (GetLayoutParams())
 			layout_params = *GetLayoutParams();
 		const TBDimensionConverter *dc = g_tb_skin->GetDimensionConverter();
-		if (const char *str = lp->GetValueString("width", nullptr))
+		if (TBStr str = lp->GetValueString("width", nullptr))
 			layout_params.SetWidth(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
-		if (const char *str = lp->GetValueString("height", nullptr))
+		if (TBStr str = lp->GetValueString("height", nullptr))
 			layout_params.SetHeight(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
-		if (const char *str = lp->GetValueString("min-width", nullptr))
+		if (TBStr str = lp->GetValueString("min-width", nullptr))
 			layout_params.min_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("max-width", nullptr))
+		if (TBStr str = lp->GetValueString("max-width", nullptr))
 			layout_params.max_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("pref-width", nullptr))
+		if (TBStr str = lp->GetValueString("pref-width", nullptr))
 			layout_params.pref_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("min-height", nullptr))
+		if (TBStr str = lp->GetValueString("min-height", nullptr))
 			layout_params.min_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("max-height", nullptr))
+		if (TBStr str = lp->GetValueString("max-height", nullptr))
 			layout_params.max_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("pref-height", nullptr))
+		if (TBStr str = lp->GetValueString("pref-height", nullptr))
 			layout_params.pref_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
 		SetLayoutParams(layout_params);
 	}
@@ -129,12 +136,12 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 	if (TBNode *font = info.node->GetNode("font"))
 	{
 		TBFontDescription fd = GetCalculatedFontDescription();
-		if (const char *size = font->GetValueString("size", nullptr))
+		if (TBStr size = font->GetValueString("size", nullptr))
 		{
 			int new_size = g_tb_skin->GetDimensionConverter()->GetPxFromString(size, fd.GetSize());
 			fd.SetSize(new_size);
 		}
-		if (const char *name = font->GetValueString("name", nullptr))
+		if (TBStr name = font->GetValueString("name", nullptr))
 			fd.SetID(name);
 		SetFontDescription(fd);
 	}
@@ -162,7 +169,7 @@ static void OptCreateID(TBNode * target, const char * name, const TBID & id, con
 		TBNode * new_node = TBNode::Create(name);
 #ifdef TB_RUNTIME_DEBUG_INFO
 		if (id.debug_string.Length())
-			new_node->GetValue().SetString(id.debug_string, TBValue::SET_NEW_COPY);
+			new_node->GetValue().SetString(id.debug_string);
 		else
 #endif
 			new_node->GetValue().SetInt(id);
@@ -218,7 +225,7 @@ static void OptCreateEnum(TBNode * target, const char * name, int val, int def, 
 				s.Append(e->name);
 			}
 		}
-		new_node->GetValue().SetString(s, TBValue::SET_NEW_COPY);
+		new_node->GetValue().SetString(std::move(s));
 		target->Add(new_node);
 	}
 }
@@ -230,7 +237,7 @@ static void OptCreateRect(TBNode * target, const char * name, const TBRect & val
 		TBNode * new_node = TBNode::Create(name);
 		TBStr s;
 		s.SetFormatted("[%d x %d @ %d,%d]", val.w, val.h, val.x, val.y);
-		new_node->GetValue().SetString(s, TBValue::SET_NEW_COPY);
+		new_node->GetValue().SetString(s);
 		target->Add(new_node);
 	}
 }
@@ -242,7 +249,7 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 	OptCreateID(node, "group-id", GetGroupID());
 
 #if 0
-	if (info.sync_type == TBValue::TYPE_FLOAT)
+	if (m_sync_type == TBValue::TYPE_FLOAT)
 		SetValueDouble(info.node->GetValueFloat("value", 0));
 	else
 		SetValue(info.node->GetValueInt("value", 0));
@@ -256,17 +263,17 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 	OptCreateInt(node, "want-long-click", GetWantLongClick(), false);
 	OptCreateInt(node, "ignore-input", GetIgnoreInput(), false);
 	OptCreateFloat(node, "opacity", GetOpacity(), 1.);
-	OptCreateString(node, "text", GetText());
+	OptCreateString(node, "text", GetText().CStr());
 
 #if 0
-	if (const char *connection = info.node->GetValueStringRaw("connection", nullptr))
+	if (TBStr connection = info.node->GetValueStringRaw("connection", nullptr))
 	{
 		// If we already have a widget value with this name, just connect to it and the widget will
 		// adjust its value to it. Otherwise create a new widget value, and give it the value we
 		// got from the resource.
 		if (TBWidgetValue *value = g_value_group.GetValue(connection))
 			Connect(value);
-		else if (TBWidgetValue *value = g_value_group.CreateValueIfNeeded(connection, info.sync_type))
+		else if (TBWidgetValue *value = g_value_group.CreateValueIfNeeded(connection, m_sync_type))
 		{
 			value->SetFromWidget(this);
 			Connect(value);
@@ -318,21 +325,21 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 		if (GetLayoutParams())
 			layout_params = *GetLayoutParams();
 		const TBDimensionConverter *dc = g_tb_skin->GetDimensionConverter();
-		if (const char *str = lp->GetValueString("width", nullptr))
+		if (TBStr str = lp->GetValueString("width", nullptr))
 			layout_params.SetWidth(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
-		if (const char *str = lp->GetValueString("height", nullptr))
+		if (TBStr str = lp->GetValueString("height", nullptr))
 			layout_params.SetHeight(dc->GetPxFromString(str, LayoutParams::UNSPECIFIED));
-		if (const char *str = lp->GetValueString("min-width", nullptr))
+		if (TBStr str = lp->GetValueString("min-width", nullptr))
 			layout_params.min_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("max-width", nullptr))
+		if (TBStr str = lp->GetValueString("max-width", nullptr))
 			layout_params.max_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("pref-width", nullptr))
+		if (TBStr str = lp->GetValueString("pref-width", nullptr))
 			layout_params.pref_w = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("min-height", nullptr))
+		if (TBStr str = lp->GetValueString("min-height", nullptr))
 			layout_params.min_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("max-height", nullptr))
+		if (TBStr str = lp->GetValueString("max-height", nullptr))
 			layout_params.max_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
-		if (const char *str = lp->GetValueString("pref-height", nullptr))
+		if (TBStr str = lp->GetValueString("pref-height", nullptr))
 			layout_params.pref_h = dc->GetPxFromString(str, LayoutParams::UNSPECIFIED);
 		SetLayoutParams(layout_params);
 	}
@@ -341,7 +348,7 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 
 TB_WIDGET_FACTORY(TBWindow, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 
-TB_WIDGET_FACTORY(TBButton, TBValue::TYPE_NULL, WIDGET_Z_BOTTOM) {}
+TB_WIDGET_FACTORY(TBButton, TBValue::TYPE_INT, WIDGET_Z_BOTTOM) {}
 void TBButton::OnInflate(const INFLATE_INFO &info)
 {
 	SetSqueezable(info.node->GetValueInt("squeezable", GetSqueezable()) ? true : false);
@@ -378,11 +385,11 @@ void TBEditField::OnInflate(const INFLATE_INFO &info)
 	SetReadOnly(info.node->GetValueInt("readonly", 0) ? true : false);
 	SetWrapping(info.node->GetValueInt("wrap", GetWrapping()) ? true : false);
 	SetAdaptToContentSize(info.node->GetValueInt("adapt-to-content", GetAdaptToContentSize()) ? true : false);
-	if (const char *virtual_width = info.node->GetValueString("virtual-width", nullptr))
+	if (TBStr virtual_width = info.node->GetValueString("virtual-width", nullptr))
 		SetVirtualWidth(g_tb_skin->GetDimensionConverter()->GetPxFromString(virtual_width, GetVirtualWidth()));
-	if (const char *text = info.node->GetValueString("placeholder", nullptr))
+	if (TBStr text = info.node->GetValueString("placeholder", nullptr))
 		SetPlaceholderText(text);
-	if (const char *type = info.node->GetValueString("type", nullptr))
+	if (TBStr type = info.node->GetValueString("type", nullptr))
 	{
 		if (stristr(type, "text"))			SetEditType(EDIT_TYPE_TEXT);
 		else if (stristr(type, "search"))	SetEditType(EDIT_TYPE_SEARCH);
@@ -391,14 +398,14 @@ void TBEditField::OnInflate(const INFLATE_INFO &info)
 		else if (stristr(type, "phone"))	SetEditType(EDIT_TYPE_PHONE);
 		else if (stristr(type, "url"))		SetEditType(EDIT_TYPE_URL);
 		else if (stristr(type, "number"))	SetEditType(EDIT_TYPE_NUMBER);
-		else TBDebugPrint("TBEditField: Unknown type '%s'\n", type);
+		else TBDebugPrint("TBEditField: Unknown type '%s'\n", type.CStr());
 	}
-	if (const char *text_align = info.node->GetValueString("text-align", nullptr))
+	if (TBStr text_align = info.node->GetValueString("text-align", nullptr))
 	{
 		if (!strcmp(text_align, "left"))		SetTextAlign(TB_TEXT_ALIGN_LEFT);
 		else if (!strcmp(text_align, "center"))	SetTextAlign(TB_TEXT_ALIGN_CENTER);
 		else if (!strcmp(text_align, "right"))	SetTextAlign(TB_TEXT_ALIGN_RIGHT);
-		else TBDebugPrint("TBEditField: Unknown text-align '%s'\n", text_align);
+		else TBDebugPrint("TBEditField: Unknown text-align '%s'\n", text_align.CStr());
 	}
 	TBWidget::OnInflate(info);
 }
@@ -406,10 +413,10 @@ void TBEditField::OnInflate(const INFLATE_INFO &info)
 TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 void TBLayout::OnInflate(const INFLATE_INFO &info)
 {
-	if (const char *spacing = info.node->GetValueString("spacing", nullptr))
+	if (TBStr spacing = info.node->GetValueString("spacing", nullptr))
 		SetSpacing(g_tb_skin->GetDimensionConverter()->GetPxFromString(spacing, SPACING_FROM_SKIN));
 	SetGravity(WIDGET_GRAVITY_ALL);
-	if (const char *size = info.node->GetValueString("size", nullptr))
+	if (TBStr size = info.node->GetValueString("size", nullptr))
 	{
 		LAYOUT_SIZE ls = LAYOUT_SIZE_PREFERRED;
 		if (strstr(size, "available"))
@@ -419,10 +426,10 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		else if (strstr(size, "preferred"))
 			;
 		else
-			TBDebugPrint("TBLayout: Unknown size '%s'\n", size);
+			TBDebugPrint("TBLayout: Unknown size '%s'\n", size.CStr());
 		SetLayoutSize(ls);
 	}
-	if (const char *pos = info.node->GetValueString("position", nullptr))
+	if (TBStr pos = info.node->GetValueString("position", nullptr))
 	{
 		LAYOUT_POSITION lp = LAYOUT_POSITION_CENTER;
 		if (strstr(pos, "left") || strstr(pos, "top"))
@@ -434,10 +441,10 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		else if (!strcmp(pos, "center"))
 			;
 		else
-			TBDebugPrint("TBLayout: Unknown position '%s'\n", pos);
+			TBDebugPrint("TBLayout: Unknown position '%s'\n", pos.CStr());
 		SetLayoutPosition(lp);
 	}
-	if (const char *pos = info.node->GetValueString("overflow", nullptr))
+	if (TBStr pos = info.node->GetValueString("overflow", nullptr))
 	{
 		LAYOUT_OVERFLOW lo = LAYOUT_OVERFLOW_CLIP;
 		if (strstr(pos, "scroll"))
@@ -445,10 +452,10 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		else if (strstr(pos, "clip"))
 			;
 		else
-			TBDebugPrint("TBLayout: Unknown overflow '%s'\n", pos);
+			TBDebugPrint("TBLayout: Unknown overflow '%s'\n", pos.CStr());
 		SetLayoutOverflow(lo);
 	}
-	if (const char *dist = info.node->GetValueString("distribution", nullptr))
+	if (TBStr dist = info.node->GetValueString("distribution", nullptr))
 	{
 		LAYOUT_DISTRIBUTION ld = LAYOUT_DISTRIBUTION_PREFERRED;
 		if (strstr(dist, "available"))
@@ -458,10 +465,10 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		else if (strstr(dist, "preferred"))
 			;
 		else
-			TBDebugPrint("TBLayout: Unknown distribution '%s'\n", dist);
+			TBDebugPrint("TBLayout: Unknown distribution '%s'\n", dist.CStr());
 		SetLayoutDistribution(ld);
 	}
-	if (const char *dist = info.node->GetValueString("distribution-position", nullptr))
+	if (TBStr dist = info.node->GetValueString("distribution-position", nullptr))
 	{
 		LAYOUT_DISTRIBUTION_POSITION ld = LAYOUT_DISTRIBUTION_POSITION_CENTER;
 		if (strstr(dist, "left") || strstr(dist, "top"))
@@ -471,7 +478,7 @@ void TBLayout::OnInflate(const INFLATE_INFO &info)
 		else if (!strcmp(dist, "center"))
 			;
 		else
-			TBDebugPrint("TBLayout: Unknown distribution-position '%s'\n", dist);
+			TBDebugPrint("TBLayout: Unknown distribution-position '%s'\n", dist.CStr());
 		SetLayoutDistributionPosition(ld);
 	}
 	TBWidget::OnInflate(info);
@@ -523,14 +530,14 @@ void TBScrollContainer::OnInflate(const INFLATE_INFO &info)
 	SetGravity(WIDGET_GRAVITY_ALL);
 	SetAdaptContentSize(info.node->GetValueInt("adapt-content", GetAdaptContentSize()) ? true : false);
 	SetAdaptToContentSize(info.node->GetValueInt("adapt-to-content", GetAdaptToContentSize()) ? true : false);
-	if (const char *mode = info.node->GetValueString("scroll-mode", nullptr))
+	if (TBStr mode = info.node->GetValueString("scroll-mode", nullptr))
 	{
 		if (!strcmp(mode, "xy"))			SetScrollMode(SCROLL_MODE_X_Y);
 		else if (!strcmp(mode, "y"))		SetScrollMode(SCROLL_MODE_Y);
 		else if (!strcmp(mode, "y-auto"))	SetScrollMode(SCROLL_MODE_Y_AUTO);
 		else if (!strcmp(mode, "auto"))		SetScrollMode(SCROLL_MODE_X_AUTO_Y_AUTO);
 		else if (!strcmp(mode, "off"))		SetScrollMode(SCROLL_MODE_OFF);
-		else TBDebugPrint("TBScrollContainer: Unknown scroll-mode '%s'\n", mode);
+		else TBDebugPrint("TBScrollContainer: Unknown scroll-mode '%s'\n", mode.CStr());
 	}
 	TBWidget::OnInflate(info);
 }
@@ -540,13 +547,13 @@ void TBTabContainer::OnInflate(const INFLATE_INFO &info)
 {
 	TBWidget::OnInflate(info);
 
-	if (const char *align = info.node->GetValueString("align", nullptr))
+	if (TBStr align = info.node->GetValueString("align", nullptr))
 	{
 		if (!strcmp(align, "left"))			SetAlignment(TB_ALIGN_LEFT);
 		else if (!strcmp(align, "top"))		SetAlignment(TB_ALIGN_TOP);
 		else if (!strcmp(align, "right"))	SetAlignment(TB_ALIGN_RIGHT);
 		else if (!strcmp(align, "bottom"))	SetAlignment(TB_ALIGN_BOTTOM);
-		else TBDebugPrint("TBTabContainer: Unknown align '%s'\n", align);
+		else TBDebugPrint("TBTabContainer: Unknown align '%s'\n", align.CStr());
 	}
 	// Allow additional attributes to be specified for the "tabs", "content" and "root" layouts by
 	// calling OnInflate.
@@ -574,19 +581,16 @@ void TBTabContainer::OnInflate(const INFLATE_INFO &info)
 TB_WIDGET_FACTORY(TBScrollBar, TBValue::TYPE_FLOAT, WIDGET_Z_TOP) {}
 void TBScrollBar::OnInflate(const INFLATE_INFO &info)
 {
-	const char *axis = info.node->GetValueString("axis", "x");
+	TBStr axis = info.node->GetValueString("axis", "x");
 	SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
 	SetGravity(*axis == 'x' ? WIDGET_GRAVITY_LEFT_RIGHT : WIDGET_GRAVITY_TOP_BOTTOM);
 	TBWidget::OnInflate(info);
 }
 
-TB_WIDGET_FACTORY(TBSlider, TBValue::TYPE_FLOAT, WIDGET_Z_TOP) {}
-TB_WIDGET_FACTORY(TBSliderInt, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
-TB_WIDGET_FACTORY(TBSliderLong, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 template <typename VAL_T>
 void TBSliderX<VAL_T>::OnInflate(const INFLATE_INFO &info)
 {
-	const char *axis = info.node->GetValueString("axis", "x");
+	TBStr axis = info.node->GetValueString("axis", "x");
 	SetAxis(*axis == 'x' ? AXIS_X : AXIS_Y);
 	SetGravity(*axis == 'x' ? WIDGET_GRAVITY_LEFT_RIGHT : WIDGET_GRAVITY_TOP_BOTTOM);
 	double min = (double)info.node->GetValueFloat("min", (float)GetMinValue());
@@ -596,6 +600,9 @@ void TBSliderX<VAL_T>::OnInflate(const INFLATE_INFO &info)
 	SetSmallStep(step);
 	TBWidget::OnInflate(info);
 }
+TB_WIDGET_FACTORY(TBSlider, TBValue::TYPE_FLOAT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSliderInt, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
+TB_WIDGET_FACTORY(TBSliderLong, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 template class TBSliderX<double>;
 template class TBSliderX<int>;
 template class TBSliderX<long>;
@@ -610,7 +617,7 @@ void ReadItems(TBNode *node, TBGenericStringItemSource *target_source)
 		{
 			if (strcmp(n->GetName(), "item") != 0 && strcmp(n->GetName(), "menu") != 0)
 				continue;
-			const char *item_str = n->GetValueString("text", "");
+			TBStr item_str = n->GetValueString("text", "");
 			TBID item_id;
 			if (TBNode *n_id = n->GetNode("id"))
 				TBWidgetsReader::SetIDFromNode(item_id, n_id);
@@ -653,7 +660,7 @@ TB_WIDGET_FACTORY(TBRadioButton, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBTextField, TBValue::TYPE_STRING, WIDGET_Z_TOP) {}
 void TBTextField::OnInflate(const INFLATE_INFO &info)
 {
-	if (const char *text_align = info.node->GetValueString("text-align", nullptr))
+	if (TBStr text_align = info.node->GetValueString("text-align", nullptr))
 	{
 		if (!strcmp(text_align, "left"))		SetTextAlign(TB_TEXT_ALIGN_LEFT);
 		else if (!strcmp(text_align, "center"))	SetTextAlign(TB_TEXT_ALIGN_CENTER);
@@ -672,7 +679,7 @@ TB_WIDGET_FACTORY(TBSection, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBToggleContainer, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 void TBToggleContainer::OnInflate(const INFLATE_INFO &info)
 {
-	if (const char *toggle = info.node->GetValueString("toggle", nullptr))
+	if (TBStr toggle = info.node->GetValueString("toggle", nullptr))
 	{
 		if (stristr(toggle, "enabled"))			SetToggle(TBToggleContainer::TOGGLE_ENABLED);
 		else if (stristr(toggle, "opacity"))	SetToggle(TBToggleContainer::TOGGLE_OPACITY);
@@ -687,8 +694,8 @@ void TBToggleContainer::OnInflate(const INFLATE_INFO &info)
 TB_WIDGET_FACTORY(TBImageWidget, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
 void TBImageWidget::OnInflate(const INFLATE_INFO &info)
 {
-	if (const char *filename = info.node->GetValueString("filename", nullptr))
-		SetImage(filename);
+	if (TBStr filename = info.node->GetValueString("filename", nullptr))
+		SetImage(filename.CStr());
 	SetAdaptTextColor(info.node->GetValueInt("adapt-text-color", false) ? true : false);
 	TBWidget::OnInflate(info);
 }
@@ -702,9 +709,9 @@ void TBImageWidget::OnInflate(const INFLATE_INFO &info)
 // to it. Using a manual one way link list is very simple.
 TBWidgetFactory *g_registered_factories = nullptr;
 
-TBWidgetFactory::TBWidgetFactory(const char *name, TBValue::TYPE sync_type)
+TBWidgetFactory::TBWidgetFactory(const char *name, TBValue::TYPE s)
 	: name(name)
-	, sync_type(sync_type)
+	, sync_type(s)
 	, next_registered_wf(nullptr)
 {
 }

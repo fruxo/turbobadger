@@ -33,7 +33,8 @@ int GetSelectionScrollSpeed(int pointerpos, int min, int max)
 }
 
 TBEditField::TBEditField()
-	: m_edit_type(EDIT_TYPE_TEXT)
+	: TBWidget(TBValue::TYPE_STRING)
+	, m_edit_type(EDIT_TYPE_TEXT)
 	, m_adapt_to_content_size(false)
 	, m_virtual_width(250)
 {

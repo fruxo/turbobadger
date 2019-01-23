@@ -63,10 +63,11 @@ void ShowDebugInfoSettingsWindow(class TBWidget *root);
 
 #endif // TB_RUNTIME_DEBUG_INFO
 
-#if defined(TB_RUNTIME_DEBUG_INFO) || 1 
-void TBDebugOut(const char *str);
+#if defined(TB_RUNTIME_DEBUG_INFO) || 1
+class TBStr;
+void TBDebugOut(const TBStr & str);
 #define TBDebugPrint(...) do {								 \
-		tb::TBStr tmp;										 \
+		TBStr tmp;											 \
 		tmp.SetFormatted(__VA_ARGS__);						 \
 		TBDebugOut(tmp);									 \
 	} while (0)

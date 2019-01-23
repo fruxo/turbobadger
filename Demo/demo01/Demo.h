@@ -27,7 +27,7 @@ class DemoWindow : public TBWindow
 {
 public:
 	DemoWindow(TBWidget *root);
-	bool LoadResourceFile(const char *filename);
+	bool LoadResourceFile(const TBStr & filename);
 	void LoadResourceData(const char *data);
 	void LoadResource(TBNode &node);
 
@@ -70,7 +70,7 @@ public:
 class LayoutWindow : public DemoWindow
 {
 public:
-	LayoutWindow(TBWidget *root, const char *filename);
+	LayoutWindow(TBWidget *root, const TBStr & filename);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 };
 

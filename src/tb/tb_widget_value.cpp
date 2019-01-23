@@ -67,7 +67,7 @@ void TBWidgetValue::SetFromWidget(TBWidget *source_widget)
 	case TBValue::TYPE_STRING:
 		if (!source_widget->GetText(text))
 			return;
-		m_value.SetString(text, TBValue::SET_NEW_COPY);
+		m_value.SetString(text);
 		break;
 	case TBValue::TYPE_NULL:
 	case TBValue::TYPE_INT:
@@ -108,7 +108,8 @@ bool TBWidgetValue::SyncToWidget(TBWidget *dst_widget)
 
 	m_syncing = true;
 	bool ret = true;
-	switch (m_value.GetType())
+	//switch (m_value.GetType())
+	switch (dst_widget->m_sync_type)
 	{
 		case TBValue::TYPE_STRING:
 			ret = dst_widget->SetText(m_value.GetString());
@@ -129,18 +130,18 @@ bool TBWidgetValue::SyncToWidget(TBWidget *dst_widget)
 	return ret;
 }
 
-void TBWidgetValue::SetInt(long int value)
+void TBWidgetValue::SetInt(long value)
 {
-	if (!m_value.Equals(value)) {
+	if (m_value.GetType() != TBValue::TYPE_INT || !m_value.Equals(value)) {
 		m_value.SetInt(value);
 		SyncToWidgets(nullptr);
 	}
 }
 
-bool TBWidgetValue::SetText(const char *text)
+bool TBWidgetValue::SetText(const TBStr & text)
 {
-	if (!m_value.Equals(text)) {
-		m_value.SetString(text, TBValue::SET_NEW_COPY);
+	if (m_value.GetType() != TBValue::TYPE_STRING || !m_value.Equals(text)) {
+		m_value.SetString(text);
 		return SyncToWidgets(nullptr);
 	}
 	return false;
@@ -148,7 +149,7 @@ bool TBWidgetValue::SetText(const char *text)
 
 void TBWidgetValue::SetDouble(double value)
 {
-	if (!m_value.Equals(value)) {
+	if (m_value.GetType() != TBValue::TYPE_FLOAT || !m_value.Equals(value)) {
 		m_value.SetFloat(value);
 		SyncToWidgets(nullptr);
 	}

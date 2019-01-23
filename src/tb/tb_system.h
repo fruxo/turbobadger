@@ -61,7 +61,7 @@ public:
 	static bool HasText();
 
 	/** Set the text of the clipboard in UTF-8 format. */
-	static bool SetText(const char *text);
+	static bool SetText(const TBStr & text);
 
 	/** Get the text from the clipboard in UTF-8 format.
 		Returns true on success. */
@@ -73,7 +73,7 @@ class TBFile
 {
 public:
 	enum TBFileMode { MODE_READ, MODE_WRITETRUNC };
-	static TBFile *Open(const char *filename, TBFileMode mode);
+	static TBFile *Open(const TBStr & filename, TBFileMode mode);
 
 	virtual ~TBFile() {}
 	virtual long Size() = 0;

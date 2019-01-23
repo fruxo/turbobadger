@@ -25,8 +25,7 @@ bool TBLanguage::Load(const char *filename)
 	TBNode *n = node.GetFirstChild();
 	while (n)
 	{
-		const char *str = n->GetValue().GetString();
-		TBStr *new_str = new TBStr(str);
+		TBStr *new_str = new TBStr(n->GetValue().GetString());
 		if (!new_str || !strings.Add(TBID(n->GetName()), new_str))
 		{
 			delete new_str;
@@ -42,7 +41,7 @@ void TBLanguage::Clear()
 	strings.DeleteAll();
 }
 
-const char *TBLanguage::GetString(const TBID &id)
+TBStr TBLanguage::GetString(const TBID &id)
 {
 	if (TBStr *str = strings.Get(id))
 		return *str;

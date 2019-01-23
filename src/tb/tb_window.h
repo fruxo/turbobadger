@@ -83,7 +83,7 @@ public:
 	void ResizeToFitContent(RESIZE_FIT fit = RESIZE_FIT_PREFERRED);
 
 	/** Set the window title. */
-	virtual bool SetText(const char *text) { return m_textfield.SetText(text); }
+	virtual bool SetText(const TBStr &text) { return m_textfield.SetText(text); }
 	virtual bool GetText(TBStr &text) const { return m_textfield.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 

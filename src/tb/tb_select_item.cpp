@@ -21,7 +21,7 @@ namespace tb {
 class TBSimpleLayoutItemWidget : public TBLayout, private TBWidgetListener
 {
 public:
-	TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const char *str);
+	TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const TBStr & str);
 	TBOBJECT_SUBCLASS(TBSimpleLayoutItemWidget, TBLayout);
 	~TBSimpleLayoutItemWidget();
 	virtual bool OnEvent(const TBWidgetEvent &ev);
@@ -40,7 +40,7 @@ private:
 
 // == TBSimpleLayoutItemWidget ==============================================================================
 
-TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const char *str)
+TBSimpleLayoutItemWidget::TBSimpleLayoutItemWidget(TBID image, TBSelectItemSource *source, const TBStr & str)
 	: m_source(source)
 	, m_menu(nullptr)
 {
@@ -153,17 +153,17 @@ TBSelectItemSource::~TBSelectItemSource()
 	assert(!m_viewers.HasLinks());
 }
 
-bool TBSelectItemSource::Filter(int index, const char *filter)
+bool TBSelectItemSource::Filter(int index, const TBStr & filter)
 {
-	const char *str = GetItemString(index);
-	if (str && stristr(str, filter))
+	const TBStr & str = GetItemString(index);
+	if (str && stristr(str.CStr(), filter.CStr()))
 		return true;
 	return false;
 }
 
 TBWidget *TBSelectItemSource::CreateItemWidget(int index, TBSelectItemViewer * /*viewer*/)
 {
-	const char *string = GetItemString(index);
+	const TBStr & string = GetItemString(index);
 	TBSelectItemSource *sub_source = GetItemSubSource(index);
 	TBID image = GetItemImage(index);
 	if (sub_source || image)

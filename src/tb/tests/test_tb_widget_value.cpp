@@ -17,28 +17,36 @@ using namespace tb;
 TB_TEST_GROUP(tb_widget_value_text)
 {
 	TBWidgetValue widget_val(TBIDC("test value text"));
-	TBWidget *a, *b, *c;
+	TBWidget *a, *b, *c, *d, *e;
 
 	TB_TEST(Init)
 	{
 		TB_VERIFY(a = new TBEditField);
 		TB_VERIFY(b = new TBEditField);
 		TB_VERIFY(c = new TBEditField);
+		TB_VERIFY(d = new TBClickLabel);
+		TB_VERIFY(e = new TBTextField);
 	}
 
 	TB_TEST(connect)
 	{
 		// Set the initial value, no widgets connected yet.
 		widget_val.SetText("turbo badger");
+		TB_VERIFY(widget_val.GetValue().GetType() == TBValue::TYPE_STRING);
+		TB_VERIFY_STR(widget_val.GetText(), "turbo badger");
 
 		// Connecting widgets should give them the current value.
 		a->Connect(&widget_val);
 		b->Connect(&widget_val);
 		c->Connect(&widget_val);
+		d->Connect(&widget_val);
+		e->Connect(&widget_val);
 
 		TB_VERIFY_STR(a->GetText(), "turbo badger");
 		TB_VERIFY_STR(b->GetText(), "turbo badger");
 		TB_VERIFY_STR(c->GetText(), "turbo badger");
+		TB_VERIFY_STR(d->GetText(), "turbo badger");
+		TB_VERIFY_STR(e->GetText(), "turbo badger");
 	}
 
 	TB_TEST(change_value)
@@ -49,6 +57,8 @@ TB_TEST_GROUP(tb_widget_value_text)
 		TB_VERIFY_STR(a->GetText(), "Emil");
 		TB_VERIFY_STR(b->GetText(), "Emil");
 		TB_VERIFY_STR(c->GetText(), "Emil");
+		TB_VERIFY_STR(d->GetText(), "Emil");
+		TB_VERIFY_STR(e->GetText(), "Emil");
 	}
 
 	TB_TEST(change_widget)
@@ -57,14 +67,22 @@ TB_TEST_GROUP(tb_widget_value_text)
 		a->SetText("A");
 		TB_VERIFY_STR(b->GetText(), "A");
 		TB_VERIFY_STR(c->GetText(), "A");
+		TB_VERIFY_STR(d->GetText(), "A");
+		TB_VERIFY_STR(e->GetText(), "A");
+		TB_VERIFY_STR(widget_val.GetText(), "A");
 
 		b->SetText("B");
 		TB_VERIFY_STR(a->GetText(), "B");
 		TB_VERIFY_STR(c->GetText(), "B");
+		TB_VERIFY_STR(d->GetText(), "B");
+		TB_VERIFY_STR(e->GetText(), "B");
+		TB_VERIFY_STR(widget_val.GetText(), "B");
 
 		c->SetText("C");
 		TB_VERIFY_STR(a->GetText(), "C");
 		TB_VERIFY_STR(b->GetText(), "C");
+		TB_VERIFY_STR(d->GetText(), "C");
+		TB_VERIFY_STR(e->GetText(), "C");
 
 		// The value itself should also have changed.
 		TB_VERIFY_STR(widget_val.GetText(), "C");
@@ -75,6 +93,8 @@ TB_TEST_GROUP(tb_widget_value_text)
 		delete a;
 		delete b;
 		delete c;
+		delete d;
+		delete e;
 	}
 }
 

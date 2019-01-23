@@ -1,3 +1,10 @@
+Branch Notice
+-----------------------------------------------------------------------------------
+
+This is a significant branch away from the original Turbo Badger.
+There are many changes.  In particular the move to c++14.  Maybe
+someday there will be fixes to the inflation code.
+
 Turbo Badger - Fast UI toolkit for hardware accelerated games & applications.
 -----------------------------------------------------------------------------------
 

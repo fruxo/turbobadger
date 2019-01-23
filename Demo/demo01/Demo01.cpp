@@ -19,9 +19,9 @@
 #include "image/tb_image_manager.h"
 #include "utf8/utf8.h"
 
-AdvancedItemSource advanced_source;
-TBGenericStringItemSource name_source;
-TBGenericStringItemSource popup_menu_source;
+AdvancedItemSource * advanced_source;
+TBGenericStringItemSource * name_source;
+TBGenericStringItemSource * popup_menu_source;
 
 #ifdef TB_SUPPORT_CONSTEXPR
 
@@ -52,7 +52,7 @@ DemoWindow::DemoWindow(TBWidget *root)
 	root->AddChild(this);
 }
 
-bool DemoWindow::LoadResourceFile(const char *filename)
+bool DemoWindow::LoadResourceFile(const TBStr & filename)
 {
 	// We could do g_widgets_reader->LoadFile(this, filename) but we want
 	// some extra data we store under "WindowInfo", so read into node tree.
@@ -239,7 +239,7 @@ public:
 						if (i % 64 == 63)
 							buf.Append("\n", 1);
 					}
-					edit->GetStyleEdit()->SetText(buf.GetData(), buf.GetAppendPos());
+					edit->GetStyleEdit()->SetText(TBStr(buf.GetData(), buf.GetAppendPos()));
 				}
 				else if (ev.ref_id == TBIDC("toggle wrapping"))
 					edit->SetWrapping(!edit->GetWrapping());
@@ -258,7 +258,7 @@ public:
 
 // == LayoutWindow ============================================================
 
-LayoutWindow::LayoutWindow(TBWidget *root, const char *filename) : DemoWindow(root)
+LayoutWindow::LayoutWindow(TBWidget *root, const TBStr & filename) : DemoWindow(root)
 {
 	LoadResourceFile(filename);
 }
@@ -361,10 +361,10 @@ ScrollContainerWindow::ScrollContainerWindow(TBWidget *root) : DemoWindow(root)
 	LoadResourceFile("Demo/demo01/ui_resources/test_scrollcontainer.tb.txt");
 
 	if (TBSelectDropdown *select = GetWidgetByIDAndType<TBSelectDropdown>(TBIDC("name dropdown")))
-		select->SetSource(&name_source);
+		select->SetSource(name_source);
 
 	if (TBSelectDropdown *select = GetWidgetByIDAndType<TBSelectDropdown>(TBIDC("advanced dropdown")))
-		select->SetSource(&advanced_source);
+		select->SetSource(advanced_source);
 }
 
 bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
@@ -412,7 +412,7 @@ bool ScrollContainerWindow::OnEvent(const TBWidgetEvent &ev)
 		else if (ev.target->GetID() == TBIDC("showpopupmenu1"))
 		{
 			if (TBMenuWindow *menu = new TBMenuWindow(ev.target, TBIDC("popupmenu1")))
-				menu->Show(&popup_menu_source, TBPopupAlignment());
+				menu->Show(popup_menu_source, TBPopupAlignment());
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("popupmenu1"))
@@ -434,7 +434,7 @@ void ScrollContainerWindow::OnMessageReceived(TBMessage *msg)
 		if (TBWidget *target = GetWidgetByID(msg->data->id1))
 		{
 			TBStr str;
-			str.SetFormatted("Remove %d", msg->data->v1.GetInt());
+			str.SetFormatted("Remove %ld", msg->data->v1.GetInt());
 			TBButton *button = new TBButton;
 			button->SetID(TBIDC("remove button"));
 			button->SetText(str);
@@ -656,7 +656,7 @@ bool MainWindow::OnEvent(const TBWidgetEvent &ev)
 		}
 		else if (ev.target->GetID() == TBIDC("test-list"))
 		{
-			new AdvancedListWindow(GetParentRoot(), &advanced_source);
+			new AdvancedListWindow(GetParentRoot(), advanced_source);
 			return true;
 		}
 		else if (ev.target->GetID() == TBIDC("test-image"))
@@ -745,38 +745,42 @@ bool DemoApplication::Init()
 	// Run unit tests
 	int num_failed_tests = TBRunTests();
 
+	advanced_source = new AdvancedItemSource();
+	name_source = new TBGenericStringItemSource();
+	popup_menu_source = new TBGenericStringItemSource();
+	
 	// TBSelectList and TBSelectDropdown widgets have a default item source that are fed with any items
 	// specified in the resource files. But it is also possible to set any source which can save memory
 	// and improve performance. Then you don't have to populate each instance with its own set of items,
 	// for widgets that occur many times in a UI, always with the same items.
 	// Here we prepare the name source, that is used in a few places.
 	for (int i = 0; boy_names[i]; i++)
-		advanced_source.AddItem(new AdvancedItem(boy_names[i++], TBIDC("boy_item"), true));
+		advanced_source->AddItem(new AdvancedItem(boy_names[i++], TBIDC("boy_item"), true));
 	for (int i = 0; girl_names[i]; i++)
-		advanced_source.AddItem(new AdvancedItem(girl_names[i++], TBIDC("girl_item"), false));
+		advanced_source->AddItem(new AdvancedItem(girl_names[i++], TBIDC("girl_item"), false));
 	for (int i = 0; girl_names[i]; i++)
-		name_source.AddItem(new TBGenericStringItem(girl_names[i++], TBIDC("girl_item")));
+		name_source->AddItem(new TBGenericStringItem(girl_names[i++], TBIDC("girl_item")));
 	for (int i = 0; boy_names[i]; i++)
-		name_source.AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
-	advanced_source.SetSort(TB_SORT_ASCENDING);
-	name_source.SetSort(TB_SORT_ASCENDING);
+		name_source->AddItem(new TBGenericStringItem(boy_names[i++], TBIDC("boy_item")));
+	advanced_source->SetSort(TB_SORT_ASCENDING);
+	name_source->SetSort(TB_SORT_ASCENDING);
 
 	// Prepare a source with submenus (with eternal recursion) so we can test sub menu support.
-	popup_menu_source.AddItem(new TBGenericStringItem("Option 1", TBIDC("opt 1")));
-	popup_menu_source.AddItem(new TBGenericStringItem("Option 2", TBIDC("opt 2")));
-	popup_menu_source.AddItem(new TBGenericStringItem("-"));
-	popup_menu_source.AddItem(new TBGenericStringItem("Same submenu", &popup_menu_source));
-	popup_menu_source.AddItem(new TBGenericStringItem("Long submenu", &name_source));
+	popup_menu_source->AddItem(new TBGenericStringItem("Option 1", TBIDC("opt 1")));
+	popup_menu_source->AddItem(new TBGenericStringItem("Option 2", TBIDC("opt 2")));
+	popup_menu_source->AddItem(new TBGenericStringItem("-"));
+	popup_menu_source->AddItem(new TBGenericStringItem("Same submenu", popup_menu_source));
+	popup_menu_source->AddItem(new TBGenericStringItem("Long submenu", name_source));
 	// Give the first item a skin image
-	popup_menu_source.GetItem(0)->SetSkinImage(TBIDC("Icon16"));
+	popup_menu_source->GetItem(0)->SetSkinImage(TBIDC("Icon16"));
 
 	new MainWindow(&m_root);
 
 	new EditWindow(&m_root);
 
-	new ListWindow(&m_root, &name_source);
+	new ListWindow(&m_root, name_source);
 
-	new AdvancedListWindow(&m_root, &advanced_source);
+	new AdvancedListWindow(&m_root, advanced_source);
 
 	new TabContainerWindow(&m_root);
 
@@ -826,7 +830,7 @@ void DemoApplication::RenderFrame()
 		str.SetFormatted("FPS: %d Frame %d", fps, frame_counter_total);
 	else
 		str.SetFormatted("Frame %d", frame_counter_total);
-	m_root.GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str);
+	m_root.GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str.CStr());
 
 	g_renderer->EndPaint();
 

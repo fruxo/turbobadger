@@ -415,7 +415,7 @@ public:
 	//! For safe typecasting
 	TBOBJECT_SUBCLASS(TBWidget, TBTypedObject);
 
-	TBWidget();
+	TBWidget(TBValue::TYPE sync_type = TBValue::TYPE_NULL);
 	virtual ~TBWidget();
 
 	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
@@ -906,22 +906,22 @@ public:
 
 	/** Set the value of this widget. Implemented by most widgets (that has a value).
 		Note: Some widgets also provide special setters with other types (such as double). */
-	virtual void SetValue(long int /*value*/) {}
+	virtual void SetValue(long /*value*/) {}
 	/** See TBWidget::SetValue */
 	virtual void SetValue(const TBValue & value) { data = value; }
 	/** See TBWidget::SetValue */
-	virtual long int GetValue() const { return 0; }
+	virtual long GetValue() const { return 0; }
 
 	/** Set the value in double precision. It only makes sense to use this instead
 		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
-	virtual void SetValueDouble(double value) { SetValue((long int) value); }
+	virtual void SetValueDouble(double value) { SetValue((long) value); }
 
 	/** Return the value in double precision. It only makes sense to use this instead
 		of GetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
 	virtual double GetValueDouble() const { return (double) GetValue(); }
 
 	/** Set the text of this widget. Implemented by most widgets (that has text). */
-	virtual bool SetText(const char * /*text*/) { return true; }
+	virtual bool SetText(const TBStr & /*text*/) { return true; }
 
 	/** Get the text of this widget. Implemented by most widgets (that has text).
 		returns false if it failed. */
@@ -932,11 +932,12 @@ public:
 
 	/** Connect this widget to a widget value.
 
-		When this widget invokes EVENT_TYPE_CHANGED, it will automatically update the
-		connected widget value, and any other widgets that may be connected to it.
+		When this widget invokes EVENT_TYPE_CHANGED, it will
+		automatically update the connected widget value, and any other
+		widgets that may be connected to it.
 
-		On connection, the value of this widget will be updated to the value of the
-		given TBWidgetValue. */
+		On connection, the value of this widget will be updated to the
+		value of the given TBWidgetValue. */
 	void Connect(TBWidgetValue *value) { m_connection.Connect(value, this); }
 
 	/** Unconnect, if this widget is connected to a TBWidgetValue. */
@@ -945,21 +946,25 @@ public:
 	/** Get the widget TBWidgetValue. */
 	const TBWidgetValueConnection & GetConnection() const { return m_connection; }
 
-	/** Get the rectangle inside any padding, relative to this widget. This is the
-		rectangle in which the content should be rendered.
+	/** Get the rectangle inside any padding, relative to this
+		widget. This is the rectangle in which the content should be
+		rendered.
 
-		This may be overridden to f.ex deduct space allocated by visible scrollbars
-		managed by this widget. Anything that removes space from the content area. */
+		This may be overridden to f.ex deduct space allocated by
+		visible scrollbars managed by this widget. Anything that
+		removes space from the content area. */
 	virtual TBRect GetPaddingRect();
 
-	/** Calculate the preferred content size for this widget. This is the size of the actual
-		content. Don't care about padding or other decoration. */
+	/** Calculate the preferred content size for this widget. This is
+		the size of the actual content. Don't care about padding or
+		other decoration. */
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 
-	/** Calculate the preferred size for this widget. This is the full size of the widget,
-		content + padding + eventual other decoration (but not skin expansion).
-		This is the size that should be used for layouting a widget.
-		The returned PreferredSize also contains minimal size and maximum size. */
+	/** Calculate the preferred size for this widget. This is the full
+		size of the widget, content + padding + eventual other
+		decoration (but not skin expansion).  This is the size that
+		should be used for layouting a widget.  The returned
+		PreferredSize also contains minimal size and maximum size. */
 	virtual PreferredSize OnCalculatePreferredSize(const SizeConstraints &constraints);
 
 	/** Get the PreferredSize for this widget.
@@ -975,15 +980,23 @@ public:
 	};
 
 	/** Invalidate layout for this widget so it will be scheduled for relayout.
-		Any change to the size preferences for a widget should call this to let parent layout adjust to the change.
+
+		Any change to the size preferences for a widget should call
+		this to let parent layout adjust to the change.
 
 		Remarks for layout widgets:
-		- When a layout widget get this, it should mark its layout as invalid and do the layout later
-		  (in GetPreferredContentSize/GetPreferredSize are called). If a layout knows that no parents will
-		  be affected, it may stop recursion to parents to avoid unnecessary relayout.
-		- When setting the size of a layout widget (typically from another layout widget or from a OnResize),
-		  it should be called with INVALIDATE_LAYOUT_TARGET_ONLY to avoid recursing back up to parents when
-		  already recursing down, to avoid unnecessary computation.
+
+		- When a layout widget get this, it should mark its layout as
+		  invalid and do the layout later (in
+		  GetPreferredContentSize/GetPreferredSize are called). If a
+		  layout knows that no parents will be affected, it may stop
+		  recursion to parents to avoid unnecessary relayout.
+
+		- When setting the size of a layout widget (typically from
+		  another layout widget or from a OnResize), it should be
+		  called with INVALIDATE_LAYOUT_TARGET_ONLY to avoid recursing
+		  back up to parents when already recursing down, to avoid
+		  unnecessary computation.
 		*/
 	virtual void InvalidateLayout(INVALIDATE_LAYOUT il);
 
@@ -991,39 +1004,48 @@ public:
 	void SetLayoutParams(const LayoutParams &lp);
 
 	/** Get layout params, or nullptr if not specified.
-		Note: The layout params has already been applied to the PreferredSize returned
-		from GetPreferredSize so you normally don't need to check these params. */
+
+		Note: The layout params has already been applied to the
+		PreferredSize returned from GetPreferredSize so you normally
+		don't need to check these params. */
 	const LayoutParams *GetLayoutParams() const { return m_layout_params; }
 
 	// == Misc methods for invoking events. Should normally be called only on the root widget ===============
 
-	/** Invoke OnProcess and OnProcessAfterChildren on this widget and its children. */
+	/** Invoke OnProcess and OnProcessAfterChildren on this widget and
+		its children. */
 	void InvokeProcess();
 
-	/** Invoke OnProcessStates on all child widgets, if state processing
-		is needed (InvalidateStates() has been called) */
+	/** Invoke OnProcessStates on all child widgets, if state
+		processing is needed (InvalidateStates() has been called) */
 	void InvokeProcessStates(bool force_update = false);
 
 	/** Invoke paint on this widget and all its children */
 	void InvokePaint(const PaintProps &parent_paint_props);
 
-	/** Invoke OnFontChanged on this widget and recursively on any children that inherit the font. */
+	/** Invoke OnFontChanged on this widget and recursively on any
+		children that inherit the font. */
 	void InvokeFontChanged();
 
 	/** Invoke a event on this widget.
 
-		This will first check with all registered TBWidgetListener if the event should be dispatched.
+		This will first check with all registered TBWidgetListener if
+		the event should be dispatched.
 
-		If the widgets OnEvent returns false (event not handled), it will continue traversing to
-		GetEventDestination (by default the parent) until a widget handles the event.
+		If the widgets OnEvent returns false (event not handled), it
+		will continue traversing to GetEventDestination (by default
+		the parent) until a widget handles the event.
 
-		Note: When invoking event EVENT_TYPE_CHANGED, this will update the value of other widgets connected
-			  to the same group.
+		Note: When invoking event EVENT_TYPE_CHANGED, this will update
+			  the value of other widgets connected to the same group.
 
-		Note: Some event types will automatically invalidate states (See InvalidateStates(), InvalidateSkinStates())
+		Note: Some event types will automatically invalidate states
+		(See InvalidateStates(), InvalidateSkinStates())
 
-		Note: Remember that this widgets may be deleted after this call! So if you really must do something after
-		this call and are not sure what the event will cause, use TBWidgetSafePointer to detect self deletion. */
+		Note: Remember that this widgets may be deleted after this
+		call! So if you really must do something after this call and
+		are not sure what the event will cause, use
+		TBWidgetSafePointer to detect self deletion. */
 	bool InvokeEvent(TBWidgetEvent &ev);
 
 	/** See TBWidget::InvokeEvent */
@@ -1123,8 +1145,14 @@ private:
 		} m_packed;
 		uint16_t m_packed_init;
 	};
+
 public:
-	/** This value is free to use for anything. It's not used by TBWidget itself. Initially TYPE_NULL. */
+	/** The data type that should be synchronized through
+		TBWidgetValue. */
+	TBValue::TYPE m_sync_type;
+
+	/** This value is free to use for anything. It's not used by
+		TBWidget itself. Initially TYPE_NULL. */
 	TBValue data;
 
 	// Debugging
@@ -1134,9 +1162,9 @@ public:
 #endif // TB_RUNTIME_DEBUG_INFO
 
 	// TBWidget related globals
-	static TBWidget *hovered_widget;		///< The currently hovered widget, or nullptr.
-	static TBWidget *captured_widget;		///< The currently captured widget, or nullptr.
-	static TBWidget *focused_widget;		///< The currently focused widget, or nullptr.
+	static TBWidget *hovered_widget;	///< The currently hovered widget, or nullptr.
+	static TBWidget *captured_widget;	///< The currently captured widget, or nullptr.
+	static TBWidget *focused_widget;	///< The currently focused widget, or nullptr.
 	static int pointer_down_widget_x;	///< Pointer x position on down event, relative to the captured widget.
 	static int pointer_down_widget_y;	///< Pointer y position on down event, relative to the captured widget.
 	static int pointer_move_widget_x;	///< Pointer x position on last pointer event, relative to the captured widget (if any) or hovered widget.

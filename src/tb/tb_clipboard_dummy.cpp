@@ -26,7 +26,7 @@ bool TBClipboard::HasText()
 	return !clipboard.IsEmpty();
 }
 
-bool TBClipboard::SetText(const char *text)
+bool TBClipboard::SetText(const TBStr & text)
 {
 	return clipboard.Set(text);
 }

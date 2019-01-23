@@ -269,7 +269,7 @@ public:
 	/** Return true if this element has overlay elements. */
 	bool HasOverlayElements() const { return m_overlay_elements.HasStateElements(); }
 
-	void Load(TBNode *n, TBSkin *skin, const char *skin_path);
+	void Load(TBNode *n, TBSkin *skin, const TBStr & skin_path);
 	void Write(TBFile * file, TBSkin * skin);
 };
 

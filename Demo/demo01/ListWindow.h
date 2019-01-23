@@ -28,7 +28,7 @@ private:
 class AdvancedItem : public TBGenericStringItem
 {
 public:
-	AdvancedItem(const char *str, const TBID &id, bool male)
+	AdvancedItem(const TBStr & str, const TBID &id, bool male)
 		: TBGenericStringItem(str, id)
 		, m_checked(false)
 		, m_male(male) {}

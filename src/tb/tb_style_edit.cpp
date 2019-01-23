@@ -354,7 +354,7 @@ void TBSelection::RemoveContent()
 		while (block != stop.block)
 		{
 			if (!styledit->undoredo.applying)
-				commit_string.Append(block->str, block->str_len);
+				commit_string.Append(block->str.CStr(), block->str_len);
 
 			TBBlock *next = block->GetNext();
 			styledit->blocks.Delete(block);
@@ -364,7 +364,7 @@ void TBSelection::RemoveContent()
 		// Remove text in last block
 		if (!styledit->undoredo.applying)
 		{
-			commit_string.Append(stop.block->str, stop.ofs);
+			commit_string.Append(stop.block->str.CStr(), stop.ofs);
 			styledit->undoredo.Commit(styledit, start_gofs, commit_string.GetAppendPos(), commit_string.GetData(), false);
 		}
 		stop.block->RemoveContent(0, stop.ofs);
@@ -393,12 +393,12 @@ bool TBSelection::GetText(TBStr &text) const
 		TBBlock *block = start.block->GetNext();
 		while (block != stop.block)
 		{
-			buf.Append(block->str, block->str_len);
+			buf.Append(block->str.CStr(), block->str_len);
 			block = block->GetNext();
 		}
 		// FIX: Add methods to change data owner from temp buffer to string!
-		buf.Append(stop.block->str, stop.ofs);
-		text.Set((char*)buf.GetData(), buf.GetAppendPos());
+		buf.Append(stop.block->str.CStr(), stop.ofs);
+		text = TBStr((char*)buf.GetData(), buf.GetAppendPos());
 	}
 	return true;
 }
@@ -483,7 +483,7 @@ bool TBCaret::Move(bool forward, bool word)
 	int len = pos.block->str_len;
 	if (word && !(forward && pos.ofs == len) && !(!forward && pos.ofs == 0))
 	{
-		const char *str = pos.block->str;
+		const TBStr & str = pos.block->str;
 		if (forward)
 		{
 			if (is_linebreak(str[pos.ofs]))
@@ -535,9 +535,9 @@ bool TBCaret::Move(bool forward, bool word)
 		{
 			int i = pos.ofs;
 			if (forward)
-				utf8::move_inc(pos.block->str, &i, pos.block->str_len);
+				utf8::move_inc(pos.block->str.CStr(), &i, pos.block->str_len);
 			else
-				utf8::move_dec(pos.block->str, &i);
+				utf8::move_dec(pos.block->str.CStr(), &i);
 			pos.ofs = i;
 		}
 	}
@@ -721,10 +721,10 @@ void TBBlock::Clear()
 	fragments.DeleteAll();
 }
 
-void TBBlock::Set(const char *newstr, int32_t len)
+void TBBlock::Set(TBStr newstr)
 {
-	str.Set(newstr, len);
-	str_len = len;
+	str = std::move(newstr);
+	str_len = str.Length();
 	Split();
 	Layout(true, true);
 }
@@ -816,7 +816,7 @@ void TBBlock::Split()
 			i++;
 
 			len = len + brlen - i;
-			block->Set(str.CStr() + i, len);
+			block->Set(TBStr(str.CStr() + i, len));
 			str.Remove(i, len);
 			str_len -= len;
 			break;
@@ -829,7 +829,7 @@ void TBBlock::Merge()
 	TBBlock *next_block = GetNext();
 	if (next_block && !fragments.GetLast()->IsBreak())
 	{
-		str.Append(GetNext()->str);
+		str.Append(GetNext()->str.CStr());
 		str_len = str.Length();
 
 		styledit->blocks.Delete(next_block);
@@ -876,7 +876,7 @@ int TBBlock::GetStartIndentation(TBFontFace *font, int first_line_len) const
 	while (i < first_line_len)
 	{
 		const char *current_str = str.CStr() + i;
-		UCS4 uc = utf8::decode_next(str, &i, first_line_len);
+		UCS4 uc = utf8::decode_next(str.CStr(), &i, first_line_len);
 		switch (uc)
 		{
 		case '\t':
@@ -904,12 +904,14 @@ void TBBlock::Layout(bool update_fragments, bool propagate_height)
 		Clear();
 
 		int ofs = 0;
-		const char *text = str;
+		const TBStr & text = str;
 		while (true)
 		{
 			int frag_len;
 			bool is_embed = false;
-			bool more = GetNextFragment(&text[ofs], styledit->packed.styling_on ? styledit->content_factory : nullptr, &frag_len, &is_embed);
+			bool more = GetNextFragment(&text[ofs],
+										styledit->packed.styling_on ? styledit->content_factory : nullptr,
+										&frag_len, &is_embed);
 
 			TBTextFragment *fragment = new TBTextFragment();
 			if (!fragment)
@@ -1448,7 +1450,7 @@ void TBStyleEdit::Clear(bool init_new)
 	if (init_new)
 	{
 		blocks.AddLast(new TBBlock(this));
-		blocks.GetFirst()->Set("", 0);
+		blocks.GetFirst()->Set(TBStr("", 0));
 	}
 
 	caret.Place(blocks.GetFirst(), 0);
@@ -1788,7 +1790,7 @@ void TBStyleEdit::Paste()
 	TBStr text;
 	if (TBClipboard::HasText() && TBClipboard::GetText(text))
 	{
-		InsertText(text, text.Length());
+		InsertText(text.CStr(), text.Length());
 		ScrollIfNeeded(true, true);
 		listener->OnChange();
 	}
@@ -1916,13 +1918,14 @@ void TBStyleEdit::Focus(bool focus)
 	caret.Invalidate();
 	selection.Invalidate();
 }
-
+/*
 bool TBStyleEdit::SetText(const char *text, TB_CARET_POS pos)
 {
 	return SetText(text, strlen(text), pos);
 }
+*/
 
-bool TBStyleEdit::SetText(const char *text, int text_len, TB_CARET_POS pos)
+bool TBStyleEdit::SetText(const TBStr & text, TB_CARET_POS pos)
 {
 	if (!text || !*text)
 	{
@@ -1933,7 +1936,7 @@ bool TBStyleEdit::SetText(const char *text, int text_len, TB_CARET_POS pos)
 	}
 
 	Clear(true);
-	blocks.GetFirst()->InsertText(0, text, text_len, true);
+	blocks.GetFirst()->InsertText(0, text.CStr(), text.Length(), true);
 
 	caret.Place(blocks.GetFirst(), 0);
 	caret.UpdateWantedX();
@@ -2052,7 +2055,7 @@ void TBUndoRedoStack::Apply(TBStyleEdit *styledit, TBUndoEvent *e, bool reverse)
 	{
 		styledit->selection.SelectNothing();
 		styledit->caret.SetGlobalOfs(e->gofs, true, true);
-		styledit->InsertText(e->text);
+		styledit->InsertText(e->text.CStr());
 		int text_len = e->text.Length();
 		if (text_len > 1)
 			styledit->selection.Select(e->gofs, e->gofs + text_len);
@@ -2098,7 +2101,7 @@ TBUndoEvent *TBUndoRedoStack::Commit(TBStyleEdit *styledit, int32_t gofs, int32_
 	if (TBUndoEvent *e = new TBUndoEvent())
 	{
 		e->gofs = gofs;
-		e->text.Set(text, len);
+		e->text = TBStr(text, len);
 		e->insert = insert;
 		undos.Add(e);
 		return e;

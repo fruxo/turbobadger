@@ -175,10 +175,10 @@ public:
 	~TBBlock();
 
 	void Clear();
-	void Set(const char *newstr, int32_t len);
+	void Set(TBStr newstr);
 	void SetAlign(TB_TEXT_ALIGN align);
 
-	int32_t InsertText(int32_t ofs, const char *text, int32_t len, bool allow_line_recurse);
+	int32_t InsertText(int32_t ofs, const char * text, int32_t len, bool allow_line_recurse);
 	void RemoveContent(int32_t ofs, int32_t len);
 
 	/** Check if this block contains extra line breaks and split into new blocks if it does. */
@@ -199,7 +199,7 @@ public:
 	TBTextFragment *FindFragment(int32_t ofs, bool prefer_first = false) const;
 	TBTextFragment *FindFragment(int32_t x, int32_t y) const;
 
-	int32_t CalculateStringWidth(TBFontFace *font, const char *str, int len = TB_ALL_TO_TERMINATION) const;
+	int32_t CalculateStringWidth(TBFontFace *font, const char * str, int len = TB_ALL_TO_TERMINATION) const;
 	int32_t CalculateTabWidth(TBFontFace *font, int32_t xpos) const;
 	int32_t CalculateLineHeight(TBFontFace *font) const;
 	int32_t CalculateBaseline(TBFontFace *font) const;
@@ -335,8 +335,8 @@ public:
 	void Focus(bool focus);
 
 	void Clear(bool init_new = true);
-	bool SetText(const char *text, TB_CARET_POS pos = TB_CARET_POS_BEGINNING);
-	bool SetText(const char *text, int text_len, TB_CARET_POS pos = TB_CARET_POS_BEGINNING);
+	bool SetText(const TBStr & text, TB_CARET_POS pos = TB_CARET_POS_BEGINNING);
+	//bool SetText(const TBStr & text, int text_len, TB_CARET_POS pos = TB_CARET_POS_BEGINNING);
 	bool GetText(TBStr &text) const;
 	bool IsEmpty() const;
 
@@ -368,8 +368,10 @@ public:
 	bool CanUndo() const { return undoredo.undos.GetNumItems() ? true : false; }
 	bool CanRedo() const { return undoredo.redos.GetNumItems() ? true : false; }
 
-	void InsertText(const char *text, int32_t len = TB_ALL_TO_TERMINATION, bool after_last = false, bool clear_undo_redo = false);
-	void AppendText(const char *text, int32_t len = TB_ALL_TO_TERMINATION, bool clear_undo_redo = false) { InsertText(text, len, true, clear_undo_redo); }
+	void InsertText(const char *text, int32_t len = TB_ALL_TO_TERMINATION,
+					bool after_last = false, bool clear_undo_redo = false);
+	void AppendText(const char *text, int32_t len = TB_ALL_TO_TERMINATION,
+					bool clear_undo_redo = false) { InsertText(text, len, true, clear_undo_redo); }
 	void InsertBreak();
 
 	TBBlock *FindBlock(int32_t y) const;

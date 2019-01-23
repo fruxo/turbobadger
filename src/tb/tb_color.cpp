@@ -12,9 +12,10 @@
 namespace tb {
 
 // == TBColor ===============================================================================
-
-void TBColor::SetFromString(const char *str, int len)
+void TBColor::SetFromString(const TBStr & str_)
 {
+	int len = str_.Length();
+	const char * str = (const char *)str_;
 	int r, g, b, a;
 	if (len && str[0] != '#' && g_color_manager->IsDefined(str))
 		Set(g_color_manager->GetColor(str));
@@ -47,8 +48,7 @@ void TBColorManager::Load(TBNode * n, TBSkin * skin)
 	for (n = n->GetFirstChild(); n; n = n->GetNext())
 	{
 		TBColor c;
-		const char * cname = n->GetValue().GetString();
-		c.SetFromString(cname, strlen(cname));
+		c.SetFromString(n->GetValue().GetString());
 		Define(n->GetName(), c);
 	}
 }

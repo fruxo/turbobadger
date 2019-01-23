@@ -128,7 +128,7 @@ float TBNode::GetValueFloat(const char *request, float def)
 	return n ? n->m_value.GetFloat() : def;
 }
 
-const char *TBNode::GetValueString(const char *request, const char *def)
+TBStr TBNode::GetValueString(const char *request, const char *def)
 {
 	if (TBNode *node = GetNodeFollowRef(request))
 	{
@@ -136,26 +136,26 @@ const char *TBNode::GetValueString(const char *request, const char *def)
 		// looked up in GetNode/ResolveNode.
 		if (node->GetValue().IsString())
 		{
-			const char *string = node->GetValue().GetString();
-			if (*string == '@' && *TBNode::GetNextNodeSeparator(string) == 0)
-				string = g_tb_lng->GetString(string + 1);
+			TBStr string = node->GetValue().GetString();
+			if (*string == '@' && *TBNode::GetNextNodeSeparator((const char *)string) == 0)
+				string = TBStr(g_tb_lng->GetString((const char *)string + 1));
 			return string;
 		}
 		return node->GetValue().GetString();
 	}
 	return def;
 }
-
-const char *TBNode::GetValueStringRaw(const char *request, const char *def)
+ 
+TBStr TBNode::GetValueStringRaw(const char *request, const char *def)
 {
 	TBNode *n = GetNodeFollowRef(request);
-	return n ? n->m_value.GetString() : def;
+	return n ? n->m_value.GetString() : TBStr(def);
 }
 
 class FileParser : public TBParserStream
 {
 public:
-	bool Read(const char *filename, TBParserTarget *target)
+	bool Read(const TBStr & filename, TBParserTarget *target)
 	{
 		f = TBFile::Open(filename, TBFile::MODE_READ);
 		if (!f)
@@ -200,20 +200,20 @@ private:
 class TBNodeTarget : public TBParserTarget
 {
 public:
-	TBNodeTarget(TBNode *root, const char *filename)
+	TBNodeTarget(TBNode *root, const TBStr & filename)
 	{
 		m_root_node = m_target_node = root;
 		m_filename = filename;
 	}
-	virtual void OnError(int line_nr, const char *error)
+	virtual void OnError(int line_nr, const TBStr & error)
 	{
-#ifdef TB_RUNTIME_DEBUG_INFO
+#if defined(TB_RUNTIME_DEBUG_INFO) || 1
 		TBStr err;
-		err.SetFormatted("%s(%d):Parse error: %s\n", m_filename, line_nr, error);
+		err.SetFormatted("%s(%d):Parse error: %s\n", m_filename.CStr(), line_nr, error.CStr());
 		TBDebugOut(err);
 #endif // TB_RUNTIME_DEBUG_INFO
 	}
-	virtual void OnComment(int /*line_nr*/, const char * /*comment*/)
+	virtual void OnComment(int /*line_nr*/, const TBStr & /*comment*/)
 	{
 	}
 	virtual void OnToken(int line_nr, const char *name, TBValue &value)
@@ -241,12 +241,12 @@ public:
 		if (m_target_node)
 			m_target_node = m_target_node->m_parent;
 	}
-	void IncludeFile(int line_nr, const char *filename)
+	void IncludeFile(int line_nr, const TBStr & filename)
 	{
 		// Read the included file into a new TBNode and then
 		// move all the children to m_target_node.
 		TBTempBuffer include_filename;
-		include_filename.AppendPath(m_filename);
+		include_filename.AppendPath((const char *)m_filename);
 		include_filename.AppendString(filename);
 		TBNode content;
 		if (content.ReadFile(include_filename.GetData()))
@@ -264,13 +264,13 @@ public:
 			OnError(line_nr, err);
 		}
 	}
-	void IncludeRef(int line_nr, const char *refstr)
+	void IncludeRef(int line_nr, const TBStr & refstr)
 	{
 		TBNode *refnode = nullptr;
 		if (*refstr == '@')
 		{
 			TBNode tmp;
-			tmp.GetValue().SetString(refstr, TBValue::SET_AS_STATIC);
+			tmp.GetValue().SetString(refstr);
 			refnode = TBNodeRefTree::FollowNodeRef(&tmp);
 		}
 		else // Local look-up
@@ -278,7 +278,7 @@ public:
 			// Note: If we read to a target node that already contains
 			//       nodes, we might look up nodes that's already there
 			//       instead of new nodes.
-			refnode = m_root_node->GetNode(refstr, TBNode::GET_MISS_POLICY_NULL);
+			refnode = m_root_node->GetNode(refstr.CStr(), TBNode::GET_MISS_POLICY_NULL);
 
 			// Detect cycles
 			TBNode *cycle_detection = m_target_node;
@@ -294,17 +294,17 @@ public:
 		else
 		{
 			TBStr err;
-			err.SetFormatted("Include \"%s\" was not found!", refstr);
+			err.SetFormatted("Include \"%s\" was not found!", refstr.CStr());
 			OnError(line_nr, err);
 		}
 	}
 private:
 	TBNode *m_root_node;
 	TBNode *m_target_node;
-	const char *m_filename;
+	TBStr m_filename;
 };
 
-bool TBNode::ReadFile(const char *filename, TB_NODE_READ_FLAGS flags)
+bool TBNode::ReadFile(const TBStr & filename, TB_NODE_READ_FLAGS flags)
 {
 	if (!(flags & TB_NODE_READ_FLAGS_APPEND))
 		Clear();
@@ -340,7 +340,7 @@ void TBNode::Clear()
 	m_children.DeleteAll();
 }
 
-bool TBNode::WriteFile(const char *filename)
+bool TBNode::WriteFile(const TBStr & filename)
 {
 	TBStr selfstr;
 	TBFile * f = TBFile::Open(filename, TBFile::MODE_WRITETRUNC);
@@ -371,14 +371,14 @@ void TBNode::WriteNode(TBStr & str, int depth)
 	case TBValue::TYPE_NULL:
 		break;
 	case TBValue::TYPE_STRING:
-		if (strstr(m_value.GetString(), ","))
-			selfstr.SetFormatted(" \"%s\"", m_value.GetString());
+		if (strstr((const char *)m_value.GetString(), ","))
+			selfstr.SetFormatted(" \"%s\"", (const char *)m_value.GetString());
 		else
-			selfstr.SetFormatted(" %s", m_value.GetString());
+			selfstr.SetFormatted(" %s", (const char *)m_value.GetString());
 		break;
 	case TBValue::TYPE_FLOAT:
 	case TBValue::TYPE_INT:
-		selfstr.SetFormatted(" %s", m_value.GetString());
+		selfstr.SetFormatted(" %s", (const char *)m_value.GetString());
 		break;
 	case TBValue::TYPE_OBJECT:
 		// FIXME

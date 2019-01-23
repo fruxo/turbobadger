@@ -66,13 +66,13 @@ public:
 	~TBWidgetValue();
 
 	/** Set integer value and sync to connected widgets. */
-	void SetInt(long int value);
+	void SetInt(long value);
 
 	/** Set integer value and sync to connected widgets. */
-	void SetInt(int value) { SetInt((long int)value); }
+	void SetInt(int value) { SetInt((long)value); }
 
 	/** Set text value and sync to connected widgets. */
-	bool SetText(const char *text);
+	bool SetText(const TBStr & text);
 
 	/** Set double value and sync to connected widgets. */
 	void SetDouble(double value);
@@ -84,13 +84,13 @@ public:
 	void SetFromWidget(TBWidget *source_widget);
 
 	/** Get value as integer. */
-	long int GetInt() const { return m_value.GetInt(); }
+	long GetInt() const { return m_value.GetInt(); }
 
 	/** Get value as text. Return false on fail. */
-	bool GetText(TBStr &text) const { return text.Set(m_value.GetString()); }
+	bool GetText(TBStr &text) const { text = m_value.GetString(); return true; }
 
 	/** Get value as text. */
-	TBStr GetText() const { TBStr text; GetText(text); return text; }
+	TBStr GetText() const { return m_value.GetString(); }
 
 	/** Get the value as double. */
 	double GetDouble() const { return m_value.GetFloat(); }

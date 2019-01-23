@@ -59,7 +59,7 @@ public:
 
 	/** Open the given font file with this renderer and return a new TBFontFace with it.
 		return nullptr if the file can't be opened by this renderer. */
-	virtual TBFontFace *Create(TBFontManager *font_manager, const char *filename,
+	virtual TBFontFace *Create(TBFontManager *font_manager, const TBStr & filename,
 								const TBFontDescription &font_desc) = 0;
 
 	virtual bool RenderGlyph(TBFontGlyphData *data, UCS4 cp) = 0;
@@ -204,10 +204,10 @@ class TBFontInfo
 {
 public:
 	/** Get the font filename. */
-	const char *GetFilename() const { return m_filename; }
+	const TBStr & GetFilename() const { return m_filename; }
 
 	/** Get the font name. */
-	const char *GetName() const { return m_name; }
+	const TBStr & GetName() const { return m_name; }
 
 	/** Get the font ID that can be used to create this font from a
 		TBFontDescription (See TBFontDescription::SetID) */
@@ -215,7 +215,7 @@ public:
 
 private:
 	friend class TBFontManager;
-	TBFontInfo(const char *filename, const char *name) : m_filename(filename), m_name(name), m_id(name) {}
+	TBFontInfo(const TBStr & filename, const TBStr & name) : m_filename(filename), m_name(name), m_id(name) {}
 	TBStr m_filename;
 	TBStr m_name;
 	TBID m_id;

@@ -50,7 +50,7 @@ public:
 	TBMessageWindow(TBWidget *target, TBID id);
 	virtual ~TBMessageWindow();
 
-	bool Show(const char *title, const char *message, TBMessageWindowSettings *settings = nullptr);
+	bool Show(const char *title, const TBStr & message, TBMessageWindowSettings *settings = nullptr);
 
 	virtual TBWidget *GetEventDestination() { return m_target.Get(); }
 

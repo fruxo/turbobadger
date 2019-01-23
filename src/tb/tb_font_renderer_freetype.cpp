@@ -56,7 +56,7 @@ public:
 	FreetypeFontRenderer();
 	~FreetypeFontRenderer();
 
-	virtual TBFontFace *Create(TBFontManager *font_manager, const char *filename,
+	virtual TBFontFace *Create(TBFontManager *font_manager, const TBStr & filename,
 								const TBFontDescription &font_desc);
 
 	virtual TBFontMetrics GetMetrics();
@@ -64,7 +64,7 @@ public:
 	virtual void GetGlyphMetrics(TBGlyphMetrics *metrics, UCS4 cp);
 private:
 	bool Load(FreetypeFace *face, const TBFontDescription &font_desc);
-	bool Load(const char *filename, const TBFontDescription &font_desc);
+	bool Load(const TBStr & filename, const TBFontDescription &font_desc);
 
 	FT_Size m_size;
 	FreetypeFace *m_face;
@@ -231,7 +231,7 @@ bool FreetypeFontRenderer::Load(FreetypeFace *face, const TBFontDescription &fon
 	return true;
 }
 
-bool FreetypeFontRenderer::Load(const char *filename, const TBFontDescription &font_desc)
+bool FreetypeFontRenderer::Load(const TBStr & filename, const TBFontDescription &font_desc)
 {
 	if (!ft_initialized)
 		ft_initialized = !FT_Init_FreeType(&g_freetype);
@@ -251,7 +251,8 @@ bool FreetypeFontRenderer::Load(const char *filename, const TBFontDescription &f
 	return Load(m_face, font_desc);
 }
 
-TBFontFace *FreetypeFontRenderer::Create(TBFontManager *font_manager, const char *filename, const TBFontDescription &font_desc)
+TBFontFace *FreetypeFontRenderer::Create(TBFontManager *font_manager, const TBStr & filename,
+										 const TBFontDescription &font_desc)
 {
 	if (FreetypeFontRenderer *fr = new FreetypeFontRenderer())
 	{

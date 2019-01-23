@@ -1,7 +1,7 @@
 project(TurboBadger CXX)
 cmake_minimum_required(VERSION 3.1)
 include(CheckCXXCompilerFlag)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 option(TB_BUILD_DEMO_GLFW "Build the Demo application. Depends on glfw." OFF)
 option(TB_BUILD_DEMO_SDL2 "Build the Demo application. Depends on SDL2." OFF)

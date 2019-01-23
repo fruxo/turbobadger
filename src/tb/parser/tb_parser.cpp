@@ -383,7 +383,7 @@ void TBParser::OnMultiline(char *line, TBParserTarget *target)
 	{
 		// Ready with all lines
 		value.SetString(multi_line_value.GetData(), TBValue::SET_AS_STATIC);
-		target->OnToken(current_line_nr, multi_line_token, value);
+		target->OnToken(current_line_nr, multi_line_token.CStr(), value);
 
 		if (multi_line_sub_level)
 			target->Leave();

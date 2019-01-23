@@ -78,13 +78,13 @@ public:
 
 	/** Return true if an item matches the given filter text.
 		By default, it returns true if GetItemString contains filter. */
-	virtual bool Filter(int index, const char *filter);
+	virtual bool Filter(int index, const TBStr & filter);
 
 	/** Get the string of a item. If a item has more than one string,
 		return the one that should be used for inline-find (pressing keys
 		in the list will scroll to the item starting with the same letters),
 		and for sorting the list. */
-	virtual const char *GetItemString(int index) const = 0;
+	virtual const TBStr & GetItemString(int index) const = 0;
 
 	/** Get the source to be used if this item should open a sub menu. */
 	virtual TBSelectItemSource *GetItemSubSource(int /*index*/) { return nullptr; }
@@ -131,7 +131,7 @@ public:
 	TBOBJECT_SUBCLASS(TBSelectItemSourceList, TBSelectItemSource);
 	TBSelectItemSourceList() {}
 	virtual ~TBSelectItemSourceList()					{ DeleteAllItems(); }
-	virtual const char *GetItemString(int index) const	{ return GetItem(index)->str; }
+	virtual const TBStr & GetItemString(int index) const { return GetItem(index)->str; }
 	virtual TBSelectItemSource *GetItemSubSource(int index){ return GetItem(index)->sub_source; }
 	virtual TBID GetItemImage(int index) const			{ return GetItem(index)->skin_image; }
 	virtual TBID GetItemID(int index) const				{ return GetItem(index)->id; }
@@ -201,10 +201,10 @@ class TBGenericStringItem
 {
 public:
 #define def_skin TBIDC("NormalItem")
-	TBGenericStringItem(const char *str) : str(str), id(str) {}
-	TBGenericStringItem(const char *str, TBID id, TBValue val = TBValue(), TBID img_id = def_skin)
+	TBGenericStringItem(TBStr str) : str(str), id(str) {}
+	TBGenericStringItem(TBStr str, TBID id, TBValue val = TBValue(), TBID img_id = def_skin)
 		: str(str), id(id), skin_image(img_id), tag(val) {}
-    TBGenericStringItem(const char *str, TBSelectItemSource *sub_source, TBID img_id = def_skin)
+    TBGenericStringItem(TBStr str, TBSelectItemSource *sub_source, TBID img_id = def_skin)
 		: str(str), id(str), skin_image(img_id), sub_source(sub_source) {}
 
 	// protect the sub_source pointer from copy, since we own it.

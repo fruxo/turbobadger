@@ -36,8 +36,8 @@ public:
 
 	/** Set filter string so only matching items will be showed.
 		Set nullptr or empty string to remove filter and show all items. */
-	void SetFilter(const char *filter);
-	const char *GetFilter() const { return m_filter; }
+	void SetFilter(const TBStr & filter);
+	const TBStr & GetFilter() const { return m_filter; }
 
 	/** Set the language string id for the header. The header is shown
 		at the top of the list when only a subset of all items are shown. */
@@ -53,8 +53,8 @@ public:
 
 	/** The value is the selected item. In lists with multiple selectable
 		items it's the item that is the current focus. */
-	virtual void SetValue(long int value);
-	virtual long int GetValue() const { return m_value; }
+	virtual void SetValue(long value);
+	virtual long GetValue() const { return m_value; }
 
 	/** Get the ID of the selected item, or 0 if there is no item selected. */
 	TBID GetSelectedItemID();
@@ -127,8 +127,8 @@ public:
 	TBGenericStringItemSource *GetDefaultSource() { return &m_default_source; }
 
 	/** Set the selected item. */
-	virtual void SetValue(long int value);
-	virtual long int GetValue() const { return m_value; }
+	virtual void SetValue(long value);
+	virtual long GetValue() const { return m_value; }
 
 	/** Get the ID of the selected item, or 0 if there is no item selected. */
 	TBID GetSelectedItemID();

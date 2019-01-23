@@ -36,15 +36,15 @@ bool TBClipboard::HasText()
 	return has_text;
 }
 
-bool TBClipboard::SetText(const char *text)
+bool TBClipboard::SetText(const TBStr & text)
 {
 	if (OpenClipboard(NULL))
 	{
-		int num_wide_chars_needed = MultiByteToWideChar(CP_UTF8, 0, text, -1, NULL, 0);
+		int num_wide_chars_needed = MultiByteToWideChar(CP_UTF8, 0, (const char*)text, -1, NULL, 0);
 		if (HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, num_wide_chars_needed * sizeof(wchar_t)))
 		{
 			LPWSTR pchData = (LPWSTR) GlobalLock(hClipboardData);
-			MultiByteToWideChar(CP_UTF8, 0, text, -1, pchData, num_wide_chars_needed);
+			MultiByteToWideChar(CP_UTF8, 0, (const char *)text, -1, pchData, num_wide_chars_needed);
 			GlobalUnlock(hClipboardData);
 
 			EmptyClipboard();

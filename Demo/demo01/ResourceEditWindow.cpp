@@ -10,7 +10,7 @@
 
 // == ResourceItem ====================================================================================
 
-ResourceItem::ResourceItem(TBWidget *widget, const char *str)
+ResourceItem::ResourceItem(TBWidget *widget, const TBStr & str)
 	: TBGenericStringItem(str)
 	, m_widget(widget)
 {
@@ -47,21 +47,21 @@ ResourceEditWindow::~ResourceEditWindow()
 	m_widget_list->SetSource(nullptr);
 }
 
-void ResourceEditWindow::Load(const char *resource_file)
+void ResourceEditWindow::Load(const TBStr & resource_file)
 {
 	m_resource_filename.Set(resource_file);
 	SetText(resource_file);
 
 	TBTempBuffer buffer;
 	if (buffer.AppendFile(m_resource_filename))
-		m_source_edit->SetText(buffer.GetData(), buffer.GetAppendPos());
+		m_source_edit->SetText(TBStr(buffer.GetData(), buffer.GetAppendPos()));
 	else // Error, clear and show message
 	{
 		m_source_edit->SetText("");
 		TBStr text;
-		text.SetFormatted("Could not load file %s", resource_file);
+		text.SetFormatted("Could not load file %s", resource_file.CStr());
 		if (TBMessageWindow *msg_win = new TBMessageWindow(GetParentRoot(), TBIDC("")))
-			msg_win->Show("Error loading resource", text);
+			msg_win->Show("Error loading resource", text.CStr());
 	}
 
 	RefreshFromSource();
@@ -77,7 +77,7 @@ void ResourceEditWindow::RefreshFromSource()
 	}
 
 	// Create new widgets from source
-	g_widgets_reader->LoadData(m_build_container, m_source_edit->GetText());
+	g_widgets_reader->LoadData(m_build_container, m_source_edit->GetText().CStr());
 
 	// Force focus back in case the edited resource has autofocus.
 	// FIX: It would be better to prevent the focus change instead!
@@ -165,7 +165,7 @@ bool ResourceEditWindow::OnEvent(const TBWidgetEvent &ev)
 		if (TBWindow *win = new TBWindow())
 		{
 			win->SetText("Test window");
-			g_widgets_reader->LoadData(win->GetContentRoot(), m_source_edit->GetText());
+			g_widgets_reader->LoadData(win->GetContentRoot(), m_source_edit->GetText().CStr());
 			TBRect bounds(0, 0, GetParent()->GetRect().w, GetParent()->GetRect().h);
 			win->SetRect(win->GetResizeToFitContentRect().CenterIn(bounds).MoveIn(bounds).Clip(bounds));
 			GetParent()->AddChild(win);

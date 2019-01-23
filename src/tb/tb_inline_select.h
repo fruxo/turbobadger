@@ -32,12 +32,12 @@ public:
 	virtual void SetAxis(AXIS axis) { m_layout.SetAxis(axis); }
 	virtual AXIS GetAxis() const { return m_layout.GetAxis(); }
 
-	void SetLimits(int min, int max);
-	int GetMinValue() const { return m_min; }
-	int GetMaxValue() const { return m_max; }
+	void SetLimits(long min, long max);
+	long GetMinValue() const { return m_min; }
+	long GetMaxValue() const { return m_max; }
 
-	virtual void SetValue(long int value) { SetValueInternal(value, true); }
-	virtual long int GetValue() const { return m_value; }
+	virtual void SetValue(long value) { SetValueInternal(value, true); }
+	virtual long GetValue() const { return m_value; }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
 	virtual void OnSkinChanged();
@@ -46,9 +46,9 @@ protected:
 	TBButton m_buttons[2];
 	TBLayout m_layout;
 	TBEditField m_editfield;
-	int m_value;
-	int m_min, m_max;
-	void SetValueInternal(int value, bool update_text);
+	long m_value;
+	long m_min, m_max;
+	void SetValueInternal(long value, bool update_text);
 };
 
 } // namespace tb
