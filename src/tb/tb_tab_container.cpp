@@ -75,7 +75,7 @@ void TBTabContainer::SetAxis(AXIS axis)
 
 void TBTabContainer::SetValue(long index)
 {
-	TBDebugPrint("Tab old: %ld, active: %ld\n", m_current_page, index);
+	TBDebugPrint("Tab old: %d, active: %ld\n", m_current_page, index);
 	if (index == m_current_page)
 		return;
 	m_current_page = index;

@@ -1,15 +1,12 @@
-#include "glfw_extra.h"
+#include "port_glfw.hpp"
+
+#ifdef TB_CLIPBOARD_GLFW
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
-#include "tb_skin.h"
-#include "tb_system.h"
-#include "tb_msg.h"
 #include "tb_editfield.h"
-#include "renderers/tb_renderer_gl.h"
 #include "tb_font_renderer.h"
-#include "Application.h"
 
 #ifdef TB_TARGET_MACOSX
 #include <unistd.h>
@@ -25,8 +22,6 @@ bool key_ctrl = false;
 bool key_shift = false;
 bool key_super = false;
 
-class AppBackendGLFW;
-
 void SetBackend(GLFWwindow *window, AppBackendGLFW *backend)
 {
 	glfwSetWindowUserPointer(window, backend);
@@ -36,32 +31,6 @@ AppBackendGLFW *GetBackend(GLFWwindow *window)
 {
 	return static_cast<AppBackendGLFW*>(glfwGetWindowUserPointer(window));
 }
-
-class AppBackendGLFW : public AppBackend
-{
-public:
-	bool Init(App *app);
-	AppBackendGLFW()	: m_app(nullptr)
-						, m_renderer(nullptr)
-						, mainWindow(0)
-						, m_cursor_i_beam(nullptr)
-						, m_has_pending_update(false)
-						, m_quit_requested(false) {}
-	~AppBackendGLFW();
-
-	virtual void OnAppEvent(const EVENT &ev);
-
-	TBWidget *GetRoot() const { return m_app->GetRoot(); }
-	int GetWidth() const { return m_app->GetWidth(); }
-	int GetHeight() const { return m_app->GetHeight(); }
-
-	App *m_app;
-	TBRendererGL *m_renderer;
-	GLFWwindow *mainWindow;
-	GLFWcursor *m_cursor_i_beam;
-	bool m_has_pending_update;
-	bool m_quit_requested;
-};
 
 MODIFIER_KEYS GetModifierKeys()
 {
@@ -458,6 +427,16 @@ AppBackendGLFW::~AppBackendGLFW()
 	delete m_renderer;
 }
 
+void AppBackendGLFW::EventLoop()
+{
+	do
+	{
+		if (m_has_pending_update)
+			window_refresh_callback(mainWindow);
+		glfwWaitMsgLoop(mainWindow);
+	} while (!m_quit_requested && !glfwWindowShouldClose(mainWindow));
+}
+
 void AppBackendGLFW::OnAppEvent(const EVENT &ev)
 {
 	switch (ev)
@@ -491,12 +470,6 @@ bool port_main() {
 	bool success = app->Init();
 	if (success) {
 		// Main loop
-		do
-		{
-			if (backend->m_has_pending_update)
-				window_refresh_callback(backend->mainWindow);
-			glfwWaitMsgLoop(backend->mainWindow);
-		} while (!backend->m_quit_requested && !glfwWindowShouldClose(backend->mainWindow));
 
 		app->ShutDown();
 	}
@@ -535,3 +508,4 @@ int main(int argc, char** argv)
 }
 
 #endif // !TB_TARGET_WINDOWS
+#endif // TB_CLIPBOARD_GLFW

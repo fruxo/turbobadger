@@ -37,6 +37,7 @@ public:
 		EVENT_TITLE_CHANGED
 	};
 	virtual ~AppBackend() {}
+	virtual void EventLoop() = 0;
 	virtual void OnAppEvent(const EVENT &ev) = 0;
 };
 

@@ -29,7 +29,16 @@ while [ $# -gt 0 ]; do
     case $key in
         -o)                    BUILD_DIR=$(mkdir -p "$2" && cd "$2" && pwd); shift ;;
         -gl3)                  CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON -DTB_RENDERER_GL3=ON" ;;
-        -sdl)                  CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON -DTB_BUILD_DEMO_GLFW=OFF" ;;
+        -sdl)
+            BUILD_DIR="BuildSDL"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON  -DTB_BUILD_DEMO_GLFW=OFF"
+            ;;
+        -glfw)
+            BUILD_DIR="BuildGLFW"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=OFF"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_CLIPBOARD_GLFW=ON"
+            ;;
         -v|--verbose)          VERBOSE=$(( ${VERBOSE} + 1 ))
                                MAKE_FLAGS="${MAKE_FLAGS} VERBOSE=1"
                                ;;
@@ -54,6 +63,9 @@ if [ ! -f Demo/thirdparty/glfw/CMakeLists.txt ]; then
     git submodule update
 fi
 
+if [ ! -z ${BUILD_DIR} ]; then
+    rm -r ${BUILD_DIR}
+fi
 mkdir -p ${BUILD_DIR}
 cd ${BUILD_DIR}
 cmake ${SRC_DIR} ${CMAKE_FLAGS}

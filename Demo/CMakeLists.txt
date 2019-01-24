@@ -7,52 +7,53 @@ if(TB_DEMO_IN_SRC)
 endif()
 
 if(TB_BUILD_DEMO_GLFW)
-if(CMAKE_SYSTEM MATCHES "Windows")
- add_definitions(-DGLFW_EXPOSE_NATIVE_WIN32)
- add_definitions(-DGLFW_EXPOSE_NATIVE_WGL)
- set(EXTRA_LIBS ${EXTRA_LIBS} winmm)
-endif(CMAKE_SYSTEM MATCHES "Windows")
+  if(CMAKE_SYSTEM MATCHES "Windows")
+    add_definitions(-DGLFW_EXPOSE_NATIVE_WIN32)
+    add_definitions(-DGLFW_EXPOSE_NATIVE_WGL)
+    set(EXTRA_LIBS ${EXTRA_LIBS} winmm)
+  endif(CMAKE_SYSTEM MATCHES "Windows")
 
-# Configure glfw
-set(GLFW_BUILD_EXAMPLES OFF)
-set(GLFW_BUILD_TESTS OFF)
-set(GLFW_INSTALL OFF)
-#set(GLFW_USE_OPTIMUS_HPG ON)
+  # Configure glfw
+  set(GLFW_BUILD_EXAMPLES OFF)
+  set(GLFW_BUILD_TESTS OFF)
+  set(GLFW_INSTALL OFF)
+  #set(GLFW_USE_OPTIMUS_HPG ON)
 
-# Add sources
-set(LOCAL_SRCS "")
-aux_source_directory(./demo01 LOCAL_SRCS)
-set(LOCAL_SRCS ${LOCAL_SRCS}
-  ./platform/port_glfw.cpp
-  ./platform/glfw_extra_linux.cpp
-  ./platform/Application.cpp)
-include_directories(".")
+  # Add sources
+  set(LOCAL_SRCS "")
+  aux_source_directory(./demo01 LOCAL_SRCS)
+  set(LOCAL_SRCS ${LOCAL_SRCS}
+    ./platform/main.cpp
+    ./platform/port_glfw.cpp
+    ./platform/glfw_extra_linux.cpp
+    ./platform/Application.cpp)
+  include_directories(".")
 
-# Add glfw and gl libs on MacOSX
-if(APPLE)
-  find_library(GLFW_LIBRARIES glfw )
-  find_library(OPENGL_LIBRARY OpenGL )
-  set(EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES})
-  find_path(GLFW_INCLUDE_DIRS GLFW/glfw3.h)
-  include_directories(${GLFW_INCLUDE_DIRS})
-endif(APPLE)
+  # Add glfw and gl libs on MacOSX
+  if(APPLE)
+    find_library(GLFW_LIBRARIES glfw )
+    find_library(OPENGL_LIBRARY OpenGL )
+    set(EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${GLFW_LIBRARIES})
+    find_path(GLFW_INCLUDE_DIRS GLFW/glfw3.h)
+    include_directories(${GLFW_INCLUDE_DIRS})
+  endif(APPLE)
 
-if(NOT GLFW_LIBRARIES)
-  target_include_directories(TurboBadgerLib PUBLIC "thirdparty/glfw/include")
-  include_directories("thirdparty/glfw/include")
-  add_subdirectory(thirdparty/glfw)
-  set(EXTRA_LIBS ${EXTRA_LIBS} glfw)
-endif(NOT GLFW_LIBRARIES)
+  if(NOT GLFW_LIBRARIES)
+    target_include_directories(TurboBadgerLib PUBLIC "thirdparty/glfw/include")
+    include_directories("thirdparty/glfw/include")
+    add_subdirectory(thirdparty/glfw)
+    set(EXTRA_LIBS ${EXTRA_LIBS} glfw)
+  endif(NOT GLFW_LIBRARIES)
 
-# Platform specific
-if(CMAKE_COMPILER_IS_MINGW)
- # Avoid dll dependencies by linking statically.
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
-endif(CMAKE_COMPILER_IS_MINGW)
+  # Platform specific
+  if(CMAKE_COMPILER_IS_MINGW)
+    # Avoid dll dependencies by linking statically.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
+  endif(CMAKE_COMPILER_IS_MINGW)
 
-add_executable(TurboBadgerDemo WIN32 ${LOCAL_SRCS})
-target_link_libraries(TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS})
-install(TARGETS TurboBadgerDemo
+  add_executable(TurboBadgerDemo WIN32 ${LOCAL_SRCS})
+  target_link_libraries(TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS})
+  install(TARGETS TurboBadgerDemo
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
@@ -64,6 +65,7 @@ if(TB_BUILD_DEMO_SDL2)
   set(LOCAL_SRCS "")
   aux_source_directory(./demo01 LOCAL_SRCS)
   set(LOCAL_SRCS ${LOCAL_SRCS}
+    ./platform/main.cpp
     ./platform/port_sdl2.cpp
     ./platform/Application.cpp)
   include_directories(".")

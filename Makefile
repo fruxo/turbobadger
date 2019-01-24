@@ -1,6 +1,9 @@
 
-cc:
-	cd Build && $(MAKE)
+glfw:
+	cd BuildGLFW && $(MAKE)
+
+sdl:
+	cd BuildSDL && $(MAKE)
 
 xc:
 	cd Build-Xcode && xcrun xcodebuild -project "turbobadger.xcodeproj" -target turbobadger
