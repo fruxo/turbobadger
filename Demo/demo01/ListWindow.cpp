@@ -42,7 +42,7 @@ bool AdvancedItemWidget::OnEvent(const TBWidgetEvent &ev)
 
 // == AdvancedItemSource ======================================================
 
-bool AdvancedItemSource::Filter(int index, const char *filter)
+bool AdvancedItemSource::Filter(int index, const TBStr &filter)
 {
 	// Override this method so we can return hits for our extra data too.
 
@@ -50,7 +50,7 @@ bool AdvancedItemSource::Filter(int index, const char *filter)
 		return true;
 
 	AdvancedItem *item = GetItem(index);
-	return stristr(item->GetMale() ? "Male" : "Female", filter) ? true : false;
+	return stristr(item->GetMale() ? "Male" : "Female", filter.CStr()) ? true : false;
 }
 
 TBWidget *AdvancedItemSource::CreateItemWidget(int index, TBSelectItemViewer *viewer)

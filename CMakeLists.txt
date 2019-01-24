@@ -176,20 +176,20 @@ if(MSVC)
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
 endif(MSVC)
 
-if(TB_SYSTEM_SDL)
-  include(FindPkgConfig)
-  pkg_search_module(SDL2 REQUIRED sdl2)
-  set(SDL2_INCLUDE_DIRS "${SDL2_INCLUDE_DIRS}")
-  include_directories(${SDL2_INCLUDE_DIRS})
-  link_directories(${SDL2_LIBRARY_DIRS})
-endif(TB_SYSTEM_SDL)
-
 if(EMSCRIPTEN)
  set(CMAKE_EXECUTABLE_SUFFIX ".html")
  #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 ")
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s FULL_ES2=1")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s EVAL_CTORS=1")
  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
+elseif(TB_BUILD_DEMO_SDL2)
+  include(FindPkgConfig)
+  pkg_search_module(SDL2 REQUIRED sdl2)
+  set(SDL2_INCLUDE_DIRS "${SDL2_INCLUDE_DIRS}")
+  include_directories(${SDL2_INCLUDE_DIRS})
+  link_directories(${SDL2_LIBRARY_DIRS})
 endif(EMSCRIPTEN)
 
 # Add TurboBadgerLib project

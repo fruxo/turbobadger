@@ -125,18 +125,14 @@ if(TB_BUILD_DEMO_SDL2)
   include_directories(".")
 
   if(EMSCRIPTEN)
-    set(CMAKE_EXECUTABLE_SUFFIX ".html")
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
     # default skin resources
-    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../resources@/resources")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/demo01@Demo/demo01")
     # test files
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser.tb.txt@/")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser_included.tb.txt@/")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser_definitions.tb.txt@/")
-  elseif(NOT TB_GET_SDL2)
+  elseif(NOT TB_GET_SDL2 AND NOT EMSCRIPTEN)
     if(APPLE)
       find_package(OpenGL REQUIRED)
       find_library(SDL2_LIBRARIES SDL2)

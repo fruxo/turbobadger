@@ -46,7 +46,7 @@ private:
 class AdvancedItemSource : public TBSelectItemSourceList<AdvancedItem>
 {
 public:
-	virtual bool Filter(int index, const char *filter);
+	virtual bool Filter(int index, const TBStr & filter);
 	virtual TBWidget *CreateItemWidget(int index, TBSelectItemViewer *viewer);
 };
 
