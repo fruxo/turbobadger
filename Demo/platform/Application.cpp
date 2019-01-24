@@ -44,6 +44,12 @@ void App::OnBackendAttached(AppBackend *backend, int width, int height)
 	OnResized(width, height);
 }
 
+void App::OnBackendDetached()
+{
+	m_root.DeleteAllChildren();
+	m_backend = nullptr;
+}
+
 void App::OnResized(int width, int height)
 {
 	m_root.SetRect(TBRect(0, 0, width, height));

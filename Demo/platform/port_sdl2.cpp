@@ -206,19 +206,6 @@ bool AppBackendSDL2::Init(App *app)
 
 	glClearColor(0.3f, 0.3f, 0.3f, 1);
 
-#ifdef TB_TARGET_MACOSX
-	// Change working directory to the executable path. We expect it to be
-	// where the demo resources are.
-	char exec_path[2048];
-	uint32_t exec_path_size = sizeof(exec_path);
-	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
-	{
-		TBTempBuffer path;
-		path.AppendPath(exec_path);
-		chdir(path.GetData());
-	}
-#endif
-
 	m_renderer = new TBRendererGL();
 	tb_core_init(m_renderer);
 
@@ -237,9 +224,14 @@ AppBackendSDL2::~AppBackendSDL2()
 
 	tb_core_shutdown();
 
+    // Close and destroy the window
+	SDL_GL_DeleteContext(glContext);
+    SDL_DestroyWindow(mainWindow);
 	SDL_Quit();
 
 	delete m_renderer;
+	m_renderer = nullptr;
+	g_renderer = nullptr;
 }
 
 void AppBackendSDL2::OnAppEvent(const EVENT &ev)
@@ -499,13 +491,36 @@ AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 	return handled;
 }
 
-bool port_main()
+bool port_main(int argc, char* argv[])
 {
 	App *app = app_create();
 
 	AppBackendSDL2 *backend = new AppBackendSDL2();
 	if (!backend || !backend->Init(app))
 		return false;
+
+#ifdef TB_TARGET_MACOSX
+	// Change working directory to the executable path. We expect it
+	// to be where the demo resources are.
+	char exec_path[2048];
+	uint32_t exec_path_size = sizeof(exec_path);
+	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
+	{
+		TBTempBuffer path;
+		path.AppendPath(exec_path);
+		chdir(path.GetData());
+	}
+#endif
+
+#ifdef TB_TARGET_WINDOWS
+	// Set the current path to the directory of the app so we find
+	// assets also when visual studio start it.
+	char modname[MAX_PATH];
+	GetModuleFileName(NULL, modname, MAX_PATH);
+	TBTempBuffer buf;
+	buf.AppendPath(modname);
+	SetCurrentDirectory(buf.GetData());
+#endif
 
 	bool success = app->Init();
 	if (success)
@@ -517,7 +532,7 @@ bool port_main()
 			// handle events
 			SDL_WaitEvent(&event);
 			if (!backend->HandleSDLEvent(event))
-				SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "unhandled SDL event: 0x%x\n", event.type);
+				SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Unhandled SDL event: 0x%x\n", event.type);
 
 		} while (!backend->m_quit_requested);
 
@@ -535,25 +550,18 @@ bool port_main()
 #include <mmsystem.h>
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	// Set the current path to the directory of the app so we find assets also when visual studio start it.
-	char modname[MAX_PATH];
-	GetModuleFileName(NULL, modname, MAX_PATH);
-	TBTempBuffer buf;
-	buf.AppendPath(modname);
-	SetCurrentDirectory(buf.GetData());
-
 	// Crank up windows timer resolution (it's awfully low res normally). Note: This affects battery time!
     timeBeginPeriod(1);
-	bool success = port_main();
+	bool success = port_main(0, nullptr);
 	timeEndPeriod(1);
 	return success ? 0 : 1;
 }
 
 #else // TB_TARGET_WINDOWS
 
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
-	return port_main() ? 0 : 1;
+	return port_main(argc, argv) ? 0 : 1;
 }
 
 #endif // !TB_TARGET_WINDOWS

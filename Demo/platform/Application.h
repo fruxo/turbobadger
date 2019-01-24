@@ -55,7 +55,7 @@ public:
 	AppBackend *GetBackend() { return m_backend; }
 
 	virtual void OnBackendAttached(AppBackend *backend, int width, int height);
-	virtual void OnBackendDetached() { m_backend = nullptr; }
+	virtual void OnBackendDetached();
 	virtual void OnResized(int width, int height);
 
 	virtual bool Init();
