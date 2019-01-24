@@ -5,8 +5,9 @@ jobs: # a collection of steps
     working_directory: ~/turbobadger # directory where steps will run
 
     docker: # run the steps with Docker
-      - image: buildpack-deps:xenial
+#      - image: buildpack-deps:xenial
 #      - image: ubuntu:16.04
+      - image: circleci/android:api-23-ndk
 
     steps: # a collection of executable commands
       - checkout # check out source code to working directory
@@ -14,7 +15,8 @@ jobs: # a collection of steps
           name: Install System Dependencies
           command: |
             #lsb_release -a
-            #sudo apt-get install -y gcc g++
+            sudo apt-get install -y cmake
+            #sudo apt-get install -y gcc g++ cmake
             gcc --version
             g++ --version
       - run:
