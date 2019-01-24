@@ -28,22 +28,30 @@ while [ $# -gt 0 ]; do
     key="$1"
     case $key in
         -o)                    BUILD_DIR=$(mkdir -p "$2" && cd "$2" && pwd); shift ;;
+        -gl)
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON"
+            ;;
         -gl3)
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON -DTB_RENDERER_GL3=ON"
             ;;
-        -sdl)
+        -gles2)
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON -DTB_RENDERER_GLES2=ON"
+            ;;
+        -sdl*)
             BUILD_DIR="BuildSDL"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON  -DTB_BUILD_DEMO_GLFW=OFF"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
             ;;
         -glfw)
             BUILD_DIR="BuildGLFW"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_CLIPBOARD_GLFW=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
+
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON"
             ;;
         -v|--verbose)          VERBOSE=$(( ${VERBOSE} + 1 ))
                                MAKE_FLAGS="${MAKE_FLAGS} VERBOSE=1"
