@@ -30,7 +30,7 @@ class TBImageLoader
 public:
 	/** Static method used to create an image loader. The system must implement this
 		function and create an implementation of the TBImageLoader interface. */
-	static TBImageLoader *CreateFromFile(const char *filename, float dpi);
+	static TBImageLoader *CreateFromFile(const TBStr & filename, float dpi);
 
 	virtual ~TBImageLoader() {}
 
@@ -148,7 +148,9 @@ public:
 
 	/** Return the bitmap for this fragment.
 		By default, the bitmap is validated if needed before returning (See TB_VALIDATE_TYPE) */
-	TBBitmap *GetBitmap(TB_VALIDATE_TYPE validate_type = TB_VALIDATE_ALWAYS) { return m_map->GetBitmap(validate_type); }
+	TBBitmap *GetBitmap(TB_VALIDATE_TYPE validate_type = TB_VALIDATE_ALWAYS) {
+		return m_map->GetBitmap(validate_type);
+	}
 
 	/** Return the height allocated to this fragment. This may be larger than Height() depending
 		of the internal allocation of fragments in a map. It should rarely be used. */
@@ -186,7 +188,7 @@ public:
 	/** Get the fragment with the given image filename. If it's not already loaded,
 		it will be loaded into a new fragment with the filename as id.
 		returns nullptr on fail. */
-	TBBitmapFragment *GetFragmentFromFile(const char *filename, bool dedicated_map, float dpi);
+	TBBitmapFragment *GetFragmentFromFile(const TBStr & filename, bool dedicated_map, float dpi);
 
 	/** Get the fragment with the given id, or nullptr if it doesn't exist. */
 	TBBitmapFragment *GetFragment(const TBID &id) const;

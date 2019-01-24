@@ -14,7 +14,7 @@ TBLanguage::~TBLanguage()
 	Clear();
 }
 
-bool TBLanguage::Load(const char *filename)
+bool TBLanguage::Load(const TBStr & filename)
 {
 	// Read the file into a node tree (even though it's only a flat list)
 	TBNode node;

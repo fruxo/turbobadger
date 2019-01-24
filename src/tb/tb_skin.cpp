@@ -152,7 +152,7 @@ TBSkin::TBSkin()
 	m_frag_manager.SetAddBorder(true);
 }
 
-bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
+bool TBSkin::Load(const TBStr & skin_file, const TBStr & override_skin_file)
 {
 	if (!LoadInternal(skin_file))
 		return false;
@@ -161,14 +161,14 @@ bool TBSkin::Load(const char *skin_file, const char *override_skin_file)
 	return ReloadBitmaps();
 }
 
-bool TBSkin::LoadInternal(const char *skin_file)
+bool TBSkin::LoadInternal(const TBStr & skin_file)
 {
 	TBNode node;
 	if (!node.ReadFile(skin_file))
 		return false;
 
 	TBTempBuffer skin_path;
-	if (!skin_path.AppendPath(skin_file))
+	if (!skin_path.AppendPath((const char *)skin_file))
 		return false;
 
 	if (node.GetNode("description"))
@@ -254,7 +254,7 @@ bool TBSkin::LoadInternal(const char *skin_file)
 	return true;
 }
 
-bool TBSkin::Write(const char * skin_file)
+bool TBSkin::Write(const TBStr & skin_file)
 {
 	TBFile * file = TBFile::Open(skin_file, TBFile::MODE_WRITETRUNC);
 	if (file) {
@@ -342,8 +342,11 @@ bool TBSkin::ReloadBitmapsInternal()
 	// to avoid filtering artifacts.
 	uint32_t data[4] = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
 	m_color_frag = m_frag_manager.CreateNewFragment(TBID((uint32_t)0), false, 2, 2, 2, data);
-	m_color_frag->m_rect = m_color_frag->m_rect.Shrink(1, 1);
-	return success;
+	if (m_color_frag) {
+		m_color_frag->m_rect = m_color_frag->m_rect.Shrink(1, 1);
+		return success;
+	}
+	return false;
 }
 
 TBSkin::~TBSkin()
@@ -358,7 +361,8 @@ TBSkinElement *TBSkin::GetSkinElement(const TBID &skin_id) const
 	return m_elements.Get(skin_id);
 }
 
-TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context) const
+TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, SKIN_STATE state,
+													TBSkinConditionContext &context) const
 {
 	if (TBSkinElement *skin_element = GetSkinElement(skin_id))
 	{
@@ -384,12 +388,14 @@ TBSkinElement *TBSkin::GetSkinElementStrongOverride(const TBID &skin_id, SKIN_ST
 	return nullptr;
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state, TBSkinConditionContext &context)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, const TBID &skin_id, SKIN_STATE state,
+								 TBSkinConditionContext &context)
 {
 	return PaintSkin(dst_rect, GetSkinElement(skin_id), state, context);
 }
 
-TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context)
+TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state,
+								 TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return nullptr;
@@ -441,7 +447,8 @@ TBSkinElement *TBSkin::PaintSkin(const TBRect &dst_rect, TBSkinElement *element,
 	return return_element;
 }
 
-void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state, TBSkinConditionContext &context)
+void TBSkin::PaintSkinOverlay(const TBRect &dst_rect, TBSkinElement *element, SKIN_STATE state,
+							  TBSkinConditionContext &context)
 {
 	if (!element || element->is_painting)
 		return;
@@ -505,11 +512,14 @@ void TBSkin::PaintRect(const TBRect &dst_rect, const TBColor &color, int thickne
 	// Top
 	PaintRectFill(TBRect(dst_rect.x, dst_rect.y, dst_rect.w, thickness), color);
 	// Bottom
-	PaintRectFill(TBRect(dst_rect.x, dst_rect.y + dst_rect.h - thickness, dst_rect.w, thickness), color);
+	PaintRectFill(TBRect(dst_rect.x, dst_rect.y + dst_rect.h - thickness,
+						 dst_rect.w, thickness), color);
 	// Left
-	PaintRectFill(TBRect(dst_rect.x, dst_rect.y + thickness, thickness, dst_rect.h - thickness * 2), color);
+	PaintRectFill(TBRect(dst_rect.x, dst_rect.y + thickness,
+						 thickness, dst_rect.h - thickness * 2), color);
 	// Right
-	PaintRectFill(TBRect(dst_rect.x + dst_rect.w - thickness, dst_rect.y + thickness, thickness, dst_rect.h - thickness * 2), color);
+	PaintRectFill(TBRect(dst_rect.x + dst_rect.w - thickness, dst_rect.y + thickness,
+						 thickness, dst_rect.h - thickness * 2), color);
 }
 
 void TBSkin::PaintRectFill(const TBRect &dst_rect, const TBColor &color)
@@ -533,7 +543,8 @@ void TBSkin::PaintElementImage(const TBRect &dst_rect, TBSkinElement *element)
 			rect.y + element->img_ofs_y + (rect.h - src_rect.h) * element->img_position_y / 100,
 			src_rect.w, src_rect.h);
 	if (element->bitmap_color)
-		g_renderer->DrawBitmapColored(rect, GetFlippedRect(src_rect, element), element->bitmap_color, element->bitmap);
+		g_renderer->DrawBitmapColored(rect, GetFlippedRect(src_rect, element),
+									  element->bitmap_color, element->bitmap);
 	else
 		g_renderer->DrawBitmap(rect, GetFlippedRect(src_rect, element), element->bitmap);
 }
@@ -581,28 +592,41 @@ void TBSkin::PaintElementStretchBox(const TBRect &dst_rect, TBSkinElement *eleme
 		dst_cut_h = -dst_cut_h;
 
 	// Corners
-	g_renderer->DrawBitmap(TBRect(rect.x, rect.y, dst_cut_w, dst_cut_h), TBRect(0, 0, cut, cut), element->bitmap);
-	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y, dst_cut_w, dst_cut_h), TBRect(bw - cut, 0, cut, cut), element->bitmap);
-	g_renderer->DrawBitmap(TBRect(rect.x, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(0, bh - cut, cut, cut), element->bitmap);
-	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h), TBRect(bw - cut, bh - cut, cut, cut), element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x, rect.y, dst_cut_w, dst_cut_h),
+						   TBRect(0, 0, cut, cut), element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y, dst_cut_w, dst_cut_h),
+						   TBRect(bw - cut, 0, cut, cut), element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x, rect.y + rect.h - dst_cut_h, dst_cut_w, dst_cut_h),
+						   TBRect(0, bh - cut, cut, cut), element->bitmap);
+	g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + rect.h - dst_cut_h,
+								  dst_cut_w, dst_cut_h),
+						   TBRect(bw - cut, bh - cut, cut, cut), element->bitmap);
 
 	// Left & right edge
 	if (has_left_right_edges)
 	{
-		g_renderer->DrawBitmap(TBRect(rect.x, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(0, cut, cut, bh - cut * 2), element->bitmap);
-		g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2), TBRect(bw - cut, cut, cut, bh - cut * 2), element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x, rect.y + dst_cut_h, dst_cut_w, rect.h - dst_cut_h * 2),
+							   TBRect(0, cut, cut, bh - cut * 2), element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + rect.w - dst_cut_w, rect.y + dst_cut_h,
+									  dst_cut_w, rect.h - dst_cut_h * 2),
+							   TBRect(bw - cut, cut, cut, bh - cut * 2), element->bitmap);
 	}
 
 	// Top & bottom edge
 	if (has_top_bottom_edges)
 	{
-		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, 0, bw - cut * 2, cut), element->bitmap);
-		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + rect.h - dst_cut_h, rect.w - dst_cut_w * 2, dst_cut_h), TBRect(cut, bh - cut, bw - cut * 2, cut), element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y, rect.w - dst_cut_w * 2, dst_cut_h),
+							   TBRect(cut, 0, bw - cut * 2, cut), element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + rect.h - dst_cut_h,
+									  rect.w - dst_cut_w * 2, dst_cut_h),
+							   TBRect(cut, bh - cut, bw - cut * 2, cut), element->bitmap);
 	}
 
 	// Center
 	if (fill_center && has_top_bottom_edges && has_left_right_edges)
-		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h, rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2), TBRect(cut, cut, bw - cut * 2, bh - cut * 2), element->bitmap);
+		g_renderer->DrawBitmap(TBRect(rect.x + dst_cut_w, rect.y + dst_cut_h,
+									  rect.w - dst_cut_w * 2, rect.h - dst_cut_h * 2),
+							   TBRect(cut, cut, bw - cut * 2, bh - cut * 2), element->bitmap);
 }
 
 #ifdef TB_RUNTIME_DEBUG_INFO
@@ -914,7 +938,8 @@ TBSkinElementStateList::~TBSkinElementStateList()
 	}
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElement(SKIN_STATE state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
+TBSkinElementState *TBSkinElementStateList::GetStateElement(SKIN_STATE state, TBSkinConditionContext &context,
+															TBSkinElementState::MATCH_RULE rule) const
 {
 	// First try to get a state element with a exact match to the current state
 	if (TBSkinElementState *element_state = GetStateElementExactMatch(state, context, rule))
@@ -930,7 +955,9 @@ TBSkinElementState *TBSkinElementStateList::GetStateElement(SKIN_STATE state, TB
 	return nullptr;
 }
 
-TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(SKIN_STATE state, TBSkinConditionContext &context, TBSkinElementState::MATCH_RULE rule) const
+TBSkinElementState *TBSkinElementStateList::GetStateElementExactMatch(SKIN_STATE state,
+																	  TBSkinConditionContext &context,
+																	  TBSkinElementState::MATCH_RULE rule) const
 {
 	TBSkinElementState *state_element = m_state_elements.GetFirst();
 	while (state_element)
@@ -960,7 +987,9 @@ void TBSkinElementStateList::Load(TBNode *n)
 		state->element_id.Set(element_node->GetValue().GetString());
 
 		// Loop through all nodes, read state and create all found conditions.
-		for (TBNode *condition_node = element_node->GetFirstChild(); condition_node; condition_node = condition_node->GetNext())
+		for (TBNode *condition_node = element_node->GetFirstChild();
+			 condition_node;
+			 condition_node = condition_node->GetNext())
 		{
 			if (strcmp(condition_node->GetName(), "state") == 0)
 				state->state = StringToState(condition_node->GetValue().GetString());

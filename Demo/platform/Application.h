@@ -20,6 +20,7 @@ public:
 
 	AppRootWidget(App *app) : m_app(app) {}
 	virtual void OnInvalid();
+	virtual bool OnEvent(const tb::TBWidgetEvent & ev);
 
 	App *GetApp() { return m_app; }
 private:

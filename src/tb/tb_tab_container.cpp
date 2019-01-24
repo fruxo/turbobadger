@@ -41,9 +41,9 @@ TBTabContainer::TBTabContainer()
 	, m_align(TB_ALIGN_TOP)
 {
 	AddChild(&m_root_layout);
-	// Put the tab layout on top of the content in Z order so their skin can make
-	// a seamless overlap over the border. Control which side they are layouted
-	// to by calling SetLayoutOrder.
+	// Put the tab layout on top of the content in Z order so their
+	// skin can make a seamless overlap over the border. Control which
+	// side they are layed out to by calling SetLayoutOrder.
 	m_root_layout.AddChild(&m_content_root);
 	m_root_layout.AddChild(&m_tab_layout);
 	m_root_layout.SetAxis(AXIS_Y);
@@ -75,6 +75,7 @@ void TBTabContainer::SetAxis(AXIS axis)
 
 void TBTabContainer::SetValue(long index)
 {
+	TBDebugPrint("Tab old: %ld, active: %ld\n", m_current_page, index);
 	if (index == m_current_page)
 		return;
 	m_current_page = index;

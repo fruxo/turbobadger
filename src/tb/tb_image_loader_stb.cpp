@@ -65,13 +65,13 @@ public:
 	virtual uint32_t *Data() { return (uint32_t*)data; }
 };
 
-TBImageLoader *TBImageLoader::CreateFromFile(const char *filename, float dpi)
+TBImageLoader *TBImageLoader::CreateFromFile(const TBStr & filename, float dpi)
 {
 	TBTempBuffer buf;
 	if (buf.AppendFile(filename))
 	{
 		int w, h, comp;
-		if (strstr(filename, ".svg")) {
+		if (strstr((const char *)filename, ".svg")) {
 			if (NSVGimage * image = nsvgParse((char *)buf.GetData(), "px", dpi)) {
 				struct NSVGrasterizer * rast = nsvgCreateRasterizer();
 				unsigned char * img_data = (unsigned char *)malloc(image->width * image->height * 4);

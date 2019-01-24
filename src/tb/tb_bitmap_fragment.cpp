@@ -187,7 +187,10 @@ TBBitmapFragmentMap::~TBBitmapFragmentMap()
 	delete [] m_bitmap_data;
 }
 
-TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h, int data_stride, uint32_t *frag_data, bool add_border)
+TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
+														 int data_stride,
+														 uint32_t *frag_data,
+														 bool add_border)
 {
 	// Finding available space works like this:
 	// The map size is sliced up horizontally in rows (initially just one row covering
@@ -254,7 +257,8 @@ TBBitmapFragment *TBBitmapFragmentMap::CreateNewFragment(int frag_w, int frag_h,
 	if (best_row->IsAllAvailable() && needed_h < best_row->height)
 	{
 		TBFragmentSpaceAllocator *row;
-		if (!m_rows.GrowIfNeeded() || !(row = new TBFragmentSpaceAllocator(best_row->y + needed_h, m_bitmap_w, best_row->height - needed_h)))
+		if (!m_rows.GrowIfNeeded() ||
+			!(row = new TBFragmentSpaceAllocator(best_row->y + needed_h, m_bitmap_w, best_row->height - needed_h)))
 			return nullptr;
 		// Keep the rows sorted from top to bottom
 		m_rows.Add(row, best_row_index + 1);
@@ -409,7 +413,8 @@ TBBitmapFragmentManager::~TBBitmapFragmentManager()
 	Clear();
 }
 
-TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const char *filename, bool dedicated_map, float dpi)
+TBBitmapFragment *TBBitmapFragmentManager::GetFragmentFromFile(const TBStr & filename,
+															   bool dedicated_map, float dpi)
 {
 	TBID id(filename);
 
@@ -552,7 +557,8 @@ void TBBitmapFragmentManager::Debug()
 	{
 		TBBitmapFragmentMap *fm = m_fragment_maps[i];
 		if (TBBitmap *bitmap = fm->GetBitmap())
-			g_renderer->DrawBitmap(TBRect(x, 0, fm->m_bitmap_w, fm->m_bitmap_h), TBRect(0, 0, fm->m_bitmap_w, fm->m_bitmap_h), bitmap);
+			g_renderer->DrawBitmap(TBRect(x, 0, fm->m_bitmap_w, fm->m_bitmap_h),
+								   TBRect(0, 0, fm->m_bitmap_w, fm->m_bitmap_h), bitmap);
 		x += fm->m_bitmap_w + 5;
 	}
 }

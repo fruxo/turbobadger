@@ -32,7 +32,7 @@ public:
 	/** Load a file into this language manager.
 		Note: This *adds* strings read from the file, without clearing any existing
 		strings first. */
-	bool Load(const char *filename);
+	bool Load(const TBStr & filename);
 
 	/** Clear the list of strings. */
 	void Clear();

@@ -122,6 +122,8 @@ static bool InvokeShortcut(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modif
 		id = TBIDC("new");
 	else if (upper_key == 'O')
 		id = TBIDC("open");
+	else if (upper_key == 'Q')
+		id = TBIDC("quit");
 	else if (upper_key == 'S')
 		id = TBIDC("save");
 	else if (upper_key == 'W')

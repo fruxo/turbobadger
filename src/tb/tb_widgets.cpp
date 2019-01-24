@@ -1623,13 +1623,13 @@ bool TBWidget::InvokeKey(int key, SPECIAL_KEY special_key, MODIFIER_KEYS modifie
 			SetAutoFocusState(true);
 	}
 
-  if (!focused_widget) {
+	if (!focused_widget) {
+		// (*this) is the root widget, create an event and pass it on
 		TBWidgetEvent ev(down ? EVENT_TYPE_KEY_DOWN : EVENT_TYPE_KEY_UP);
 		ev.key = key;
 		ev.special_key = special_key;
 		ev.modifierkeys = modifierkeys;
 		handled = GetFirstChild()->InvokeEvent(ev);
-
 	}
 	return handled;
 }

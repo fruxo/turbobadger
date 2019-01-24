@@ -37,7 +37,7 @@ public:
 	inline bool Equals(const char* str) const			{ return !strcmp(s, str); }
 	const char *CStr() const							{ return s; }
 
-	inline const char & operator[](int n) const			{ assert(n <= Length()); return s[n]; }
+	inline const char & operator[](int n) const			{ assert(n >= 0); assert(n <= Length()); return s[n]; }
 	explicit inline operator const char *() const		{ return s; }
 	bool operator ==(const TBStrC &b) const				{ return !strcmp(s, b.s); }
 	bool operator !=(const TBStrC &b) const				{ return strcmp(s, b.s); }
@@ -75,23 +75,50 @@ public:
 	void Clear();
 
 	void Remove(int ofs, int len);
+
+	/// Insert a c-string to this TBStr at 'ofs'
 	bool Insert(int ofs, const char *ins, int ins_len = TB_ALL_TO_TERMINATION);
+
+	/// Append a c-string to this TBStr.
 	bool Append(const char *ins, int ins_len = TB_ALL_TO_TERMINATION) {
 		return Insert((int)strlen(s), ins, ins_len);
 	}
+
+	/// Append another TBStr to this string.
 	bool Append(const TBStr & str) {
 		return Insert((int)strlen(s), (const char *)str, str.Length());
 	}
+
+	/// Get the c-string raw (char *)
 	char *CStr() const									{ return s; }
 
+	/// Call atof() on the string.
 	double atof() const									{ return ::atof(s); }
+
+	/// Call atoi() on the string.
 	int atoi() const									{ return ::atoi(s); }
+
+	/// Call atol() on the string.
 	long atol() const									{ return ::atol(s); }
 
+	/// Cast to a writeable (char *) byob
 	explicit inline operator char *() const				{ return s; }
+
+	/// Cast to a bool - answers whether this TBStr is truly empty: s
+	/// == empty.  This is different from IsEmpty() because you can
+	/// still do a Set("") which will allocate a single byte for the
+	/// string terminator.
 	explicit operator bool() const;
+
+	/// Assignment operator
 	TBStr & operator = (TBStr str)						{ std::swap(s, str.s); return *this; }
+
+	/// Pointer dereference, returns a reference to the zeroth char of
+	/// the string (or the terminator of an empty string).
 	char & operator *()									{ return s[0]; }
+
+	/// Const pointer dereference - returns a const reference to the
+	/// zeroth character (or terminator of an empty string).
 	const char & operator *() const						{ return s[0]; }
 
 	friend class TBValue;

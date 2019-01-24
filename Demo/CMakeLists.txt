@@ -1,9 +1,9 @@
 # Use project source dir for demo output. We have to set
 # the release and debug specific defines too, for MSVC.
 if(TB_DEMO_IN_SRC)
-    SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
-    SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR})
-    SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
+  set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR})
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
 endif()
 
 if(TB_BUILD_DEMO_GLFW)
@@ -22,10 +22,10 @@ set(GLFW_INSTALL OFF)
 # Add sources
 set(LOCAL_SRCS "")
 aux_source_directory(./demo01 LOCAL_SRCS)
-  set(LOCAL_SRCS ${LOCAL_SRCS}
-    ./platform/port_glfw.cpp
-    ./platform/glfw_extra_linux.cpp
-    ./platform/Application.cpp)
+set(LOCAL_SRCS ${LOCAL_SRCS}
+  ./platform/port_glfw.cpp
+  ./platform/glfw_extra_linux.cpp
+  ./platform/Application.cpp)
 include_directories(".")
 
 # Add glfw and gl libs on MacOSX

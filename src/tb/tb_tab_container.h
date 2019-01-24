@@ -10,8 +10,9 @@
 
 namespace tb {
 
-/** TBTabLayout is a TBLayout used in TBTabContainer to apply
-	some default properties on any TBButton added to it. */
+/** TBTabLayout is a TBLayout used in TBTabContainer to apply some
+	default properties on any TBButton added to it.  The buttons are
+	the tab labels / switchers. */
 class TBTabLayout : public TBLayout
 {
 public:

@@ -11,6 +11,23 @@ void AppRootWidget::OnInvalid()
 		m_app->GetBackend()->OnAppEvent(AppBackend::EVENT_PAINT_REQUEST);
 }
 
+bool AppRootWidget::OnEvent(const TBWidgetEvent & ev)
+{
+    switch (ev.type) {
+	case EVENT_TYPE_KEY_UP:
+		if ((ev.modifierkeys & (TB_CTRL | TB_SUPER))) {
+			switch (ev.key) {
+			case 'q':
+				m_app->GetBackend()->OnAppEvent(AppBackend::EVENT_QUIT_REQUEST);
+			}
+		}
+	default:
+		break;
+	}
+
+	return false;
+}
+
 // == App =========================================================================================
 
 App::App(int width, int height)

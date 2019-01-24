@@ -136,6 +136,8 @@ void TBStr::Remove(int ofs, int len)
 bool TBStr::Insert(int ofs, const char *ins, int ins_len)
 {
 	int len1 = strlen(s);
+	assert(ofs >= 0);
+	assert(ofs <= len1);
 	if (ins_len == TB_ALL_TO_TERMINATION)
 		ins_len = strlen(ins);
 	int newlen = len1 + ins_len;

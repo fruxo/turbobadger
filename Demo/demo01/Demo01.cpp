@@ -844,10 +844,16 @@ void DemoApplication::OnBackendAttached(AppBackend *backend, int width, int heig
 	App::OnBackendAttached(backend, width, height);
 
 	// Load language file
-	g_tb_lng->Load("resources/language/lng_en.tb.txt");
+	if (!g_tb_lng->Load("resources/language/lng_en.tb.txt")) {
+		TBDebugOut("Unable to load language file\n");
+		exit(-1);
+	}
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
-	g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt");
+	if (!g_tb_skin->Load("resources/default_skin/skin.tb.txt", "Demo/demo01/skin/skin.tb.txt")) {
+		TBDebugOut("Unable to load skin file\n");
+		exit(-1);
+	}
 
 	// Register font renderers.
 #ifdef TB_FONT_RENDERER_TBBF
