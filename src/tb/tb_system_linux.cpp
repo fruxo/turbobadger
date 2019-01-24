@@ -4,6 +4,7 @@
 // ================================================================================
 
 #include "tb_system.h"
+#include "tb_str.h"
 
 #ifdef TB_SYSTEM_LINUX
 
@@ -12,9 +13,9 @@
 
 #ifdef TB_RUNTIME_DEBUG_INFO
 
-void TBDebugOut(const char *str)
+void TBDebugOut(const tb::TBStr & str)
 {
-	printf("%s", str);
+	printf("%s", (const char *)str);
 }
 
 #endif // TB_RUNTIME_DEBUG_INFO
@@ -56,6 +57,13 @@ int TBSystem::GetDPI()
 	// FIX: Implement!
 	return 96;
 }
+
+#ifndef TB_SYSTEM_SDL
+const char * TBSystem::GetRoot()
+{
+	return "./";
+}
+#endif
 
 } // namespace tb
 

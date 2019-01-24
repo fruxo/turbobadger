@@ -67,7 +67,7 @@ static void MakeOrtho(float * ortho, float l, float r, float b, float t, float n
 }
 #endif
 
-#if !defined(TB_RENDERER_GL3)
+#if defined(TB_RENDERER_GLES_2)
 static bool gl_supports_ext(const char * extname)
 {
 	const char * fullext = (const char *)glGetString(GL_EXTENSIONS);
@@ -246,15 +246,17 @@ TBRendererGL::TBRendererGL()
 	m_texLoc = glGetUniformLocation(m_program, "tex");
 
 #if defined(TB_RENDERER_GL3)
-	if (1) {
-#else
-	if (gl_supports_ext("OES_vertex_array_object") || gl_supports_ext("GL_ARB_vertex_array_object")) {
-#endif
-		m_hasvao = true;
-		GLCALL(glGenVertexArrays(_NUM_VBOS, m_vao));
-	}
-	else {
+	m_hasvao = true;
+#elif defined(TB_RENDERER_GLES_2)
+	if (gl_supports_ext("OES_vertex_array_object") || gl_supports_ext("GL_ARB_vertex_array_object"))
 		m_hasvao = false;
+#else
+    m_hasvao = false;
+#endif
+
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
+    if (m_hasvao) {
+		GLCALL(glGenVertexArrays(_NUM_VBOS, m_vao));
 	}
 
 	// Generate & allocate GL_ARRAY_BUFFER buffers
@@ -272,18 +274,21 @@ TBRendererGL::TBRendererGL()
 		GLCALL(glVertexAttribPointer(1, 2, GL_FLOAT,         GL_FALSE, sizeof(Vertex), &((Vertex *)nullptr)->u));
 		GLCALL(glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(Vertex), &((Vertex *)nullptr)->col));
 	}
+#endif
 
 	// Setup white 1-pixel "texture" as default
 	{
 		uint32_t whitepix = 0xffffffff;
 		m_white.Init(1, 1, &whitepix);
 	}
-#endif
+#endif // defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
 }
 
 TBRendererGL::~TBRendererGL()
 {
+#if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)
 	GLCALL(glDeleteBuffers(_NUM_VBOS, m_vbo));
+#endif
 }
 
 #if defined(TB_RENDERER_GLES_2) || defined(TB_RENDERER_GL3)

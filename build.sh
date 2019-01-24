@@ -28,16 +28,22 @@ while [ $# -gt 0 ]; do
     key="$1"
     case $key in
         -o)                    BUILD_DIR=$(mkdir -p "$2" && cd "$2" && pwd); shift ;;
-        -gl3)                  CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON -DTB_RENDERER_GL3=ON" ;;
+        -gl3)
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON -DTB_RENDERER_GL3=ON"
+            ;;
         -sdl)
             BUILD_DIR="BuildSDL"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON  -DTB_BUILD_DEMO_GLFW=OFF"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
             ;;
         -glfw)
             BUILD_DIR="BuildGLFW"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_CLIPBOARD_GLFW=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
             ;;
         -v|--verbose)          VERBOSE=$(( ${VERBOSE} + 1 ))
                                MAKE_FLAGS="${MAKE_FLAGS} VERBOSE=1"
@@ -53,6 +59,7 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+cd "${SRC_DIR}"
 if [ ! -f ./integration.txt ]; then
     echo "run build.sh from turbobadger root directory"
     exit 1
@@ -63,10 +70,10 @@ if [ ! -f Demo/thirdparty/glfw/CMakeLists.txt ]; then
     git submodule update
 fi
 
-if [ ! -z ${BUILD_DIR} ]; then
-    rm -r ${BUILD_DIR}
+if [ ! -z "${BUILD_DIR}" ] && [ -d "${BUILD_DIR}" ]; then
+    rm -rf "${BUILD_DIR}"
 fi
-mkdir -p ${BUILD_DIR}
-cd ${BUILD_DIR}
-cmake ${SRC_DIR} ${CMAKE_FLAGS}
+mkdir -p "${BUILD_DIR}"
+cd "${BUILD_DIR}"
+cmake "${SRC_DIR}" ${CMAKE_FLAGS}
 make -j${NPROC} ${MAKE_FLAGS}

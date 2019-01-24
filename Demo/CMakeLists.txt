@@ -14,10 +14,12 @@ if(TB_BUILD_DEMO_GLFW)
   endif(CMAKE_SYSTEM MATCHES "Windows")
 
   # Configure glfw
-  set(GLFW_BUILD_EXAMPLES OFF)
-  set(GLFW_BUILD_TESTS OFF)
-  set(GLFW_INSTALL OFF)
-  #set(GLFW_USE_OPTIMUS_HPG ON)
+  set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+  set(GLFW_BUILD_TESTS OFF CACHE BOOL "just want glfw library" FORCE)
+  set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "just want glfw library" FORCE)
+  set(GLFW_CLIENT_LIBRARY opengl CACHE STRING "client to use for glfw" FOR) # glesv1, glesv2
+  set(GLFW_INSTALL OFF CACHE BOOL "just want glfw library" FORCE)
+  #set(GLFW_USE_OPTIMUS_HPG ON "just want glfw library")
 
   # Add sources
   set(LOCAL_SRCS "")
@@ -42,7 +44,7 @@ if(TB_BUILD_DEMO_GLFW)
     target_include_directories(TurboBadgerLib PUBLIC "thirdparty/glfw/include")
     include_directories("thirdparty/glfw/include")
     add_subdirectory(thirdparty/glfw)
-    set(EXTRA_LIBS ${EXTRA_LIBS} glfw)
+    set(EXTRA_LIBS ${EXTRA_LIBS} glfw ${GLFW_LIBRARIES})
   endif(NOT GLFW_LIBRARIES)
 
   # Platform specific
