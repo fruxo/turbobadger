@@ -39,6 +39,7 @@ while [ $# -gt 0 ]; do
             ;;
         -sdl*)
             BUILD_DIR="BuildSDL"
+            #CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_GET_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL=ON"
@@ -46,6 +47,7 @@ while [ $# -gt 0 ]; do
             ;;
         -glfw)
             BUILD_DIR="BuildGLFW"
+            #CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_GET_GLFW=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_CLIPBOARD_GLFW=ON"
