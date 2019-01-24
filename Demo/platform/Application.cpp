@@ -18,9 +18,12 @@ bool AppRootWidget::OnEvent(const TBWidgetEvent & ev)
 		if ((ev.modifierkeys & (TB_CTRL | TB_SUPER))) {
 			switch (ev.key) {
 			case 'q':
+			case 'Q':
 				m_app->GetBackend()->OnAppEvent(AppBackend::EVENT_QUIT_REQUEST);
+				return true;
 			}
 		}
+		//TBDebugPrint("Unhandled key event: %c, modifiers:0x%x\n", ev.key, ev.modifierkeys);
 	default:
 		break;
 	}
