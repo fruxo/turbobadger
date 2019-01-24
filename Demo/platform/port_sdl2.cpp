@@ -1,12 +1,6 @@
 // -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 #include "port_sdl2.hpp"
 
-#ifdef __EMSCRIPTEN__
-#include "SDL/SDL.h"
-#else
-#include "SDL2/SDL.h"
-#endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>

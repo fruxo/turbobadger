@@ -126,12 +126,12 @@ if(TB_BUILD_DEMO_SDL2)
 
   if(EMSCRIPTEN)
     # default skin resources
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../resources@/resources")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/demo01@Demo/demo01")
     # test files
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser.tb.txt@/")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser_included.tb.txt@/")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ../src/tb/tests/test_tb_parser_definitions.tb.txt@/")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser.tb.txt@/")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_included.tb.txt@/")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_definitions.tb.txt@/")
   elseif(NOT TB_GET_SDL2 AND NOT EMSCRIPTEN)
     if(APPLE)
       find_package(OpenGL REQUIRED)
@@ -165,9 +165,8 @@ if(TB_BUILD_DEMO_SDL2)
   if(EMSCRIPTEN)
     add_custom_command(TARGET TurboBadgerDemoSDL
       PRE_LINK
-#      COMMAND rm -r /tmp/resources /tmp/demo01
-      COMMAND rsync -av --exclude='*.psd' ../resources /tmp/resources 
-      COMMAND rsync -av --include='*/' --include='*.txt' --include='*.png' --exclude='*' demo01 /tmp/demo01 )
+      COMMAND rsync -av --exclude='*.psd' ${CMAKE_SOURCE_DIR}/resources /tmp/resources
+      COMMAND rsync -av --include='*/' --include='*.txt' --include='*.png' --exclude='*' ${CMAKE_CURRENT_SOURCE_DIR}/demo01 /tmp/demo01 )
   endif(EMSCRIPTEN)
 
 endif(TB_BUILD_DEMO_SDL2)

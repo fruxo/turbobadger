@@ -6,10 +6,13 @@
 #include "tb_widgets.h"
 #include "renderers/tb_renderer_gl.h"
 
-#ifdef __EMSCRIPTEN__
-#include "SDL/SDL.h"
-#else
+#ifdef __APPLE__
+#include <TargetConditionals.h>
+#endif
+#if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 #include "SDL2/SDL.h"
+#else
+#include "SDL.h"
 #endif
 
 using namespace tb;
