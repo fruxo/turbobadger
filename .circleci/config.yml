@@ -14,13 +14,13 @@ jobs: # a collection of steps
           name: Install System Dependencies
           command: |
             lsb_release -a
-            sudo apt-get install -y gcc g++
+            #sudo apt-get install -y gcc g++
             gcc --version
             g++ --version
       - run:
           name: Build OpenVnmrJ
           command: |
-            ./build.sh -v
+            ./build.sh -v -sdl2 -gl3
             cd Build && make
       - run:
           name: Build Failed
