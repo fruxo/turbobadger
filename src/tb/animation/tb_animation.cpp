@@ -132,7 +132,10 @@ bool TBAnimationManager::HasAnimationsRunning()
 }
 
 //static
-void TBAnimationManager::StartAnimation(TBAnimationObject *obj, ANIMATION_CURVE animation_curve, double animation_duration, ANIMATION_TIME animation_time)
+void TBAnimationManager::StartAnimation(TBAnimationObject *obj,
+										ANIMATION_CURVE animation_curve,
+										double animation_duration,
+										ANIMATION_TIME animation_time)
 {
 	if (obj->IsAnimating())
 		AbortAnimation(obj, false);
@@ -153,9 +156,9 @@ void TBAnimationManager::AbortAnimation(TBAnimationObject *obj, bool delete_anim
 	{
 		animating_objects.Remove(obj);
 		obj->InvokeOnAnimationStop(true);
-		if (delete_animation)
-			delete obj;
 	}
+	if (delete_animation)
+		delete obj;
 }
 
 //static

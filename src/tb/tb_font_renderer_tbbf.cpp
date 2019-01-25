@@ -146,7 +146,7 @@ bool TBBFRenderer::Load(const TBStr & filename, int size)
 	TBNode *size_node = nullptr;
 	for (TBNode *n = m_node.GetFirstChild(); n; n = n->GetNext())
 	{
-		if (strcmp(n->GetName(), "size") == 0)
+		if (n->GetName() == "size")
 		{
 			if (!size_node || ABS(m_size - n->GetValue().GetInt()) < ABS(m_size - size_node->GetValue().GetInt()))
 				size_node = n;

@@ -98,10 +98,10 @@ public:
 		be aborted and then started again. */
 	virtual void OnAnimationStop(bool aborted) = 0;
 
-	/** Add an listener to this animation object. */
+	/** Add a listener to this animation object. */
 	void AddListener(TBAnimationListener *listener) { m_listeners.AddLast(listener); }
 
-	/** Remove an listener from this animation object. */
+	/** Remove a listener from this animation object. */
 	void RemoveListener(TBAnimationListener *listener) { m_listeners.Remove(listener); }
 private:
 	friend class TBAnimationManager;

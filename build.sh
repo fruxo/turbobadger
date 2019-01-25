@@ -19,7 +19,23 @@ else
 fi
 
 usage () {
-    echo "usage: ./build.sh [-v|-q] [-gl3] [-sdl]"
+    cat <<EOF
+usage:
+ ${SRC_DIR}/$0
+
+  -o [dir] change build directory      
+
+  -gl      build for open gl
+  -gl3     build for open gl3 (use with -sdl)
+  -gles2   build for open gles2 (use with -sdl)
+
+  -em      build for emscripten
+  -sdl     build for sdl
+  -glfw    build for glfw
+
+  -v       be more verbose
+  -q       be less verbose
+EOF
     exit 1
 }
 

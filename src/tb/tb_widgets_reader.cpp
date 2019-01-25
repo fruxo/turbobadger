@@ -317,6 +317,7 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 					   {"focused", WIDGET_STATE_FOCUSED},
 					   {nullptr, 0}};
 	OptCreateEnum(node, "state", GetStateRaw(), WIDGET_STATE_NONE, state, true);
+	OptCreateEnum(node, "autostate", GetAutoState(), WIDGET_STATE_NONE, state, true);
 
 	if (m_skin_bg)
 		OptCreateID(node, "skin", m_skin_bg, node->GetName());

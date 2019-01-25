@@ -106,6 +106,9 @@ public:
 	/// Cast to a writeable (char *) byob
 	explicit inline operator char *() const				{ return s; }
 
+	/// Implicit cast to a std::string
+	inline operator std::string() const					{ return std::string(s); }
+
 	/// Cast to a bool - answers whether this TBStr is truly empty: s
 	/// == empty.  This is different from IsEmpty() because you can
 	/// still do a Set("") which will allocate a single byte for the
@@ -122,8 +125,6 @@ public:
 	/// Const pointer dereference - returns a const reference to the
 	/// zeroth character (or terminator of an empty string).
 	const char & operator *() const						{ return s[0]; }
-
-	using TBStrC::operator ==;
 
 	friend class TBValue;
 };
