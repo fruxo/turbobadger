@@ -20,28 +20,11 @@ TBNode::~TBNode()
 }
 
 // static
-TBNode *TBNode::Create(const char *name)
+TBNode *TBNode::Create(TBStr name)
 {
 	TBNode *n = new TBNode;
-	if (!n || !(n->m_name = strdup(name)))
-	{
-		delete n;
-		return nullptr;
-	}
-	return n;
-}
-
-// static
-TBNode *TBNode::Create(const char *name, int name_len)
-{
-	TBNode *n = new TBNode;
-	if (!n || !(n->m_name = (char *) malloc(name_len + 1)))
-	{
-		delete n;
-		return nullptr;
-	}
-	memcpy(n->m_name, name, name_len);
-	n->m_name[name_len] = 0;
+	if (n)
+		n->m_name = std::move(name);
 	return n;
 }
 
@@ -64,7 +47,7 @@ TBNode *TBNode::GetNode(const char *request, GET_MISS_POLICY mp)
 		TBNode *n_child = n->GetNodeInternal(request, name_len);
 		if (!n_child && mp == GET_MISS_POLICY_CREATE)
 		{
-			n_child = n->Create(request, name_len);
+			n_child = n->Create(TBStr(request, name_len));
 			if (n_child)
 				n->Add(n_child);
 		}
@@ -86,7 +69,7 @@ TBNode *TBNode::GetNodeInternal(const char *name, int name_len) const
 {
 	for (TBNode *n = GetFirstChild(); n; n = n->GetNext())
 	{
-		if (strncmp(n->m_name, name, name_len) == 0 && n->m_name[name_len] == 0)
+		if (strncmp(n->m_name.CStr(), name, name_len) == 0 && n->m_name[name_len] == 0)
 			return n;
 	}
 	return nullptr;
@@ -335,8 +318,7 @@ void TBNode::ReadData(const char *data, int data_len, TB_NODE_READ_FLAGS flags)
 
 void TBNode::Clear()
 {
-	free(m_name);
-	m_name = nullptr;
+	m_name.Clear();
 	m_children.DeleteAll();
 }
 
@@ -353,7 +335,7 @@ bool TBNode::WriteFile(const TBStr & filename)
 	return success;
 }
 
-void TBNode::WriteNode(TBStr & str, int depth)
+bool TBNode::WriteNode(TBStr & str, int depth)
 {
 	TBStr selfstr;
 	for (int i = 0; i < depth; ++i)
@@ -396,6 +378,7 @@ void TBNode::WriteNode(TBStr & str, int depth)
 	{
 		n->WriteNode(str, depth + 1);
 	}
+	return true;
 }
 
 } // namespace tb

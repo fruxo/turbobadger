@@ -149,14 +149,14 @@ void TBNodeRefTree::ResolveConditions(TBNode *parent_node)
 	{
 		bool delete_node = false;
 		bool move_children = false;
-		if (strcmp(node->GetName(), "@if") == 0)
+		if (node->GetName() == "@if")
 		{
 			condition_ret = node->GetValueFollowRef().GetInt() ? true : false;
 			if (condition_ret)
 				move_children = true;
 			delete_node = true;
 		}
-		else if (strcmp(node->GetName(), "@else") == 0)
+		else if (node->GetName() == "@else")
 		{
 			condition_ret = !condition_ret;
 			if (condition_ret)

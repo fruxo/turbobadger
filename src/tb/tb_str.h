@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <utility>
+#include <string>
 
 namespace tb {
 
@@ -39,11 +40,12 @@ public:
 
 	inline const char & operator[](int n) const			{ assert(n >= 0); assert(n <= Length()); return s[n]; }
 	explicit inline operator const char *() const		{ return s; }
-	bool operator ==(const TBStrC &b) const				{ return !strcmp(s, b.s); }
-	bool operator !=(const TBStrC &b) const				{ return strcmp(s, b.s); }
+	bool operator ==(const char *b) const				{ return strcmp(s, b) == 0; }
+	bool operator ==(const TBStrC &b) const				{ return strcmp(s, b.s) == 0; }
+	bool operator !=(const TBStrC &b) const				{ return strcmp(s, b.s) != 0; }
+	bool operator <(const TBStrC &b) const				{ return strcmp(s, b.s) < 0; }
 
-	template <typename T>
-	auto operator ==(const T &b) const -> decltype(s == b) { return s == b; }
+	bool operator ==(const std::string &b) const		{ return s == b; }
 };
 
 /** TBStr is a simple string class.
@@ -120,6 +122,8 @@ public:
 	/// Const pointer dereference - returns a const reference to the
 	/// zeroth character (or terminator of an empty string).
 	const char & operator *() const						{ return s[0]; }
+
+	using TBStrC::operator ==;
 
 	friend class TBValue;
 };

@@ -34,7 +34,7 @@ public:
 	~TBNode();
 
 	/** Create a new node with the given name. */
-	static TBNode *Create(const char *name);
+	static TBNode *Create(TBStr name);
 
 	/** Read a tree of nodes from file into this node. Returns true on success. */
 	bool ReadFile(const TBStr & filename, TB_NODE_READ_FLAGS flags = TB_NODE_READ_FLAGS_NONE);
@@ -53,7 +53,7 @@ public:
 
 	/** Recursively write a node and it's children to a string at
 		depth.  \todo use better datastructure than TBStr for this. */
-	void WriteNode(TBStr & str, int depth = 0);
+	bool WriteNode(TBStr & str, int depth = 0);
 
 	/** Add node as child to this node. */
 	void Add(TBNode *n) { m_children.AddLast(n); n->m_parent = this; }
@@ -91,7 +91,7 @@ public:
 	TBNode *GetNode(const char *request, GET_MISS_POLICY mp = GET_MISS_POLICY_NULL);
 
 	/** Returns the name of this node. */
-	const char *GetName() const { return m_name; }
+	const TBStr & GetName() const { return m_name; }
 
 	/** Returns the value of this node. */
 	TBValue &GetValue() { return m_value; }
@@ -132,8 +132,7 @@ friend class TBNodeRefTree;
 	TBNode *GetNodeFollowRef(const char *request,
 							GET_MISS_POLICY mp = GET_MISS_POLICY_NULL);
 	TBNode *GetNodeInternal(const char *name, int name_len) const;
-	static TBNode *Create(const char *name, int name_len);
-	char *m_name;
+	TBStr m_name;
 	TBValue m_value;
 	TBLinkListOf<TBNode> m_children;
 	TBNode *m_parent;

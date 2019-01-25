@@ -10,7 +10,6 @@
 #include "tb_str.h"
 #include "tb_id.h"
 #include <map>
-#include <string>
 
 namespace tb {
 
@@ -55,16 +54,16 @@ public:
 	void Load(TBNode *n, TBSkin *skin);
 
 	/** Define a color, if not already defined. */
-	bool Define(const std::string & id, TBColor color);
+	bool Define(const TBStr & cid, TBColor color);
 
 	/** Is the color defined? */
-	bool IsDefined(const std::string & id) { return 0 != _id2color.count(id); }
+	bool IsDefined(const TBStr & cid) { return 0 != _id2color.count(cid); }
 
 	/** Is the color defined? */
 	bool IsDefined(const TBColor & color) { return 0 != _color2id.count(color); }
 
 	/** (Re)Define a color, no matter what. */
-	void ReDefine(const std::string & id, TBColor color);
+	void ReDefine(const TBStr & cid, TBColor color);
 
 	/** Clear the list of colors. */
 	void Clear();
@@ -72,24 +71,24 @@ public:
 	/** Return the color with the given id.
 	 * If there is no color with that id, 0 will be returned.
 	 */
-	TBColor GetColor(const std::string &id) const;
+	TBColor GetColor(const TBStr & cid) const;
 
 	/** Return the id of the given color, or 0.
-	 * If there is no color with that id, 0 will be returned.
+	 * If there is no color with that id, an empty TBStr() will be returned.
 	 */
-	std::string GetColorID(const TBColor & color) const;
+	TBStr GetColorID(const TBColor & color) const;
 
-	/** Return the id of the given color, or 0.
-	 * If there is no color with that id, 0 will be returned.
+	/** Return the cid of the given color, or 0.
+	 * If there is no color with that cid, 0 will be returned.
 	 */
-	const std::map<std::string, TBColor> GetColorMap() const { return _id2color; }
+	const std::map<TBStr, TBColor> GetColorMap() const { return _id2color; }
 
 	/** Dump the current color map */
-	void Dump(const char * filename);
+	void Dump(const TBStr & filename);
 
 private:
-	std::map<std::string, TBColor> _id2color;
-	std::map<TBColor, std::string> _color2id;
+	std::map<TBStr, TBColor> _id2color;
+	std::map<TBColor, TBStr> _color2id;
 };
 
 } // namespace tb

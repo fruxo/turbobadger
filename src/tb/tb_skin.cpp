@@ -991,9 +991,9 @@ void TBSkinElementStateList::Load(TBNode *n)
 			 condition_node;
 			 condition_node = condition_node->GetNext())
 		{
-			if (strcmp(condition_node->GetName(), "state") == 0)
+			if (condition_node->GetName() == "state")
 				state->state = StringToState(condition_node->GetValue().GetString());
-			else if (strcmp(condition_node->GetName(), "condition") == 0)
+			else if (condition_node->GetName() == "condition")
 			{
 				TBSkinCondition::TARGET target = StringToTarget(condition_node->GetValueString("target", ""));
 

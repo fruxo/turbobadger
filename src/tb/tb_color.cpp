@@ -53,22 +53,22 @@ void TBColorManager::Load(TBNode * n, TBSkin * skin)
 	}
 }
 
-bool TBColorManager::Define(const std::string & id, TBColor color)
+bool TBColorManager::Define(const TBStr & cid, TBColor color)
 {
-	if (!_id2color.count(id)) {
+	if (!_id2color.count(cid)) {
 		//TBDebugPrint("Define color '%s' -> %x\n", id.c_str(), (uint32_t)color);
-		_id2color[id] = color;
-		_color2id[color] = id;
+		_id2color[cid] = color;
+		_color2id[color] = cid;
 		return true;
 	}
 	return false;
 }
 
-void TBColorManager::ReDefine(const std::string & id, TBColor color)
+void TBColorManager::ReDefine(const TBStr & cid, TBColor color)
 {
 	//TBDebugPrint("ReDefine color '%s' -> %x\n", id.c_str(), (uint32_t)color);
-	_id2color[id] = color;
-	_color2id[color] = id;
+	_id2color[cid] = color;
+	_color2id[color] = cid;
 }
 
 void TBColorManager::Clear()
@@ -77,23 +77,22 @@ void TBColorManager::Clear()
 	_color2id.clear();
 }
 
-TBColor TBColorManager::GetColor(const std::string &id) const
+TBColor TBColorManager::GetColor(const TBStr & cid) const
 {
-	if (_id2color.count(id))
-		return _id2color.at(id);
+	if (_id2color.count(cid))
+		return _id2color.at(cid);
 	return TBColor(0, 0, 0, 0);
 }
 
-std::string TBColorManager::GetColorID(const TBColor & color) const
+TBStr TBColorManager::GetColorID(const TBColor & color) const
 {
 	if (_color2id.count(color))
 		return _color2id.at(color);
-	return std::string();
+	return TBStr();
 }
 
-void TBColorManager::Dump(const char * filename)
+void TBColorManager::Dump(const TBStr & filename)
 {
-#ifdef TB_RUNTIME_DEBUG_INFO
 	TBFile * file = TBFile::Open(filename, TBFile::MODE_WRITETRUNC);
 	if (file) {
 		TBStr str;
@@ -102,12 +101,11 @@ void TBColorManager::Dump(const char * filename)
 		for (auto & id_co : _id2color) {
 			TBStr cs;
 			id_co.second.GetString(cs);
-			str.SetFormatted("	%s %s\n", id_co.first.c_str(), cs.CStr());
+			str.SetFormatted("	%s %s\n", id_co.first.CStr(), cs.CStr());
 			file->Write(str);
 		}
 		delete file;
 	}
-#endif
 }
 
 } // namespace tb

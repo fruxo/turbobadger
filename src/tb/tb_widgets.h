@@ -402,12 +402,15 @@ enum WIDGET_HIT_STATUS {
 };
 
 /** The base TBWidget class.
-	Make a subclass to implement UI controls.
-	Each widget has a background skin (no skin specified by default) which will be used to
-	calculate the default size preferences and padding around the preferred content size.
 
-	Note: When you subclass a widget, use the TBOBJECT_SUBCLASS macro to define the type
-	casting functions instead of implementing those manually. */
+	Subclass this to implement UI controls.  Each widget has a
+	background skin (no skin specified by default) which will be used
+	to calculate the default size preferences and padding around the
+	preferred content size.
+
+	Note: When you subclass a widget, use the TBOBJECT_SUBCLASS macro
+	to define the type casting functions instead of implementing those
+	manually. */
 
 class TBWidget : public TBTypedObject, public TBLinkOf<TBWidget>
 {
@@ -418,13 +421,15 @@ public:
 	TBWidget(TBValue::TYPE sync_type = TBValue::TYPE_NULL);
 	virtual ~TBWidget();
 
-	/** Set the rect for this widget in its parent. The rect is relative to the parent widget.
-		The skin may expand outside this rect to draw f.ex shadows. */
+	/** Set the rect for this widget in its parent. The rect is
+		relative to the parent widget.  The skin may expand outside
+		this rect to draw f.ex shadows. */
 	virtual void SetRect(const TBRect &rect);
 	/** See TBWidget::SetRect */
 	inline const TBRect & GetRect() const { return m_rect; }
 
-	/** Set position of this widget in its parent. The position is relative to the parent widget. */
+	/** Set position of this widget in its parent. The position is
+		relative to the parent widget. */
 	void SetPosition(const TBPoint &pos) { SetRect(TBRect(pos.x, pos.y, m_rect.w, m_rect.h)); }
 
 	/** Set size of this widget. */
@@ -434,11 +439,14 @@ public:
 		to make sure the renderer repaints it and its children next frame. */
 	void Invalidate();
 
-	/** Call if something changes that might need other widgets to update their state.
-		F.ex if a action availability changes, some widget might have to become enabled/disabled.
-		Calling this will result in a later call to OnProcessStates().
+	/** Call if something changes that might need other widgets to
+		update their state.  F.ex if a action availability changes,
+		some widget might have to become enabled/disabled.  Calling
+		this will result in a later call to OnProcessStates().
+
 		This is done automatically for all invoked events of type:
-			EVENT_TYPE_CLICK, EVENT_TYPE_LONG_CLICK, EVENT_TYPE_CHANGED, EVENT_TYPE_KEYDOWN,
+			EVENT_TYPE_CLICK, EVENT_TYPE_LONG_CLICK,
+			EVENT_TYPE_CHANGED, EVENT_TYPE_KEYDOWN,
 			EVENT_TYPE_KEYUP. */
 	void InvalidateStates();
 

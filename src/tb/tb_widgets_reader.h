@@ -159,7 +159,7 @@ public:
 
 	bool DumpFile(TBWidget *source, const TBStr & filename);
 	bool DumpData(TBWidget *source, TBStr & data);
-	bool DumpNodeTree(TBWidget *source, TBNode *node);
+
 private:
 	bool Init();
 	bool CreateWidget(TBWidget *target, TBNode *node);

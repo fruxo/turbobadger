@@ -178,9 +178,10 @@ static void OptCreateID(TBNode * target, const char * name, const TBID & id, con
 }
 
 /** Create a named int node, IF val != def */
-static void OptCreateInt(TBNode * target, const char * name, const int val, const int def = 0)
+static void OptCreateInt(TBNode * target, const char * name, const long val,
+						 const long def = (long)0xdeadbeef)
 {
-	if (val != def) {
+	if (val != def || def == 0xdeadbeef) {
 		TBNode * new_node = TBNode::Create(name);
 		new_node->GetValue().SetInt(val);
 		target->Add(new_node);
@@ -188,9 +189,10 @@ static void OptCreateInt(TBNode * target, const char * name, const int val, cons
 }
 
 /** Create a named float node, IF val != def */
-static void OptCreateFloat(TBNode * target, const char * name, const double val, const double def = 0)
+static void OptCreateFloat(TBNode * target, const char * name, const double val,
+						   const double def = (double)0xdeadbeef)
 {
-	if (val != def) {
+	if (val != def || def == (double)0xdeadbeef) {
 		TBNode * new_node = TBNode::Create(name);
 		new_node->GetValue().SetFloat(val);
 		target->Add(new_node);
@@ -198,11 +200,12 @@ static void OptCreateFloat(TBNode * target, const char * name, const double val,
 }
 
 /** Create a named string node, IF val != def */
-static void OptCreateString(TBNode * target, const char * name, const char * val, const char * def = nullptr)
+static void OptCreateString(TBNode * target, const char * name, const TBStr & val,
+							const TBStr def = TBStr())
 {
-	if (val && strlen(val) && (!def || strcmp(val, def))) {
+	if (val && val.Length() && (!def || val == def)) {
 		TBNode * new_node = TBNode::Create(name);
-		new_node->GetValue().SetString(val, TBValue::SET_NEW_COPY);
+		new_node->GetValue().SetString(val);
 		target->Add(new_node);
 	}
 }
@@ -248,22 +251,29 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 	OptCreateID(node, "id", GetID());
 	OptCreateID(node, "group-id", GetGroupID());
 
-#if 0
-	if (m_sync_type == TBValue::TYPE_FLOAT)
-		SetValueDouble(info.node->GetValueFloat("value", 0));
-	else
-		SetValue(info.node->GetValueInt("value", 0));
+	switch (m_sync_type) {
+	case TBValue::TYPE_FLOAT:
+		OptCreateFloat(node, "value", GetValueDouble(), 0);
+		break;
+	case TBValue::TYPE_STRING:
+		OptCreateString(node, "value", GetText(), "");
+		break;
+	case TBValue::TYPE_INT:
+		OptCreateInt(node, "value", GetValue());
+		break;
+	default:
+		break;
+	}
 
 	if (TBNode *data_node = info.node->GetNode("data"))
 		data.Copy(data_node->GetValue());
-#endif
 
 	OptCreateInt(node, "is-group-root", GetIsGroupRoot(), false);
 	OptCreateInt(node, "is-focusable", GetIsFocusable(), false);
 	OptCreateInt(node, "want-long-click", GetWantLongClick(), false);
 	OptCreateInt(node, "ignore-input", GetIgnoreInput(), false);
 	OptCreateFloat(node, "opacity", GetOpacity(), 1.);
-	OptCreateString(node, "text", GetText().CStr());
+	OptCreateString(node, "text", GetText(), "");
 
 #if 0
 	if (TBStr connection = info.node->GetValueStringRaw("connection", nullptr))
@@ -782,9 +792,7 @@ void TBWidgetsReader::LoadNodeTree(TBWidget *target, TBNode *node)
 bool TBWidgetsReader::DumpFile(TBWidget *source, const TBStr & filename)
 {
 	TBNode node;
-	if (!DumpNodeTree(source, &node))
-		return false;
-	if (!node.WriteFile(filename))
+	if (!CreateNode(&node, source) || !node.WriteFile(filename))
 		return false;
 	return true;
 }
@@ -792,23 +800,9 @@ bool TBWidgetsReader::DumpFile(TBWidget *source, const TBStr & filename)
 bool TBWidgetsReader::DumpData(TBWidget *source, TBStr & data)
 {
 	TBNode node;
-	DumpNodeTree(source, &node);
-	node.WriteNode(data);
+	if (!CreateNode(&node, source) || !node.WriteNode(data))
+		return false;
 	return true;
-}
-
-bool TBWidgetsReader::DumpNodeTree(TBWidget *source, TBNode *node)
-{
-	bool ok = true;
-	
-	// Dump the top widget into node
-	ok = CreateNode(node, source) && ok;
-
-	// Iterate through all widgets and create child nodes
-	for (TBWidget *child = source->GetFirstChild(); child; child = child->GetNext())
-		ok = CreateNode(node, child) && ok;
-
-	return ok;
 }
 
 void TBWidgetsReader::SetIDFromNode(TBID &id, TBNode *node)
@@ -868,7 +862,7 @@ bool TBWidgetsReader::CreateNode(TBNode *target, TBWidget *widget)
 	TBNode *new_node = TBNode::Create(widget->GetClassName());
 	if (!new_node)
 		return false;
-    INFLATE_INFO info(this, widget, new_node, sync_type);
+	INFLATE_INFO info(this, widget, new_node, sync_type);
 
 	// Read properties and add i to the hierarchy.
 	widget->OnDeflate(info);
