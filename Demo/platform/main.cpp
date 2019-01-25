@@ -33,7 +33,7 @@ bool port_main(int argc, char* argv[])
 
 #ifdef TB_TARGET_WINDOWS
 	// Set the current path to the directory of the app so we find
-	// assets also when visual studio start it.
+	// assets also when visual studio starts it.
 	char modname[MAX_PATH];
 	GetModuleFileName(NULL, modname, MAX_PATH);
 	TBTempBuffer buf;

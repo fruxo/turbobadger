@@ -165,8 +165,9 @@ if(TB_BUILD_DEMO_SDL2)
   if(EMSCRIPTEN)
     add_custom_command(TARGET TurboBadgerDemoSDL
       PRE_LINK
-      COMMAND rsync -av --exclude='*.psd' ${CMAKE_SOURCE_DIR}/resources /tmp/resources
-      COMMAND rsync -av --include='*/' --include='*.txt' --include='*.png' --exclude='*' ${CMAKE_CURRENT_SOURCE_DIR}/demo01 /tmp/demo01 )
+      COMMAND rm -rf /tmp/resources /tmp/demo01
+      COMMAND rsync -av --exclude='*.psd' ${CMAKE_SOURCE_DIR}/resources /tmp/
+      COMMAND rsync -av --include='*/' --include='*.txt' --include='*.png' --exclude='*' ${CMAKE_CURRENT_SOURCE_DIR}/demo01 /tmp )
   endif(EMSCRIPTEN)
 
 endif(TB_BUILD_DEMO_SDL2)

@@ -5,6 +5,13 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+//#include <emscripten/bind.h>
+#endif
+
 #include "tb_skin.h"
 #include "tb_system.h"
 #include "tb_msg.h"
@@ -198,8 +205,31 @@ AppBackendSDL2::~AppBackendSDL2()
 	g_renderer = nullptr;
 }
 
+#ifdef __EMSCRIPTEN__
+//using namespace emscripten;
+static AppBackendSDL2 *backend;
+void mainloop()
+{
+	// Event loop
+	SDL_Event event;
+	if (SDL_PollEvent(&event))
+		if (!backend->HandleSDLEvent(event))
+			SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "mainloop() unhandled SDL event: 0x%x\n", event.type);
+
+	// Decide when we should be called next
+	if (SDL_PollEvent(NULL))
+		emscripten_set_main_loop_timing(EM_TIMING_SETIMMEDIATE, 0);
+	else
+		emscripten_set_main_loop_timing(EM_TIMING_RAF, 1);
+}
+#endif // __EMSCRIPTEN__
+
 void AppBackendSDL2::EventLoop()
 {
+#ifdef __EMSCRIPTEN__
+	backend = this;
+	emscripten_set_main_loop(mainloop, 0, 1);
+#else
 	SDL_Event event;
 	do
 	{
@@ -209,6 +239,7 @@ void AppBackendSDL2::EventLoop()
 			SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, "Unhandled SDL event: 0x%x\n", event.type);
 
 	} while (!m_quit_requested);
+#endif
 }
 
 void AppBackendSDL2::OnAppEvent(const EVENT &ev)
@@ -237,8 +268,7 @@ void AppBackendSDL2::OnAppEvent(const EVENT &ev)
 }
 
 // Attempt to convert an sdl event to a TB event, return true if handled
-bool
-AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
+bool AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 {
 	bool handled = true;
 	switch (event.type) {
