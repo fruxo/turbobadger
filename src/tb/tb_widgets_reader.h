@@ -152,14 +152,14 @@ public:
 	/** Set the id from the given node. */
 	static void SetIDFromNode(TBID &id, TBNode *node);
 
-	bool LoadFile(TBWidget *target, const char *filename);
+	bool LoadFile(TBWidget *target, const TBStr & filename);
 	bool LoadData(TBWidget *target, const char *data);
 	bool LoadData(TBWidget *target, const char *data, int data_len);
 	void LoadNodeTree(TBWidget *target, TBNode *node);
 
-	bool DumpFile(TBWidget *source, const char *filename);
+	bool DumpFile(TBWidget *source, const TBStr & filename);
 	bool DumpData(TBWidget *source, TBStr & data);
-	void DumpNodeTree(TBWidget *source, TBNode *node);
+	bool DumpNodeTree(TBWidget *source, TBNode *node);
 private:
 	bool Init();
 	bool CreateWidget(TBWidget *target, TBNode *node);

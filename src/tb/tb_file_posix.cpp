@@ -29,7 +29,6 @@ public:
 	{
 		return fread(buf, elemSize, count, file);
 	}
-#ifdef TB_RUNTIME_DEBUG_INFO
 	virtual size_t Write(const void *buf, size_t elemSize, size_t count)
 	{
 		return fwrite(buf, elemSize, count, file);
@@ -38,7 +37,6 @@ public:
 	{
 		return Write(str.CStr(), 1, str.Length());
 	}
-#endif
 private:
 	FILE *file;
 };
@@ -57,11 +55,9 @@ TBFile *TBFile::Open(const TBStr & filename, TBFileMode mode)
 	case MODE_READ:
 		f = fopen(pathfile.CStr(), "rb");
 		break;
-#ifdef TB_RUNTIME_DEBUG_INFO
 	case MODE_WRITETRUNC:
 		f = fopen(pathfile.CStr(), "w");
 		break;
-#endif
 	default:
 		break;
 	}

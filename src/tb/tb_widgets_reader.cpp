@@ -162,7 +162,7 @@ void TBWidget::OnInflate(const INFLATE_INFO &info)
 	}
 }
 
-/** Create a named ID node, IF id != def */
+/** Create a named ID node, IFF id != def */
 static void OptCreateID(TBNode * target, const char * name, const TBID & id, const TBID def = TBID())
 {
 	if (id != def) {
@@ -747,7 +747,7 @@ TBWidgetsReader::~TBWidgetsReader()
 {
 }
 
-bool TBWidgetsReader::LoadFile(TBWidget *target, const char *filename)
+bool TBWidgetsReader::LoadFile(TBWidget *target, const TBStr & filename)
 {
 	TBNode node;
 	if (!node.ReadFile(filename))
@@ -779,10 +779,11 @@ void TBWidgetsReader::LoadNodeTree(TBWidget *target, TBNode *node)
 		CreateWidget(target, child);
 }
 
-bool TBWidgetsReader::DumpFile(TBWidget *source, const char *filename)
+bool TBWidgetsReader::DumpFile(TBWidget *source, const TBStr & filename)
 {
 	TBNode node;
-	DumpNodeTree(source, &node);
+	if (!DumpNodeTree(source, &node))
+		return false;
 	if (!node.WriteFile(filename))
 		return false;
 	return true;
@@ -796,14 +797,18 @@ bool TBWidgetsReader::DumpData(TBWidget *source, TBStr & data)
 	return true;
 }
 
-void TBWidgetsReader::DumpNodeTree(TBWidget *source, TBNode *node)
+bool TBWidgetsReader::DumpNodeTree(TBWidget *source, TBNode *node)
 {
+	bool ok = true;
+	
 	// Dump the top widget into node
-	CreateNode(node, source);
+	ok = CreateNode(node, source) && ok;
 
 	// Iterate through all widgets and create child nodes
 	for (TBWidget *child = source->GetFirstChild(); child; child = child->GetNext())
-		CreateNode(node, child);
+		ok = CreateNode(node, child) && ok;
+
+	return ok;
 }
 
 void TBWidgetsReader::SetIDFromNode(TBID &id, TBNode *node)

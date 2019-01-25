@@ -50,7 +50,7 @@ private:
     static int _dpi; //< the current dpi value
 };
 
-/** TBClipboard is a porting interface for the clipboard. */
+/** TBClipboard is a portable interface for the clipboard. */
 class TBClipboard
 {
 public:
@@ -68,7 +68,7 @@ public:
 	static bool GetText(TBStr &text);
 };
 
-/** TBFile is a porting interface for file access. */
+/** TBFile is a portable interface for file access. */
 class TBFile
 {
 public:
@@ -78,10 +78,8 @@ public:
 	virtual ~TBFile() {}
 	virtual long Size() = 0;
 	virtual size_t Read(void *buf, size_t elemSize, size_t count) = 0;
-#ifdef TB_RUNTIME_DEBUG_INFO
 	virtual size_t Write(const void *buf, size_t elemSize, size_t count) = 0;
 	virtual size_t Write(const TBStr & str) = 0;
-#endif
 };
 
 } // namespace tb

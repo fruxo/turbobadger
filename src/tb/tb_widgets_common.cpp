@@ -171,6 +171,7 @@ void TBButton::SetValue(long value)
 
 	if (value == GetValue())
 		return;
+
 	SetState(WIDGET_STATE_SELECTED, value ? true : false);
 
 	if (!this_widget.Get())
