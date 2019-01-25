@@ -156,9 +156,9 @@ void TBAnimationManager::AbortAnimation(TBAnimationObject *obj, bool delete_anim
 	{
 		animating_objects.Remove(obj);
 		obj->InvokeOnAnimationStop(true);
+		if (delete_animation)
+			delete obj;
 	}
-	if (delete_animation)
-		delete obj;
 }
 
 //static
