@@ -141,7 +141,7 @@ public:
 
 	/** Set the value in double precision. It only makes sense to use this instead
 		of SetValue() on widgets that store the value as double. F.ex TBScrollBar, TBSlider. */
-	virtual void SetValueDouble(double value) { TBStr v; v.SetFormatted("%.2f", value); SetText(v.CStr()); }
+	virtual void SetValueDouble(double value);
 
 	/** Return the value in double precision. */
 	virtual double GetValueDouble() const { return GetText().atof(); }
@@ -161,6 +161,10 @@ public:
 	virtual bool SetPlaceholderText(const TBStr & text) { return m_placeholder.SetText(text); }
 	virtual bool GetPlaceholderText(TBStr &text) const { return m_placeholder.GetText(text); }
 
+	/** The printf formatting string, used for formatting Set*Value(). */
+	void SetFormat(TBStr format);
+	const TBStr & GetFormat() const { return m_format; }
+
 	virtual void ScrollTo(int x, int y);
 	virtual TBWidget::ScrollInfo GetScrollInfo();
 	virtual TBWidget *GetScrollRoot() { return &m_root; }
@@ -169,6 +173,7 @@ public:
 	virtual void OnPaint(const PaintProps &paint_props);
 	virtual void OnPaintChildren(const PaintProps &paint_props);
 	virtual void OnInflate(const INFLATE_INFO &info);
+	virtual void OnDeflate(const INFLATE_INFO &info);
 	virtual void OnAdded();
 	virtual void OnFontChanged();
 	virtual void OnFocusChanged(bool focused);
@@ -183,6 +188,7 @@ private:
 	TBScrollBar m_scrollbar_y;
 	TBWidgetString m_placeholder;
 	EDIT_TYPE m_edit_type;
+	TBStr m_format;
 	TBEditFieldScrollRoot m_root;
 	TBEditFieldContentFactory m_content_factory;
 	TBStyleEdit m_style_edit;

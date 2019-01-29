@@ -23,6 +23,7 @@ usage () {
 usage:
  ${SRC_DIR}/$0
 
+  -h       this help message
   -o [dir] change build directory      
 
   -gl      build for open gl

@@ -91,6 +91,13 @@ bool TBTextField::SetText(const TBStr & text)
 	return m_text.SetText(text);
 }
 
+void TBTextField::SetValueDouble(double value)
+{
+	TBStr v;
+	v.SetFormatted(m_format ? (const char *)m_format : "%.2f", value);
+	SetText(v.CStr());
+}
+
 void TBTextField::SetSqueezable(bool squeezable)
 {
 	if (squeezable == m_squeezable)
@@ -98,6 +105,13 @@ void TBTextField::SetSqueezable(bool squeezable)
 	m_squeezable = squeezable;
 	Invalidate();
 	InvalidateLayout(INVALIDATE_LAYOUT_RECURSIVE);
+}
+
+void TBTextField::SetFormat(TBStr format)
+{
+	auto val = GetValueDouble();
+	m_format = format;
+	SetValueDouble(val);
 }
 
 PreferredSize TBTextField::OnCalculatePreferredContentSize(const SizeConstraints & /*constraints*/)

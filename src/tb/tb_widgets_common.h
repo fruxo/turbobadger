@@ -59,6 +59,13 @@ public:
 	virtual bool GetText(TBStr &text) const { return m_text.GetText(text); }
 	using TBWidget::GetText; ///< Make all versions in base class available.
 
+	/** Set the value in double precision. */
+	virtual void SetValueDouble(double value);
+
+	/** Return the value in double precision. */
+	virtual double GetValueDouble() const { return GetText().atof(); }
+
+	/** Is the text empty? */
 	bool IsEmpty() const { return m_text.IsEmpty(); }
 
 	/** Set which alignment the text should have if the space
@@ -71,12 +78,18 @@ public:
 	void SetSqueezable(bool squeezable);
 	bool GetSqueezable() const { return m_squeezable; }
 
+	/** The printf formatting string, used for formatting Set*Value(). */
+	void SetFormat(TBStr format);
+	const TBStr & GetFormat() const { return m_format; }
+
 	virtual void OnInflate(const INFLATE_INFO &info);
+	virtual void OnDeflate(const INFLATE_INFO &info);
 	virtual PreferredSize OnCalculatePreferredContentSize(const SizeConstraints &constraints);
 	virtual void OnFontChanged();
 	virtual void OnPaint(const PaintProps &paint_props);
 protected:
 	TBWidgetString m_text;
+	TBStr m_format;
 	int m_cached_text_width; ///< Cached width of m_text
 	bool m_squeezable;
 };

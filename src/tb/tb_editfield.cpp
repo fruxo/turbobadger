@@ -176,6 +176,20 @@ bool TBEditField::GetCustomSkinCondition(const TBSkinCondition::CONDITION_INFO &
 	return false;
 }
 
+void TBEditField::SetValueDouble(double value)
+{
+	TBStr v;
+	v.SetFormatted(m_format ? (const char *)m_format : "%.2f", value);
+	SetText(v.CStr());
+}
+
+void TBEditField::SetFormat(TBStr format)
+{
+	auto val = GetValueDouble();
+	m_format = format;
+	SetValueDouble(val);
+}
+
 void TBEditField::ScrollTo(int x, int y)
 {
 	int old_x = m_scrollbar_x.GetValue();

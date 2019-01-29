@@ -181,7 +181,7 @@ static void OptCreateID(TBNode * target, const char * name, const TBID & id, con
 static void OptCreateInt(TBNode * target, const char * name, const long val,
 						 const long def = (long)0xdeadbeef)
 {
-	if (val != def || def == 0xdeadbeef) {
+	if (val != def || def == (long)0xdeadbeef) {
 		TBNode * new_node = TBNode::Create(name);
 		new_node->GetValue().SetInt(val);
 		target->Add(new_node);
@@ -418,7 +418,30 @@ void TBEditField::OnInflate(const INFLATE_INFO &info)
 		else if (!strcmp(text_align, "right"))	SetTextAlign(TB_TEXT_ALIGN_RIGHT);
 		else TBDebugPrint("TBEditField: Unknown text-align '%s'\n", text_align.CStr());
 	}
+	if (TBStr format = info.node->GetValueString("format", nullptr))
+		SetFormat(std::move(format));
 	TBWidget::OnInflate(info);
+}
+
+void TBEditField::OnDeflate(const INFLATE_INFO &info)
+{
+	TBNode * node = info.node;
+	TBWidget::OnDeflate(info);
+	OptCreateInt(node, "multiline", GetMultiline(), false);
+	OptCreateInt(node, "styling", GetStyling(), false);
+	OptCreateInt(node, "readonly", GetReadOnly(), false);
+	OptCreateInt(node, "wrap", GetWrapping(), false);
+	OptCreateInt(node, "adapt-to-content", GetAdaptToContentSize(), false);
+	MTEnum type [] = {{"text", EDIT_TYPE_TEXT},
+					   {"search", EDIT_TYPE_SEARCH},
+					   {"password", EDIT_TYPE_PASSWORD},
+					   {"email", EDIT_TYPE_EMAIL},
+					   {"phone", EDIT_TYPE_PHONE},
+					   {"url", EDIT_TYPE_URL},
+					   {"number", EDIT_TYPE_NUMBER},
+					   {nullptr, 0}};
+	OptCreateEnum(node, "type", GetEditType(), EDIT_TYPE_TEXT, type, false);
+	OptCreateString(node, "format", GetFormat());
 }
 
 TB_WIDGET_FACTORY(TBLayout, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}
@@ -677,7 +700,15 @@ void TBTextField::OnInflate(const INFLATE_INFO &info)
 		else if (!strcmp(text_align, "center"))	SetTextAlign(TB_TEXT_ALIGN_CENTER);
 		else if (!strcmp(text_align, "right"))	SetTextAlign(TB_TEXT_ALIGN_RIGHT);
 	}
+	if (TBStr format = info.node->GetValueString("format", nullptr))
+		SetFormat(std::move(format));
 	TBWidget::OnInflate(info);
+}
+void TBTextField::OnDeflate(const INFLATE_INFO &info)
+{
+	TBNode * node = info.node;
+	TBWidget::OnDeflate(info);
+	OptCreateString(node, "format", GetFormat());
 }
 
 TB_WIDGET_FACTORY(TBSkinImage, TBValue::TYPE_NULL, WIDGET_Z_TOP) {}

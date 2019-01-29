@@ -6,6 +6,13 @@ if(TB_DEMO_IN_SRC)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
 endif()
 
+set (SANITIZER "${SANITIZER} -O1 -fsanitize=address -fno-omit-frame-pointer")
+#set (SANITIZER "${SANITIZER} -fsanitize=leak")
+#set (SANITIZER "${SANITIZER} -fsanitize=memory")
+set (SANITIZER "${SANITIZER} -fsanitize=undefined")
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG -g ${SANITIZER}")
+set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+
 include (ExternalProject)
 
 if (TB_GET_GLFW)
