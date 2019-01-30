@@ -16,6 +16,8 @@ jobs: # a collection of steps
           command: |
             #lsb_release -a
             sudo apt-get install -y cmake
+            # for glfw:
+            sudo apt-get install -y xorg-dev libglu1-mesa-dev
             #sudo apt-get install -y gcc g++ cmake
             gcc --version
             g++ --version
@@ -32,7 +34,6 @@ jobs: # a collection of steps
       - run:
           name: Test OpenVnmrJ
           command: |
-            export OVJ_BUILDDIR=$HOME
             echo run tests
       - run:
           name: Tests Failed
