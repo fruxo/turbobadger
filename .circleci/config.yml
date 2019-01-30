@@ -21,18 +21,19 @@ jobs: # a collection of steps
             #sudo apt-get install -y gcc g++ cmake
             gcc --version
             g++ --version
+            which gradlew
       - run:
-          name: Build OpenVnmrJ
+          name: Build TurboBadger
           command: |
             make sdl2
-            make glfw VERBOSE=1
+            make glfw
       - run:
           name: Build Failed
           when: on_fail
           command: |
             echo build fail
       - run:
-          name: Test OpenVnmrJ
+          name: Test TurboBadger
           command: |
             echo run tests
       - run:
