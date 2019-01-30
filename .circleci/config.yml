@@ -25,7 +25,7 @@ jobs: # a collection of steps
           name: Build OpenVnmrJ
           command: |
             make sdl2
-            make glfw
+            make glfw VERBOSE=1
       - run:
           name: Build Failed
           when: on_fail
