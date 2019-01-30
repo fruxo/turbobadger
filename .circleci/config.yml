@@ -21,12 +21,12 @@ jobs: # a collection of steps
             #sudo apt-get install -y gcc g++ cmake
             gcc --version
             g++ --version
-            which gradlew
       - run:
           name: Build TurboBadger
           command: |
             make sdl2
             make glfw
+            cd DemoAndroid2 && ./gradlew
       - run:
           name: Build Failed
           when: on_fail
