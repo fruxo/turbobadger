@@ -1,3 +1,0 @@
-[submodule "Demo/thirdparty/glfw"]
-	path = Demo/thirdparty/glfw
-	url = https://github.com/glfw/glfw.git
