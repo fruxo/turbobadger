@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required (VERSION 2.8)
 
 set (LOCAL_SRCS 
   tb_bitmap_fragment.cpp
@@ -70,15 +70,18 @@ set (LOCAL_SRCS
   utf8/utf8.cpp
   )
 
-if(TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
- file(GLOB SRCS tests/*.cpp)
- set(LOCAL_SRCS ${LOCAL_SRCS} ${SRCS})
-endif()
+if (TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
+ file (GLOB SRCS tests/*.cpp)
+ set (LOCAL_SRCS ${LOCAL_SRCS} ${SRCS})
+endif ()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set_property(SOURCE tb_image_loader_stb.cpp APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-function")
+  set_property (SOURCE tb_image_loader_stb.cpp APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-function")
 endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-add_library(TurboBadgerLib STATIC ${LOCAL_SRCS})
+
+add_library (TurboBadgerLib STATIC ${LOCAL_SRCS})
+target_include_directories (TurboBadgerLib PUBLIC ${GLFW_INCLUDE_DIRS})
+target_include_directories (TurboBadgerLib PUBLIC ${SDL2_INCLUDE_DIRS})
 
 if (NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
   install (TARGETS TurboBadgerLib

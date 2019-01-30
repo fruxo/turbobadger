@@ -11,7 +11,7 @@ bool port_main(int argc, char* argv[])
 #ifdef TB_CLIPBOARD_GLFW
 	AppBackendGLFW *backend = new AppBackendGLFW();
 #endif
-#ifdef TB_SYSTEM_SDL
+#ifdef TB_SYSTEM_SDL2
 	AppBackendSDL2 *backend = new AppBackendSDL2();
 #endif
 

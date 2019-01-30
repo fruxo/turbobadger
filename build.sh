@@ -27,11 +27,11 @@ usage:
   -o [dir] change build directory      
 
   -gl      build for open gl
-  -gl3     build for open gl3 (use with -sdl)
-  -gles2   build for open gles2 (use with -sdl)
+  -gl3     build for open gl3 (use with -sdl2)
+  -gles2   build for open gles2 (use with -sdl2)
 
   -em      build for emscripten
-  -sdl     build for sdl
+  -sdl2    build for sdl2
   -glfw    build for glfw
 
   -v       be more verbose
@@ -59,7 +59,7 @@ while [ $# -gt 0 ]; do
             BUILD_DIR="BuildEmsc"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
             source ${HOME}/local/emsdk/emsdk_env.sh
             #${EMSCRIPTEN}/emcc --clear-cache --clear-ports
@@ -67,11 +67,11 @@ while [ $# -gt 0 ]; do
             #CMAKE_FLAGS="${CMAKE_FLAGS} -G Unix Makefiles"
             ;;
         -sdl*)
-            BUILD_DIR="BuildSDL"
+            BUILD_DIR="BuildSDL2"
             #CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_GET_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
             ;;
         -glfw)

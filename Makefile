@@ -1,11 +1,16 @@
 
+all: glfw sdl2 em
+
 glfw:
+	[ -d BuildGLFW ] || ./build.sh -glfw -gl
 	cd BuildGLFW && $(MAKE)
 
-sdl:
-	cd BuildSDL && $(MAKE)
+sdl2:
+	[ -d BuildSDL2 ] || ./build.sh -sdl2 -gl3
+	cd BuildSDL2 && $(MAKE)
 
 em:
+	[ -d BuildEmsc ] || ./build.sh -em -gles2
 	cd BuildEmsc && $(MAKE)
 
 xc:
@@ -14,6 +19,9 @@ xc:
 ios:
 	cd Build-iOS   && xcrun xcodebuild -project "turbobadger.xcodeproj" -target turbobadger
 
-%:
-	cd Build && $(MAKE) $@
+and:
+	cd DemoAndroid && ninja
 
+#%:
+#	cd Build && $(MAKE) $@
+#

@@ -6,7 +6,7 @@
 #include "tb_system.h"
 #include <iostream>
 
-#ifdef TB_SYSTEM_SDL
+#ifdef TB_SYSTEM_SDL2
 
 #include "tb_msg.h"
 #include "tb_types.h"
@@ -228,4 +228,4 @@ const char * TBSystem::GetRoot()
 
 } // namespace tb
 
-#endif // TB_SYSTEM_SDL
+#endif // TB_SYSTEM_SDL2

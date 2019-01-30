@@ -1,7 +1,7 @@
 // -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 #include "Application.h"
 
-#ifdef TB_SYSTEM_SDL
+#ifdef TB_SYSTEM_SDL2
 
 #include "tb_widgets.h"
 #include "renderers/tb_renderer_gl.h"

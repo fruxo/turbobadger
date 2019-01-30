@@ -58,7 +58,7 @@ int TBSystem::GetDPI()
 	return 96;
 }
 
-#ifndef TB_SYSTEM_SDL
+#ifndef TB_SYSTEM_SDL2
 const char * TBSystem::GetRoot()
 {
 	return "./";
