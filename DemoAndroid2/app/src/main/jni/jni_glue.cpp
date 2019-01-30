@@ -189,7 +189,7 @@ JNI_VOID_TB_LIB(OnPointer)(JNIEnv *env, jobject obj, jfloat x, jfloat y, jint do
 	if (down)
 		root->InvokePointerDown(x, y, counter, TB_MODIFIER_NONE, true);
 	else
-		root->InvokePointerUp(x, y, TB_MODIFIER_NONE, true);
+		root->InvokePointerUp(x, y, counter, TB_MODIFIER_NONE, true);
 }
 
 JNI_VOID_TB_LIB(OnPointer2)(JNIEnv *env, jobject obj, jfloat x, jfloat y, jint down)

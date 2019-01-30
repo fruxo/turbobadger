@@ -79,7 +79,13 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   set_property (SOURCE tb_image_loader_stb.cpp APPEND_STRING PROPERTY COMPILE_FLAGS " -Wno-unused-function")
 endif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 
-add_library (TurboBadgerLib STATIC ${LOCAL_SRCS})
+if (ANDROID)
+  add_library (TurboBadgerLib SHARED ${LOCAL_SRCS})
+  target_link_libraries (TurboBadgerLib log atomic android EGL GLESv1_CM)
+else (ANDROID)
+  add_library (TurboBadgerLib STATIC ${LOCAL_SRCS})
+endif (ANDROID)
+
 target_include_directories (TurboBadgerLib PUBLIC ${GLFW_INCLUDE_DIRS})
 target_include_directories (TurboBadgerLib PUBLIC ${SDL2_INCLUDE_DIRS})
 

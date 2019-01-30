@@ -14,7 +14,7 @@
 /** Enable for some handy runtime debugging, enabled by modifying
 	the various settings in g_tb_debug. A settings window can be
 	shown by calling ShowDebugInfoSettingsWindow. */
-#ifndef NDEBUG
+#if !defined(NDEBUG) && !defined(TB_RUNTIME_DEBUG_INFO)
 #define TB_RUNTIME_DEBUG_INFO
 #endif
 

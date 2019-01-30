@@ -26,7 +26,7 @@ jobs: # a collection of steps
           command: |
             make sdl2
             make glfw
-            cd DemoAndroid2 && ./gradlew
+            cd DemoAndroid2 && ./gradlew build
       - run:
           name: Build Failed
           when: on_fail

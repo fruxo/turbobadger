@@ -134,7 +134,10 @@ void Init(unsigned int width, unsigned int height)
 	g_tb_lng->Load("language/lng_en.tb.txt");
 
 	// Load the default skin, and override skin that contains the graphics specific to the demo.
-	g_tb_skin->Load("skin/skin.tb.txt", "demo_skin/skin.tb.txt");
+	if (!g_tb_skin->Load("skin/skin.tb.txt", "demo_skin/skin.tb.txt"))
+	    TBDebugOut("Load Skin Failed\n");
+    else
+        TBDebugOut("Load Skin OK\n");
 
 	// Register tbbf font renderer
 	void register_tbbf_font_renderer();
@@ -167,7 +170,7 @@ void Resize(unsigned int width, unsigned int height)
 
 void Update()
 {
-	// FIX: This should be schedueled, and we should only paint when needed.
+	// FIX: This should be scheduled, and we should only paint when needed.
 	TBMessageHandler::ProcessMessages();
 
 	root->InvokeProcessStates();
@@ -186,7 +189,7 @@ void Render()
 	root->InvokePaint(TBWidget::PaintProps());
 
 	static int fps = 0;
-	static uint32 frame_counter = 0;
+	static uint32_t frame_counter = 0;
 	static double frame_counter_reset_time = TBSystem::GetTimeMS();
 
 	frame_counter++;
@@ -203,7 +206,7 @@ void Render()
 	// Draw FPS
 	TBStr str;
 	str.SetFormatted("FPS: %d", fps);
-	root->GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str);
+	root->GetFont()->DrawString(5, 5, TBColor(255, 255, 255), str.CStr());
 
 	g_renderer->EndPaint();
 }

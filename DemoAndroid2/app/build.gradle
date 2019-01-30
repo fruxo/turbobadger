@@ -13,9 +13,10 @@ android {
         externalNativeBuild {
             cmake {
                 arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_STL=c++_static",
-                        "-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON",
-                        "-DANDROID_ARM_MODE=arm"
-                targets "TurboBadgerLib"
+                        "-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON", "-DSKIP_INSTALL_ALL=ON",
+                        "-DTB_RENDERER_GLES_1=ON", "-DTB_ALWAYS_SHOW_EDIT_FOCUS=ON",
+                        "-DANDROID_ARM_MODE=arm", "-DTB_BUILD_DEMO_ANDROID=ON"
+                targets "TurboBadger"
             }
         }
 

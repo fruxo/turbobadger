@@ -58,7 +58,7 @@ class TBView extends GLSurfaceView
 		// Make focusable so the keyboard works.
 		setFocusableInTouchMode(true);
 
-		// FIX: Use this when i have timer code in place, for correct scheduleing.
+		// FIX: Use this when i have timer code in place for correct scheduling.
 		// setRenderMode(RENDERMODE_WHEN_DIRTY);
 
 		// Create an OpenGL ES 2.0 context

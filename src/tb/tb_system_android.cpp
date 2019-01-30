@@ -7,6 +7,9 @@
 
 #ifdef TB_SYSTEM_ANDROID
 
+#include "tb_debug.h"
+#include "tb_str.h"
+
 #include <android/log.h>
 #include <sys/time.h>
 #include <stdio.h>
@@ -17,15 +20,15 @@
 #include <android/asset_manager_jni.h>
 #include <android/configuration.h>
 
-#ifdef TB_RUNTIME_DEBUG_INFO
+#if defined(TB_RUNTIME_DEBUG_INFO) || 1
 
 #define  LOG_TAG    "TB"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
-void TBDebugOut(const char *str)
+void TBDebugOut(const tb::TBStr & str)
 {
-	LOGI("%s", str);
+	LOGI("%s", str.CStr());
 }
 
 #endif // TB_RUNTIME_DEBUG_INFO
@@ -71,7 +74,7 @@ int TBSystem::GetDPI()
 {
 	AConfiguration *config = AConfiguration_new();
 	AConfiguration_fromAssetManager(config, g_pManager);
-	int32_t_t density = AConfiguration_getDensity(config);
+	int32_t density = AConfiguration_getDensity(config);
 	AConfiguration_delete(config);
 	if (density == 0 || density == ACONFIGURATION_DENSITY_NONE)
 		return 120;
@@ -94,6 +97,9 @@ public:
 	{
 		return AAsset_read(file, buf, elemSize * count);
 	}
+	virtual size_t Write(const void *buf, size_t elemSize, size_t count) {return 0;}
+	virtual size_t Write(const TBStr & str) {return 0;}
+
 private:
 	AAsset *file;
 };
