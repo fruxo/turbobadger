@@ -32,7 +32,7 @@ public:
 	void Set(uint32_t newid)		{ id = newid; }
 	void Set(const char *string)	{ id = TBGetHash(string); }
 	void Set(const TBID &newid)		{ id = newid; }
-	void Set(const TBStr &str)		{ Set((const char *)str); }
+	void Set(const TBStr &str)		{ id = TBGetHash((const char *)str); }
 #endif
 
 	operator uint32_t () const		{ return id; }
