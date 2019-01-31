@@ -5,10 +5,17 @@ Turbo Badger is a small GUI library that provides a large number of skinnable wi
 a flexible event system, and well-abstracted rendering, all in a very nicely designed and 
 packaged programming interface.
 
-<a href="https://github.com/fruxo/turbobadger">The main GitHub repository is here.</a>
+<a href="https://github.com/fruxo/turbobadger">The original GitHub repository is here.</a>
+
+<a href="https://github.com/tesch1/turbobadger">The branch GitHub repository is here.</a>
+
+Here's an example of TurboBadgerDemo running in the browser via Emscripten:
+  <A HREF="TurboBadgerDemoSDL.html">TurboBadgerDemoSDL.html</A>
 
 The default skin looks like this:
-\image html Demo/screenshot/screenshot_01.png
+
+  \imageSize{screenshot_01.png,width:50%;}
+  \image html Demo/screenshot/screenshot_01.png
 
 */
 

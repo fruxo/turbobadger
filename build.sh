@@ -45,7 +45,16 @@ while [ $# -gt 0 ]; do
     key="$1"
     case $key in
         -o)                    BUILD_DIR=$(mkdir -p "$2" && cd "$2" && pwd); shift ;;
-        -C|--clang)            export CC=clang; export CXX=clang++ ;;
+        -C|--clang)
+            export CC=clang
+            export CXX=clang++
+            ;;
+        -doc*)
+            # take a detour, update the gh-pages branch
+            ./doc/ghpages.sh
+            echo "Made docs"
+            exit 0
+            ;;
         -gl)
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON"
             ;;
@@ -61,6 +70,7 @@ while [ $# -gt 0 ]; do
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GLES_2=ON"
             source ${HOME}/local/emsdk/emsdk_env.sh
             #${EMSCRIPTEN}/emcc --clear-cache --clear-ports
             CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_TOOLCHAIN_FILE=${EMSCRIPTEN}/cmake/Modules/Platform/Emscripten.cmake"

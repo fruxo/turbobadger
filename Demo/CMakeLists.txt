@@ -1,10 +1,8 @@
 # Use project source dir for demo output. We have to set
 # the release and debug specific defines too, for MSVC.
-if(TB_DEMO_IN_SRC)
-  set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR})
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
-endif()
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
 
 set (SANITIZER "${SANITIZER} -O1 -fsanitize=address -fno-omit-frame-pointer")
 #set (SANITIZER "${SANITIZER} -fsanitize=leak")
