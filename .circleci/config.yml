@@ -48,4 +48,5 @@ jobs: # a collection of steps
             echo failed
       - store_artifacts:
           name: Store Results
-          path: /home/...
+          path: app/build/reports
+          destination: reports
