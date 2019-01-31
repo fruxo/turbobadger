@@ -22,10 +22,15 @@ jobs: # a collection of steps
             gcc --version
             g++ --version
       - run:
-          name: Build TurboBadger
+          name: Build TurboBadger SDL2
+          command: make sdl2
+      - run:
+          name: Build TurboBadger GLFW
+          command: make glfw
+      - run:
+          name: Build TurboBadger Android
           command: |
-            make sdl2
-            make glfw
+            echo "ANDROID_NDK_HOME: $ANDROID_NDK_HOME"
             cd DemoAndroid2 && ./gradlew build
       - run:
           name: Build Failed
