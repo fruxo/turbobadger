@@ -154,6 +154,8 @@ void Init(unsigned int width, unsigned int height)
 
 	// Create the font now.
 	TBFontFace *font = g_font_manager->CreateFontFace(g_font_manager->GetDefaultFontDescription());
+    if (!font)
+        TBDebugOut("Load Default Font Failed\n");
 
 	// Give the root widget a background skin
 	root->SetSkinBg("background_solid");

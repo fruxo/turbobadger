@@ -285,13 +285,12 @@ endif (TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
 
 # Android demo
 if (TB_BUILD_DEMO_ANDROID)
+  target_compile_definitions (TurboBadgerLib PUBLIC -DTB_RUNTIME_DEBUG_INFO=1)
   message ("CMAKE_ANDROID_ASSETS_DIRECTORIES: ${CMAKE_ANDROID_ASSETS_DIRECTORIES}")
   list (APPEND CMAKE_ANDROID_ASSETS_DIRECTORIES "${CMAKE_SOURCE_DIR}/resources/language")
-  add_definitions (-DTB_RUNTIME_DEBUG_INFO=1)
   add_library (TurboBadger SHARED
     ./DemoAndroid2/app/src/main/jni/jni_glue.cpp
     ./DemoAndroid2/app/src/main/jni/App.cpp
-#    $<TARGET_OBJECTS:TurboBadgerLib>
     )
   #set_target_properties (TurboBadger ANDROID_ASSETS_DIRECTORIES "${CMAKE_SOURCE_DIR}/resources/default_skin")
   target_link_libraries (TurboBadger TurboBadgerLib)
