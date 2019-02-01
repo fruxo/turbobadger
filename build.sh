@@ -21,10 +21,10 @@ fi
 usage () {
     cat <<EOF
 usage:
- ${SRC_DIR}/$0
+ $0 [options]
 
   -h       this help message
-  -o [dir] change build directory      
+  -o [dir] set build directory      
 
   -gl      build for open gl
   -gl3     build for open gl3 (use with -sdl2)
@@ -99,6 +99,7 @@ while [ $# -gt 0 ]; do
                                ;;
         -q|--quiet)            VERBOSE=$(( ${VERBOSE} - 1 ))
                                ;;
+        -h|--help)             usage ;;
         *)
             # unknown option
             echo "unknown option $key"

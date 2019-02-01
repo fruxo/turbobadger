@@ -1,14 +1,52 @@
-Branch Notice
------------------------------------------------------------------------------------
+Branch Notice - HastyBadger
+---------------------------
 
-This is a significant branch away from the original Turbo Badger.
-There are many changes.  In particular the move to c++14, and
-out-of-the box SDL2 / GLES2 / GL3 / Emscripten demos.  My design goals
-are to be more user-friendly, but potentially more bloated than the
-original TurboBadger.
+Hasty is not Turbo.
 
-If there's enough interest in this branch, maybe it will get a new
-name.
+HastyBadger is a branch of the excellent widget and GUI library [Turbo
+Badger](https://github.com/fruxo/turbobadger).  In particular the move
+to c++14, and out-of-the box SDL2 / GLES2 / GL3 / Emscripten demos.
+The aim is to be user friendly at the cost of being a bit more bloated
+than TurboBadger.
+
+[![CircleCI](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger.svg?style=svg)](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger)
+
+Differences from TurboBadger
+----------------------------
+
+- [SDL2 Platform Demo](Demo/platform/port_sdl2.cpp)
+- [Android Studio Project](DemoAndroid2/)
+- [Emscripten Platform Demo](http://tesch1.github.io/turbobadger/TurboBadgerDemoSDL.html)
+- [Basic GL3 and GLES2 Renderers](src/tb/renderers/tb_renderer_gl.cpp)
+- [CircleCI Continuous Integration](https://circleci.com/gh/tesch1/turbobadger)
+
+Quick Start
+-----------
+
+```sh
+$ ./build -h
+usage:
+ ./build.sh [options]
+
+  -h       this help message
+  -o [dir] set build directory      
+
+  -gl      build for open gl
+  -gl3     build for open gl3
+  -gles2   build for open gles2
+
+  -em      build for emscripten
+  -sdl2    build for sdl2
+  -glfw    build for glfw
+
+  -v       be more verbose
+  -q       be less verbose
+```
+
+The Turbo Badger README
+-----------------------
+
+```text
 
 Turbo Badger - Fast UI toolkit for hardware accelerated games & applications.
 -----------------------------------------------------------------------------------
@@ -159,7 +197,7 @@ Author
 Emil Segerås
 Web: <http://fiffigt.com>  
 
-Turbo Badger home: <https://github.com/fruxo/turbobadger>  
+Turbo Badger home: <https://github.com/fruxo/turbobadger>
 
 
 Screenshot
@@ -168,3 +206,5 @@ Screenshot
 Some of the windows in the Demo application for desktop, using the default skin.
 
 ![Default skin](Demo/screenshot/screenshot_01.png)
+
+```
