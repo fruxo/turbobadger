@@ -1,17 +1,13 @@
 version: 2.1
-jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
-    
-    working_directory: ~/turbobadger # directory where steps will run
 
-    docker: # run the steps with Docker
-#      - image: buildpack-deps:xenial
-#      - image: ubuntu:16.04
-      - image: circleci/android:api-23-ndk
-#      - image: trzeci/emscripten
-#      - image: trzeci/emscripten-slim
-
-    steps: # a collection of executable commands
+commands:
+  get_build_test:
+    description: "Checkout, Build, and Test"
+    parameters:
+      platform:
+        type: string
+        default: "GenericPlatform"
+    steps:
       - checkout # check out source code to working directory
       - run:
           name: Install System Dependencies
@@ -52,3 +48,17 @@ jobs: # a collection of steps
           name: Store Results
           path: app/build/reports
           destination: reports
+
+jobs: # a collection of steps
+  build: # runs not using Workflows must have a `build` job as entry point
+    working_directory: ~/turbobadger # directory where steps will run
+
+    docker: # run the steps with Docker
+#      - image: buildpack-deps:xenial
+#      - image: ubuntu:16.04
+      - image: circleci/android:api-23-ndk
+#      - image: trzeci/emscripten
+#      - image: trzeci/emscripten-slim
+
+    steps: # a collection of executable commands
+      - get_build_test
