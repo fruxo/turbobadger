@@ -4,11 +4,16 @@ Branch Notice - HastyBadger
 Hasty is not Turbo.
 
 HastyBadger is a branch of the excellent widget and GUI library [Turbo
-Badger](https://github.com/fruxo/turbobadger).  In particular the move
-to c++14, and out-of-the box SDL2 / GLES2 / GL3 / Emscripten demos.
-The aim is to be user friendly at the cost of being a bit more bloated
-than TurboBadger.
+Badger](https://github.com/fruxo/turbobadger).  Notabe additions are
+c++14 and out-of-the box SDL2 / GLES2 / GL3 / Emscripten demos, plus
+continuous integration to ease community contribution.  The aim is to
+be super user friendly at the cost of being a bit more bloated than
+TurboBadger.
 
+The HastyBadger is a work in progress, contributions and constructive
+commentary are welcome!
+
+Current build status:
 [![CircleCI](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger.svg?style=svg)](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger)
 
 Differences from TurboBadger
@@ -19,6 +24,17 @@ Differences from TurboBadger
 - [Emscripten Platform Demo](http://tesch1.github.io/turbobadger/TurboBadgerDemoSDL.html)
 - [Basic GL3 and GLES2 Renderers](src/tb/renderers/tb_renderer_gl.cpp)
 - [CircleCI Continuous Integration](https://circleci.com/gh/tesch1/turbobadger)
+
+Current TODOs
+-------------
+
+- create iOS demo
+- code test coverage measures
+- fix/text macos Xcode demo
+- fix Android Demo
+- fix Windows Demo
+- port over last few months of active TB development to HB
+- make the docs prettier, cleanup 
 
 Quick Start
 -----------
