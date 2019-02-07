@@ -41,8 +41,10 @@
 #else
 #include <GLES/gl.h>
 #endif
-
-#ifdef ANDROID
+#if defined(ANDROID)
+#include <android/ndk-version.h>
+#endif
+#if defined(ANDROID) && __NDK_MAJOR__ < 19
 extern PFNGLBINDVERTEXARRAYOESPROC glBindVertexArrayOESEXT;
 extern PFNGLDELETEVERTEXARRAYSOESPROC glDeleteVertexArraysOESEXT;
 extern PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT;
