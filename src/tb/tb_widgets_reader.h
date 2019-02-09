@@ -153,6 +153,8 @@ public:
 	static void SetIDFromNode(TBID &id, TBNode *node);
 
 	bool LoadFile(TBWidget *target, const TBStr & filename);
+	bool LoadFormatted(TBWidget *target, const char *format, ...)
+		__attribute__ ((format (printf, 3, 4)));
 	bool LoadData(TBWidget *target, const char *data);
 	bool LoadData(TBWidget *target, const char *data, int data_len);
 	void LoadNodeTree(TBWidget *target, TBNode *node);

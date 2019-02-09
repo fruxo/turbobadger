@@ -35,7 +35,7 @@ public:
 	{
 		SetID("DebugSettingsWindow");
 		SetText("Debug settings");
-		g_widgets_reader->LoadData(this,
+		g_widgets_reader->LoadFormatted(this,
 			"TBLayout: axis: y, distribution: available, position: left\n"
 			"	TBLayout: id: 'container', axis: y, size: available\n"
 			"	TBTextField: text: 'Event output:'\n"
