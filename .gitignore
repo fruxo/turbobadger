@@ -34,6 +34,11 @@ gen
 documentation
 doc/html
 
+DemoAndroid2/.gradle
+DemoAndroid2/app/build/
+DemoAndroid2/app/.externalNativeBuild/
+DemoAndroid2/build
+
 DemoAndroid/libs
 DemoAndroid/assets/demo_skin
 DemoAndroid/assets/font
