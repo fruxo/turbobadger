@@ -71,8 +71,7 @@ public:
 	TBStr(const char* str, int len);
 
 	bool Set(TBStr str) { *this = str; return true; }
-	bool SetFormatted(const char* format, ...)
-		__attribute__ ((format (printf, 2, 3)));
+	bool SetFormatted(const char* format, ...) TB_POST_FORMAT(2,3);
 
 	void Clear();
 
