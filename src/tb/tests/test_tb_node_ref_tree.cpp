@@ -135,6 +135,16 @@ TB_TEST_GROUP(tb_node_ref_tree)
 		TB_VERIFY_STR(edit->GetText(), "hello");
 	}
 
+	TB_TEST(load_formatted)
+	{
+		TBWidget root;
+		g_widgets_reader->LoadFormatted(&root,	"SomeDeclarations\n"
+										"TBEditField: id: '%s', text:'%s'\n", "the_id", "hello");
+		TBEditField *edit = root.GetWidgetByIDAndType<TBEditField>(TBIDC("the_id"));
+		TB_VERIFY(edit);
+		TB_VERIFY_STR(edit->GetText(), "hello");
+	}
+
 	TB_TEST(reference_condition)
 	{
 		TBNodeRefTree dt("test_settings");

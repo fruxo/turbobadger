@@ -53,6 +53,14 @@ T ClampClipMax(const T& value, const T& min, const T& max)
 #define ABS(value) Abs(value)
 #endif
 
+#ifndef _WIN32
+/** Mark a function as taking printf-style arguments */
+#define TB_POST_FORMAT(a,b) __attribute__ ((format (printf, a, b)))
+#else
+/** Mark a function as taking printf-style arguments */
+#define TB_POST_FORMAT(a,b)
+#endif
+
 #ifndef CLAMP
 /** This is deprecated! Use Clamp(value, min, max)! */
 #define CLAMP(value, min, max) Clamp(value, min, max)

@@ -14,6 +14,7 @@
 #include "tb_font_renderer.h"
 #include "tb_toggle_container.h"
 #include "image/tb_image_widget.h"
+#include <stdarg.h>
 
 namespace tb {
 
@@ -796,6 +797,47 @@ bool TBWidgetsReader::LoadFile(TBWidget *target, const TBStr & filename)
 		return false;
 	LoadNodeTree(target, &node);
 	return true;
+}
+
+bool TBWidgetsReader::LoadFormatted(TBWidget *target, const char *format, ...)
+{
+	if (!format)
+		return true;
+	va_list ap;
+	int max_len = 64;
+	char *new_s = nullptr;
+	while (true)
+	{
+		if (char *tris_try_new_s = (char *) realloc(new_s, max_len))
+		{
+			new_s = tris_try_new_s;
+
+			va_start(ap, format);
+			int ret = vsnprintf(new_s, max_len, format, ap);
+			va_end(ap);
+
+			if (ret > max_len) // Needed size is known (+2 for termination and avoid ambiguity)
+				max_len = ret + 2;
+			else if (ret == -1 || ret >= max_len - 1) // Handle some buggy vsnprintf implementations.
+				max_len *= 2;
+			else
+			{
+				// Everything fit for sure
+				TBNode node;
+				node.ReadData(new_s, ret);
+				LoadNodeTree(target, &node);
+				free(new_s);
+				return true;
+			}
+		}
+		else
+		{
+			// Out of memory
+			free(new_s);
+			break;
+		}
+	}
+	return false;
 }
 
 bool TBWidgetsReader::LoadData(TBWidget *target, const char *data)

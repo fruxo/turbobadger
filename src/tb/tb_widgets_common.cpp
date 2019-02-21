@@ -700,8 +700,11 @@ bool TBSliderX<VAL_T>::OnEvent(const TBWidgetEvent &ev)
 		{
 			int dx = ev.target_x - pointer_down_widget_x;
 			int dy = ev.target_y - pointer_down_widget_y;
-			VAL_T delta_val = (m_axis == AXIS_X ? dx : -dy) / m_to_pixel_factor;
-			SetValueVal(m_step * (long)((m_value + delta_val) / m_step));
+			double delta_val = (m_axis == AXIS_X ? dx : -dy) / m_to_pixel_factor;
+			if (ev.modifierkeys)
+				SetValueVal(m_step * (double)((m_value + delta_val) / m_step));
+			else
+				SetValueVal(m_step * (long)((m_value + delta_val) / m_step));
 		}
 		return true;
 	}

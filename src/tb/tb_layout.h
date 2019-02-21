@@ -15,7 +15,11 @@ namespace tb {
 
 /** Specifies which height widgets in a AXIS_X layout should have,
 	or which width widgets in a AXIS_Y layout should have.
-	No matter what, it will still prioritize minimum and maximum for each widget. */
+	No matter what, it will still prioritize minimum and maximum for each widget.
+
+	@See TBLayout
+	@See TBLayout::SetLayoutSize
+ */
 enum LAYOUT_SIZE {
 	LAYOUT_SIZE_GRAVITY,	///< Sizes depend on the gravity for each widget. (If the widget pulls
 							///< towards both directions, it should grow to all available space)
@@ -24,7 +28,12 @@ enum LAYOUT_SIZE {
 };
 
 /** Specifies which y position widgets in a AXIS_X layout should have,
-	or which x position widgets in a AXIS_Y layout should have. */
+	or which x position widgets in a AXIS_Y layout should
+	have. Attribute: 'position'.
+
+	@See TBLayout
+	@See TBLayout::SetLayoutPosition
+ */
 enum LAYOUT_POSITION {
 	LAYOUT_POSITION_CENTER,			///< Position is centered. [default]
 	LAYOUT_POSITION_LEFT_TOP,		///< Position is to the left for AXIS_Y layout and top for AXIS_X layout.
@@ -33,8 +42,13 @@ enum LAYOUT_POSITION {
 									///< towards both directions, it will be centered)
 };
 
-/** Specifies which width widgets in a AXIS_X layout should have,
-	or which height widgets in a AXIS_Y layout should have. */
+/** Specifies which width widgets in a AXIS_X layout should have, or
+	which height widgets in a AXIS_Y layout should have.  Attribute:
+	'distribution'.
+
+	@See TBLayout
+	@See TBLayout::SetLayoutDistribution
+ */
 enum LAYOUT_DISTRIBUTION {
 	LAYOUT_DISTRIBUTION_PREFERRED,	///< Size will be the preferred so each widget may be sized differently. [default]
 	LAYOUT_DISTRIBUTION_AVAILABLE,	///< Size should grow to all available space
@@ -44,7 +58,11 @@ enum LAYOUT_DISTRIBUTION {
 
 /** Specifies how widgets should be moved horizontally in a AXIS_X
 	layout (or vertically in a AXIS_Y layout) if there is extra space
-	available. */
+	available.  Attribute: 'distribution-position'.
+
+	@See TBLayout
+	@See TBLayout::SetLayoutDistributionPosition
+ */
 enum LAYOUT_DISTRIBUTION_POSITION {
 	LAYOUT_DISTRIBUTION_POSITION_CENTER,		///< Position centered. [default]
 	LAYOUT_DISTRIBUTION_POSITION_LEFT_TOP,		///< Position to the upper left.
