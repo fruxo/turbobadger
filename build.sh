@@ -6,6 +6,12 @@ set -e
 : ${VERBOSE=0}
 : ${BUILD_DIR=Build}
 : ${MAKE_FLAGS=}
+# if available, use cmake3
+if command -v cmake3 >/dev/null 2>&1 ; then
+    : ${CMAKE=cmake3}
+else
+    : ${CMAKE=cmake}
+fi
 : ${CMAKE_FLAGS=-DTB_SYSTEM_LINUX=ON}
 
 SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
