@@ -34,7 +34,11 @@ bool tb_core_init(TBRenderer *renderer)
 	g_image_manager = new TBImageManager();
 #endif
 	return renderer && g_tb_lng && g_font_manager && g_tb_skin
-		&& g_widgets_reader && g_image_manager;
+		&& g_widgets_reader
+#ifdef TB_IMAGE
+		&& g_image_manager
+#endif
+;
 }
 
 void tb_core_shutdown()

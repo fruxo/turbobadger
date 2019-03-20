@@ -23,7 +23,6 @@ namespace tb {
 const char *stristr(const char *arg1, const char *arg2);
 
 /** Simple string class that doesn't own or change the string pointer. */
-
 class TBStrC
 {
 protected:
