@@ -22,6 +22,9 @@ ios:
 and:
 	cd DemoAndroid && ninja
 
+distclean:
+	rm -rf BuildGLFW BuildSDL2 BuildEmsc Build-Xcode/turbobadger.xcodeproj Build-iOS/turbobadger.xcodeproj
+
 #%:
 #	cd Build && $(MAKE) $@
 #
