@@ -472,7 +472,15 @@ bool AppBackendSDL2::HandleSDLEvent(SDL_Event & event)
 		break;
 	}
 	case SDL_USEREVENT:
-		// event.user;
+		if (event.user.code == 3) {
+			// user.code == 3 is sent by tb_sdl_timer_callback(Uint32 interval, void *param)
+			TBMessageHandler::ProcessMessages();
+			// If we still have things to do (because we didn't process all messages,
+			// or because there are new messages), we need to rescedule, so call RescheduleTimer.
+			double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
+			if (next_fire_time != TB_NOT_SOON)
+				TBSystem::RescheduleTimer(next_fire_time);
+		}
 		// draw event
 		if (m_has_pending_update)
 		{

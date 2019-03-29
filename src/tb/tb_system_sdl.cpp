@@ -133,7 +133,6 @@ double TBSystem::GetTimeMS()
 static SDL_TimerID tb_sdl_timer_id = 0;
 static void tb_sdl_timer_callback(void *param)
 {
-
 	double next_fire_time = TBMessageHandler::GetNextMessageFireTime();
 	double now = TBSystem::GetTimeMS();
 	if (next_fire_time != TB_NOT_SOON && (next_fire_time - now) > 1.0)
