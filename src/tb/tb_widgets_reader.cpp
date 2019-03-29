@@ -251,6 +251,10 @@ void TBWidget::OnDeflate(const INFLATE_INFO &info)
 	TBNode * node = info.node;
 	OptCreateID(node, "id", GetID());
 	OptCreateID(node, "group-id", GetGroupID());
+	if (GetParent())
+		OptCreateID(node, "parent", GetParent()->GetID());
+	if (GetParent() != GetEventDestination() && GetEventDestination())
+		OptCreateID(node, "event-dest", GetEventDestination()->GetID());
 
 	switch (m_sync_type) {
 	case TBValue::TYPE_FLOAT:
