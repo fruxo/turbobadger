@@ -400,6 +400,7 @@ public:
 	virtual double GetValueDouble() const { return GetValueVal(); }
 
 	virtual void OnInflate(const INFLATE_INFO &info);
+	virtual void OnDeflate(const INFLATE_INFO &info);
 	virtual bool OnEvent(const TBWidgetEvent &ev);
 	virtual void OnResized(int old_w, int old_h);
 protected:

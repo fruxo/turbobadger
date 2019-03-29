@@ -639,6 +639,17 @@ void TBSliderX<VAL_T>::OnInflate(const INFLATE_INFO &info)
 	SetSmallStep(step);
 	TBWidget::OnInflate(info);
 }
+
+template <typename VAL_T>
+void TBSliderX<VAL_T>::OnDeflate(const INFLATE_INFO &info)
+{
+	TBNode * node = info.node;
+	TBWidget::OnDeflate(info);
+	OptCreateFloat(node, "min", m_min, 0);
+	OptCreateFloat(node, "max", m_max, 1);
+	OptCreateFloat(node, "step", m_step, 1./100.);
+}
+
 TB_WIDGET_FACTORY(TBSlider, TBValue::TYPE_FLOAT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBSliderInt, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
 TB_WIDGET_FACTORY(TBSliderLong, TBValue::TYPE_INT, WIDGET_Z_TOP) {}
