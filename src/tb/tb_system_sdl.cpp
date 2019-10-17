@@ -20,10 +20,12 @@
 #include <emscripten.h>
 #endif
 
+#define GL_GLEXT_PROTOTYPES 1
 #ifdef SPIND_XCODE
 #include "SDL2/SDL.h"
 #else
 #include "SDL.h"
+#include <OpenGL/gl3.h>
 #endif
 
 #if defined(TB_RUNTIME_DEBUG_INFO) || 1
