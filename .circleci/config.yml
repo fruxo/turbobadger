@@ -12,7 +12,7 @@ commands:
       - run:
           name: Install System Dependencies
           command: |
-            #lsb_release -a
+            lsb_release -a
             sudo apt-get install -y cmake
             # for glfw:
             sudo apt-get install -y xorg-dev libglu1-mesa-dev
@@ -55,8 +55,8 @@ jobs: # a collection of steps
 
     docker: # run the steps with Docker
 #      - image: buildpack-deps:xenial
-#      - image: ubuntu:16.04
-      - image: circleci/android:api-23-ndk
+      - image: ubuntu:18.04
+#      - image: circleci/android:api-23-ndk
 #      - image: trzeci/emscripten
 #      - image: trzeci/emscripten-slim
 
