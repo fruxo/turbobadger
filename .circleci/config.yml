@@ -13,11 +13,12 @@ commands:
           name: Install System Dependencies
           command: |
             #lsb_release -a
-            ls /etc
-            sudo apt-get install -y cmake
-            # for glfw:
-            sudo apt-get install -y xorg-dev libglu1-mesa-dev
-            #sudo apt-get install -y gcc g++ cmake
+            [ -f /etc/debian_version ] && cat /etc/debian_version
+            #apt-get install -y cmake
+            echo $SHELL
+            command -v sudo >/dev/null 2>&1 && SUDO=sudo
+            $SUDO apt-get update
+            $SUDO apt-get install -y gcc g++ cmake xorg-dev libglu1-mesa-dev
             gcc --version
             g++ --version
       - run:
@@ -57,7 +58,7 @@ jobs: # a collection of steps
     docker: # run the steps with Docker
 #      - image: buildpack-deps:xenial
       - image: ubuntu:18.04
-#      - image: circleci/android:api-23-ndk
+#      - image: circleci/android:api-24-ndk
 #      - image: trzeci/emscripten
 #      - image: trzeci/emscripten-slim
 
