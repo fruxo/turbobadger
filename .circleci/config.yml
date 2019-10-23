@@ -12,7 +12,8 @@ commands:
       - run:
           name: Install System Dependencies
           command: |
-            lsb_release -a
+            #lsb_release -a
+            ls /etc
             sudo apt-get install -y cmake
             # for glfw:
             sudo apt-get install -y xorg-dev libglu1-mesa-dev
