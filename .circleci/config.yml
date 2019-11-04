@@ -57,8 +57,8 @@ jobs: # a collection of steps
 
     docker: # run the steps with Docker
 #      - image: buildpack-deps:xenial
-      - image: ubuntu:18.04
-#      - image: circleci/android:api-24-ndk
+#      - image: ubuntu:18.04
+      - image: circleci/android:api-24-ndk
 #      - image: trzeci/emscripten
 #      - image: trzeci/emscripten-slim
 
