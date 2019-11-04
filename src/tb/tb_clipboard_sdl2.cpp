@@ -12,7 +12,6 @@
 #ifdef SPIND_XCODE
 #include "SDL2/SDL.h"
 #else
-#include <OpenGL/gl3.h>
 #include "SDL.h"
 #endif
 
