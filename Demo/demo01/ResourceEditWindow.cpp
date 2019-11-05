@@ -110,7 +110,7 @@ void ResourceEditWindow::AddWidgetListItemsRecursive(TBWidget *widget, int depth
 		const char *classname = widget->GetClassName();
 		if (!*classname)
 			classname = "<Unknown widget type>";
-		str.SetFormatted("% *s%s", depth - 1, "", classname);
+		str.SetFormatted("%*s%s", depth - 1, "", classname);
 
 		if (ResourceItem *item = new ResourceItem(widget, str))
 			m_widget_list_source.AddItem(item);
