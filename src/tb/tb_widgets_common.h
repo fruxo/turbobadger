@@ -238,7 +238,7 @@ public:
 	TBProgressSpinner();
 
 	/** Return true if the animation is running. */
-	bool IsRunning() { return m_value > 0; }
+	bool IsRunning() const { return m_value > 0; }
 
 	/** Begin/End are used to start or stop the animation in a incremental way.
 		If several tasks may activate the same spinner, calling Begin/End instead
