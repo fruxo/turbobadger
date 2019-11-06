@@ -4,32 +4,20 @@ compiler:
   - clang
 
 sudo: false
-dist: xenial
+dist: bionic
 
 addons:
   apt:
-    sources:
-    - ubuntu-toolchain-r-test
     packages:
     - cmake
-#    - gcc-4.9
-#    - g++-4.9
     - clang
 
 before_install:
-#  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20;
 #  - sudo apt-get update -qq;
-  - pip install --user cpp-coveralls
   - ${CXX} --version;
-
-install:
-#  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
-  - ./build.sh -v
 
 script: 
   - echo ${CXX}
-  - make test
-  - cat Testing/Temporary/*.log
+  - make sdl2
+  - make glfw
 
-after_success:
-  - if [ "$CXX" = "g++-4.9" ]; coveralls --exclude lib --exclude tests --gcov-options '\-lp' ; fi

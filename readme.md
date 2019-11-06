@@ -13,8 +13,9 @@ TurboBadger.
 The HastyBadger is a work in progress, contributions and constructive
 commentary are welcome!
 
-Current build status:
-[![CircleCI](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger.svg?style=svg)](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger)
+Current CircleCI build status: [![CircleCI](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger.svg?style=svg)](https://circleci.com/gh/tesch1/turbobadger/tree/hastybadger)
+
+Current TravisCI build status: [![Build Status](https://travis-ci.com/tesch1/turbobadger.svg?branch=hastybadger)](https://travis-ci.com/tesch1/turbobadger)
 
 Differences from TurboBadger
 ----------------------------
