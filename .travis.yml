@@ -1,17 +1,39 @@
 language: cpp
 compiler:
   - gcc
-  - clang
+#  - clang
 
 sudo: false
 dist: bionic
+
+matrix:
+  include:
+  - os: linux
+    compiler: gcc
+    script:
+    - make sdl2
+    - make glfw
+#    - cmake . -Bbuild -DCMAKE_BUILD_TYPE=Release
+#    - cmake --build build --config Release --target package
+  - os: windows
+    language: cpp
+    install:
+    - choco install nsis 7zip
+    script:
+    - cmake . -Bbuild
+    - cmake --build build --config Release --target package
+  - os: osx
+    osx_image: xcode9.1
+    script:
+    - echo ${CXX}
+    - make sdl2
+    - make glfw
 
 addons:
   apt:
     packages:
     - cmake
     - clang
-    - libxl1-dev
     - libgl1-mesa-dev
     - libxrandr-dev
     - libwayland-dev
@@ -20,8 +42,5 @@ before_install:
 #  - sudo apt-get update -qq;
   - ${CXX} --version;
 
-script: 
-  - echo ${CXX}
-  - make sdl2
-  - make glfw
+script:
 
