@@ -35,8 +35,10 @@ addons:
     - cmake
     - clang
     - libgl1-mesa-dev
+    - libx11-dev
     - libxrandr-dev
     - libwayland-dev
+    - libxinerama-dev
 
 before_install:
 #  - sudo apt-get update -qq;
