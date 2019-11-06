@@ -1,3 +1,6 @@
+#
+# CMake file for hastybadger
+#
 project (TurboBadger CXX)
 cmake_minimum_required (VERSION 3.4.3)
 include (CheckCXXCompilerFlag)
@@ -219,25 +222,15 @@ if (TB_SYSTEM_SDL2)
   if (NOT TB_BUILD_SDL2 AND NOT EMSCRIPTEN)
     include (FindPkgConfig)
     pkg_search_module (SDL2 REQUIRED sdl2)
-    set (SDL2_INCLUDE_DIRS "${SDL2_INCLUDE_DIRS}")
-    include_directories (${SDL2_INCLUDE_DIRS})
     link_directories (${SDL2_LIBRARY_DIRS})
     if (APPLE)
       find_library (SDL2_LIBRARIES SDL2)
-      find_path (SDL2_INCLUDE_DIRS SDL.h)
       set (EXTRA_LIBS ${EXTRA_LIBS} ${SDL2_LIBRARIES})
     else (APPLE)
       find_library (SDL2_LIBRARIES SDL2)
-      find_path (SDL2_INCLUDE_DIRS "SDL2/SDL.h" PATH_SUFFIXES "" "SDL2")
     endif (APPLE)
   endif (NOT TB_BUILD_SDL2 AND NOT EMSCRIPTEN)
 endif (TB_SYSTEM_SDL2)
-
-if (TB_RENDERER_GL AND NOT ANDROID)
-  set (OpenGL_GL_PREFERENCE GLVND)
-  find_package (OpenGL REQUIRED)
-  set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY})
-endif ()
 
 #
 # Add thirdparty dependencies

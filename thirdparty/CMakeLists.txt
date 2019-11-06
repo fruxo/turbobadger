@@ -2,7 +2,7 @@
 # CMake file for turbobadger dependencies
 #
 
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.4.3)
 project (turbobadger_thirdparty NONE)
 
 include (ExternalProject)
@@ -69,11 +69,11 @@ if (TB_BUILD_SDL2)
 
   ExternalProject_Get_Property (SDL2EXT INSTALL_DIR)
   set (SDL2_INSTALL_DIR ${INSTALL_DIR})
-  add_library (SDL2_LIBRARY STATIC IMPORTED GLOBAL)
-  set_property (TARGET SDL2_LIBRARY PROPERTY IMPORTED_LOCATION ${SDL2_INSTALL_DIR}/lib/libSDL2.a)
+  add_library (SDL2-interface STATIC IMPORTED GLOBAL)
+  set_property (TARGET SDL2-interface PROPERTY IMPORTED_LOCATION ${SDL2_INSTALL_DIR}/lib/libSDL2.a)
+  target_include_directories (SDL2-interface INTERFACE ${SDL2_INSTALL_DIR}/include/SDL2)
   if (hasParent)
-    set (SDL2_LIBRARIES dl SDL2_LIBRARY dl pthread PARENT_SCOPE)
-    set (SDL2_INCLUDE_DIRS "${SDL2_INSTALL_DIR}/include/SDL2" PARENT_SCOPE)
+    set (SDL2_LIBRARIES dl SDL2-interface dl pthread PARENT_SCOPE)
     set (SDL2_INSTALL_DIR ${INSTALL_DIR} PARENT_SCOPE)
   endif (hasParent)
 endif (TB_BUILD_SDL2)
