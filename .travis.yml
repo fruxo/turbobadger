@@ -11,7 +11,10 @@ addons:
     packages:
     - cmake
     - clang
+    - libxl1-dev
     - libgl1-mesa-dev
+    - libxrandr-dev
+    - libwayland-dev
 
 before_install:
 #  - sudo apt-get update -qq;
