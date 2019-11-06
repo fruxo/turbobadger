@@ -11,7 +11,7 @@ addons:
     packages:
     - cmake
     - clang
-    - libgl1-mesa-glx
+    - libgl1-mesa-dev
 
 before_install:
 #  - sudo apt-get update -qq;
