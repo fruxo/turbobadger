@@ -21,6 +21,8 @@ matrix:
     - choco install nsis 7zip
     script:
     - cmake . -Bbuild
+    - ls
+    - ls build
     - cmake --build build --config Release --target package
   - os: osx
     osx_image: xcode9.1
@@ -39,6 +41,8 @@ addons:
     - libxrandr-dev
     - libwayland-dev
     - libxinerama-dev
+    - libxxf86vm-dev
+    - libxcursor-dev
 
 before_install:
 #  - sudo apt-get update -qq;
