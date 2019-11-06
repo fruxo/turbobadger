@@ -11,7 +11,7 @@ addons:
     packages:
     - cmake
     - clang
-    - libsdl2
+    - libsdl2-2.0-0
 
 before_install:
 #  - sudo apt-get update -qq;
