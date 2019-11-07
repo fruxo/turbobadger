@@ -99,7 +99,7 @@ while [ $# -gt 0 ]; do
             ;;
         -glfw)
             BUILD_DIR="BuildGLFW"
-            #CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_GET_GLFW=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_GLFW=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_CLIPBOARD_GLFW=ON"

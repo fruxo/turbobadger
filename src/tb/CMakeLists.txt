@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.4.3)
 
 set (LOCAL_SRCS 
   tb_bitmap_fragment.cpp
@@ -106,7 +106,7 @@ if (TB_RENDERER_GL AND NOT EMSCRIPTEN AND NOT EMSCRIPTEN AND NOT ANDROID)
   set (OpenGL_GL_PREFERENCE GLVND)
   find_package (OpenGL REQUIRED)
   target_link_libraries (TurboBadgerLib PUBLIC OpenGL::GL)
-endif (TB_RENDERER_GL AND NOT EMSCRIPTEN AND NOT EMSCRIPTEN)
+endif (TB_RENDERER_GL AND NOT EMSCRIPTEN AND NOT EMSCRIPTEN AND NOT ANDROID)
 
 target_include_directories (TurboBadgerLib PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories (TurboBadgerLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

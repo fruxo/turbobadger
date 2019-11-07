@@ -40,7 +40,7 @@ include (CMakeDependentOption)
 
 # Runtime/subsystem configurations
 if (TB_BUILD_DEMO_GLFW)
-  set (TB_CLIPBOARD_GLFW ON)
+  set (TB_CLIPBOARD_GLFW ON CACHE INTERNAL "must use glfw")
   set (TB_IMAGE_LOADER_STB ON)
   if (TB_BUILD_DEMO_SDL2 OR TB_BUILD_DEMO_ANDROID)
     message (FATAL_ERROR "Can not specify both TB_BUILD_DEMO_GLFW and TB_BUILD_DEMO_SDL2")

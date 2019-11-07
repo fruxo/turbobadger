@@ -24,7 +24,7 @@ if (TB_BUILD_GLFW)
   ExternalProject_Add (GLFWEXT
     PREFIX GLFWEXT
     GIT_REPOSITORY "https://github.com/glfw/glfw.git"
-    GIT_TAG "3.2.1"
+    GIT_TAG "3.3"
     GIT_SHALLOW 1
     UPDATE_COMMAND ""
     PATCH_COMMAND ""
