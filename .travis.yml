@@ -37,6 +37,7 @@ addons:
     - libxinerama-dev
     - libxxf86vm-dev
     - libxcursor-dev
+    - libxi-dev
 before_install:
 - ${CXX} --version
 - cmake --version
