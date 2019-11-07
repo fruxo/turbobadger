@@ -7,9 +7,6 @@
 
 #ifdef TB_CLIPBOARD_DUMMY
 
-#include <sys/time.h>
-#include <stdio.h>
-
 namespace tb {
 
 // == TBClipboard =====================================
