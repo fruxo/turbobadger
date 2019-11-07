@@ -265,11 +265,9 @@ if (THIRDPARTY_BUILD_RESULT)
 endif ()
 
 # Include the now-built thirdparty dependencies
-add_subdirectory (thirdparty)
+add_subdirectory (thirdparty EXCLUDE_FROM_ALL)
 
 # Add TurboBadgerLib project
-include_directories ("${PROJECT_BINARY_DIR}/src/tb")
-include_directories ("${PROJECT_SOURCE_DIR}/src/tb")
 add_subdirectory (src/tb)
 
 # Add Demo project

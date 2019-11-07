@@ -109,8 +109,8 @@ if (TB_RENDERER_GL AND NOT ANDROID)
   target_link_libraries (TurboBadgerLib PUBLIC OpenGL::GL)
 endif (TB_RENDERER_GL AND NOT ANDROID)
 
-#target_include_directories (TurboBadgerLib PUBLIC ${GLFW_INCLUDE_DIRS})
-#target_include_directories (TurboBadgerLib PUBLIC ${SDL2_INCLUDE_DIRS})
+target_include_directories (TurboBadgerLib PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories (TurboBadgerLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if (NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL)
   install (TARGETS TurboBadgerLib

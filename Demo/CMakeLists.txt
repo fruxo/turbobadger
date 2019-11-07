@@ -1,24 +1,24 @@
 # Use project source dir for demo output. We have to set
 # the release and debug specific defines too, for MSVC.
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_SOURCE_DIR})
+set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BINARY_DIR})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_BINARY_DIR})
 
 set (SANITIZER "${SANITIZER} -O1 -fsanitize=address -fno-omit-frame-pointer")
 #set (SANITIZER "${SANITIZER} -fsanitize=leak")
 #set (SANITIZER "${SANITIZER} -fsanitize=memory")
-set (SANITIZER "${SANITIZER} -fsanitize=undefined")
+#set (SANITIZER "${SANITIZER} -fsanitize=undefined")
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG -g ${SANITIZER}")
 set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 include (ExternalProject)
 
-if(TB_BUILD_DEMO_GLFW)
-  if(CMAKE_SYSTEM MATCHES "Windows")
-    add_definitions(-DGLFW_EXPOSE_NATIVE_WIN32)
-    add_definitions(-DGLFW_EXPOSE_NATIVE_WGL)
-    set(EXTRA_LIBS ${EXTRA_LIBS} winmm)
-  endif(CMAKE_SYSTEM MATCHES "Windows")
+if (TB_BUILD_DEMO_GLFW)
+  if (CMAKE_SYSTEM MATCHES "Windows")
+    add_definitions (-DGLFW_EXPOSE_NATIVE_WIN32)
+    add_definitions (-DGLFW_EXPOSE_NATIVE_WGL)
+    set (EXTRA_LIBS ${EXTRA_LIBS} winmm)
+  endif (CMAKE_SYSTEM MATCHES "Windows")
 
   # Add sources
   set(LOCAL_SRCS "")

@@ -39,6 +39,7 @@ usage:
   -em      build for emscripten
   -sdl2    build for sdl2
   -glfw    build for glfw
+  -clang   set CC=clang CXX=clang++
 
   -v       be more verbose
   -q       be less verbose
@@ -51,7 +52,7 @@ while [ $# -gt 0 ]; do
     key="$1"
     case $key in
         -o)                    BUILD_DIR=$(mkdir -p "$2" && cd "$2" && pwd); shift ;;
-        -C|--clang)
+        -C|-clang)
             export CC=clang
             export CXX=clang++
             ;;

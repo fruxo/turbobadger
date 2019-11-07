@@ -10,6 +10,12 @@ option (CMAKE_BUILD_TYPE "build type." "")
 set (TB_THIRDPARTY_ROOT "${CMAKE_CURRENT_BINARY_DIR}")
 get_directory_property (hasParent PARENT_DIRECTORY)
 
+if (NOT WIN32)
+  set (DOWNLOAD_DIR "$ENV{HOME}/Downloads")
+else (NOT WIN32)
+  set (DOWNLOAD_DIR "C:/Downloads")
+endif (NOT WIN32)
+
 # quiet warning messages
 message ("${CMAKE_CONFIGURATION_TYPES} ${ANDROID}")
 
@@ -45,35 +51,43 @@ if (TB_BUILD_GLFW)
 endif (TB_BUILD_GLFW)
 
 if (TB_BUILD_SDL2)
-  set (SDL_VERSION 2.0.8)
-  set (SDL_VERSION_HASH 3800d705cef742c6a634f202c37f263f)
+  set (SDL_VERSION 2.0.10)
+  set (SDL_VERSION_HASH 5a2114f2a6f348bdab5bf52b994811db)
   set (SDL_VERSION 2.0.5)
   set (SDL_VERSION_HASH d4055424d556b4a908aa76fad63abd3c)
 
-  set (SDL2_configure_args --disable-shared)
-  # --disable-loadso --disable-cpuinfo --disable-atomic --disable-sdl-dlopen
-
-  if (APPLE)
-    message ("Wouldn't you rather build the Framework?")
-    set (SDL2_configure_args ${SDL2_configure_args} --without-x)
-    set (SDL2_configure_args ${SDL2_configure_args} "CFLAGS=-mmacosx-version-min=10.9")
-  endif ()
-
-  ExternalProject_Add (SDL2EXT
-    PREFIX SDL2EXT
+  ExternalProject_Add (sdl2X
+    PREFIX sdl2X
     URL https://www.libsdl.org/release/SDL2-${SDL_VERSION}.tar.gz
     URL_HASH "MD5=${SDL_VERSION_HASH}"
-    DOWNLOAD_DIR "$ENV{HOME}/Downloads"
-    CONFIGURE_COMMAND <SOURCE_DIR>/configure ${SDL2_configure_args} --prefix=<INSTALL_DIR>
-    INSTALL_COMMAND make install)
+    DOWNLOAD_DIR "${DOWNLOAD_DIR}"
+    UPDATE_COMMAND ""
+    PATCH_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    LOG_DOWNLOAD ON)
+  ExternalProject_Get_Property (sdl2X source_dir)
 
-  ExternalProject_Get_Property (SDL2EXT INSTALL_DIR)
-  set (SDL2_INSTALL_DIR ${INSTALL_DIR})
-  add_library (SDL2-interface STATIC IMPORTED GLOBAL)
-  set_property (TARGET SDL2-interface PROPERTY IMPORTED_LOCATION ${SDL2_INSTALL_DIR}/lib/libSDL2.a)
-  target_include_directories (SDL2-interface INTERFACE ${SDL2_INSTALL_DIR}/include/SDL2)
   if (hasParent)
-    set (SDL2_LIBRARIES dl SDL2-interface dl pthread PARENT_SCOPE)
-    set (SDL2_INSTALL_DIR ${INSTALL_DIR} PARENT_SCOPE)
+    set (SDL_STATIC     ON  CACHE BOOL "" FORCE)
+    set (SDL_STATIC_PIC ON  CACHE BOOL "" FORCE)
+    set (SDL_SHARED     OFF CACHE BOOL "" FORCE)
+    add_subdirectory ("${source_dir}" "${CMAKE_CURRENT_BINARY_DIR}/sdl2X_binary_dir")
+    add_library (SDL2-interface INTERFACE IMPORTED GLOBAL)
+    if (TB_RENDERER_GL)
+      set (OpenGL_GL_PREFERENCE GLVND)
+      find_package (OpenGL REQUIRED)
+      target_link_libraries (SDL2-interface INTERFACE OpenGL::GL)
+    endif (TB_RENDERER_GL)
+    target_link_libraries (SDL2-interface INTERFACE SDL2-static)
+
+    # this next line is needed for SDL2 before 2.0.10
+    target_include_directories (SDL2-interface INTERFACE
+      "${CMAKE_CURRENT_BINARY_DIR}/sdl2X_binary_dir/include;${source_dir}/include")
+
+    if (WIN32)
+      target_link_libraries (SDL2-interface INTERFACE SDL2main)
+    endif (WIN32)
   endif (hasParent)
 endif (TB_BUILD_SDL2)

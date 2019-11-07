@@ -14,10 +14,13 @@ em:
 	cd BuildEmsc && $(MAKE)
 
 xc:
-	cd Build-Xcode && xcrun xcodebuild -project "turbobadger.xcodeproj" -target turbobadger
+	[ -d Build-Xcode ] || \
+		(cmake . -G Xcode -BBuild-Xcode -DTB_RENDERER_GL3=ON -DTB_BUILD_DEMO_SDL2=ON || rm -rf Build-Xcode)
+	cd Build-Xcode && xcrun xcodebuild -project "turbobadger.xcodeproj" -target TurboBadgerDemoSDL
 
 ios:
-	cd Build-iOS   && xcrun xcodebuild -project "turbobadger.xcodeproj" -target turbobadger
+	[ -d Build-iOS ] || (cmake . -G Xcode -BBuild-iOS -DTB_RENDERER_GLES_2=ON || rm -rf Build-iOS)
+	cd Build-iOS   && xcrun xcodebuild -project "turbobadger.xcodeproj" -target ?
 
 and:
 	cd DemoAndroid && ninja
