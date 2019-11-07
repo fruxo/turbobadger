@@ -42,9 +42,31 @@ include_directories(".")
 add_executable (TurboBadgerDemo WIN32 ${LOCAL_SRCS})
 target_link_libraries (TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS})
 install (TARGETS TurboBadgerDemo
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+  DESTINATION "/"
+  COMPONENT demoapp)
+install (
+  DIRECTORY ${CMAKE_SOURCE_DIR}/resources
+  DESTINATION TurboBadgerDemo_
+  COMPONENT demoapp
+  PATTERN "*.psd" EXCLUDE
+  PATTERN "*.txt"
+  PATTERN "*.svg"
+  PATTERN "*.png")
+install (
+  DIRECTORY ${CMAKE_SOURCE_DIR}/Demo/demo01
+  DESTINATION TurboBadgerDemo_/Demo
+  COMPONENT demoapp
+  PATTERN "*.psd" EXCLUDE
+  PATTERN "*.txt"
+  PATTERN "*.svg"
+  PATTERN "*.png")
+install (
+  FILES
+  ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser.tb.txt
+  ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_included.tb.txt
+  ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_definitions.tb.txt
+  DESTINATION TurboBadgerDemo_
+  COMPONENT demoapp)
 
 # Platform specific
 if (CMAKE_COMPILER_IS_MINGW)
@@ -68,3 +90,46 @@ if (EMSCRIPTEN)
     COMMAND rsync -a --exclude='*.psd' ${CMAKE_SOURCE_DIR}/resources /tmp/
     COMMAND rsync -a --include='*/' --include='*.txt' --include='*.png' --exclude='*' ${CMAKE_CURRENT_SOURCE_DIR}/demo01 /tmp )
 endif (EMSCRIPTEN)
+
+#################################################################################
+# CPack
+set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR} PARENT_SCOPE)
+set (CPACK_COMPONENTS_ALL demoapp)
+
+set (CPACK_PACKAGE_NAME "TurboBadgerDemo")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "TurboBadger UI Demo")
+set (CPACK_PACKAGE_VERSION "${VERSION}${VERSION_BUILD}")
+set (CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
+set (CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
+set (CPACK_PACKAGE_VERSION_PATCH "${VERSION_PATCH}")
+set (CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
+set (CPACK_PACKAGE_URL "https://github.com/tesch1/turbobadger")
+set (CPACK_PACKAGE_VENDOR "nobody")
+set (CPACK_PACKAGE_CONTACT "tesch1@gmail.com")
+set (CPACK_PACKAGE_RELOCATABLE TRUE)
+set (CPACK_STRIP_FILES TRUE)
+set (CPACK_SOURCE_STRIP_FILES TRUE)
+
+# WIN32
+if (WIN32)
+  set (CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-install-win32")
+  set (CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
+  set (CPACK_NSIS_URL_INFO_ABOUT "https://github.com/tesch1/turbobadger")
+endif (WIN32)
+
+# macOS
+if (APPLE AND NOT XCODE)
+  set (CPACK_GENERATOR "DragNDrop")
+  set (CPACK_BUNDLE_NAME "${CPACK_PACKAGE_NAME}")
+endif (APPLE AND NOT XCODE)
+
+# unix
+if (UNIX AND NOT APPLE)
+  set (CPACK_GENERATOR "RPM;TGZ;DEB;STGZ")
+  set (CPACK_INCLUDE_TOPLEVEL_DIRECTORY 1)
+  set (CPACK_VERBATIM_VARIABLES TRUE) # fixes @ in rpm file names
+  set (CPACK_RPM_PACKAGE_RELEASE 1)
+  set (CPACK_DEBIAN_FILE_NAME "DEB-DEFAULT")
+endif (UNIX AND NOT APPLE)
+
+include (CPack)

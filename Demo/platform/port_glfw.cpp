@@ -12,6 +12,10 @@
 #include <unistd.h>
 #include <mach-o/dyld.h>
 #endif
+#ifdef TB_TARGET_LINUX
+#include <unistd.h>
+#include <sys/auxv.h>
+#endif
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -407,7 +411,16 @@ bool AppBackendGLFW::Init(App *app)
 		chdir(path.GetData());
 	}
 #endif
-
+#ifdef TB_TARGET_LINUX
+	if (getauxval(AT_EXECFN))
+	{
+		TBTempBuffer path;
+		path.AppendPath((char *)getauxval(AT_EXECFN));
+		path.AppendString("/TurboBadgerDemo_/");
+		printf("%s\n", path.GetData());
+		chdir(path.GetData());
+	}
+#endif
 	m_renderer = new TBRendererGL();
 	tb_core_init(m_renderer);
 

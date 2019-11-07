@@ -14,12 +14,12 @@
 
 namespace tb {
 
-TBRenderer *g_renderer = nullptr;
-TBSkin *g_tb_skin = nullptr;
-TBWidgetsReader *g_widgets_reader = nullptr;
-TBLanguage *g_tb_lng = nullptr;
-TBFontManager *g_font_manager = nullptr;
-TBColorManager *g_color_manager = nullptr;
+TBRenderer *g_renderer;
+TBSkin *g_tb_skin;
+TBWidgetsReader *g_widgets_reader;
+TBLanguage *g_tb_lng;
+TBFontManager *g_font_manager;
+TBColorManager *g_color_manager;
 
 bool tb_core_init(TBRenderer *renderer)
 {

@@ -23,6 +23,10 @@
 #include <unistd.h>
 #include <mach-o/dyld.h>
 #endif
+#ifdef TB_TARGET_LINUX
+#include <unistd.h>
+#include <sys/auxv.h>
+#endif
 
 using namespace tb;
 
@@ -176,6 +180,28 @@ bool AppBackendSDL2::Init(App *app)
 	SDL_GL_MakeCurrent(mainWindow, glContext);
 
 	glClearColor(0.3f, 0.3f, 0.3f, 1);
+
+#ifdef TB_TARGET_MACOSX
+	// Change working directory to the executable path. We expect it to be
+	// where the demo resources are.
+	char exec_path[2048];
+	uint32_t exec_path_size = sizeof(exec_path);
+	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
+	{
+		TBTempBuffer path;
+		path.AppendPath(exec_path);
+		chdir(path.GetData());
+	}
+#endif
+#ifdef TB_TARGET_LINUX
+	if (getauxval(AT_EXECFN))
+	{
+		TBTempBuffer path;
+		path.AppendPath((char *)getauxval(AT_EXECFN));
+		path.AppendString("/TurboBadgerDemo_/");
+		chdir(path.GetData());
+	}
+#endif
 
 	m_renderer = new TBRendererGL();
 	tb_core_init(m_renderer);
