@@ -83,7 +83,8 @@ if (TB_BUILD_SDL2)
     target_link_libraries (SDL2-interface INTERFACE SDL2-static)
 
     # this next line is needed for SDL2 before 2.0.10
-    target_include_directories (SDL2-interface INTERFACE
+    #target_include_directories (SDL2-interface INTERFACE - works in newer cmake
+    set_property (TARGET SDL2-interface APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES
       "${CMAKE_CURRENT_BINARY_DIR}/sdl2X_binary_dir/include;${source_dir}/include")
 
     if (WIN32)
