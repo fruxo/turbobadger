@@ -6,6 +6,7 @@ set -e
 : ${VERBOSE=0}
 : ${BUILD_DIR=Build}
 : ${MAKE_FLAGS=}
+: ${NPROC=}
 # if available, use cmake3
 if command -v cmake3 >/dev/null 2>&1 ; then
     : ${CMAKE=cmake3}
@@ -14,14 +15,22 @@ else
 fi
 : ${CMAKE_FLAGS=-DTB_SYSTEM_LINUX=ON}
 
+CMDLINE="$0 $@"
+SCRIPT=$(basename "$0")
 SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-if command -v nproc &> /dev/null ; then
-    NPROC=$(nproc)
-elif command -v sysctl &> /dev/null ; then
-    NPROC=$(sysctl -n hw.ncpu)
-else
-    NPROC=1
+OnError() {
+    echo "$SCRIPT: Error on line ${BASH_LINENO[0]}, exiting."
+    exit 1
+}
+trap OnError ERR
+if [ -z "$NPROC" ]; then
+    if command -v nproc &> /dev/null ; then
+        NPROC=$(nproc)
+    elif command -v sysctl &> /dev/null ; then
+        NPROC=$(sysctl -n hw.ncpu)
+    else
+        NPROC=1
+    fi
 fi
 
 usage () {
@@ -73,9 +82,6 @@ while [ $# -gt 0 ]; do
             ;;
         -em*)
             BUILD_DIR="BuildEmsc"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GLES_2=ON"
             source ${HOME}/local/emsdk/emsdk_env.sh
@@ -85,7 +91,7 @@ while [ $# -gt 0 ]; do
             ;;
         -sdl*)
             BUILD_DIR="BuildSDL2"
-            #CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_GET_SDL2=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL2=ON"

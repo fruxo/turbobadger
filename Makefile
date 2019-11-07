@@ -10,8 +10,12 @@ sdl2:
 	cd BuildSDL2 && $(MAKE)
 
 em:
-	[ -d BuildEmsc ] || ./build.sh -em -gles2
+	[ -d BuildEmsc ] || ./build.sh -gles2 -sdl2 -em
 	cd BuildEmsc && $(MAKE)
+
+em-glfw:
+	[ -d BuildEmscGl ] || ./build.sh -gles2 -glfw -em -o BuildEmscGl
+	cd BuildEmscGl && $(MAKE)
 
 xc:
 	[ -d Build-Xcode ] || \

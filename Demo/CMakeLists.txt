@@ -13,81 +13,65 @@ set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 include (ExternalProject)
 
+if (CMAKE_SYSTEM MATCHES "Windows" AND TB_BUILD_DEMO_GLFW)
+  add_definitions (-DGLFW_EXPOSE_NATIVE_WIN32)
+  add_definitions (-DGLFW_EXPOSE_NATIVE_WGL)
+  set (EXTRA_LIBS ${EXTRA_LIBS} winmm)
+endif (CMAKE_SYSTEM MATCHES "Windows" AND TB_BUILD_DEMO_GLFW)
+
+# Add sources
+set (LOCAL_SRCS "")
+aux_source_directory (./demo01 LOCAL_SRCS)
+set (LOCAL_SRCS ${LOCAL_SRCS}
+  ./platform/main.cpp
+  ./platform/Application.cpp)
+
 if (TB_BUILD_DEMO_GLFW)
-  if (CMAKE_SYSTEM MATCHES "Windows")
-    add_definitions (-DGLFW_EXPOSE_NATIVE_WIN32)
-    add_definitions (-DGLFW_EXPOSE_NATIVE_WGL)
-    set (EXTRA_LIBS ${EXTRA_LIBS} winmm)
-  endif (CMAKE_SYSTEM MATCHES "Windows")
-
-  # Add sources
-  set(LOCAL_SRCS "")
-  aux_source_directory(./demo01 LOCAL_SRCS)
-  set(LOCAL_SRCS ${LOCAL_SRCS}
-    ./platform/main.cpp
+  set (LOCAL_SRCS ${LOCAL_SRCS}
     ./platform/port_glfw.cpp
-    ./platform/glfw_extra_linux.cpp
-    ./platform/Application.cpp)
-  include_directories(".")
-  include_directories(${GLFW_INCLUDE_DIRS})
+    ./platform/glfw_extra_linux.cpp)
+endif (TB_BUILD_DEMO_GLFW)
 
-  # Platform specific
-  if(CMAKE_COMPILER_IS_MINGW)
-    # Avoid dll dependencies by linking statically.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
-  endif(CMAKE_COMPILER_IS_MINGW)
-
-  add_executable(TurboBadgerDemo WIN32 ${LOCAL_SRCS})
-  target_link_libraries(TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS})
-  install(TARGETS TurboBadgerDemo
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
-endif(TB_BUILD_DEMO_GLFW)
-
-if(TB_BUILD_DEMO_SDL2)
-  # Add sources
-  set(LOCAL_SRCS "")
-  aux_source_directory(./demo01 LOCAL_SRCS)
-  set(LOCAL_SRCS ${LOCAL_SRCS}
-    ./platform/main.cpp
-    ./platform/port_sdl2.cpp
-    ./platform/Application.cpp)
-  include_directories(".")
-
-  if(EMSCRIPTEN)
-    # default skin resources
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/demo01@Demo/demo01")
-    # test files
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser.tb.txt@/")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_included.tb.txt@/")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_definitions.tb.txt@/")
-  elseif(NOT TB_GET_SDL2 AND NOT EMSCRIPTEN)
-    set (EXTRA_LIBS ${EXTRA_LIBS} ${OPENGL_LIBRARY} ${SDL2_LIBRARIES} )
-    include_directories (${SDL2_INCLUDE_DIRS})
-  endif(EMSCRIPTEN)
-
-  # Platform specific
-  if(CMAKE_COMPILER_IS_MINGW)
-    # Avoid dll dependencies by linking statically.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
-  endif(CMAKE_COMPILER_IS_MINGW)
-
-  add_executable(TurboBadgerDemoSDL WIN32 ${LOCAL_SRCS})
-  target_link_libraries(TurboBadgerDemoSDL TurboBadgerLib ${EXTRA_LIBS})
-  install(TARGETS TurboBadgerDemoSDL
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)
-
-  if (EMSCRIPTEN)
-    add_custom_command (TARGET TurboBadgerDemoSDL
-      PRE_LINK
-      COMMAND rm -rf /tmp/resources /tmp/demo01
-      COMMAND rsync -a --exclude='*.psd' ${CMAKE_SOURCE_DIR}/resources /tmp/
-      COMMAND rsync -a --include='*/' --include='*.txt' --include='*.png' --exclude='*' ${CMAKE_CURRENT_SOURCE_DIR}/demo01 /tmp )
-  endif (EMSCRIPTEN)
-
+if (TB_BUILD_DEMO_SDL2)
+  set (LOCAL_SRCS ${LOCAL_SRCS}
+    ./platform/port_sdl2.cpp)
 endif (TB_BUILD_DEMO_SDL2)
 
+include_directories(".")
+
+add_executable (TurboBadgerDemo WIN32 ${LOCAL_SRCS})
+target_link_libraries (TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS})
+install (TARGETS TurboBadgerDemo
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
+
+# Platform specific
+if (CMAKE_COMPILER_IS_MINGW)
+  # Avoid dll dependencies by linking statically.
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++ -static")
+endif (CMAKE_COMPILER_IS_MINGW)
+
+if (EMSCRIPTEN)
+  set (CMAKE_EXECUTABLE_SUFFIX ".html")
+  # set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Os -Oz") # optional
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 ")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s FULL_ES2=1")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s EVAL_CTORS=1")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s BINARYEN_TRAP_MODE=clamp")
+  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s NO_EXIT_RUNTIME=1")
+
+  # default skin resources
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/demo01@Demo/demo01")
+  # test files
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser.tb.txt@/")
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_included.tb.txt@/")
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_definitions.tb.txt@/")
+
+  add_custom_command (TARGET TurboBadgerDemo
+    PRE_LINK
+    COMMAND rm -rf /tmp/resources /tmp/demo01
+    COMMAND rsync -a --exclude='*.psd' ${CMAKE_SOURCE_DIR}/resources /tmp/
+    COMMAND rsync -a --include='*/' --include='*.txt' --include='*.png' --exclude='*' ${CMAKE_CURRENT_SOURCE_DIR}/demo01 /tmp )
+endif (EMSCRIPTEN)

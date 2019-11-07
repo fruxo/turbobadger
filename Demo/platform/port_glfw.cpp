@@ -13,6 +13,11 @@
 #include <mach-o/dyld.h>
 #endif
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#endif
+
 using namespace tb;
 
 int mouse_x = 0;
@@ -427,14 +432,29 @@ AppBackendGLFW::~AppBackendGLFW()
 	delete m_renderer;
 }
 
+#ifdef __EMSCRIPTEN__
+static AppBackendGLFW *backend;
+static void mainloop()
+{
+	// Event loop
+	if (backend->m_has_pending_update)
+		window_refresh_callback(backend->mainWindow);
+}
+#endif // __EMSCRIPTEN__
+
 void AppBackendGLFW::EventLoop()
 {
+#ifdef __EMSCRIPTEN__
+	backend = this;
+	emscripten_set_main_loop(mainloop, 0, 1);
+#else
 	do
 	{
 		if (m_has_pending_update)
 			window_refresh_callback(mainWindow);
 		glfwWaitMsgLoop(mainWindow);
 	} while (!m_quit_requested && !glfwWindowShouldClose(mainWindow));
+#endif
 }
 
 void AppBackendGLFW::OnAppEvent(const EVENT &ev)
