@@ -27,7 +27,8 @@ ios:
 	cd Build-iOS   && xcrun xcodebuild -project "turbobadger.xcodeproj" -target ?
 
 and:
-	cd DemoAndroid && ninja
+	cd DemoAndroid2 && ./gradlew build
+	#cd DemoAndroid && ninja
 
 distclean:
 	rm -rf Build*
