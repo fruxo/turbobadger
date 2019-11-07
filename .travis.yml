@@ -18,7 +18,7 @@ matrix:
     - cmake . -Bbuild
     - ls
     - ls build
-    - cmake --build build --config Release --target package
+    - cmake --build build --config Release --target INSTALL
   - os: osx
     osx_image: xcode9.1
     script:
