@@ -60,23 +60,13 @@ private:
 TBFile *TBFile::Open(const TBStr & filename, TBFileMode mode)
 {
 	FILE *f = nullptr;
-	TBStr pathfile;
-	if (filename[0] != '/')
-	{
-#ifdef TB_FILE_POSIX_PREFIX
-		pathfile.Set(TB_FILE_POSIX_PREFIX);
-#endif
-		pathfile.Append(filename);
-	}
-	else
-		pathfile.Set(filename);
 	switch (mode)
 	{
 	case MODE_READ:
-		f = fopen(pathfile.CStr(), "rb");
+		f = fopen(filename.CStr(), "rb");
 		break;
 	case MODE_WRITETRUNC:
-		f = fopen(pathfile.CStr(), "w");
+		f = fopen(filename.CStr(), "w");
 		break;
 	default:
 		break;
@@ -85,7 +75,7 @@ TBFile *TBFile::Open(const TBStr & filename, TBFileMode mode)
 	if (!f) {
 		char tmp[256];
 		TBDebugPrint("Cwd: '%s'\n", getcwd(tmp, sizeof(tmp)));
-		TBDebugPrint("TBFile::Open, unable to open file '%s'\n", pathfile.CStr());
+		TBDebugPrint("TBFile::Open, unable to open file '%s'\n", filename.CStr());
 	}
 #endif
 	if (!f)
