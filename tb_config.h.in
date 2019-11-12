@@ -14,7 +14,8 @@
 #define TB_VERSION_MAJOR ${VERSION_MAJOR}
 #define TB_VERSION_MINOR ${VERSION_MINOR}
 #define TB_VERSION_REVISION ${VERSION_PATCH}
-#define TB_VERSION_STR "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+#define TB_VERSION_BUILD ${VERSION_BUILD}
+#define TB_VERSION_STR "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}${VERSION_BUILD}"
 
 /** Enable for some handy runtime debugging, enabled by modifying
 	the various settings in g_tb_debug. A settings window can be
@@ -49,12 +50,14 @@
 	as long as it compiles. */
 //#define TB_FONT_RENDERER_STB
 #define TB_FONT_RENDERER_${TB_FONT_RENDERER}
+#define TB_FONT_RENDERER ${TB_FONT_RENDERER}
 
 /** Enable to support image loading using stb_image.c (http://nothings.org/).
 	It's a *very unsafe* image library. Use only with images distributed with
 	your app, that you know work! */
 //#define TB_IMAGE_LOADER_STB
 #define TB_IMAGE_LOADER_${TB_IMAGE_LOADER}
+#define TB_IMAGE_LOADER ${TB_IMAGE_LOADER}
 
 /** Enable to get TBRendererBatcher, an helper class for renderers that
 	implements batching of draw operations. Subclasses of TBRendererBatcher
@@ -83,6 +86,7 @@ ${TB_RENDERER_BATCHER_CONFIG}
 	It is using GL version 3.2. */
 //#define TB_RENDERER_GL3
 #define TB_RENDERER_${TB_RENDERER}
+#define TB_RENDERER ${TB_RENDERER}
 
 #if defined(TB_RENDERER_GL3) || defined(TB_RENDERER_GLES_1) || defined(TB_RENDERER_GLES_2)
 #define TB_RENDERER_GL
@@ -106,22 +110,25 @@ ${TB_GLYPH_CACHE_HEIGHT_CONFIG}
 ${TB_IMAGE_CONFIG}
 //#define TB_IMAGE ${TB_IMAGE}
 #define TB_IMAGE_LOADER_${TB_IMAGE_LOADER}
+#define TB_IMAGE_LOADER ${TB_IMAGE_LOADER}
 
 // == Additional configuration of platform implementations ========================
 
 /** Define for posix implementation of TBFile. */
 //#define TB_FILE_POSIX
 #define TB_FILE_${TB_FILE}
-${TB_FILE_POSIX_PREFIX_CONFIG}
+#define TB_FILE ${TB_FILE}
 
 /** Defines for implementations of TBClipboard. */
 #define TB_CLIPBOARD_${TB_CLIPBOARD}
+#define TB_CLIPBOARD ${TB_CLIPBOARD}
 //#define TB_CLIPBOARD_DUMMY // Cross platform. Not integrating with the OS.
 //#define TB_CLIPBOARD_GLFW // Cross platform using glfw API.
 //#define TB_CLIPBOARD_WINDOWS
 
 /** Defines for implementations of TBSystem. */
 #define TB_SYSTEM_${TB_SYSTEM}
+#define TB_SYSTEM ${TB_SYSTEM}
 //#define TB_SYSTEM_LINUX
 //#define TB_SYSTEM_WINDOWS
 //#define TB_SYSTEM_ANDROID
@@ -129,6 +136,7 @@ ${TB_FILE_POSIX_PREFIX_CONFIG}
 
 /** Defines for additional platform specific issues. */
 #define TB_TARGET_${TB_SYSTEM}
+#define TB_TARGET ${TB_SYSTEM}
 //#define TB_TARGET_WINDOWS
 //#define TB_TARGET_MACOSX
 //#define TB_TARGET_LINUX
@@ -136,6 +144,7 @@ ${TB_FILE_POSIX_PREFIX_CONFIG}
 
 /** Defines for backend selection. */
 #define TB_BACKEND_${TB_BACKEND}
+#define TB_BACKEND ${TB_BACKEND}
 //#define TB_BACKEND_GLFW
 //#define TB_BACKEND_SDL2
 //#define TB_BACKEND_ANDROID
