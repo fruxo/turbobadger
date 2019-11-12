@@ -1,6 +1,6 @@
 #include "port_glfw.hpp"
 
-#ifdef TB_CLIPBOARD_GLFW
+#ifdef TB_BACKEND_GLFW
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -11,10 +11,6 @@
 #ifdef TB_TARGET_MACOSX
 #include <unistd.h>
 #include <mach-o/dyld.h>
-#endif
-#ifdef TB_TARGET_LINUX
-#include <unistd.h>
-#include <sys/auxv.h>
 #endif
 
 #ifdef __EMSCRIPTEN__
@@ -399,28 +395,6 @@ bool AppBackendGLFW::Init(App *app)
 	glfwSetDropCallback(mainWindow, drop_callback);
 #endif
 
-#ifdef TB_TARGET_MACOSX
-	// Change working directory to the executable path. We expect it to be
-	// where the demo resources are.
-	char exec_path[2048];
-	uint32_t exec_path_size = sizeof(exec_path);
-	if (_NSGetExecutablePath(exec_path, &exec_path_size) == 0)
-	{
-		TBTempBuffer path;
-		path.AppendPath(exec_path);
-		chdir(path.GetData());
-	}
-#endif
-#ifdef TB_TARGET_LINUX
-	if (getauxval(AT_EXECFN))
-	{
-		TBTempBuffer path;
-		path.AppendPath((char *)getauxval(AT_EXECFN));
-		path.AppendString("/TurboBadgerDemo_/");
-		printf("%s\n", path.GetData());
-		chdir(path.GetData());
-	}
-#endif
 	m_renderer = new TBRendererGL();
 	tb_core_init(m_renderer);
 
@@ -493,4 +467,4 @@ void AppBackendGLFW::OnAppEvent(const EVENT &ev)
 	}
 }
 
-#endif // TB_CLIPBOARD_GLFW
+#endif // TB_BACKEND_GLFW

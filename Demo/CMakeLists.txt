@@ -4,7 +4,7 @@ set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PROJECT_BINARY_DIR})
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PROJECT_BINARY_DIR})
 
-set (SANITIZER "${SANITIZER} -O1 -fsanitize=address -fno-omit-frame-pointer")
+#set (SANITIZER "${SANITIZER} -O1 -fsanitize=address -fno-omit-frame-pointer")
 #set (SANITIZER "${SANITIZER} -fsanitize=leak")
 #set (SANITIZER "${SANITIZER} -fsanitize=memory")
 #set (SANITIZER "${SANITIZER} -fsanitize=undefined")
@@ -13,11 +13,11 @@ set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 include (ExternalProject)
 
-if (CMAKE_SYSTEM MATCHES "Windows" AND TB_BUILD_DEMO_GLFW)
+if (CMAKE_SYSTEM MATCHES "Windows" AND TB_BUILD_DEMO STREQUAL GLFW)
   add_definitions (-DGLFW_EXPOSE_NATIVE_WIN32)
   add_definitions (-DGLFW_EXPOSE_NATIVE_WGL)
   set (EXTRA_LIBS ${EXTRA_LIBS} winmm)
-endif (CMAKE_SYSTEM MATCHES "Windows" AND TB_BUILD_DEMO_GLFW)
+endif (CMAKE_SYSTEM MATCHES "Windows" AND TB_BUILD_DEMO STREQUAL GLFW)
 
 # Add sources
 set (LOCAL_SRCS "")
@@ -26,47 +26,35 @@ set (LOCAL_SRCS ${LOCAL_SRCS}
   ./platform/main.cpp
   ./platform/Application.cpp)
 
-if (TB_BUILD_DEMO_GLFW)
+if (TB_BUILD_DEMO STREQUAL GLFW)
   set (LOCAL_SRCS ${LOCAL_SRCS}
     ./platform/port_glfw.cpp
     ./platform/glfw_extra_linux.cpp)
-endif (TB_BUILD_DEMO_GLFW)
+endif (TB_BUILD_DEMO STREQUAL GLFW)
 
-if (TB_BUILD_DEMO_SDL2)
+if (TB_BUILD_DEMO STREQUAL SDL2)
   set (LOCAL_SRCS ${LOCAL_SRCS}
     ./platform/port_sdl2.cpp)
-endif (TB_BUILD_DEMO_SDL2)
+endif (TB_BUILD_DEMO STREQUAL SDL2)
 
-include_directories(".")
+add_resources (RES_FILES "${CMAKE_SOURCE_DIR}/resources" "*.txt" "*.png" "*.svg")
+add_resources (RES_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "demo01/*.txt" "demo01/*.png" "demo01/*.svg")
+add_resources (RES_FILES "${CMAKE_SOURCE_DIR}/src/tb/tests"
+  test_tb_parser.tb.txt
+  test_tb_parser_included.tb.txt
+  test_tb_parser_definitions.tb.txt)
 
-add_executable (TurboBadgerDemo WIN32 ${LOCAL_SRCS})
+add_executable (TurboBadgerDemo MACOSX_BUNDLE WIN32 ${LOCAL_SRCS} ${RES_FILES})
+target_include_directories (TurboBadgerDemo PRIVATE ".")
 target_link_libraries (TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS})
+
+# Individually set the file's path properties
+fixup_resources (RES_FILES)
+
 install (TARGETS TurboBadgerDemo
-  DESTINATION "/"
-  COMPONENT demoapp)
-install (
-  DIRECTORY ${CMAKE_SOURCE_DIR}/resources
-  DESTINATION TurboBadgerDemo_
   COMPONENT demoapp
-  PATTERN "*.psd" EXCLUDE
-  PATTERN "*.txt"
-  PATTERN "*.svg"
-  PATTERN "*.png")
-install (
-  DIRECTORY ${CMAKE_SOURCE_DIR}/Demo/demo01
-  DESTINATION TurboBadgerDemo_/Demo
-  COMPONENT demoapp
-  PATTERN "*.psd" EXCLUDE
-  PATTERN "*.txt"
-  PATTERN "*.svg"
-  PATTERN "*.png")
-install (
-  FILES
-  ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser.tb.txt
-  ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_included.tb.txt
-  ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_definitions.tb.txt
-  DESTINATION TurboBadgerDemo_
-  COMPONENT demoapp)
+  BUNDLE DESTINATION "./" 
+  RUNTIME DESTINATION "./")
 
 # Platform specific
 if (CMAKE_COMPILER_IS_MINGW)
@@ -78,7 +66,7 @@ if (EMSCRIPTEN)
   set (CMAKE_EXECUTABLE_SUFFIX ".html")
   # default skin resources
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/resources@/resources")
-  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/demo01@Demo/demo01")
+  set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file /tmp/demo01@demo01")
   # test files
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser.tb.txt@/")
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --preload-file ${CMAKE_SOURCE_DIR}/src/tb/tests/test_tb_parser_included.tb.txt@/")
@@ -96,8 +84,8 @@ endif (EMSCRIPTEN)
 set (CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR} PARENT_SCOPE)
 set (CPACK_COMPONENTS_ALL demoapp)
 
-set (CPACK_PACKAGE_NAME "TurboBadgerDemo")
-set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "TurboBadger UI Demo")
+set (CPACK_PACKAGE_NAME "TurboBadgerDemo${TB_BUILD_DEMO}")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "TurboBadger UI Demo (${TB_BUILD_DEMO})")
 set (CPACK_PACKAGE_VERSION "${VERSION}${VERSION_BUILD}")
 set (CPACK_PACKAGE_VERSION_MAJOR "${VERSION_MAJOR}")
 set (CPACK_PACKAGE_VERSION_MINOR "${VERSION_MINOR}")
@@ -119,7 +107,7 @@ endif (WIN32)
 
 # macOS
 if (APPLE AND NOT XCODE)
-  set (CPACK_GENERATOR "DragNDrop")
+  set (CPACK_GENERATOR "DragNDrop;TGZ")
   set (CPACK_BUNDLE_NAME "${CPACK_PACKAGE_NAME}")
 endif (APPLE AND NOT XCODE)
 

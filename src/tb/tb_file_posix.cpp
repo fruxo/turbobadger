@@ -8,6 +8,21 @@
 #ifdef TB_FILE_POSIX
 
 #include <stdio.h>
+#ifndef _WIN32
+#include <unistd.h>
+#else
+/* This is intended as a drop-in replacement for unistd.h on Windows.
+ * Please add functionality as neeeded.
+ * https://stackoverflow.com/a/826027/1202830
+ */
+#include <stdlib.h>
+#include <io.h>
+//#include <getopt.h> /* getopt at: https://gist.github.com/ashelly/7776712 */
+#include <process.h> /* for getpid() and the exec..() family */
+#include <direct.h> /* for _getcwd() and _chdir() */
+#define getcwd _getcwd
+/* -- cut -- */
+#endif
 
 namespace tb {
 
@@ -45,9 +60,14 @@ private:
 TBFile *TBFile::Open(const TBStr & filename, TBFileMode mode)
 {
 	FILE *f = nullptr;
-	TBStr pathfile(TBSystem::GetRoot());
+	TBStr pathfile;
 	if (filename[0] != '/')
+	{
+#ifdef TB_FILE_POSIX_PREFIX
+		pathfile.Set(TB_FILE_POSIX_PREFIX);
+#endif
 		pathfile.Append(filename);
+	}
 	else
 		pathfile.Set(filename);
 	switch (mode)
@@ -61,9 +81,12 @@ TBFile *TBFile::Open(const TBStr & filename, TBFileMode mode)
 	default:
 		break;
 	}
-#if defined(TB_RUNTIME_DEBUG_INFO) && 0
-	if (!f)
+#if defined(TB_RUNTIME_DEBUG_INFO) && 1
+	if (!f) {
+		char tmp[256];
+		TBDebugPrint("Cwd: '%s'\n", getcwd(tmp, sizeof(tmp)));
 		TBDebugPrint("TBFile::Open, unable to open file '%s'\n", pathfile.CStr());
+	}
 #endif
 	if (!f)
 		return nullptr;

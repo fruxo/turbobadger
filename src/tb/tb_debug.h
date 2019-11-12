@@ -65,7 +65,7 @@ void ShowDebugInfoSettingsWindow(class TBWidget *root);
 
 } // namespace tb
 
-#if defined(TB_RUNTIME_DEBUG_INFO) || 1
+#if defined(TB_RUNTIME_DEBUG_INFO)
 namespace tb { class TBStr; }
 void TBDebugOut(const tb::TBStr & str);
 #define TBDebugPrint(...) do {									 \

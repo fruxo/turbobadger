@@ -9,7 +9,7 @@
 
 #define GL_GLEXT_PROTOTYPES 1
 
-#ifdef SPIND_XCODE
+#ifdef SDL_FRAMEWORK
 #include "SDL2/SDL.h"
 #else
 #include "SDL.h"

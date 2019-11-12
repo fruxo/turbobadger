@@ -15,10 +15,10 @@ matrix:
     install:
     - choco install nsis 7zip
     script:
-    - cmake . -Bbuild
+    - cmake . -BBuild -DTB_RENDERER=GL3 -DTB_BUILD_DEMO=SDL2 -DTB_BUILD_SDL2=ON #-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON 
     - ls
-    - ls build
-    - cmake --build build --config Release --target INSTALL
+    - ls Build
+    - cmake --build Build --config Release --target PACKAGE
   - os: osx
     osx_image: xcode9.1
     script:
@@ -30,6 +30,7 @@ addons:
     packages:
     - cmake
     - clang
+    - rpm
     - libgl1-mesa-dev
     - libx11-dev
     - libxrandr-dev
@@ -45,7 +46,7 @@ script:
 after_failure:
 - pwd
 - find .
-- cat CMakeFiles/CMakeOutput.log
+- cat Build/CMakeFiles/CMakeOutput.log
 - ls thirdparty
 - cat thirdparty/CMakeFiles/CMakeOutput.log
 deploy:
@@ -53,11 +54,17 @@ deploy:
   api_key:
     secure: IbObTxgvPEMtr4kfjVTa+SPSXuTLPPoxoJiy5mvrZVsXisTqnW+3se6NIsGXuW07dYO1RS3jRUGmYweyPzWBIAvlDXGajLOQr1n/rXSZcJif9iV9P0srIJni7CdNnTRLI2Lse8hTqUjRxTAfDZ40npj4+6BCTZuxUvt2OOjIdu5gdxMPSpZ/lAE2O/M5H0TNqvmPSQ2QmbT5pZLOnwAO7CG4MX0xEOpINQTzTfbu040FB+yqNegI1Zp/rDQ5GdyEQ5KsLl0sfHyxTlr2BbE3JLzrdH+9fM2AeotqxVenO/R9eoxUG5vI8UcoOWvVz6C5LbEkgKEay6BFTzfQ/bWimg0V7mjng8qBxFWVR0a7CMv46PGh8HdUjkUgkF49biB0xh67I6BqsFzBabDRhy2LNnw5ciVgV5jH/+cbrTBddFt5cBgK83H1o+tzcED1ac9es8jQqSSot0h6CwArOZHEqtIdzTdewbi1ggo4yUBf8tEKYQKRIcK95J42TFjpusn/4Q5dsggHgTCkcF2uYjdTTn/SO2m2QrM/Wy+kzf050wPg0LBZ0mVRHQEtB0TgFvluBDOw3bENXOqQLQgokB3GQXh2nQg/jull+3mlAy1o+bahBTjXMAOcT9aSlZg0B0zqwztpPySMmEy2bQvunACl7YzX8KYewjN0nn5pkoGIFdA=
   file_glob: true
-  file: TurboBadgerDemo*
+  file:
+    - Build*/TurboBadgerDemo*install-win32.exe
+    - Build*/TurboBadgerDemo*install-win32.zip
+    - Build*/TurboBadgerDemo*.dmg
+    - Build*/TurboBadgerDemo*.deb
+    - Build*/TurboBadgerDemo*.rpm
+    - Build*/TurboBadgerDemo*.tar.gz
   skip_cleanup: true
   overwrite: true
   draft: true
   on:
     repo: tesch1/turbobadger
-    branch: hastybadger
     tags: true
+#    branch: hastybadger

@@ -1,15 +1,16 @@
+TARGET=TurboBadgerDemo
 
-all: glfw sdl2 em em-glfw
+All: glfw sdl2 lib osx ios and em em-glfw
 
 glfw:
 	[ -d BuildGLFW ] || ./build.sh -glfw -gl
-	cd BuildGLFW && $(MAKE)
+	cd BuildGLFW && $(MAKE) package
 
 sdl2:
 	[ -d BuildSDL2 ] || ./build.sh -sdl2 -gl3
-	cd BuildSDL2 && $(MAKE)
+	cd BuildSDL2 && $(MAKE) package
 
-em:
+em-sdl2:
 	[ -d BuildEmsc ] || ./build.sh -gles2 -sdl2 -em
 	cd BuildEmsc && $(MAKE)
 
@@ -17,18 +18,26 @@ em-glfw:
 	[ -d BuildEmscGl ] || ./build.sh -gles2 -glfw -em -o BuildEmscGl
 	cd BuildEmscGl && $(MAKE)
 
-xc:
-	[ -d Build-Xcode ] || \
-		(cmake . -G Xcode -BBuild-Xcode -DTB_RENDERER_GL3=ON -DTB_BUILD_DEMO_SDL2=ON || rm -rf Build-Xcode)
-	cd Build-Xcode && xcrun xcodebuild -project "turbobadger.xcodeproj" -target TurboBadgerDemoSDL
+em: em-sdl2 em-glfw
 
-ios:
-	[ -d Build-iOS ] || (cmake . -G Xcode -BBuild-iOS -DTB_RENDERER_GLES_2=ON || rm -rf Build-iOS)
-	cd Build-iOS   && xcrun xcodebuild -project "turbobadger.xcodeproj" -target ?
+Build-osx:
+	cmake . -G Xcode -BBuild-osx -DTB_RENDERER=GL3 -DTB_BUILD_DEMO=SDL2 || rm -rf Build-osx
+
+osx: Build-osx
+	cd Build-osx && xcrun xcodebuild -project "TurboBadger.xcodeproj" -target ${TARGET}
+
+Build-ios:
+	cmake . -G Xcode -BBuild-ios -DCMAKE_TOOLCHAIN_FILE=cmake/iOS.cmake || rm -rf Build-ios
+
+ios: Build-ios
+	cd Build-iOS   && xcrun xcodebuild -project "TurboBadger.xcodeproj" -target ${TARGET}
+
+lib:
+	[ -d BuildLib ] || ./build.sh -o BuildLib -gl3
+	cd BuildLib && $(MAKE) package
 
 and:
 	cd DemoAndroid2 && ./gradlew build
-	#cd DemoAndroid && ninja
 
 distclean:
 	rm -rf Build*

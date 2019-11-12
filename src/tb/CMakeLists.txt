@@ -12,6 +12,7 @@ set (LOCAL_SRCS
   tb_dimension.cpp
   tb_editfield.cpp
   tb_file_posix.cpp
+  tb_file_android.cpp
   tb_font_renderer.cpp
   tb_font_renderer_freetype.cpp
   tb_font_renderer_stb.cpp
@@ -70,9 +71,23 @@ set (LOCAL_SRCS
   utf8/utf8.cpp
   )
 
-if (TB_BUILD_DEMO_GLFW OR TB_BUILD_DEMO_SDL2)
- file (GLOB SRCS tests/*.cpp)
- set (LOCAL_SRCS ${LOCAL_SRCS} ${SRCS})
+if (TB_BUILD_DEMO STREQUAL GLFW OR TB_BUILD_DEMO STREQUAL SDL2)
+  set (LOCAL_SRCS ${LOCAL_SRCS}
+    tests/tb_test.cpp
+    tests/test_tb_color.cpp
+    tests/test_tb_dimension.cpp
+    tests/test_tb_geometry.cpp
+    tests/test_tb_linklist.cpp
+    tests/test_tb_node_ref_tree.cpp
+    tests/test_tb_object.cpp
+    tests/test_tb_parser.cpp
+    tests/test_tb_space_allocator.cpp
+    tests/test_tb_style_edit.cpp
+    tests/test_tb_tempbuffer.cpp
+    tests/test_tb_test.cpp
+    tests/test_tb_value.cpp
+    tests/test_tb_widget_value.cpp
+    )
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -81,32 +96,37 @@ endif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 
 if (ANDROID)
   add_library (TurboBadgerLib SHARED ${LOCAL_SRCS})
-  target_link_libraries (TurboBadgerLib log atomic android)
-  if (TB_RENDERER_GLES_1)
-    target_link_libraries (TurboBadgerLib EGL GLESv1_CM)
-  endif (TB_RENDERER_GLES_1)
-  if (TB_RENDERER_GLES_2)
-    target_link_libraries (TurboBadgerLib EGL GLESv2)
-  endif (TB_RENDERER_GLES_2)
+  target_link_libraries (TurboBadgerLib PUBLIC log atomic android)
+  if (TB_RENDERER MATCHES GLES_1)
+    target_link_libraries (TurboBadgerLib PUBLIC EGL GLESv1_CM)
+  endif (TB_RENDERER MATCHES GLES_1)
+  if (TB_RENDERER MATCHES GLES_2)
+    target_link_libraries (TurboBadgerLib PUBLIC EGL GLESv2)
+  endif (TB_RENDERER MATCHES GLES_2)
 else (ANDROID)
   # not android, just link a static
   add_library (TurboBadgerLib STATIC ${LOCAL_SRCS})
 endif (ANDROID)
 
-if (TB_SYSTEM_SDL2)
+target_compile_features (TurboBadgerLib PRIVATE cxx_constexpr)
+
+if (TB_BACKEND STREQUAL SDL2)
   target_link_libraries (TurboBadgerLib PUBLIC SDL2-interface)
-endif (TB_SYSTEM_SDL2)
-if (TB_CLIPBOARD_GLFW)
+endif (TB_BACKEND STREQUAL SDL2)
+if (TB_BACKEND STREQUAL GLFW)
   target_link_libraries (TurboBadgerLib PUBLIC glfw)
-endif (TB_CLIPBOARD_GLFW)
-if (TB_FONT_RENDERER_FREETYPE)
+endif (TB_BACKEND STREQUAL GLFW)
+if (TB_SYSTEM STREQUAL WINDOWS)
+  target_link_libraries (TurboBadgerLib PUBLIC GLEW)
+endif (TB_SYSTEM STREQUAL WINDOWS)
+if (TB_FONT_RENDERER STREQUAL FREETYPE)
   target_link_libraries (TurboBadgerLib PUBLIC freetype)
-endif (TB_FONT_RENDERER_FREETYPE)
-if (TB_RENDERER_GL AND NOT EMSCRIPTEN AND NOT EMSCRIPTEN AND NOT ANDROID)
+endif (TB_FONT_RENDERER STREQUAL FREETYPE)
+if (TB_RENDERER MATCHES GL AND NOT EMSCRIPTEN AND NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
   set (OpenGL_GL_PREFERENCE GLVND)
   find_package (OpenGL REQUIRED)
   target_link_libraries (TurboBadgerLib PUBLIC OpenGL::GL)
-endif (TB_RENDERER_GL AND NOT EMSCRIPTEN AND NOT EMSCRIPTEN AND NOT ANDROID)
+endif (TB_RENDERER MATCHES GL AND NOT EMSCRIPTEN AND NOT EMSCRIPTEN AND NOT ANDROID AND NOT IOS)
 
 target_include_directories (TurboBadgerLib PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories (TurboBadgerLib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -125,6 +145,9 @@ if (NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL AND FALSE)
     PATTERN "*.mm" EXCLUDE
     PATTERN "*.txt" EXCLUDE
     PATTERN "test files" EXCLUDE
-    PATTERN "*.h"
-    )
+    PATTERN "*.h")
+  install (
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/tb_config.h
+    DESTINATION include/tb
+    COMPONENT library)
 endif ()

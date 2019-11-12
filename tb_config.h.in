@@ -11,6 +11,11 @@
 #ifndef TB_CONFIG_H
 #define TB_CONFIG_H
 
+#define TB_VERSION_MAJOR ${VERSION_MAJOR}
+#define TB_VERSION_MINOR ${VERSION_MINOR}
+#define TB_VERSION_REVISION ${VERSION_PATCH}
+#define TB_VERSION_STR "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
+
 /** Enable for some handy runtime debugging, enabled by modifying
 	the various settings in g_tb_debug. A settings window can be
 	shown by calling ShowDebugInfoSettingsWindow. */
@@ -31,15 +36,10 @@
 	the default backends, so consider it an experimental and unfinished feature! */
 //#define TB_PREMULTIPLIED_ALPHA
 
-/** Enable support of constexpr TBIDs */
-${TB_SUPPORT_CONSTEXPR_CONFIG}
-
 /** Enable to support TBBF fonts (Turbo Badger Bitmap Fonts) */
-${TB_FONT_RENDERER_TBBF_CONFIG}
 //#define TB_FONT_RENDERER_TBBF
 
 /** Enable to support truetype fonts using freetype. */
-${TB_FONT_RENDERER_FREETYPE_CONFIG}
 //#define TB_FONT_RENDERER_FREETYPE
 
 /** Enable to support truetype fonts using stb_truetype.h (http://nothings.org/).
@@ -47,45 +47,46 @@ ${TB_FONT_RENDERER_FREETYPE_CONFIG}
 	app, that you know work! Freetype generates much prettier glyphs (using
 	hinting) but is a lot larger. This implementation is kept here as alternative
 	as long as it compiles. */
-${TB_FONT_RENDERER_STB_CONFIG}
 //#define TB_FONT_RENDERER_STB
+#define TB_FONT_RENDERER_${TB_FONT_RENDERER}
 
 /** Enable to support image loading using stb_image.c (http://nothings.org/).
 	It's a *very unsafe* image library. Use only with images distributed with
 	your app, that you know work! */
-${TB_IMAGE_LOADER_STB_CONFIG}
 //#define TB_IMAGE_LOADER_STB
+#define TB_IMAGE_LOADER_${TB_IMAGE_LOADER}
 
 /** Enable to get TBRendererBatcher, an helper class for renderers that
 	implements batching of draw operations. Subclasses of TBRendererBatcher
 	can be done super easily, and still do batching. */
-${TB_RENDERER_BATCHER_CONFIG}
 //#define TB_RENDERER_BATCHER
+${TB_RENDERER_BATCHER_CONFIG}
+//#define TB_RENDERER_BATCHER ${TB_RENDERER_BATCHER}
 
 /** Enable renderer using Stub. This renderer depends on
 	TB_RENDERER_BATCHER. */
-${TB_RENDERER_STUB_CONFIG}
 //#define TB_RENDERER_STUB
 
 /** Enable renderer using OpenGL. This renderer depends on TB_RENDERER_BATCHER.
 	It is using GL version 1.1, */
-${TB_RENDERER_GL_CONFIG}
 //#define TB_RENDERER_GL
 
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL ES version 1. */
-${TB_RENDERER_GLES_1_CONFIG}
 //#define TB_RENDERER_GLES_1
 
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL ES version 2. */
-${TB_RENDERER_GLES_2_CONFIG}
 //#define TB_RENDERER_GLES_2
 
 /** Enable renderer using OpenGL ES. This renderer depends on TB_RENDERER_GL.
 	It is using GL version 3.2. */
-${TB_RENDERER_GL3_CONFIG}
 //#define TB_RENDERER_GL3
+#define TB_RENDERER_${TB_RENDERER}
+
+#if defined(TB_RENDERER_GL3) || defined(TB_RENDERER_GLES_1) || defined(TB_RENDERER_GLES_2)
+#define TB_RENDERER_GL
+#endif
 
 /** The width of the font glyph cache. Must be a power of two. */
 ${TB_GLYPH_CACHE_WIDTH_CONFIG}
@@ -103,59 +104,40 @@ ${TB_GLYPH_CACHE_HEIGHT_CONFIG}
 
 /** Enable support for TBImage, TBImageManager, TBImageWidget. */
 ${TB_IMAGE_CONFIG}
-//#define TB_IMAGE
+//#define TB_IMAGE ${TB_IMAGE}
+#define TB_IMAGE_LOADER_${TB_IMAGE_LOADER}
 
 // == Additional configuration of platform implementations ========================
 
 /** Define for posix implementation of TBFile. */
-${TB_FILE_CONFIG}
 //#define TB_FILE_POSIX
+#define TB_FILE_${TB_FILE}
+${TB_FILE_POSIX_PREFIX_CONFIG}
 
 /** Defines for implementations of TBClipboard. */
-${TB_CLIPBOARD_CONFIG}
+#define TB_CLIPBOARD_${TB_CLIPBOARD}
 //#define TB_CLIPBOARD_DUMMY // Cross platform. Not integrating with the OS.
 //#define TB_CLIPBOARD_GLFW // Cross platform using glfw API.
 //#define TB_CLIPBOARD_WINDOWS
 
 /** Defines for implementations of TBSystem. */
-${TB_SYSTEM_CONFIG}
+#define TB_SYSTEM_${TB_SYSTEM}
 //#define TB_SYSTEM_LINUX
 //#define TB_SYSTEM_WINDOWS
 //#define TB_SYSTEM_ANDROID
-//#define TB_SYSTEM_SDL2
+//#define TB_SYSTEM_MACOSX
 
 /** Defines for additional platform specific issues. */
-${TB_TARGET_CONFIG}
+#define TB_TARGET_${TB_SYSTEM}
 //#define TB_TARGET_WINDOWS
 //#define TB_TARGET_MACOSX
 //#define TB_TARGET_LINUX
 //#define TB_TARGET_CUSTOM
 
-// == Setting some defaults for platform implementations ==========================
-// Updated to only define a platform if a target is defined
-// This allows us to build for different targets than the host compiling OS
-#if 0
-#if !defined(TB_TARGET_WINDOWS) && !defined(TB_TARGET_LINUX) && !defined(TB_TARGET_MACOSX) && !defined(TB_TARGET_CUSTOM)
-    #if defined(ANDROID) || defined(__ANDROID__)
-    #define TB_SYSTEM_ANDROID
-    #define TB_CLIPBOARD_DUMMY
-    #elif defined(__linux) || defined(__linux__)
-    #define TB_FILE_POSIX
-    #define TB_TARGET_LINUX
-    #define TB_SYSTEM_LINUX
-    #define TB_CLIPBOARD_GLFW
-    #elif MACOSX
-    #define TB_FILE_POSIX
-    #define TB_TARGET_MACOSX
-    #define TB_SYSTEM_LINUX
-    #define TB_CLIPBOARD_GLFW
-    #elif defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
-    #define TB_FILE_POSIX
-    #define TB_TARGET_WINDOWS
-    #define TB_CLIPBOARD_WINDOWS
-    #define TB_SYSTEM_WINDOWS
-    #endif
-#endif
-#endif
+/** Defines for backend selection. */
+#define TB_BACKEND_${TB_BACKEND}
+//#define TB_BACKEND_GLFW
+//#define TB_BACKEND_SDL2
+//#define TB_BACKEND_ANDROID
 
 #endif // TB_CONFIG_H

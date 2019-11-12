@@ -15,16 +15,6 @@ namespace tb {
 // Disabled for TB_RUNTIME_DEBUG_INFO builds, so TBID string debugging
 // is available.
 //
-// Note: GCC may need -std=c++0x or -std=c++11 to enable this feature.
-
-#ifndef TB_RUNTIME_DEBUG_INFO
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L || _MSC_VER >= 1900
-#define TB_SUPPORT_CONSTEXPR
-#endif
-#endif
-
-#ifdef TB_SUPPORT_CONSTEXPR
-
 // FNV constants
 static constexpr uint32_t basis = 2166136261U;
 static constexpr uint32_t prime = 16777619U;
@@ -42,15 +32,6 @@ constexpr uint32_t TBGetHash(const char* str)
 }
 
 #define TBIDC(str) tb::TBGetHash(str)
-
-#else // TB_SUPPORT_CONSTEXPR
-
-#define TBIDC(str) tb::TBID(str)
-
-/** Get hash value from string */
-uint32_t TBGetHash(const char *str);
-
-#endif // !TB_SUPPORT_CONSTEXPR
 
 } // namespace tb
 

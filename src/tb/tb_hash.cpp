@@ -7,6 +7,7 @@
 
 namespace tb {
 
+#if 0
 #ifndef TB_SUPPORT_CONSTEXPR
 
 uint32_t TBGetHash(const char *str)
@@ -25,5 +26,6 @@ uint32_t TBGetHash(const char *str)
 }
 
 #endif // !TB_SUPPORT_CONSTEXPR
+#endif
 
 } // namespace tb

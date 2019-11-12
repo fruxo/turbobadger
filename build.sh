@@ -13,7 +13,7 @@ if command -v cmake3 >/dev/null 2>&1 ; then
 else
     : ${CMAKE=cmake}
 fi
-: ${CMAKE_FLAGS=-DTB_SYSTEM_LINUX=ON}
+: ${CMAKE_FLAGS=}
 
 CMDLINE="$0 $@"
 SCRIPT=$(basename "$0")
@@ -56,6 +56,20 @@ EOF
     exit 1
 }
 
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM=LINUX" ;;
+    Darwin*)
+        CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM=MACOSX"
+        export CC=clang
+        export CXX=clang++
+        ;;
+    CYGWIN*)    CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM=WINDOWS" ;;
+    MINGW*)     CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM=WINDOWS" ;;
+    *)          machine="UNKNOWN:${unameOut}"
+esac
+echo "CMAKE_FLAGS: ${CMAKE_FLAGS}"
+
 # process command line args
 while [ $# -gt 0 ]; do
     key="$1"
@@ -72,18 +86,17 @@ while [ $# -gt 0 ]; do
             exit 0
             ;;
         -gl)
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER=GL"
             ;;
         -gl3)
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON -DTB_RENDERER_GL3=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER=GL3"
             ;;
         -gles2)
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON -DTB_RENDERER_GLES_2=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER=GLES_2"
             ;;
         -em*)
             BUILD_DIR="BuildEmsc"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GLES_2=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER=GLES_2"
             source ${HOME}/local/emsdk/emsdk_env.sh
             #${EMSCRIPTEN}/emcc --clear-cache --clear-ports
             CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_TOOLCHAIN_FILE=${EMSCRIPTEN}/cmake/Modules/Platform/Emscripten.cmake"
@@ -91,24 +104,21 @@ while [ $# -gt 0 ]; do
             ;;
         -sdl*)
             BUILD_DIR="BuildSDL2"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO=SDL2"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_SDL2=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=OFF"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_SDL2=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_FREETYPE=ON"
             ;;
         -glfw)
             BUILD_DIR="BuildGLFW"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO=GLFW"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER=GL"
             CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_GLFW=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_SDL2=OFF"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_DEMO_GLFW=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_CLIPBOARD_GLFW=ON"
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_SYSTEM_LINUX=ON"
-
-            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_RENDERER_GL=ON"
+            #CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_BUILD_FREETYPE=ON"
+            CMAKE_FLAGS="${CMAKE_FLAGS} -DTB_FONT_RENDERER=TBBF"
             ;;
         -v|--verbose)          VERBOSE=$(( ${VERBOSE} + 1 ))
                                MAKE_FLAGS="${MAKE_FLAGS} VERBOSE=1"
+                               CMAKE_FLAGS="${CMAKE_FLAGS} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
                                ;;
         -q|--quiet)            VERBOSE=$(( ${VERBOSE} - 1 ))
                                ;;
