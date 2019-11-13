@@ -1,7 +1,7 @@
 // -*-  Mode: C++; c-basic-offset: 4; tab-width: 4; indent-tabs-mode: t -*-
 #include "Application.h"
 
-#ifdef TB_CLIPBOARD_GLFW
+#ifdef TB_BACKEND_GLFW
 #include "glfw_extra.h"
 #include "tb_widgets.h"
 #include "renderers/tb_renderer_gl.h"
@@ -35,4 +35,4 @@ public:
 	bool m_quit_requested;
 };
 
-#endif // TB_CLIPBOARD_GLFW
+#endif // TB_BACKEND_GLFW
