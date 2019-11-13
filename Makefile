@@ -24,13 +24,15 @@ Build-osx:
 	cmake . -G Xcode -BBuild-osx -DTB_RENDERER=GL3 -DTB_BUILD_DEMO=SDL2 || rm -rf Build-osx
 
 osx: Build-osx
-	cd Build-osx && xcrun xcodebuild -project "TurboBadger.xcodeproj" -target ${TARGET}
+	cd Build-osx && cmake --build . --target package
+	#cd Build-osx && xcrun xcodebuild -project "TurboBadger.xcodeproj" -target ${TARGET}
 
 Build-ios:
-	cmake . -G Xcode -BBuild-ios -DCMAKE_TOOLCHAIN_FILE=cmake/iOS.cmake || rm -rf Build-ios
+	cmake . -G Xcode -BBuild-ios -DCMAKE_TOOLCHAIN_FILE=cmake/iOS.cmake -DTB_BUILD_DEMO=SDL2 || rm -rf Build-ios
 
 ios: Build-ios
-	cd Build-iOS   && xcrun xcodebuild -project "TurboBadger.xcodeproj" -target ${TARGET}
+	cd Build-iOS && cmake --build . --target package
+	#cd Build-iOS   && xcrun xcodebuild -project "TurboBadger.xcodeproj" -target ${TARGET}
 
 lib:
 	[ -d BuildLib ] || ./build.sh -o BuildLib -gl3

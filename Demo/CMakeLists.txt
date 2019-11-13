@@ -51,6 +51,29 @@ target_link_libraries (TurboBadgerDemo TurboBadgerLib ${EXTRA_LIBS})
 # Individually set the file's path properties
 fixup_resources (RES_FILES)
 
+if (APPLE)
+  set (CODESIGN_TEAMID "$ENV{APPLE_DEVTEAM_ID}" CACHE STRING "Apple code signing team ID")
+  message (STATUS "Xcode development team: '$ENV{APPLE_DEVTEAM_ID}' (Cached: ${CODESIGN_TEAMID})")
+  if (IOS)
+    set_target_properties (TurboBadgerDemo PROPERTIES
+      XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
+      XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "${CODESIGN_TEAMID}"
+      XCODE_ATTRIBUTE_INSTALL_PATH "$(LOCAL_APPS_DIR)"
+      XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon"
+      MACOSX_BUNDLE_GUI_IDENTIFIER "org.hastybadger.demo"
+      MACOSX_BUNDLE_ICON_NAME "AppIcon"
+      )
+  else ()
+    set_target_properties (TurboBadgerDemo PROPERTIES
+      XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "Mac Developer"
+      XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "${CODESIGN_TEAMID}"
+      XCODE_ATTRIBUTE_INSTALL_PATH "$(LOCAL_APPS_DIR)"
+      MACOSX_BUNDLE_GUI_IDENTIFIER "org.hastybadger.demo"
+      MACOSX_BUNDLE_ICON_FILE "hastybadgerdemo.icns"
+      )
+  endif (IOS)
+endif (APPLE)
+
 install (TARGETS TurboBadgerDemo
   COMPONENT demoapp
   BUNDLE DESTINATION "./" 
