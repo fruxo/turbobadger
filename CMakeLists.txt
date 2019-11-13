@@ -222,7 +222,7 @@ if (TB_RUNTIME_DEBUG_INFO)
   set (TB_RUNTIME_DEBUG_INFO_CONFIG "#define TB_RUNTIME_DEBUG_INFO 1")
 endif ()
 if (TB_ALWAYS_SHOW_EDIT_FOCUS)
-  set (TB_ALWAYS_SHOW_EDIT_FOCUS_CONFIF "#define TB_ALWAYS_SHOW_EDIT_FOCUS 1")
+  set (TB_ALWAYS_SHOW_EDIT_FOCUS_CONFIG "#define TB_ALWAYS_SHOW_EDIT_FOCUS 1")
 endif ()
 
 if (EMSCRIPTEN)
@@ -342,7 +342,7 @@ endif (TB_BUILD_DEMO STREQUAL GLFW OR TB_BUILD_DEMO STREQUAL SDL2)
 
 # Android demo
 if (${TB_BUILD_DEMO} STREQUAL ANDROID)
-  target_compile_definitions (TurboBadgerLib PUBLIC)
+  #target_compile_definitions (TurboBadgerLib PUBLIC)
   add_library (TurboBadger SHARED
     ./DemoAndroid2/app/src/main/jni/jni_glue.cpp
     ./DemoAndroid2/app/src/main/jni/App.cpp
