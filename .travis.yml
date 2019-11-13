@@ -26,6 +26,7 @@ matrix:
     - echo ${CXX}
     - make sdl2
     - make glfw
+    - ./thirdparty/Build_SDL2_framework.sh osx
     - make osx
 #    - make ios # needs code signing setup
 #  - language: android

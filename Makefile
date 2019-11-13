@@ -1,14 +1,13 @@
-TARGET=TurboBadgerDemo
 
 All: glfw sdl2 lib osx ios and em em-glfw
 
 glfw:
-	[ -d BuildGLFW ] || ./build.sh -glfw -gl
-	cd BuildGLFW && $(MAKE) package
+	[ -d Build-glfw ] || ./build.sh -glfw -gl -o Build-glfw
+	cd Build-glfw && $(MAKE) package
 
 sdl2:
-	[ -d BuildSDL2 ] || ./build.sh -sdl2 -gl3
-	cd BuildSDL2 && $(MAKE) package
+	[ -d Build-sdl2 ] || ./build.sh -sdl2 -gl3 -o Build-sdl2
+	cd Build-sdl2 && $(MAKE) package
 
 em-sdl2:
 	[ -d BuildEmsc ] || ./build.sh -gles2 -sdl2 -em
