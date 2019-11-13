@@ -42,7 +42,7 @@ public:
 
 		NUM_SETTINGS
 	};
-	int settings[NUM_SETTINGS];
+	long settings[NUM_SETTINGS];
 };
 
 extern TBDebugInfo g_tb_debug;

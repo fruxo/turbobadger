@@ -108,7 +108,8 @@ else (ANDROID)
   add_library (TurboBadgerLib STATIC ${LOCAL_SRCS})
 endif (ANDROID)
 
-target_compile_features (TurboBadgerLib PRIVATE cxx_constexpr)
+#target_compile_features (TurboBadgerLib PRIVATE cxx_constexpr)
+set_property (TARGET TurboBadgerLib PROPERTY CXX_STANDARD 14)
 
 if (TB_BACKEND STREQUAL SDL2)
   target_link_libraries (TurboBadgerLib PUBLIC SDL2-interface)

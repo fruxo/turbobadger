@@ -81,7 +81,7 @@ int TBDimensionConverter::GetPxFromValue(TBValue *value, int def_value) const
 	if (!value)
 		return def_value;
 	if (value->GetType() == TBValue::TYPE_INT)
-		return DpToPx(value->GetInt());
+		return DpToPx((int)value->GetInt());
 	else if (value->GetType() == TBValue::TYPE_FLOAT)
 		// FIX: We might want float versions of all dimension functions.
 		return DpToPx((int)value->GetFloat());
