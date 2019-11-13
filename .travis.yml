@@ -26,6 +26,8 @@ matrix:
     - echo ${CXX}
     - make sdl2
     - make glfw
+    - make osx
+#    - make ios # needs code signing setup
 #  - language: android
 #    os: linux
 #    dist: trusty

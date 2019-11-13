@@ -5,6 +5,7 @@
 #include <mach-o/dyld.h>
 
 // newness
+#include "TargetConditionals.h"
 #include "CoreFoundation/CoreFoundation.h"
 #include <unistd.h>
 #include <libgen.h>
@@ -38,7 +39,9 @@ bool port_main(int argc, char* argv[])
 #if defined(TB_BACKEND_SDL2) && !defined(__EMSCRIPTEN__)
 	if (char *base_path = SDL_GetBasePath())
 	{
+#if !TARGET_OS_IPHONE
 		chdir(base_path);
+#endif
 		SDL_free(base_path);
 		printf("SDL pwd: %s\n", base_path);
 	}

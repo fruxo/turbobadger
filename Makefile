@@ -30,7 +30,7 @@ Build-ios:
 	cmake . -G Xcode -BBuild-ios -DCMAKE_TOOLCHAIN_FILE=cmake/iOS.cmake -DTB_BUILD_DEMO=SDL2 || rm -rf Build-ios
 
 ios: Build-ios
-	cd Build-iOS && cmake --build . --target package
+	cd Build-ios && cmake --build . --target package
 
 lib:
 	[ -d BuildLib ] || ./build.sh -o BuildLib -gl3
