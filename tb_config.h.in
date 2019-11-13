@@ -20,6 +20,7 @@
 /** Enable for some handy runtime debugging, enabled by modifying
 	the various settings in g_tb_debug. A settings window can be
 	shown by calling ShowDebugInfoSettingsWindow. */
+${TB_RUNTIME_DEBUG_INFO_CONFIG}
 #if !defined(NDEBUG) && !defined(TB_RUNTIME_DEBUG_INFO)
 #define TB_RUNTIME_DEBUG_INFO
 #endif
@@ -32,6 +33,7 @@
 /** Enable if the focus state should automatically be set on edit fields even
 	when using the pointer. It is normally set only while moving focus by keyboard. */
 //#define TB_ALWAYS_SHOW_EDIT_FOCUS
+${TB_ALWAYS_SHOW_EDIT_FOCUS_CONFIG}
 
 /** Enable to use premultiplied alpha. Warning: This is not handled everywhere in
 	the default backends, so consider it an experimental and unfinished feature! */
