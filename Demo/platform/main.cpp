@@ -34,6 +34,8 @@
 #include "port_sdl2.hpp"
 #include "tb_tempbuffer.h"
 
+using namespace tb;
+
 bool port_main(int argc, char* argv[])
 {
 #if defined(TB_BACKEND_SDL2) && !defined(__EMSCRIPTEN__)
@@ -83,7 +85,7 @@ bool port_main(int argc, char* argv[])
 		printf("pwd: %s\n", exec_path);
 	}
 #endif
-	printf("GetRoot: %s\n", tb::TBSystem::GetRoot());
+	printf("GetRoot: %s\n", TBSystem::GetRoot());
 #ifdef TB_TARGET_WINDOWS
 	// Set the current path to the directory of the app so we find
 	// assets also when visual studio starts it.
