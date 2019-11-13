@@ -176,7 +176,9 @@ set_property (CACHE TB_FONT_RENDERER PROPERTY STRINGS "TBBF" "FREETYPE" "STB")
 configure_file (tb_config.h.in src/tb/tb_config.h)
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES "GNU" OR ${CMAKE_CXX_COMPILER_ID} MATCHES "Clang")
-  add_compile_options (-g -fno-exceptions -fno-rtti -Wall -Wextra -Wno-unused-parameter)
+  add_compile_options (-g -Wall -Wextra -Wno-unused-parameter
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>)
 endif ()
 
 if (MSVC)
@@ -188,35 +190,6 @@ if (MSVC)
   string (REPLACE "/GR" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
 endif (MSVC)
-
-#
-# Look for libraries
-if (TB_BACKEND STREQUAL GLFW)
-  if (NOT TB_BUILD_GLFW)
-    # Add glfw and gl libs on MacOS
-    if (APPLE)
-      find_library (GLFW_LIBRARIES glfw)
-      set (EXTRA_LIBS ${EXTRA_LIBS} ${GLFW_LIBRARIES})
-      find_path (GLFW_INCLUDE_DIRS GLFW/glfw3.h)
-    else (APPLE)
-      find_library (GLFW_LIBRARIES glfw)
-    endif (APPLE)
-  endif (NOT TB_BUILD_GLFW)
-endif (TB_BACKEND STREQUAL GLFW)
-
-if (TB_SYSTEM STREQUAL SDL2)
-  if (NOT TB_BUILD_SDL2 AND NOT EMSCRIPTEN)
-    include (FindPkgConfig)
-    pkg_search_module (SDL2 REQUIRED sdl2)
-    link_directories (${SDL2_LIBRARY_DIRS})
-    if (APPLE)
-      find_library (SDL2_LIBRARIES SDL2)
-      set (EXTRA_LIBS ${EXTRA_LIBS} ${SDL2_LIBRARIES})
-    else (APPLE)
-      find_library (SDL2_LIBRARIES SDL2)
-    endif (APPLE)
-  endif (NOT TB_BUILD_SDL2 AND NOT EMSCRIPTEN)
-endif (TB_SYSTEM STREQUAL SDL2)
 
 if (TB_RUNTIME_DEBUG_INFO)
   set (TB_RUNTIME_DEBUG_INFO_CONFIG "#define TB_RUNTIME_DEBUG_INFO 1")
