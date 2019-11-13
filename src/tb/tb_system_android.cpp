@@ -20,7 +20,7 @@
 #include <android/asset_manager_jni.h>
 #include <android/configuration.h>
 
-#if defined(TB_RUNTIME_DEBUG_INFO) || 1
+#if defined(TB_RUNTIME_DEBUG_INFO)
 
 #define  LOG_TAG    "TB"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
