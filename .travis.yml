@@ -15,7 +15,8 @@ matrix:
     install:
     - choco install nsis 7zip
     script:
-    - cmake . -BBuild -DTB_RENDERER=GL3 -DTB_BUILD_DEMO=SDL2 -DTB_BUILD_SDL2=ON #-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON 
+    - cmake . -BBuild -DTB_RENDERER=GL3 -DTB_BUILD_DEMO=GLFW -DTB_BUILD_GLFW=ON #-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
+#    - cmake . -BBuild -DTB_RENDERER=GL3 -DTB_BUILD_DEMO=SDL2 -DTB_BUILD_SDL2=ON #-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON
     - ls
     - ls Build
     - cmake --build Build --config Release --target PACKAGE
