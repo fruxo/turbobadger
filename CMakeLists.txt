@@ -365,8 +365,8 @@ if (NOT TB_SUBDIRECTORY)
   if (ETAGS)
     add_custom_target (tags
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-      COMMAND etags --language=c++ ${CMAKE_CURRENT_SOURCE_DIR}/Demo/*.[ch]*
-      COMMAND etags --language=c++ --append `find ${CMAKE_CURRENT_SOURCE_DIR} -name '*.[ch]*'`
+      COMMAND etags --language=c++ Demo/*/*.[ch]*
+      COMMAND etags --language=c++ --append `find . -name '*.[ch]*'`
       )
     add_custom_target (etags DEPENDS tags)
   endif (ETAGS)
