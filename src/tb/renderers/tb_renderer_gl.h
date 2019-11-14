@@ -59,6 +59,7 @@ extern PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT;
 #endif
 
 #elif defined(TB_RENDERER_GL3)
+
 #if defined(__APPLE__)
 #include <OpenGL/gl3.h>
 #elif defined (_WIN32)
@@ -73,11 +74,11 @@ extern PFNGLGENVERTEXARRAYSOESPROC glGenVertexArraysOESEXT;
 #include <GL/gl.h>
 #endif
 
-#else
+#else // Standard GL1.1 Renderer
 
-// Standard GL1.1 Renderer
 #if defined(_WIN32)
 #include <windows.h> // make gl.h compile
+#include <GL/glew.h>
 #include <GL/gl.h>
 #elif defined(TB_TARGET_MACOSX)
 #include <OpenGL/gl.h>

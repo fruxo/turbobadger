@@ -12,6 +12,9 @@
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
 #include "SDL2/SDL.h"
 #else
+#ifdef _WIN32
+#include <GL/glew.h>
+#endif
 #include "SDL.h"
 #endif
 
