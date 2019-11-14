@@ -399,6 +399,7 @@ if (NOT TB_BUILD_DEMO AND NOT TB_SUBDIRECTORY)
 
 endif (NOT TB_BUILD_DEMO AND NOT TB_SUBDIRECTORY)
 
+message (STATUS "TurboBadger configuration:")
 message (" CMAKE_BUILD_TYPE:    ${CMAKE_BUILD_TYPE}")
 message (" TB_SUBDIRECTORY:     ${TB_SUBDIRECTORY}")
 message (" TB_BUILD_DEMO:       ${TB_BUILD_DEMO}")

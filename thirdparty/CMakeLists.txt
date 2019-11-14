@@ -186,7 +186,7 @@ if (TB_BUILD_FREETYPE)
   ExternalProject_Get_Property (freetypeX source_dir)
   if (hasParent)
     set (FREETYPE_SRC_DIR "${source_dir}")
-    message (" FREETYPE_SRC_DIR: ${FREETYPE_SRC_DIR}")
+    message (STATUS " FREETYPE_SRC_DIR: ${FREETYPE_SRC_DIR}")
     # freetype config variables
     set (FT_WITH_ZLIB OFF CACHE STRING "" FORCE)
     set (FT_WITH_BZIP2 OFF CACHE STRING "" FORCE)

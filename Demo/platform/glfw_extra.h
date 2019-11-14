@@ -1,10 +1,10 @@
 #ifndef GLFW_EXTRA_H
 #define GLFW_EXTRA_H
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <Windows.h> // Avoid compilation warnings in GLFW/glfw.h
-#endif
 #include <GL/glew.h>
+#endif
 #include "GLFW/glfw3.h"
 
 /* Function pointer types */

@@ -43,9 +43,6 @@ public:
     /** Set Dots Per Inch for the main screen. */
 	static void SetDPI(int dpi);
     
-	/** Get Path to root of app static files. Must end with path separator. */
-	static const char * GetRoot();
-
 private:
     static int _dpi; //< the current dpi value
 };

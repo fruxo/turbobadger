@@ -210,22 +210,6 @@ void TBSystem::SetDPI(int dpi)
 	_dpi = dpi;
 }
 
-const char * TBSystem::GetRoot()
-{
-	static char * basepath = NULL;
-	if (!basepath)
-	{
-#ifdef ANDROID
-		TBStr ExtPath(SDL_AndroidGetExternalStoragePath());
-		ExtPath.Append("/");
-		basepath = strdup(ExtPath.CStr());
-#else
-		basepath = SDL_GetBasePath();
-#endif
-	}
-	return basepath;
-}
-
 } // namespace tb
 
 #endif // TB_BACKEND_SDL2

@@ -58,13 +58,6 @@ int TBSystem::GetDPI()
 	return 96;
 }
 
-#ifndef TB_BACKEND_SDL2
-const char * TBSystem::GetRoot()
-{
-	return "./";
-}
-#endif
-
 } // namespace tb
 
 #endif // TB_SYSTEM_LINUX
