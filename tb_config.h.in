@@ -21,9 +21,6 @@
 	the various settings in g_tb_debug. A settings window can be
 	shown by calling ShowDebugInfoSettingsWindow. */
 ${TB_RUNTIME_DEBUG_INFO_CONFIG}
-#if !defined(NDEBUG) && !defined(TB_RUNTIME_DEBUG_INFO)
-#define TB_RUNTIME_DEBUG_INFO
-#endif
 
 #ifndef NDEBUG
 /** Enable compilation of unit tests. */

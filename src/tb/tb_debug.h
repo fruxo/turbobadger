@@ -66,6 +66,7 @@ void ShowDebugInfoSettingsWindow(class TBWidget *root);
 } // namespace tb
 
 #if defined(TB_RUNTIME_DEBUG_INFO)
+
 namespace tb { class TBStr; }
 void TBDebugOut(const tb::TBStr & str);
 #define TBDebugPrint(...) do {									 \
@@ -73,9 +74,12 @@ void TBDebugOut(const tb::TBStr & str);
 		tmpxxx.SetFormatted(__VA_ARGS__);						 \
 		TBDebugOut(tmpxxx);										 \
 	} while (0)
+
 #else
+
 #define TBDebugOut(str) do { } while (0)
 #define TBDebugPrint(...) do { } while (0)
-#endif
+
+#endif // TB_RUNTIME_DEBUG_INFO
 
 #endif // TB_DEBUG_H

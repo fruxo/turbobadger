@@ -71,6 +71,7 @@ after_failure:
 - pwd
 - find .
 - cat Build/CMakeFiles/CMakeOutput.log
+- cat Build/src/tb/tb_config.h
 - ls thirdparty
 - cat thirdparty/CMakeFiles/CMakeOutput.log
 deploy:
